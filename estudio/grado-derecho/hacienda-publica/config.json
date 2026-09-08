@@ -1,0 +1,11 @@
+{
+  "id": "hacienda-publica",
+  "nombre": "Hacienda Publica",
+  "codigo": "66022032",
+  "creditos": 6,
+  "caracter": "FORMACIÓN BÁSICA",
+  "icon": "💰",
+  "temas": [
+    { "id": "tema1", "titulo": "Tema 1 - Introducción" }
+  ]
+}

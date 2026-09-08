@@ -1,0 +1,11 @@
+{
+  "id": "tfg-derecho",
+  "nombre": "Tfg Derecho",
+  "codigo": "66024083",
+  "creditos": 6,
+  "caracter": "TRABAJO FINAL OBLIGATORIO",
+  "icon": "📝",
+  "temas": [
+    { "id": "tema1", "titulo": "Tema 1 - Introducción" }
+  ]
+}

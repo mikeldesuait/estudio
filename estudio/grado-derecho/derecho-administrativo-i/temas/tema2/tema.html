@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fuentes legales y supralegales del Derecho Administrativo</title>
+    <style>
+        /* ===== ESTILO ÚNICO PARA RESÚMENES UNED ===== */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            max-width: 950px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #f5f7fa;
+            color: #1a1a2e;
+            line-height: 1.8;
+            font-size: 17px;
+        }
+        h1 {
+            font-size: 30px;
+            color: #0a1628;
+            border-bottom: 4px solid #1a3d66;
+            padding-bottom: 14px;
+        }
+        h2 {
+            font-size: 23px;
+            color: #1a3d66;
+            margin-top: 32px;
+            border-left: 4px solid #1a3d66;
+            padding-left: 16px;
+        }
+        h3 {
+            font-size: 20px;
+            color: #2a4a7a;
+            margin-top: 26px;
+        }
+        h4 {
+            font-size: 18px;
+            color: #3a5a8a;
+            margin-top: 20px;
+        }
+        strong {
+            color: #0a2a4a;
+        }
+        ul {
+            padding-left: 24px;
+        }
+        li {
+            margin-bottom: 6px;
+        }
+        blockquote {
+            background: #e8edf4;
+            padding: 12px 20px;
+            border-left: 4px solid #1a3d66;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        hr {
+            border: none;
+            border-top: 2px solid #d0d8e4;
+            margin: 28px 0;
+        }
+        .indice {
+            background: #e8edf4;
+            padding: 16px 24px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .indice ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .indice li {
+            padding: 3px 0;
+        }
+        .indice li.h1 {
+            font-weight: 600;
+        }
+        .indice li.h2 {
+            padding-left: 20px;
+            font-weight: 400;
+        }
+        .indice a {
+            color: #1a3d66;
+            text-decoration: none;
+        }
+        .indice a:hover {
+            text-decoration: underline;
+        }
+        .idea-central {
+            background: #e0e8f4;
+            padding: 18px 24px;
+            border-radius: 12px;
+            margin: 20px 0 30px 0;
+            border-left: 5px solid #1a3d66;
+        }
+        .idea-central h2 {
+            margin-top: 0;
+            border-left: none;
+            padding-left: 0;
+        }
+        .modo-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            padding: 8px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #1a3d66;
+            color: #fff;
+            font-size: 14px;
+            z-index: 999;
+        }
+        .modo-btn:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode {
+            background: #0d1a2b;
+            color: #d6e2f5;
+        }
+        .dark-mode h1 {
+            color: #b0c8e8;
+            border-bottom-color: #2a5a8a;
+        }
+        .dark-mode h2 {
+            color: #8ab0e0;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode h3 {
+            color: #6a9ac0;
+        }
+        .dark-mode h4 {
+            color: #5a8aaa;
+        }
+        .dark-mode strong {
+            color: #c8ddf0;
+        }
+        .dark-mode blockquote {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode .indice {
+            background: #142a44;
+        }
+        .dark-mode .indice a {
+            color: #8ab0e0;
+        }
+        .dark-mode .idea-central {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode hr {
+            border-top-color: #2a4a6a;
+        }
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+                padding: 14px;
+            }
+            h1 {
+                font-size: 25px;
+            }
+            h2 {
+                font-size: 21px;
+            }
+        }
+
+        /* ===== ESTILOS PARA PREGUNTAS INTERACTIVAS ===== */
+        .pregunta {
+            background: #f0f4fa;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            border: 1px solid #d0d8e4;
+        }
+        .dark-mode .pregunta {
+            background: #142a44;
+            border-color: #2a4a6a;
+        }
+        .pregunta .enunciado {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .pregunta .opciones {
+            list-style: none;
+            padding-left: 8px;
+        }
+        .pregunta .opciones li {
+            margin-bottom: 4px;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .pregunta .opciones li.correcta {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .dark-mode .pregunta .opciones li.correcta {
+            background: #1a4a3a;
+            color: #8fdfb0;
+            border-left-color: #2ecc71;
+        }
+        .pregunta .respuesta-oculta {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta .respuesta-oculta {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta .respuesta-oculta.visible {
+            display: block;
+        }
+        .pregunta .btn-respuesta {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #1a3d66;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta .btn-respuesta:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta:hover {
+            background: #3a7aaa;
+        }
+        .pregunta .trampa {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #6a4a2a;
+            font-style: italic;
+        }
+        .dark-mode .pregunta .trampa {
+            color: #c8a878;
+        }
+        .reserva-label {
+            display: inline-block;
+            background: #c0392b;
+            color: #fff;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 2px 12px;
+            border-radius: 20px;
+            margin-left: 10px;
+            text-transform: uppercase;
+        }
+        .dark-mode .reserva-label {
+            background: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+
+    <button class="modo-btn" id="modoBtn">Modo oscuro</button>
+
+    <h1>LAS FUENTES LEGALES Y SUPRALEGALES DEL DERECHO ADMINISTRATIVO</h1>
+
+    <!-- ÍNDICE -->
+    <div class="indice">
+        <strong>ÍNDICE</strong>
+        <ul>
+            <li class="h1"><a href="#idea-central">1. IDEA CENTRAL (5 minutos)</a></li>
+            <li class="h1"><a href="#epigrafe1">2. INTRODUCCIÓN</a></li>
+            <li class="h1"><a href="#epigrafe2">3. LA CONSTITUCIÓN</a></li>
+            <li class="h1"><a href="#epigrafe3">4. LA LEY</a></li>
+            <li class="h2"><a href="#epigrafe3-1">4.1. Concepto</a></li>
+            <li class="h2"><a href="#epigrafe3-2">4.2. Ley orgánica y ley ordinaria</a></li>
+            <li class="h2"><a href="#epigrafe3-3">4.3. Otros tipos de leyes</a></li>
+            <li class="h1"><a href="#epigrafe4">5. LAS DISPOSICIONES DEL GOBIERNO CON RANGO DE LEY</a></li>
+            <li class="h2"><a href="#epigrafe4-1">5.1. El decreto-legislativo</a></li>
+            <li class="h2"><a href="#epigrafe4-2">5.2. El decreto-ley</a></li>
+            <li class="h2"><a href="#epigrafe4-3">5.3. El decreto de declaración del estado de alarma</a></li>
+            <li class="h1"><a href="#epigrafe5">6. EL DERECHO INTERNACIONAL</a></li>
+            <li class="h2"><a href="#epigrafe5-1">6.1. Los tratados internacionales</a></li>
+            <li class="h2"><a href="#epigrafe5-2">6.2. Otras vías de recepción del Derecho internacional</a></li>
+            <li class="h1"><a href="#epigrafe6">7. EL DERECHO DE LA UNIÓN EUROPEA</a></li>
+            <li class="h2"><a href="#epigrafe6-1">7.1. Características generales</a></li>
+            <li class="h2"><a href="#epigrafe6-2">7.2. Modalidades de producción normativa</a></li>
+            <li class="h1"><a href="#epigrafe7">8. LA COSTUMBRE</a></li>
+            <li class="h1"><a href="#epigrafe8">9. LOS PRINCIPIOS GENERALES DEL DERECHO</a></li>
+            <li class="h2"><a href="#epigrafe8-1">9.1. Estatuto básico</a></li>
+            <li class="h2"><a href="#epigrafe8-2">9.2. Principios positivizados</a></li>
+            <li class="h1"><a href="#epigrafe9">10. LA JURISPRUDENCIA</a></li>
+            <li class="h2"><a href="#epigrafe9-1">10.1. Naturaleza</a></li>
+            <li class="h2"><a href="#epigrafe9-2">10.2. Pluralidad de jurisprudencias</a></li>
+            <li class="h2"><a href="#epigrafe9-3">10.3. Formación de jurisprudencia en lo contencioso-administrativo</a></li>
+            <li class="h1"><a href="#preguntas-test">11. PREGUNTAS TIPO TEST</a></li>
+            <li class="h1"><a href="#preguntas-reserva">12. PREGUNTAS DE RESERVA</a></li>
+        </ul>
+    </div>
+
+    <!-- IDEA CENTRAL -->
+    <div id="idea-central" class="idea-central">
+        <h2>1. IDEA CENTRAL (5 minutos)</h2>
+        <p>El sistema de fuentes del Derecho administrativo se articula en torno a una pluralidad de normas que se sitúan en distintos niveles jerárquicos. La Constitución, como norma suprema, establece el sistema de fuentes y vincula a todos los poderes públicos. La ley, en sus diversas modalidades (orgánica y ordinaria), es la expresión de la voluntad popular y se sitúa inmediatamente después de la Constitución. Junto a la ley, el Gobierno puede dictar normas con rango de ley mediante decretos-leyes (urgencia) y decretos legislativos (delegación). El Derecho internacional y el Derecho de la Unión Europea se incorporan al ordenamiento interno con primacía sobre las normas internas, salvo la Constitución. Finalmente, la costumbre, los principios generales del Derecho y la jurisprudencia cumplen funciones supletorias o complementarias, aunque la positivización de principios en la Constitución y las leyes les otorga un rango y eficacia superiores.</p>
+    </div>
+
+    <!-- EPÍGRAFES -->
+    <div id="epigrafe1">
+        <h2>2. INTRODUCCIÓN</h2>
+        <p><strong>Resumen:</strong> Las fuentes de Derecho son los cauces por los que se crean y expresan las normas jurídicas. Pueden contemplarse desde perspectiva formal (formas de expresión: ley, tratado, reglamento, etc.) y material (producción de Derecho). La distinción entre ley formal y ley material es relevante para el reglamento, pero no para la ley. Existe predominio de fuentes escritas en Derecho administrativo por principios de seguridad jurídica y legalidad. Se distingue entre fuentes estatales y no estatales (UE y Derecho internacional), y entre fuentes legales/supralegales (Constitución, leyes, tratados, principios) e infralegales o reglamentarias (objeto de los temas 3 y 4).</p>
+        <blockquote><strong>Definiciones literales:</strong><br>
+        "Las fuentes de Derecho son los cauces por los que se crean y expresan las normas jurídicas que se integrarán en el ordenamiento jurídico. Son la razón jurídica para considerarlas parte del Derecho positivo."<br><br>
+        "Las normas jurídicas deben diferenciarse, por tanto, de los textos jurídicos y de las formas que estos revisten: son mandatos generales que se integran en el ordenamiento jurídico y que se pueden aplicar a un número indefinido de supuestos de hechos; no se agotan en un acto de aplicación."</blockquote>
+        <p><strong>Matiz a recordar:</strong> La distinción entre perspectiva formal y material es clave: las fuentes formales son meras formas; las materiales sirven para producir Derecho.</p>
+        <hr>
+    </div>
+
+    <div id="epigrafe2">
+        <h2>3. LA CONSTITUCIÓN</h2>
+        <p><strong>Resumen:</strong> La Constitución es la norma fundamental y suprema del ordenamiento jurídico. Como norma fundamental, crea y organiza los poderes del Estado y establece límites a su ejercicio mediante derechos fundamentales y principios constitucionales. Como norma suprema, establece el sistema de fuentes. Su supremacía se manifiesta en el plano formal (ninguna norma que no sea de reforma constitucional puede modificarla) y material (vincula a ciudadanos y poderes públicos, deroga normas anteriores incompatibles y es parámetro de constitucionalidad de normas posteriores). El art. 9.1 CE refleja este doble carácter. La interpretación de todo el ordenamiento debe ser conforme a la Constitución.</p>
+        <blockquote><strong>Definiciones literales:</strong><br>
+        "La Constitución es la norma fundamental y suprema del ordenamiento jurídico. En su condición de norma fundamental, crea y organiza los poderes del Estado [...] y establece los límites del ejercicio del poder. En su condición de norma suprema, es norma de normas: establece el sistema de fuentes definiendo las fuentes formales de Derecho."<br><br>
+        "El fundamento del sistema de fuentes está en la norma suprema, no en una norma de rango legal."</blockquote>
+        <p><strong>Matiz a recordar:</strong> La supremacía formal (procedimiento de reforma) se distingue de la material (contenido vinculante). El poder constituyente reside en el pueblo (art. 1.2 CE).</p>
+        <hr>
+    </div>
+
+    <div id="epigrafe3">
+        <h2>4. LA LEY</h2>
+
+        <div id="epigrafe3-1">
+            <h3>4.1. Concepto</h3>
+            <p><strong>Resumen:</strong> La ley, después de la Constitución, es la norma suprema del ordenamiento como expresión de la voluntad popular a través de las Cortes Generales. En el Estado constitucional, la ley está subordinada a la Constitución. Sus límites internos son la Constitución; los externos son cada vez más importantes (Derecho internacional, compromisos de la UE, etc.). Desde la perspectiva formal, ley es cualquier mandato de los órganos con potestad legislativa publicado con ese nombre. La ley formal goza de plena fuerza incluso sin contenido normativo general. La distinción ley formal/material no tiene relevancia constitucional para la ley, pero sí para el reglamento.</p>
+            <blockquote><strong>Definiciones literales:</strong><br>
+            "Después de la Constitución, la ley es la norma suprema del ordenamiento jurídico en cuanto expresa la voluntad popular, a través de los órganos constitucionales a los que se ha atribuido la potestad legislativa del Estado, las Cortes Generales."<br><br>
+            "Desde una perspectiva formal, ley es cualquier mandato de los órganos investidos con la potestad legislativa de conformidad con la Constitución y que, previo cumplimiento de las formalidades exigidas, se publica con ese nombre en el diario oficial correspondiente."</blockquote>
+            <p><strong>Matiz a recordar:</strong> Solo la perspectiva formal es relevante para la ley a efectos constitucionales; la distinción formal/material es "puramente dogmática" y no afecta a su rango o control.</p>
+        </div>
+
+        <div id="epigrafe3-2">
+            <h3>4.2. Ley orgánica y ley ordinaria</h3>
+            <p><strong>Resumen:</strong> Las leyes orgánicas requieren mayoría absoluta del Congreso en votación final (art. 81.2 CE). Son para: desarrollo de derechos fundamentales y libertades públicas, Estatutos de Autonomía, régimen electoral general, autorización de tratados del art. 93 CE, y leyes de transferencia del art. 150.2 CE. El TC interpreta restrictivamente las materias reservadas a ley orgánica. No constituyen una categoría distinta de ley, sino una peculiaridad procedimental. El TC ha rechazado la concepción formal (que crearía una categoría intermedia entre Constitución y ley ordinaria) y ha desarrollado una concepción "material": solo pueden incluirse disposiciones correspondientes a materias reservadas a ley orgánica, con una advertencia expresa si no lo son.</p>
+            <blockquote><strong>Definiciones literales:</strong><br>
+            "Llevada a su extremo, la concepción formal de la Ley orgánica podría producir en el ordenamiento jurídico una petrificación abusiva en beneficio de quienes en un momento dado gozasen de la mayoría parlamentaria suficiente y en detrimento del carácter democrático del Estado" (STC 5/1981).<br><br>
+            "La diferencia entre el entendimiento acogido por el Tribunal Constitucional y el que deriva de la interpretación procedimental [...] se muestra en el supuesto de que una ley aprobada como orgánica incluya cuestiones que, según la Constitución, no están reservadas a ley orgánica."</blockquote>
+            <p><strong>Matiz a recordar:</strong> La llamada "interpretación material" del TC termina aceptando una prevalencia provisional de la ley orgánica sobre la ordinaria, lo que contradice el punto de partida del rechazo de la concepción formal.</p>
+        </div>
+
+        <div id="epigrafe3-3">
+            <h3>4.3. Otros tipos de leyes</h3>
+            <p><strong>Resumen:</strong> Dentro de las leyes ordinarias se distinguen modalidades según su función: ley de bases (delegación), ley básica (bases de legislación compartida), ley marco (transferencia a CCAA de facultad de dictar normas legislativas), ley de armonización (art. 150.3 CE) y ley de presupuestos (art. 134 CE). La ley de presupuestos tiene peculiaridades: elaboración exclusiva del Gobierno, vigencia anual, prórroga automática, no puede crear tributos. El TC limita su contenido para evitar regulaciones ajenas a la materia presupuestaria, lo que dio lugar a la "ley de acompañamiento". Las leyes autonómicas son leyes a todos los efectos, con el mismo régimen que las estatales.</p>
+            <p><strong>Matiz a recordar:</strong> La ley de presupuestos tiene una vigencia anual; si no se aprueba antes del 1 de enero, se prorrogan automáticamente los presupuestos del ejercicio anterior.</p>
+        </div>
+        <hr>
+    </div>
+
+    <div id="epigrafe4">
+        <h2>5. LAS DISPOSICIONES DEL GOBIERNO CON RANGO DE LEY</h2>
+
+        <div id="epigrafe4-1">
+            <h3>5.1. El decreto-legislativo</h3>
+            <p><strong>Resumen:</strong> Las Cortes pueden delegar en el Gobierno la potestad de dictar disposiciones con rango de ley sobre materias determinadas (art. 82.1 CE). Requisitos: delegación expresa, para materia y plazo determinados, sin subdelegación, no para materias reservadas a ley orgánica. La delegación se otorga mediante ley de delegación. La fuente resultante es el decreto legislativo. Dos modalidades: ley de bases → texto articulado; y ley ordinaria → texto refundido (refundir textos legales dispersos). Existe una tercera variante práctica: adaptación normativa. El decreto legislativo debe someterse al procedimiento de elaboración de normas y recabar dictamen del Consejo de Estado. El TC controla su constitucionalidad. La doctrina del ultra vires permite a la jurisdicción contencioso-administrativa controlar los excesos sobre la delegación, aunque su adecuación al modelo constitucional es discutida.</p>
+            <blockquote><strong>Definiciones literales:</strong><br>
+            "Se trata de una auténtica delegación de la potestad legislativa: el titular de esta (delegante) transfiere su ejercicio a otro órgano (delegatario), para que la ejerza en una parcela acotada con igual eficacia y legitimidad que su titular."<br><br>
+            "La doctrina del ultra vires sostiene que, cuando el Gobierno no se atiene a las condiciones de la delegación legislativa otorgada, la norma resultante deja de estar cubierta por esta; no es legislación delegada."</blockquote>
+            <p><strong>Matiz a recordar:</strong> La doctrina del ultra vires postula una "naturaleza escindida o variable" del decreto-legislativo (rango legal si se adecua a la delegación; reglamentario si no), lo que no se predica de ninguna otra fuente de Derecho.</p>
+        </div>
+
+        <div id="epigrafe4-2">
+            <h3>5.2. El decreto-ley</h3>
+            <p><strong>Resumen:</strong> El Gobierno puede adoptar normas de rango legal en situaciones de extraordinaria y urgente necesidad (art. 86.1 CE). Es una potestad legislativa propia, limitada y provisional (disposiciones legislativas provisionales). Límites: (1) solo para situaciones de extraordinaria y urgente necesidad (presupuesto habilitante); (2) no puede afectar a instituciones básicas del Estado, derechos del Título I, régimen de CCAA ni Derecho electoral; (3) plazo de 30 días para convalidación o derogación por el Congreso. La convalidación transforma la eficacia (de provisional a indefinida), pero no la naturaleza. El decreto-ley es un instrumento muy utilizado (media de 15 al año). Los estatutos reformados desde 2006 reconocen decretos-leyes autonómicos, avalados por el TC.</p>
+            <blockquote><strong>Definiciones literales:</strong><br>
+            "El decreto-ley convalidado (que es la regla general) constituye un acto mixto formado por la adición de los actos de dos órganos: un acto propio del Gobierno, la norma aprobada y publicada como decreto-ley, más la resolución de convalidación posterior del Congreso."<br><br>
+            "El decreto-ley es uno de los principales instrumentos de la producción normativa del Estado o, si se prefiere, de la política normativa del Gobierno de turno."</blockquote>
+            <p><strong>Matiz a recordar:</strong> Las disposiciones del decreto-ley son inmediatamente eficaces, pero solo tienen eficacia jurídica provisional durante 30 días máximo. La convalidación no convierte al decreto-ley en ley.</p>
+        </div>
+
+        <div id="epigrafe4-3">
+            <h3>5.3. El decreto de declaración del estado de alarma</h3>
+            <p><strong>Resumen:</strong> Previsto en el art. 116 CE y regulado en la LO 4/1981. El TC ha reconocido valor de ley al real decreto de declaración del estado de alarma, por el contenido y eficacia de sus medidas (pueden suspender disposiciones legales). La Constitución diferencia claramente entre los decretos-leyes, los decretos legislativos y el decreto del estado de alarma. El TC ha reconocido valor de ley para permitir que su control corresponda exclusivamente a la jurisdicción constitucional.</p>
+            <p><strong>Matiz a recordar:</strong> La atribución de capacidad modificativa de leyes al real decreto de declaración del estado de alarma "se puede explicar sin necesidad de reconocerle valor de ley", ya que es la Constitución la que proporciona esa fuerza activa.</p>
+        </div>
+        <hr>
+    </div>
+
+    <div id="epigrafe5">
+        <h2>6. EL DERECHO INTERNACIONAL</h2>
+
+        <div id="epigrafe5-1">
+            <h3>6.1. Los tratados internacionales</h3>
+            <p><strong>Resumen:</strong> El tratado internacional, como fuente propia del Derecho internacional, se regula en las Convenciones de Viena; como fuente externa del ordenamiento español, en los arts. 93-96 CE y en la LTAI. Los tratados válidamente celebrados y publicados forman parte del ordenamiento interno (art. 96.1 CE). Son de aplicación directa (self-executing) salvo que el texto condicione su aplicación a leyes o reglamentos. Dependiendo de la materia, requieren autorización mediante ley orgánica (art. 93) o ley ordinaria (art. 94.1), o bien no necesitan autorización (art. 94.2). Se sitúan entre la Constitución y la ley: por debajo de la Constitución (no pueden contener disposiciones contrarias); por encima de la ley (ninguna ley puede derogarlos, solo en la forma prevista en el tratado). El art. 31 LTAI establece su prevalencia. El art. 10.2 CE establece la interpretación de derechos fundamentales conforme a tratados internacionales.</p>
+            <blockquote><strong>Definiciones literales:</strong><br>
+            "Los tratados internacionales válidamente celebrados, una vez publicados oficialmente en España, forman parte del ordenamiento interno (art. 96.1 CE)."<br><br>
+            "Los tratados internacionales ratificados y publicados oficialmente se sitúan entre la Constitución y la ley; por debajo de la Constitución [...] por encima de la ley."</blockquote>
+            <p><strong>Matiz a recordar:</strong> Los tratados internacionales no solo prevalecen, sino que también "derogan las leyes y normas reglamentarias que, adoptadas con anterioridad, resulten incompatibles".</p>
+
+            <h4>6.1.1. Relevancia en el ámbito jurídico-administrativo</h4>
+            <p><strong>Resumen:</strong> Los tratados internacionales tienen protagonismo inferior al de otras fuentes en Derecho administrativo. Los más relevantes son los del Consejo de Europa: CEDH (1950), Carta Europea de la Autonomía Local (1985) y Carta Europea de Lenguas Regionales o Minoritarias (1992). El TEDH genera jurisprudencia relevante que se proyecta sobre el ámbito sancionador administrativo (art. 6 CEDH), medio ambiente, ordenación del territorio, extranjería, etc. Fuera del Consejo de Europa, destacan los tratados sobre derechos humanos y medio ambiente (Convenio de Aarhus).</p>
+            <p><strong>Matiz a recordar:</strong> La jurisprudencia del TEDH es utilizada intensamente por el TC y el TS. Ejemplo: sentencia Saquetti Iglesias c. España (2020) impuso la doble instancia judicial para sanciones administrativas.</p>
+        </div>
+
+        <div id="epigrafe5-2">
+            <h3>6.2. Otras vías de recepción del Derecho internacional</h3>
+            <p><strong>Resumen:</strong> Existen normas de actuación de carácter técnico elaboradas en instancias internacionales que se incorporan al ordenamiento interno sin ser tratados internacionales. Ejemplos: directrices operativas, guías o recomendaciones para la gestión de pasajeros aéreos (RDL 14/2022); y guías aprobadas por organismos internacionales en el mercado de valores (Ley 6/2023), que la CNMV puede hacer suyas como soft law técnico mediante la técnica del comply or explain. Es una manifestación del "Derecho administrativo global".</p>
+            <p><strong>Matiz a recordar:</strong> En el ejemplo de las directrices operativas, inicialmente son recomendaciones, pero por orden ministerial se puede establecer su carácter obligatorio.</p>
+        </div>
+        <hr>
+    </div>
+
+    <div id="epigrafe6">
+        <h2>7. EL DERECHO DE LA UNIÓN EUROPEA</h2>
+
+        <div id="epigrafe6-1">
+            <h3>7.1. Características generales</h3>
+            <p><strong>Resumen:</strong> La UE es una organización supranacional con su propio sistema institucional, de fuentes y jurisdiccional. El sistema de fuentes diferencia entre Derecho primario (tratados constitutivos, Carta de Derechos Fundamentales, principios generales del Derecho de la UE) y Derecho secundario (actos vinculantes y no vinculantes). Dos principios esenciales: efecto directo (aplicable directamente sin recepción interna) y primacía (prevalece sobre normas internas incompatibles). El TJUE garantiza la interpretación y aplicación uniforme del Derecho de la UE. Los órganos judiciales nacionales colaboran mediante la cuestión prejudicial (art. 267 TFUE). Los Estados miembros deben adoptar medidas para asegurar el cumplimiento del Derecho de la UE y establecer vías de recurso para la tutela judicial efectiva.</p>
+            <blockquote><strong>Definiciones literales:</strong><br>
+            "El Derecho de la Unión Europea no es una fuente de Derecho, como no lo es el Derecho autonómico, sino un ordenamiento autónomo. Lo que ocurre es que sus fuentes se incorporan al ordenamiento interno con principios comunes."<br><br>
+            "El Tribunal de Justicia [...] garantiza el respeto del Derecho en la interpretación y aplicación de los Tratados (art. 19.1 TUE)."</blockquote>
+            <p><strong>Matiz a recordar:</strong> La celebración de tratados de la UE requiere en España ley orgánica (art. 93 CE). La Carta de Derechos Fundamentales tiene "el mismo valor jurídico que los Tratados" (art. 6.1 TUE).</p>
+        </div>
+
+        <div id="epigrafe6-2">
+            <h3>7.2. Modalidades de producción normativa</h3>
+            <h4>7.2.1. La legislación uniforme: el reglamento</h4>
+            <p><strong>Resumen:</strong> El reglamento es el instrumento de la legislación uniforme. Definición en el art. 288 TFUE: "El reglamento tendrá un alcance general. Será obligatorio en todos sus elementos y directamente aplicable en cada Estado miembro." Desplaza y reemplaza a la legislación nacional. Excluye cualquier intervención estatal para su efectividad. Se publica en el DOUE y entra en vigor en toda la UE en la misma fecha. Aunque inicialmente se evitó el término "ley" por razones técnicas, el Tratado de Lisboa ha avanzado hacia una diferenciación entre ámbito legislativo y ejecutivo, con la distinción entre actos legislativos, actos delegados (art. 290 TFUE) y actos de ejecución (art. 291 TFUE).</p>
+            <blockquote><strong>Definiciones literales:</strong><br>
+            "El reglamento tendrá un alcance general. Será obligatorio en todos sus elementos y directamente aplicable en cada Estado miembro" (art. 288 TFUE).<br><br>
+            "Desde el punto de vista de las relaciones con los ordenamientos jurídicos de los Estados miembros, el reglamento es el acto jurídico que menos dificultades plantea en los planos teórico y práctico."</blockquote>
+            <p><strong>Matiz a recordar:</strong> El reglamento "excluye cualquier intervención de los Estados miembros para su efectividad y exigibilidad". Cualquier acción estatal que diera a entender que es necesaria para que el reglamento sea plenamente efectivo es incompatible con el Derecho de la UE.</p>
+
+            <h4>7.2.2. La legislación armonizada: la directiva</h4>
+            <p><strong>Resumen:</strong> La directiva es el instrumento de la legislación armonizada. Definición en el art. 288 TFUE: "La directiva obligará al Estado miembro destinatario en cuanto al resultado que deba conseguirse, dejando, sin embargo, a las autoridades nacionales la elección de la forma y de los medios." Las legislaciones nacionales no se sustituyen, solo se hacen converger. Con el tiempo, las directivas se han vuelto más detalladas. La transposición requiere una incorporación efectiva del contenido, no solo compatibilidad formal. La doctrina del efecto directo permite invocar directivas precisas e incondicionales en relaciones verticales (particulares vs. poderes públicos) una vez expirado el plazo de transposición. La decisión dirigida a todos los Estados miembros es un instrumento flexible que puede operar como directiva o como reglamento.</p>
+            <blockquote><strong>Definiciones literales:</strong><br>
+            "La directiva obligará al Estado miembro destinatario en cuanto al resultado que deba conseguirse, dejando, sin embargo, a las autoridades nacionales la elección de la forma y de los medios" (art. 288 TFUE).<br><br>
+            "Para cumplir la obligación de transposición no es suficiente una mera compatibilidad formal o la mera ausencia de contradicción en el seno del ordenamiento interno, sino que es necesario una incorporación efectiva del contenido de la directiva."</blockquote>
+            <p><strong>Matiz a recordar:</strong> El efecto directo de las directivas opera solo en relaciones verticales (particulares frente a poderes públicos), "nunca frente a otros particulares", ni tampoco por el Estado frente a los particulares.</p>
+        </div>
+        <hr>
+    </div>
+
+    <div id="epigrafe7">
+        <h2>8. LA COSTUMBRE</h2>
+        <p><strong>Resumen:</strong> La costumbre es fuente supletoria (art. 1 CC) con dos elementos: práctica duradera e ininterrumpida y convicción de obligatoriedad (opinio iuris). En Derecho administrativo tiene un espacio residual por: movilidad, complejidad, densidad normativa, reserva de ley, y porque el silencio de la ley no es necesariamente una laguna. Una entidad pública no puede fundamentar en la costumbre sus poderes, solo en la ley o reglamento. Sí se reconoce a la costumbre espacio en el ámbito local (concejo abierto, bienes comunales, comunidades de regantes) por remisión legal expresa.</p>
+        <blockquote><strong>Definiciones literales:</strong><br>
+        "La primera fuente supletoria de las normas escritas es, según el art. 1 del Código Civil, la costumbre. Como fuente de Derecho, la costumbre tiene dos elementos constitutivos [...]: la práctica duradera e ininterrumpida y la convicción de que constituye una práctica obligatoria (opinio iuris)."<br><br>
+        "Una entidad pública no puede fundamentar en la costumbre sus poderes o competencias, sino solo en la ley o en el reglamento de acuerdo con la ley."</blockquote>
+        <p><strong>Matiz a recordar:</strong> La costumbre no es una fuente idónea para precisar conductas sancionables (art. 25.1 CE exige "legislación vigente" - Derecho escrito).</p>
+        <hr>
+    </div>
+
+    <div id="epigrafe8">
+        <h2>9. LOS PRINCIPIOS GENERALES DEL DERECHO</h2>
+
+        <div id="epigrafe8-1">
+            <h3>9.1. Estatuto básico de los principios generales del Derecho</h3>
+            <h4>9.1.1. Caracterización</h4>
+            <p><strong>Resumen:</strong> Los principios generales del Derecho son fuente autónoma (art. 1.1 CC) con función supletoria (art. 1.4 CC). No todo criterio o concepto jurídico indeterminado es un principio general; deben tener capacidad de supletoriedad e integrar lagunas. La doctrina española adopta posiciones institucionalistas: son criterios que informan el ordenamiento. La transversalidad no es esencial; la "generalidad" se refiere al carácter abstracto, no a un ámbito extenso de aplicación (p.ej., proporcionalidad solo en Derecho público; non bis in idem en sancionador).</p>
+            <blockquote><strong>Definiciones literales:</strong><br>
+            "El carácter no escrito de los principios generales del Derecho que no han sido positivizados plantea dificultades inexistentes con las fuentes escritas."<br><br>
+            "La generalidad que predica su propia denominación no se identifica con un ámbito extenso u horizontal de aplicación, sino con su carácter abstracto: basta con la aplicabilidad a un número indefinido de supuestos de hecho."</blockquote>
+            <p><strong>Matiz a recordar:</strong> Los principios de mérito y capacidad (art. 103.3 CE) no son principios generales del Derecho, sino "conceptos jurídicos indeterminados".</p>
+
+            <h4>9.1.2. Identificación</h4>
+            <p><strong>Resumen:</strong> La identificación de los principios generales es difícil: necesitan un agente externo que los formule. La doctrina y la jurisprudencia se ocupan de ello. La mera invocación retórica no prueba su contenido normativo autónomo. Su función supletoria tiene las mismas limitaciones que la costumbre. Su protagonismo práctico depende de: libertad interpretativa de la jurisprudencia, concepción de los jueces sobre su función, y conformación histórica de cada rama del Derecho. En España, el legislador ha preferido la codificación, y el Derecho escrito tiene gran capacidad para absorber principios.</p>
+            <p><strong>Matiz a recordar:</strong> En España, "el legislador siempre ha preferido la acción legislativa y la codificación a la creación jurisprudencial del Derecho, vía privilegiada de manifestación de los principios generales del Derecho."</p>
+
+            <h4>9.1.3. Función</h4>
+            <p><strong>Resumen:</strong> Un principio no positivizado puede aplicarse si no existe norma escrita. El art. 103.1 CE ("sometimiento a la ley y al Derecho") y el art. 106.1 CE ("legalidad de la actuación administrativa") permiten anular actuaciones administrativas por infracción de principios generales. Un principio general carece de capacidad para anular una norma escrita (función meramente supletoria e informadora). La actuación administrativa discrecional se puede controlar mediante principios (igualdad, proporcionalidad, buena administración, etc.). Los principios se diferencian de las reglas: no predeterminan una única actuación, requieren ponderación u optimización.</p>
+            <blockquote><strong>Definiciones literales:</strong><br>
+            "De acuerdo con el art. 103.1 CE, 'la Administración … actúa … con pleno sometimiento a la ley y al Derecho', por lo que una actuación administrativa puede ser anulada por infracción de alguno de los principios generales que conforman 'el Derecho'."<br><br>
+            "Un (mero) principio general carece de capacidad para anular una norma escrita, tenga rango legal o reglamentario, porque su función es meramente supletoria e informadora."</blockquote>
+            <p><strong>Matiz a recordar:</strong> Antes de la Constitución, los principios generales fueron "el principal instrumento en la 'lucha contra las inmunidades del poder' en el Derecho administrativo."</p>
+        </div>
+
+        <div id="epigrafe8-2">
+            <h3>9.2. El estatuto de los principios generales del Derecho positivizados</h3>
+            <p><strong>Resumen:</strong> La positivización de principios tiene dos consecuencias: elimina problemas de identificación y altera su naturaleza (pasan a tener el rango de la norma que los incorpora). Ya no rigen solo "en defecto de ley", sino que son parte de la Constitución o de la ley. Los principios constitucionalizados limitan al legislador y son parámetro de control de constitucionalidad. Los principios en leyes limitan la potestad reglamentaria y son parámetro de control de legalidad. La Constitución contiene numerosos principios (art. 1.1, art. 2, art. 9.3, art. 103.1, art. 135). Los "principios rectores" (arts. 39-52) tienen otra lógica: requieren desarrollo legislativo (art. 53.3). El legislador de 1999 (confianza legítima, transparencia, participación) y de 2015 (art. 3.1 LRJSP, lista de principios) ha positivizado numerosos principios.</p>
+            <blockquote><strong>Definiciones literales:</strong><br>
+            "La positivización de los principios generales del Derecho tiene dos consecuencias básicas. La primera [...] elimina el problema mencionado de la identificación y facilita su invocación. La segunda es que altera la naturaleza y la función como principios generales que todavía lucen en el art. 1.4 CC. Pasan a tener el rango de la norma que los incorpora al ordenamiento jurídico."<br><br>
+            "Los principios generales constitucionalizados limitan la actuación del legislador y pueden servir de parámetro de control de constitucionalidad de las leyes."</blockquote>
+            <p><strong>Matiz a recordar:</strong> Los principios rectores del art. 53.3 CE "no pueden ser aplicados 'en defecto de ley', sino 'a través de ley'", lo que los separa de los principios generales del Derecho.</p>
+        </div>
+        <hr>
+    </div>
+
+    <div id="epigrafe9">
+        <h2>10. LA JURISPRUDENCIA</h2>
+
+        <div id="epigrafe9-1">
+            <h3>10.1. Naturaleza</h3>
+            <p><strong>Resumen:</strong> El art. 1.6 CC establece la posición tradicional de la jurisprudencia: "complementará el ordenamiento jurídico con la doctrina que, de modo reiterado, establezca el Tribunal Supremo al interpretar y aplicar la ley, la costumbre y los principios generales del derecho". No se atribuye carácter de fuente de Derecho, sino complementaria. Sin embargo, en la práctica, los órganos judiciales generan normas de creación jurisprudencial. No toda resolución tiene este efecto complementario, solo la "doctrina" reiterada. La regulación del art. 1.6 CC es incompleta y obsoleta, pues no contempla otras jurisprudencias relevantes.</p>
+            <blockquote><strong>Definiciones literales:</strong><br>
+            "La jurisprudencia complementará el ordenamiento jurídico con la doctrina que, de modo reiterado, establezca el Tribunal Supremo al interpretar y aplicar la ley, la costumbre y los principios generales del derecho" (art. 1.6 CC).<br><br>
+            "En las concepciones medianamente elaboradas del ordenamiento jurídico, este se concibe como un sistema complejo con necesidades de coordinación e integración, que solo pueden ser plenamente atendidas en el momento de la aplicación del Derecho."</blockquote>
+            <p><strong>Matiz a recordar:</strong> El preámbulo del Decreto de 1974 asignaba "cierta trascendencia normativa" a la jurisprudencia.</p>
+        </div>
+
+        <div id="epigrafe9-2">
+            <h3>10.2. Pluralidad de jurisprudencias</h3>
+            <p><strong>Resumen:</strong> Existen jurisprudencias no contempladas en el art. 1.6 CC:<br>
+            1. <strong>TJUE</strong>: vinculante con efectos ex tunc; los jueces aplican el Derecho de la UE conforme a su jurisprudencia (art. 4 bis LOPJ); el apartamiento es motivo de casación [art. 88.2 f) LJCA].<br>
+            2. <strong>TEDH</strong>: produce "efecto de cosa interpretada"; relevante para interpretar derechos fundamentales (art. 10.2 CE); puede fundamentar recurso de revisión (art. 5 bis LOPJ).<br>
+            3. <strong>TC</strong>: sus sentencias tienen valor de cosa juzgada, vinculan a todos los poderes públicos (art. 38.1 LOTC); los jueces deben aplicar leyes y reglamentos conforme a su interpretación (art. 5.1 LOPJ); la jurisprudencia de los tribunales se entiende corregida por la doctrina constitucional (art. 40.2 LOTC).</p>
+            <blockquote><strong>Definiciones literales:</strong><br>
+            "Las sentencias del TEDH, como jurisdicción especializada en el ámbito de los derechos humanos, producen 'efecto de cosa interpretada' con relación a las disposiciones del Convenio Europeo de Derechos Humanos."<br><br>
+            "Los Jueces y Tribunales aplicarán el Derecho de la Unión Europea de conformidad con la jurisprudencia del Tribunal de Justicia de la Unión Europea" (art. 4 bis LOPJ).</blockquote>
+            <p><strong>Matiz a recordar:</strong> Las tres jurisprudencias mencionadas son objeto de publicación oficial, aspecto que comparten con la generalidad de las normas (art. 9.3 CE).</p>
+        </div>
+
+        <div id="epigrafe9-3">
+            <h3>10.3. La formación de jurisprudencia en el orden jurisdiccional contencioso-administrativo</h3>
+            <p><strong>Resumen:</strong> El art. 1.6 CC exige "reiteración" para que la jurisprudencia del TS complemente el ordenamiento. Sin embargo, desde 2015, la formación de jurisprudencia es función del recurso de casación, que requiere "interés casacional objetivo para la formación de jurisprudencia" (art. 88.1 LJCA). El auto de admisión precisa la cuestión; la sentencia fija la interpretación (art. 93.1 LJCA). Ya no es exigible el requisito de la reiteración para esta jurisprudencia. El art. 1.6 CC debe completarse con la jurisprudencia de los Tribunales Superiores de Justicia en "recursos de casación autonómica" (art. 86.3 LJCA). No se ha explicitado la eficacia vinculante de esta jurisprudencia, aunque estaría en la lógica de la reforma; el TC ha declarado constitucional la atribución de eficacia vinculante a la jurisprudencia del antiguo recurso de casación por interés de ley (STC 37/2012).</p>
+            <blockquote><strong>Definiciones literales:</strong><br>
+            "La función del recurso de casación se ha transformado. [...] ya no lo es (o no lo es con más claridad), sino un recurso centrado en la uniformización de la interpretación y aplicación del Derecho interno [...] y el Derecho de la Unión Europea."<br><br>
+            "La actual regulación procesal del recurso de casación está dirigida a la formación reflexiva y contradictoria de nueva jurisprudencia o a depurar la existente, con la máxima transparencia y seguridad jurídica posibles."</blockquote>
+            <p><strong>Matiz a recordar:</strong> El criterio de reiteración podría seguir rigiendo para la jurisprudencia del TS que no emana del recurso de casación (conocimiento en única instancia). La falta de atribución explícita de eficacia vinculante puede deberse a la controversia sobre la independencia judicial (art. 117.1 CE).</p>
+        </div>
+        <hr>
+    </div>
+
+    <!-- PREGUNTAS TIPO TEST -->
+    <div id="preguntas-test">
+        <h2>11. PREGUNTAS TIPO TEST</h2>
+
+        <!-- Pregunta 1 -->
+        <div class="pregunta">
+            <div class="enunciado"><strong>Pregunta 1:</strong> ¿Cuál de las siguientes afirmaciones sobre la distinción entre ley formal y ley material es correcta según el manual?</div>
+            <ul class="opciones">
+                <li>A) La distinción entre ley formal y ley material es relevante para determinar si una ley puede ser controlada por el Tribunal Constitucional.</li>
+                <li>B) La distinción entre ley formal y ley material es irrelevante para la ley a efectos constitucionales, pero sí es relevante para el reglamento.</li>
+                <li>C) Una ley formal que no contiene un mandato normativo general no goza de fuerza de ley.</li>
+                <li>D) La distinción entre ley formal y ley material está expresamente recogida en la Constitución.</li>
+            </ul>
+            <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+            <div class="respuesta-oculta">
+                <p><strong>Respuesta correcta:</strong> B</p>
+                <p class="trampa"><strong>Trampa identificada:</strong> La opción A es incorrecta porque el TC controla toda ley formal; C es incorrecta porque la ley formal goza de fuerza de ley aunque no tenga contenido normativo general; D es incorrecta porque la distinción es "puramente dogmática" y no tiene relevancia constitucional.</p>
+            </div>
+        </div>
+
+        <!-- Pregunta 2 -->
+        <div class="pregunta">
+            <div class="enunciado"><strong>Pregunta 2:</strong> Según la concepción del Tribunal Constitucional sobre la ley orgánica, ¿qué ocurre si una ley aprobada como orgánica incluye materias no reservadas a ley orgánica sin realizar la advertencia correspondiente?</div>
+            <ul class="opciones">
+                <li>A) Esa ley puede ser modificada por una ley ordinaria en cualquier momento, sin restricción alguna.</li>
+                <li>B) Esa ley queda automáticamente privada de su carácter orgánico y puede ser modificada por ley ordinaria.</li>
+                <li>C) Esa ley no puede ser modificada por ley ordinaria hasta que el Tribunal Constitucional se pronuncie sobre la constitucionalidad de esos preceptos.</li>
+                <li>D) Esa ley solo puede ser modificada por otra ley orgánica, incluso en los aspectos no reservados.</li>
+            </ul>
+            <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+            <div class="respuesta-oculta">
+                <p><strong>Respuesta correcta:</strong> C</p>
+                <p class="trampa"><strong>Trampa identificada:</strong> A es la interpretación procedimental; B es incorrecta porque la ley mantiene la forma orgánica; D es la concepción formal (rechazada por el TC). El TC ha desarrollado una "concepción material" que acepta una "prevalencia provisional" de la ley orgánica.</p>
+            </div>
+        </div>
+
+        <!-- Pregunta 3 -->
+        <div class="pregunta">
+            <div class="enunciado"><strong>Pregunta 3:</strong> ¿Cuál de los siguientes requisitos NO es exigible para la delegación legislativa en el decreto-legislativo?</div>
+            <ul class="opciones">
+                <li>A) La delegación debe otorgarse expresamente.</li>
+                <li>B) La delegación debe otorgarse para una materia y un plazo determinados.</li>
+                <li>C) La delegación puede subdelegarse en autoridades distintas del Gobierno.</li>
+                <li>D) La delegación debe otorgarse mediante una ley formal.</li>
+            </ul>
+            <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+            <div class="respuesta-oculta">
+                <p><strong>Respuesta correcta:</strong> C</p>
+                <p class="trampa"><strong>Trampa identificada:</strong> El art. 82.3 CE establece que "no se admite la subdelegación a autoridades distintas del Gobierno". Todas las demás opciones son requisitos exigibles.</p>
+            </div>
+        </div>
+
+        <!-- Pregunta 4 -->
+        <div class="pregunta">
+            <div class="enunciado"><strong>Pregunta 4:</strong> ¿Qué efecto produce la convalidación parlamentaria de un decreto-ley?</div>
+            <ul class="opciones">
+                <li>A) Convierte el decreto-ley en ley.</li>
+                <li>B) Transforma su eficacia de provisional a indefinida.</li>
+                <li>C) Lo dota de efectos retroactivos desde su publicación.</li>
+                <li>D) Le otorga rango de ley orgánica.</li>
+            </ul>
+            <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+            <div class="respuesta-oculta">
+                <p><strong>Respuesta correcta:</strong> B</p>
+                <p class="trampa"><strong>Trampa identificada:</strong> A es incorrecta porque "la convalidación transforma la eficacia del decreto-ley, no su naturaleza; no convierte al decreto-ley en ley". C es incorrecta porque no tiene efecto retroactivo per se. D es incorrecta porque la convalidación no cambia el rango.</p>
+            </div>
+        </div>
+
+        <!-- Pregunta 5 -->
+        <div class="pregunta">
+            <div class="enunciado"><strong>Pregunta 5:</strong> Según la doctrina del ultra vires, ¿qué ocurre cuando un decreto-legislativo se excede de los límites de la delegación legislativa?</div>
+            <ul class="opciones">
+                <li>A) La norma es nula de pleno derecho por inconstitucionalidad.</li>
+                <li>B) La norma conserva rango legal pero puede ser impugnada ante el Tribunal Constitucional.</li>
+                <li>C) La norma deja de tener rango legal y pasa a tener rango reglamentario.</li>
+                <li>D) La norma solo puede ser controlada por el Tribunal Supremo en casación.</li>
+            </ul>
+            <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+            <div class="respuesta-oculta">
+                <p><strong>Respuesta correcta:</strong> C</p>
+                <p class="trampa"><strong>Trampa identificada:</strong> Según el ultra vires, "la norma resultante deja de estar cubierta por esta; no es legislación delegada" y por tanto "no puede tener el rango legal propio de la legislación delegada, sino el rango propio de las disposiciones generales que el Gobierno está facultado para adoptar por sí mismo: rango reglamentario."</p>
+            </div>
+        </div>
+
+        <!-- Pregunta 6 -->
+        <div class="pregunta">
+            <div class="enunciado"><strong>Pregunta 6:</strong> ¿Cuál de los siguientes límites NO es aplicable al decreto-ley según el art. 86.1 CE?</div>
+            <ul class="opciones">
+                <li>A) No puede afectar al ordenamiento de las instituciones básicas del Estado.</li>
+                <li>B) No puede afectar a los derechos, deberes y libertades del Título I.</li>
+                <li>C) No puede regular el régimen de las Comunidades Autónomas.</li>
+                <li>D) No puede regular materias de estabilidad presupuestaria.</li>
+            </ul>
+            <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+            <div class="respuesta-oculta">
+                <p><strong>Respuesta correcta:</strong> D</p>
+                <p class="trampa"><strong>Trampa identificada:</strong> La estabilidad presupuestaria está en el art. 135 CE y se incluye en los límites materiales adicionales para el decreto-ley que se extraen del resto de disposiciones constitucionales (junto con reforma constitucional, presupuestos generales, Fondo de Compensación y autorización de tratados). No está en el listado del art. 86.1 CE.</p>
+            </div>
+        </div>
+
+        <!-- Pregunta 7 -->
+        <div class="pregunta">
+            <div class="enunciado"><strong>Pregunta 7:</strong> ¿Qué posición ocupan los tratados internacionales en el ordenamiento jurídico español?</div>
+            <ul class="opciones">
+                <li>A) Están por encima de la Constitución.</li>
+                <li>B) Están entre la Constitución y la ley.</li>
+                <li>C) Tienen el mismo rango que la ley.</li>
+                <li>D) Están por debajo de la ley.</li>
+            </ul>
+            <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+            <div class="respuesta-oculta">
+                <p><strong>Respuesta correcta:</strong> B</p>
+                <p class="trampa"><strong>Trampa identificada:</strong> "Los tratados internacionales ratificados y publicados oficialmente se sitúan entre la Constitución y la ley; por debajo de la Constitución [...] por encima de la ley." A es incorrecta porque no pueden contener disposiciones contrarias a la Constitución.</p>
+            </div>
+        </div>
+
+        <!-- Pregunta 8 -->
+        <div class="pregunta">
+            <div class="enunciado"><strong>Pregunta 8:</strong> Según el art. 288 TFUE, ¿cuál es la característica que distingue al reglamento de la directiva?</div>
+            <ul class="opciones">
+                <li>A) El reglamento es directamente aplicable en cada Estado miembro, mientras que la directiva requiere transposición.</li>
+                <li>B) El reglamento tiene alcance general, mientras que la directiva tiene alcance particular.</li>
+                <li>C) El reglamento obliga a los Estados miembros, mientras que la directiva obliga a los particulares.</li>
+                <li>D) El reglamento no necesita publicación, mientras que la directiva sí.</li>
+            </ul>
+            <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+            <div class="respuesta-oculta">
+                <p><strong>Respuesta correcta:</strong> A</p>
+                <p class="trampa"><strong>Trampa identificada:</strong> B es incorrecta porque la directiva también puede tener alcance general; C es incorrecta porque ambos obligan a los Estados; D es incorrecta porque ambos requieren publicación.</p>
+            </div>
+        </div>
+
+        <!-- Pregunta 9 -->
+        <div class="pregunta">
+            <div class="enunciado"><strong>Pregunta 9:</strong> ¿En qué relaciones se puede invocar el efecto directo de una directiva no transpuesta o mal transpuesta?</div>
+            <ul class="opciones">
+                <li>A) En relaciones horizontales entre particulares.</li>
+                <li>B) En relaciones verticales (particulares frente a poderes públicos).</li>
+                <li>C) En relaciones verticales inversas (Estado frente a particulares).</li>
+                <li>D) En todo tipo de relaciones, tanto verticales como horizontales.</li>
+            </ul>
+            <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+            <div class="respuesta-oculta">
+                <p><strong>Respuesta correcta:</strong> B</p>
+                <p class="trampa"><strong>Trampa identificada:</strong> El efecto directo de las directivas opera "en las relaciones verticales (entre particulares y poderes públicos)" pero "nunca frente a otros particulares, que no son responsables de la falta de transposición o la errónea transposición, y nunca tampoco por el Estado frente a los particulares."</p>
+            </div>
+        </div>
+
+        <!-- Pregunta 10 -->
+        <div class="pregunta">
+            <div class="enunciado"><strong>Pregunta 10:</strong> ¿Cuál es la razón principal por la que la costumbre tiene un espacio residual en el Derecho administrativo?</div>
+            <ul class="opciones">
+                <li>A) Porque el Derecho administrativo es de reciente creación.</li>
+                <li>B) Porque la costumbre no es una fuente reconocida en el Derecho administrativo.</li>
+                <li>C) Porque las entidades públicas no pueden fundamentar sus poderes en la costumbre, sino solo en la ley o reglamento.</li>
+                <li>D) Porque la costumbre siempre prevalece sobre la ley en Derecho administrativo.</li>
+            </ul>
+            <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+            <div class="respuesta-oculta">
+                <p><strong>Respuesta correcta:</strong> C</p>
+                <p class="trampa"><strong>Trampa identificada:</strong> B es incorrecta porque la costumbre sí es fuente supletoria; A es incorrecta porque no es la razón; D es incorrecta porque la costumbre rige "en defecto de Derecho escrito".</p>
+            </div>
+        </div>
+
+        <!-- Pregunta 11 -->
+        <div class="pregunta">
+            <div class="enunciado"><strong>Pregunta 11:</strong> Según la doctrina del Tribunal Constitucional, ¿cuál es la función de los "principios rectores de la política económica y social" (arts. 39-52 CE)?</div>
+            <ul class="opciones">
+                <li>A) Son aplicables directamente en defecto de ley.</li>
+                <li>B) Son principios generales del Derecho positivizados de rango constitucional.</li>
+                <li>C) Informan la legislación positiva pero solo pueden ser alegados de acuerdo con las leyes que los desarrollen.</li>
+                <li>D) Tienen la misma eficacia que los principios del art. 9.3 CE.</li>
+            </ul>
+            <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+            <div class="respuesta-oculta">
+                <p><strong>Respuesta correcta:</strong> C</p>
+                <p class="trampa"><strong>Trampa identificada:</strong> La opción correcta se basa en el art. 53.3 CE: "solo podrán ser alegados ante la Jurisdicción ordinaria de acuerdo con lo que dispongan las leyes que los desarrollen". A es incorrecta porque requieren ley; B y D son incorrectas porque tienen una lógica distinta.</p>
+            </div>
+        </div>
+
+        <!-- Pregunta 12 -->
+        <div class="pregunta">
+            <div class="enunciado"><strong>Pregunta 12:</strong> ¿Qué afirma el art. 1.6 CC sobre la jurisprudencia en el sistema de fuentes?</div>
+            <ul class="opciones">
+                <li>A) La jurisprudencia es fuente de Derecho con el mismo rango que la ley.</li>
+                <li>B) La jurisprudencia complementará el ordenamiento jurídico con la doctrina que, de modo reiterado, establezca el Tribunal Supremo.</li>
+                <li>C) La jurisprudencia prevalece sobre la ley en caso de conflicto.</li>
+                <li>D) La jurisprudencia solo se forma a través del recurso de casación.</li>
+            </ul>
+            <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+            <div class="respuesta-oculta">
+                <p><strong>Respuesta correcta:</strong> B</p>
+                <p class="trampa"><strong>Trampa identificada:</strong> A es incorrecta porque no se atribuye carácter de fuente de Derecho, sino complementaria; C es incorrecta porque la jurisprudencia no prevalece sobre la ley; D es incorrecta porque el art. 1.6 CC no limita la formación de jurisprudencia al recurso de casación.</p>
+            </div>
+        </div>
+
+        <!-- Pregunta 13 -->
+        <div class="pregunta">
+            <div class="enunciado"><strong>Pregunta 13:</strong> Según la actual regulación del recurso de casación contencioso-administrativo, ¿cuál es el criterio para que el Tribunal Supremo forme jurisprudencia?</div>
+            <ul class="opciones">
+                <li>A) La reiteración de doctrina en al menos tres sentencias.</li>
+                <li>B) La existencia de interés casacional objetivo para la formación de jurisprudencia.</li>
+                <li>C) La solicitud expresa del Ministerio Fiscal.</li>
+                <li>D) La gravedad del daño al interés general.</li>
+            </ul>
+            <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+            <div class="respuesta-oculta">
+                <p><strong>Respuesta correcta:</strong> B</p>
+                <p class="trampa"><strong>Trampa identificada:</strong> A es el criterio del art. 1.6 CC, pero para el recurso de casación actual ya no es exigible el requisito de la reiteración; C y D son criterios del antiguo recurso de casación en interés de ley.</p>
+            </div>
+        </div>
+
+        <!-- Pregunta 14 -->
+        <div class="pregunta">
+            <div class="enunciado"><strong>Pregunta 14:</strong> ¿Qué establece el art. 4 bis LOPJ sobre la aplicación del Derecho de la Unión Europea?</div>
+            <ul class="opciones">
+                <li>A) Los Jueces y Tribunales aplicarán el Derecho de la Unión Europea de conformidad con la jurisprudencia del Tribunal de Justicia de la Unión Europea.</li>
+                <li>B) Los Jueces y Tribunales pueden apartarse de la jurisprudencia del TJUE si consideran que vulnera la Constitución.</li>
+                <li>C) Los Jueces y Tribunales aplicarán el Derecho de la Unión Europea de conformidad con la jurisprudencia del Tribunal Supremo.</li>
+                <li>D) Los Jueces y Tribunales solo aplicarán el Derecho de la UE si ha sido transpuesto por ley.</li>
+            </ul>
+            <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+            <div class="respuesta-oculta">
+                <p><strong>Respuesta correcta:</strong> A</p>
+                <p class="trampa"><strong>Trampa identificada:</strong> B es incorrecta porque ningún poder público puede desconocer la primacía del Derecho de la UE; C es incorrecta porque el criterio es la jurisprudencia del TJUE; D es incorrecta porque el reglamento es directamente aplicable y el efecto directo de la directiva puede operar sin transposición.</p>
+            </div>
+        </div>
+
+        <!-- Pregunta 15 -->
+        <div class="pregunta">
+            <div class="enunciado"><strong>Pregunta 15:</strong> ¿Qué ocurre según el Tribunal Constitucional con el real decreto de declaración del estado de alarma?</div>
+            <ul class="opciones">
+                <li>A) Tiene naturaleza reglamentaria y su control corresponde a la Sala de lo Contencioso-Administrativo del Tribunal Supremo.</li>
+                <li>B) Tiene valor de ley y su control corresponde exclusivamente a la jurisdicción constitucional.</li>
+                <li>C) No produce efectos jurídicos hasta la convalidación del Congreso.</li>
+                <li>D) Es una norma de rango legal similar al decreto-ley.</li>
+            </ul>
+            <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+            <div class="respuesta-oculta">
+                <p><strong>Respuesta correcta:</strong> B</p>
+                <p class="trampa"><strong>Trampa identificada:</strong> A es la tesis que el TC rechazó; C es incorrecta porque el decreto despliega efectos desde su publicación; D es incorrecta porque el TC ha reconocido valor de ley pero no es similar al decreto-ley. Aunque la jurisprudencia no es convincente, el control corresponde a la jurisdicción constitucional.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- PREGUNTAS DE RESERVA -->
+    <div id="preguntas-reserva">
+        <h2>12. PREGUNTAS DE RESERVA <span class="reserva-label">Muy difícil</span></h2>
+
+        <!-- Reserva 1 -->
+        <div class="pregunta">
+            <div class="enunciado"><strong>Pregunta de reserva 1:</strong> El Tribunal Constitucional, al rechazar tanto la concepción formal como la procedimental de la ley orgánica, ha desarrollado una "concepción material". Según esta doctrina, en el caso de que una ley aprobada como orgánica incluya disposiciones no reservadas a ley orgánica sin la advertencia expresa del legislador, ¿qué criterio de solución de conflictos se aplica entre esa ley y una ley ordinaria posterior que regule la misma materia no reservada?</div>
+            <ul class="opciones">
+                <li>A) Se aplica el principio <em>lex posterior derogat priori</em>, por lo que la ley ordinaria posterior deroga los preceptos no reservados de la ley orgánica.</li>
+                <li>B) Se aplica la prevalencia de la ley orgánica sobre la ley ordinaria, porque la "forma orgánica" utilizada es indisponible y solo puede ser modificada por otra ley orgánica.</li>
+                <li>C) El aplicador del Derecho debe plantear una cuestión de inconstitucionalidad ante el Tribunal Constitucional para que este se pronuncie sobre el conflicto.</li>
+                <li>D) Se debe estar a la presunción de constitucionalidad de las leyes, pero la ley orgánica prevalece provisionalmente sobre la ley ordinaria hasta que el Tribunal Constitucional se pronuncie.</li>
+            </ul>
+            <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+            <div class="respuesta-oculta">
+                <p><strong>Respuesta correcta:</strong> D</p>
+                <p class="trampa"><strong>Trampa identificada:</strong> El TC considera que "no es posible desconocer la 'forma orgánica' de la que se haya revestido una ley" y "si dos disposiciones legales entran en conflicto, una incluida en una ley ordinaria y otra incluida en una ley orgánica [...] deberá prevalecer la regulación contenida en la ley orgánica". Esto supone una "prevalencia provisional (aunque de duración indeterminada) de la regulación contenida en una ley formalmente orgánica sobre la contenida en una ley ordinaria." El resultado contradice el punto de partida del TC y la tesis de la inexistencia de dos categorías distintas de ley.</p>
+            </div>
+        </div>
+
+        <!-- Reserva 2 -->
+        <div class="pregunta">
+            <div class="enunciado"><strong>Pregunta de reserva 2:</strong> La doctrina del <em>ultra vires</em> postula una naturaleza escindida o variable del decreto-legislativo. ¿Cuál de las siguientes afirmaciones describe correctamente la crítica que formula el manual a esta doctrina desde la perspectiva constitucional?</div>
+            <ul class="opciones">
+                <li>A) La doctrina del <em>ultra vires</em> es constitucionalmente coherente porque permite a los jueces ordinarios controlar el exceso de delegación, lo que refuerza la tutela judicial efectiva.</li>
+                <li>B) La doctrina del <em>ultra vires</em> es dogmáticamente coherente porque atribuye rango legal a la norma cuando se adecua a la delegación y rango reglamentario cuando no, lo que es propio de la naturaleza de las fuentes gubernamentales.</li>
+                <li>C) Sería constitucionalmente más coherente considerar que las disposiciones del Gobierno con valor de ley tienen este valor en su totalidad, con independencia de los vicios o irregularidades que les afecten, porque la doctrina del <em>ultra vires</em> no se predica respecto a ninguna otra fuente del Derecho.</li>
+                <li>D) La doctrina del <em>ultra vires</em> es constitucionalmente correcta porque el art. 82.6 CE ("sin perjuicio de la competencia propia de los Tribunales") fue diseñada expresamente para permitir el control de los decretos legislativos por la jurisdicción contencioso-administrativa.</li>
+            </ul>
+            <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+            <div class="respuesta-oculta">
+                <p><strong>Respuesta correcta:</strong> C</p>
+                <p class="trampa"><strong>Trampa identificada:</strong> El manual señala que la doctrina del <em>ultra vires</em> "no es dogmáticamente coherente. Postula la naturaleza escindida o variable de una fuente del Derecho, como es el decreto-legislativo, en función de su conformidad a distintos parámetros de validez. Tendrá rango legal si se adecua a la ley de delegación, pese a que vulnere una disposición constitucional; y tendrá rango reglamentario si no se adecua a la ley de delegación, pese a que ese constituya su único vicio. Esa naturaleza escindida o variable no se predica respecto a la otra norma del Gobierno con rango legal (el decreto-ley), ni respecto a ninguna otra fuente del Derecho." Aunque el legislador de 1998 zanjó la cuestión, persiste la discusión sobre su adecuación al modelo de justicia constitucional.</p>
+            </div>
+        </div>
+
+        <!-- Reserva 3 -->
+        <div class="pregunta">
+            <div class="enunciado"><strong>Pregunta de reserva 3:</strong> En el contexto del sistema de fuentes del Derecho administrativo, se ha señalado que "la costumbre no es una fuente idónea para precisar las conductas que son sancionables" (STC 26/1994). ¿Cuál de las siguientes afirmaciones explica mejor el fundamento de esta afirmación?</div>
+            <ul class="opciones">
+                <li>A) La costumbre carece de los elementos constitutivos (práctica duradera y <em>opinio iuris</em>) necesarios para ser considerada fuente de Derecho, por lo que no puede regular ninguna materia.</li>
+                <li>B) El art. 25.1 CE exige que los elementos esenciales de las conductas sancionables estén fijados por "legislación vigente", entendida como Derecho escrito (principalmente ley parlamentaria), lo que excluye la regulación por costumbre.</li>
+                <li>C) La costumbre puede regular conductas sancionables si existe una remisión legal expresa que así lo autorice, como ocurre en el ámbito local.</li>
+                <li>D) La costumbre no puede regular conductas sancionables porque el principio de seguridad jurídica (art. 9.3 CE) exige que todas las normas sancionadoras sean publicadas oficialmente.</li>
+            </ul>
+            <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+            <div class="respuesta-oculta">
+                <p><strong>Respuesta correcta:</strong> B</p>
+                <p class="trampa"><strong>Trampa identificada:</strong> La clave está en la interpretación del art. 25.1 CE. El manual señala que "cuando el art. 25.1 CE habla de 'legislación vigente', se refiere al Derecho escrito (y, principalmente, a una ley parlamentaria que fije los elementos esenciales). Como señaló el Tribunal Constitucional, la locución 'legislación vigente' del art. 25.1 CE implica que deben ser los representantes de los ciudadanos quienes se ocupen de tipificar las conductas sancionables, tanto en el ámbito penal como sancionador administrativo (STC 26/1994, FJ 5)." Aunque C es cierta en abstracto (existen remisiones legales a la costumbre), no se refiere a conductas sancionables. D es incorrecta porque el requisito de publicidad es para las normas (art. 9.3 CE), no específicamente para las sancionadoras.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Modo oscuro
+        const modoBtn = document.getElementById('modoBtn');
+        modoBtn.addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+            modoBtn.textContent = document.body.classList.contains('dark-mode') ? 'Modo claro' : 'Modo oscuro';
+        });
+
+        // Mostrar/ocultar respuesta en preguntas tipo test
+        function toggleRespuesta(btn) {
+            const oculta = btn.nextElementSibling;
+            if (oculta.classList.contains('visible')) {
+                oculta.classList.remove('visible');
+                btn.textContent = 'Mostrar respuesta';
+            } else {
+                oculta.classList.add('visible');
+                btn.textContent = 'Ocultar respuesta';
+            }
+        }
+    </script>
+
+</body>
+</html>

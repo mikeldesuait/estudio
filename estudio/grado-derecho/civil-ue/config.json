@@ -1,0 +1,11 @@
+{
+  "id": "civil-ue",
+  "nombre": "Civil Ue",
+  "codigo": "6602409-",
+  "creditos": 6,
+  "caracter": "OPTATIVAS",
+  "icon": "📘",
+  "temas": [
+    { "id": "tema1", "titulo": "Tema 1 - Introducción" }
+  ]
+}

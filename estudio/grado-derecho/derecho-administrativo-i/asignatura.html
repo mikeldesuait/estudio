@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Derecho Administrativo I</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <link rel="stylesheet" href="/css/themes.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 16px 0; }
+        .info-card {
+            background: var(--bg-card); border-radius: 10px; padding: 16px 20px;
+            border: 1px solid var(--border); display: flex; align-items: center; gap: 14px;
+            transition: all 0.3s ease; text-decoration: none; color: var(--text-primary); cursor: pointer;
+        }
+        .info-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); border-color: var(--accent); }
+        .info-card .icon { font-size: 28px; flex-shrink: 0; }
+        .info-card .info { display: flex; flex-direction: column; }
+        .info-card .info .titulo { font-weight: 600; font-size: 15px; }
+        .info-card .info .subtitulo { font-size: 12px; color: var(--text-secondary); }
+        .badge-pdf { background: #ef4444; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 600; margin-left: 6px; }
+        .tema-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; transition: var(--transition); }
+        .tema-item:hover { background: var(--bg-hover); border-color: var(--accent); }
+        .tema-info { display: flex; align-items: center; gap: 12px; }
+        .tema-numero { background: var(--bg-accent); color: var(--accent); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+        .tema-titulo { font-weight: 500; }
+        .tema-progreso { display: flex; align-items: center; gap: 12px; color: var(--text-secondary); }
+        .temas-list { display: flex; flex-direction: column; gap: 8px; }
+        .btn-volver { background: transparent; border: 1px solid var(--border); color: var(--text-secondary); padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: var(--transition); display: inline-flex; align-items: center; gap: 6px; }
+        .btn-volver:hover { border-color: var(--accent); color: var(--accent); }
+        .loading-temas { text-align: center; padding: 30px; color: var(--text-secondary); }
+        .loading-temas i { font-size: 24px; display: block; margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container" style="padding-top:80px; max-width:900px; margin:0 auto;">
+        <div class="area-header">
+            <button class="btn-volver" onclick="window.location.href='/?nivel=asignaturas&area=grado-derecho&curso=1&semestre=2'">← Volver a las asignaturas</button>
+            <h1>🏢 Derecho Administrativo I</h1>
+            <p style="color:var(--text-secondary);">Código: 66901029 | 6 ECTS</p>
+        </div>
+        
+        <!-- ===== GUÍA Y PROGRAMA ===== -->
+        <div class="card">
+            <h2>📚 Materiales de la asignatura</h2>
+            <div class="info-grid">
+                <a href="/estudio/grado-derecho/derecho-administrativo-i/guia/guia.pdf" class="info-card" target="_blank">
+                    <span class="icon">📘</span>
+                    <div class="info">
+                        <span class="titulo">Guía de la asignatura</span>
+                        <span class="subtitulo">PDF <span class="badge-pdf">PDF</span></span>
+                    </div>
+                </a>
+                <a href="/estudio/grado-derecho/derecho-administrativo-i/programa/programa.pdf" class="info-card" target="_blank">
+                    <span class="icon">📋</span>
+                    <div class="info">
+                        <span class="titulo">Programa de la asignatura</span>
+                        <span class="subtitulo">PDF <span class="badge-pdf">PDF</span></span>
+                    </div>
+                </a>
+            </div>
+            <div style="font-size:13px; color:var(--text-secondary); margin-top:8px;">
+                <i class="fas fa-info-circle"></i> Haz clic en las tarjetas para abrir los PDFs en una nueva pestaña.
+            </div>
+        </div>
+        
+        <!-- ===== TEMAS ===== -->
+        <div class="card">
+            <h2>📑 Temas</h2>
+            <div id="temasContainer">
+                <div class="loading-temas">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    Cargando temas...
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Cargar los temas desde config.json
+        fetch('/estudio/grado-derecho/derecho-administrativo-i/config.json')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('temasContainer');
+                const temas = data.temas || [];
+                
+                if (temas.length === 0) {
+                    container.innerHTML = '<p style="color:var(--text-secondary);">No hay temas cargados.</p>';
+                    return;
+                }
+                
+                let html = '<div class="temas-list">';
+                temas.forEach((t, index) => {
+                    const temaId = t.id || 'tema' + (index + 1);
+                    const numTema = index + 1;
+                    const titulo = t.titulo || 'Tema ' + numTema;
+                    
+                    html += `
+                        <div class="tema-item" onclick="window.location.href='temas/${temaId}/tema.html'">
+                            <div class="tema-info">
+                                <span class="tema-numero">${numTema}</span>
+                                <span class="tema-titulo">${titulo}</span>
+                            </div>
+                            <div class="tema-progreso">
+                                <span id="progreso_${temaId}">0%</span>
+                                <i class="fas fa-chevron-right"></i>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+                
+                // Cargar progreso de cada tema
+                temas.forEach((t, index) => {
+                    const temaId = t.id || 'tema' + (index + 1);
+                    const key = 'progreso_tema_derecho-admin-' + temaId;
+                    const progreso = localStorage.getItem(key);
+                    if (progreso) {
+                        const el = document.getElementById('progreso_' + temaId);
+                        if (el) el.textContent = progreso + '%';
+                    }
+                });
+            })
+            .catch(error => {
+                document.getElementById('temasContainer').innerHTML = `
+                    <p style="color:var(--text-secondary);">Error al cargar los temas: ${error.message}</p>
+                `;
+                console.error('Error cargando temas:', error);
+            });
+    </script>
+</body>
+</html>

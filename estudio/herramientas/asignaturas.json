@@ -1,0 +1,16 @@
+{
+  "asignaturas": [
+    {
+      "id": "creador-prompts",
+      "nombre": "Creador de Prompts",
+      "codigo": "🔧",
+      "creditos": 0,
+      "caracter": "HERRAMIENTA",
+      "icon": "⚙️",
+      "curso": "0",
+      "semestre": "0",
+      "matriculada": false,
+      "path": "creador-prompts/"
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "constitucional-ii",
+  "nombre": "Constitucional Ii",
+  "codigo": "66022026",
+  "creditos": 5,
+  "caracter": "OBLIGATORIAS",
+  "icon": "📋",
+  "temas": [
+    { "id": "tema1", "titulo": "Tema 1 - Introducción" }
+  ]
+}

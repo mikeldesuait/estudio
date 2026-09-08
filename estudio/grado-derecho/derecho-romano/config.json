@@ -1,0 +1,11 @@
+{
+  "id": "derecho-romano",
+  "nombre": "Derecho Romano",
+  "codigo": "66021067",
+  "creditos": 6,
+  "caracter": "FORMACIÓN BÁSICA",
+  "icon": "🏛️",
+  "temas": [
+    { "id": "tema1", "titulo": "Tema 1 - Introducción" }
+  ]
+}

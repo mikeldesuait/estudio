@@ -1,0 +1,3701 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Cisco Exam Trainer</title>
+
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#121a33;
+      --text:#e8ecff;
+      --muted:#aab3e6;
+      --accent:#6ea8fe;
+      --ok:#38d996;
+      --bad:#ff5c77;
+      --warn:#ffd166;
+      --line:#253057;
+      --radius:14px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+    }
+
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background:
+        radial-gradient(1200px 600px at 30% -10%, rgba(110,168,254,.18), transparent 60%),
+        radial-gradient(900px 450px at 90% 10%, rgba(56,217,150,.10), transparent 60%),
+        var(--bg);
+    }
+
+    header{
+      position:sticky; top:0; z-index:10;
+      background: rgba(11,16,32,.92);
+      border-bottom:1px solid var(--line);
+      backdrop-filter: blur(10px);
+    }
+
+    .wrap{ max-width:1050px; margin:0 auto; padding:16px; }
+    .row{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+    .spacer{ flex:1; }
+
+    .card{
+      background: rgba(18,26,51,.75);
+      border:1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+    .hd{
+      padding:14px;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
+    .bd{ padding:14px; }
+
+    button{
+      border:1px solid var(--line);
+      background: rgba(18,26,51,.9);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:700;
+    }
+    button:hover{ border-color: rgba(110,168,254,.55); }
+    button:disabled{ opacity:.5; cursor:not-allowed; }
+
+    .accent{ border-color: rgba(110,168,254,.7); }
+    .ghost{ background: transparent; box-shadow:none; }
+    .danger{ border-color: rgba(255,92,119,.7); }
+
+    .grid{ display:grid; gap:14px; margin-top:16px; grid-template-columns: 1fr; }
+    @media(min-width:900px){ .grid{ grid-template-columns: 2fr 1fr; } }
+
+    .tag{ font-family:var(--mono); font-size:11px; color:var(--muted); }
+    .qtitle{ font-weight:900; margin:0 0 8px; font-size:18px; }
+    .qtext{ white-space:pre-wrap; line-height:1.35; margin:0 0 12px; font-size:16px; }
+
+    .opts{ display:grid; gap:10px; }
+    .opt{
+      display:flex; gap:10px; align-items:flex-start;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background: rgba(15,22,48,.65);
+      cursor:pointer;
+    }
+    .opt:hover{ border-color: rgba(110,168,254,.55); }
+    .opt input{ margin-top:3px; }
+
+    /* Corrección */
+    .opt.correct{ border-color: rgba(56,217,150,.85); background: rgba(56,217,150,.12); }
+    .opt.wrong{ border-color: rgba(255,92,119,.85); background: rgba(255,92,119,.10); }
+
+    .note{ font-size:12px; color:var(--muted); line-height:1.35; margin-top:12px; }
+    .okText{ color:var(--ok); font-weight:900; }
+    .badText{ color:var(--bad); font-weight:900; }
+    .warnText{ color:var(--warn); font-weight:900; }
+
+    .bar{
+      height:10px;
+      border-radius:999px;
+      overflow:hidden;
+      border:1px solid var(--line);
+      background: rgba(15,22,48,.95);
+    }
+    .bar > div{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, rgba(110,168,254,.95), rgba(56,217,150,.85));
+    }
+
+    .kpi{ display:flex; gap:10px; flex-wrap:wrap; }
+    .kpi .box{
+      min-width:120px;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background: rgba(15,22,48,.75);
+    }
+    .kpi .t{ font-size:11px; color:var(--muted); }
+    .kpi .v{ font-size:18px; font-weight:900; margin-top:4px; }
+
+    .toast{
+      position:fixed; left:50%; transform:translateX(-50%);
+      bottom:14px; opacity:0; pointer-events:none; transition:.2s;
+      background: rgba(18,26,51,.92);
+      border:1px solid var(--line);
+      padding:10px 12px;
+      border-radius:999px;
+      box-shadow: var(--shadow);
+      font-size:13px;
+    }
+    .toast.show{ opacity:1; }
+
+    /* Media (imagen en pregunta) */
+    .qmedia{
+      margin: 10px 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      overflow: hidden;
+      background: rgba(15,22,48,.55);
+    }
+  .qmedia{
+  margin: 10px 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  overflow: hidden;
+  background: rgba(15,22,48,.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 280px; /* 🔥 Altura fija para todas */
+}
+
+.qmedia img{
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* No deforma */
+}
+    .qmedia .cap{
+      padding: 10px 12px;
+      font-size: 12px;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+    }
+
+    /* DROP ordenar (sin drag: ↑ ↓) */
+    .dropList{ display:grid; gap:10px; margin-top:10px; }
+    .dropRow{
+      display:grid;
+      grid-template-columns: 42px 1fr 92px;
+      gap:10px;
+      align-items:center;
+      padding:12px 12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background: rgba(15,22,48,.65);
+    }
+    .dropRow.correct{ border-color: rgba(56,217,150,.85); background: rgba(56,217,150,.10); }
+    .dropRow.wrong{ border-color: rgba(255,92,119,.85); background: rgba(255,92,119,.10); }
+
+    .dropNum{
+      font-family: var(--mono);
+      text-align:center;
+      padding:8px 0;
+      border-radius:10px;
+      border:1px solid var(--line);
+      background: rgba(18,26,51,.75);
+      color: var(--muted);
+    }
+    .dropText{ line-height:1.25; }
+    .dropBtns{ display:flex; gap:8px; justify-content:flex-end; }
+    .mini{ padding:8px 10px; border-radius:10px; }
+
+    /* MATCH (emparejar) — iPad friendly (tap) + drag si existe */
+    .matchWrap{ display:grid; gap:14px; }
+    @media(min-width:900px){ .matchWrap{ grid-template-columns:1fr 1fr; } }
+    .matchColTitle{ font-weight:900; margin:6px 0 8px; color:var(--muted); font-size:12px; }
+
+    .matchItem{
+      user-select:none;
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--line);
+      background: rgba(15,22,48,.65);
+    }
+    .matchItem.draggable{ cursor:grab; }
+    .matchItem.selected{ border-color: rgba(110,168,254,.85); box-shadow: 0 0 0 2px rgba(110,168,254,.15) inset; }
+
+    .matchZone{
+      min-height:64px;
+      padding:12px;
+      border-radius:14px;
+      border:1px dashed rgba(37,48,87,.9);
+      background: rgba(15,22,48,.45);
+    }
+    .matchZone.over{ border-color: rgba(110,168,254,.85); }
+    .matchZone .zText{ color:var(--text); opacity:.95; }
+    .matchZone .assign{
+      margin-top:10px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 10px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background: rgba(18,26,51,.75);
+      font-family: var(--mono);
+      font-size:12px;
+      color:var(--muted);
+    }
+    .matchZone .x{
+      border:none;
+      background: transparent;
+      color: var(--muted);
+      cursor:pointer;
+      font-weight:900;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="wrap">
+      <div class="row">
+        <div>
+          <div style="font-weight:900">Cisco Exam Trainer</div>
+          <div class="tag">100 preguntas</div>
+        </div>
+
+        <div class="spacer"></div>
+
+        <div class="tag" id="pillMode">Modo: Examen</div>
+
+        <button class="ghost" id="btnShuffle">Mezclar</button>
+        <button class="ghost" id="btnReset">Reset</button>
+        <button class="accent" id="btnFinish">Corregir</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="grid">
+      <section class="card">
+        <div class="hd">
+          <div style="flex:1">
+            <div class="tag" id="qIndex">Pregunta 1 / 1</div>
+            <div class="bar"><div id="progress"></div></div>
+          </div>
+          <div class="row">
+            <button id="btnPrev">◀</button>
+            <button id="btnNext">▶</button>
+          </div>
+        </div>
+        <div class="bd" id="questionHost"></div>
+      </section>
+
+      <aside class="card">
+        <div class="hd">
+          <div style="font-weight:900">Panel</div>
+          <div class="tag" id="dbInfo"></div>
+        </div>
+        <div class="bd">
+          <div class="kpi">
+            <div class="box"><div class="t">Respondidas</div><div class="v" id="kAnswered">0</div></div>
+            <div class="box"><div class="t">Correctas</div><div class="v" id="kCorrect">0</div></div>
+            <div class="box"><div class="t">Puntuación</div><div class="v" id="kScore">0%</div></div>
+          </div>
+
+          <div style="height:1px;background:var(--line);margin:14px 0"></div>
+
+          <div class="row">
+            <button class="ghost" id="btnMode">Cambiar a modo Estudio</button>
+            <button class="danger" id="btnClear">Borrar progreso</button>
+          </div>
+
+          <div style="height:1px;background:var(--line);margin:14px 0"></div>
+
+          <div class="note">
+            <b>Examen:</b> no se ve corrección hasta pulsar <b>Corregir</b>.<br/>
+            <b>Estudio:</b> se ve corrección al completar la respuesta.<br/>
+            <b>Sin explicación:</b> solo “Correcto/Incorrecto”.<br/>
+            <b>DROP:</b> nunca muestra el orden correcto.<br/>
+            <b>MATCH:</b> iPad: toca izquierda y luego toca derecha.
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* =========================
+       CONFIG
+    ========================== */
+    const AUTO_NEXT_EXAM = true;
+
+    /* =========================
+       BANCO DE PREGUNTAS
+    ========================== */
+
+    const BANK_MCQ = [
+{
+  id: "mcq-switch-role-001",
+  type: "mcq",
+  q: `What is the primary role of a switch in a local area network?`,
+  options: {
+    A: `to route data packets between different networks`,
+    B: `to encrypt data transmissions for security`,
+    C: `to divide the network into separate collision domains`,
+    D: `to provide wireless connectivity to LAN devices`
+  },
+  ok: "C",
+  exp_en: `In a local area network (LAN), the primary function of a switch is to operate at Layer 2 (Data Link Layer) of the OSI model. Switches use MAC addresses to forward frames to the appropriate destination ports.
+
+This targeted forwarding mechanism divides the network into separate collision domains for each switch port. By isolating collision domains, switches significantly reduce the chance of collisions, enhancing network performance and efficiency.
+
+Unlike hubs, which forward all traffic to all ports (creating a single collision domain), switches forward traffic only to the correct port, allowing multiple simultaneous conversations without interference.
+
+Routers operate at Layer 3 (Network Layer) and route packets between different networks, not within the same LAN. Wireless connectivity is provided by wireless access points (WAPs), and encryption is typically handled by security protocols or dedicated security devices, not by switches directly.`,
+  exp_es: `En una red de área local (LAN), la función principal de un switch es operar en la Capa 2 (Enlace de Datos) del modelo OSI. El switch usa direcciones MAC para reenviar tramas únicamente al puerto de destino correcto.
+
+Ese reenvío selectivo divide la red en dominios de colisión separados por cada puerto del switch. Al aislar los dominios de colisión, se reducen drásticamente las colisiones y mejora el rendimiento y la eficiencia.
+
+A diferencia de un hub (que replica el tráfico a todos los puertos y crea un único dominio de colisión), el switch envía el tráfico solo donde corresponde, permitiendo varias comunicaciones simultáneas sin interferencias.
+
+Los routers trabajan en Capa 3 (Red) y enrutan paquetes entre redes distintas, no dentro de la misma LAN. La conectividad inalámbrica la dan los puntos de acceso (WAP) y el cifrado lo aportan protocolos/dispositivos de seguridad, no el switch por sí mismo.`
+},
+
+
+{
+  id: "mcq-vlan-access-layer-002",
+  type: "mcq",
+  q: `Which Layer 2 technology extends to access layer devices, allowing individual switch ports to be assigned for network and traffic management in an enterprise network?`,
+  options: {
+    A: `BGP`,
+    B: `VLANs`,
+    C: `OSPF`,
+    D: `MPLS`
+  },
+  ok: "B",
+  exp_en: `VLANs (Virtual LANs) are a Layer 2 technology that logically segments a LAN into separate broadcast domains. They allow individual switch ports—especially at the access layer—to be assigned to specific VLANs, enabling traffic separation, simpler management, and improved security. BGP and OSPF are Layer 3 routing protocols, and MPLS is mainly used for provider-style forwarding, not basic access-layer port segmentation.`,
+  exp_es: `Las VLAN (Virtual LAN) son una tecnología de Capa 2 que segmenta lógicamente la LAN en dominios de broadcast separados. Permiten asignar puertos concretos del switch—sobre todo en la capa de acceso—a una VLAN específica para separar tráfico, simplificar la gestión y mejorar la seguridad. BGP y OSPF son protocolos de enrutamiento de Capa 3, y MPLS se usa principalmente como técnica de conmutación/encaminamiento en redes de proveedor, no para segmentar puertos de acceso en una LAN.`
+},
+
+
+
+     {
+  id: "mcq-speed-mismatch-004",
+  type: "mcq",
+  q: `Which scenario would result in a speed mismatch when configuring Ethernet devices with different speed settings?`,
+  options: {
+    A: `One end is manually set to 1 Gbps, and the other end is manually set to 100 Mbps`,
+    B: `Both ends are manually set to the same speed`,
+    C: `One end is manually set to 100 Mbps, and the other end is set to auto-negotiation`,
+    D: `Both ends are set to auto-negotiation and fail, reverting to their lowest speeds`
+  },
+  ok: "A",
+  exp_en: `A speed mismatch occurs when two connected Ethernet devices are configured to operate at different speeds. 
+
+In option A, one device is hard-coded to 1 Gbps and the other to 100 Mbps. Since both ends are manually set to different speeds, they cannot negotiate a common value, resulting in a link failure or instability.
+
+In option B, both ends use the same manual speed, so communication works correctly. 
+
+Option C may cause a duplex mismatch rather than a speed mismatch, because the auto-negotiating side may fall back to half-duplex. 
+
+Option D usually results in devices reverting to their lowest common speed, reducing performance but not causing a true speed mismatch.`,
+  exp_es: `Un speed mismatch ocurre cuando dos dispositivos Ethernet conectados están configurados para trabajar a velocidades diferentes.
+
+En la opción A, un extremo está fijado manualmente a 1 Gbps y el otro a 100 Mbps. Al estar configurados manualmente a velocidades distintas, no pueden negociar una velocidad común, lo que provoca fallo o inestabilidad del enlace.
+
+En la opción B, ambos extremos están configurados a la misma velocidad, por lo que la comunicación es correcta.
+
+La opción C suele provocar un duplex mismatch más que un speed mismatch, ya que el extremo en auto-negociación puede degradarse a half-duplex.
+
+En la opción D, si falla la auto-negociación, normalmente ambos dispositivos bajan a su velocidad común más baja, reduciendo rendimiento pero sin generar un verdadero speed mismatch.`
+},
+
+
+
+{
+  id: "mcq-osi-layer-005",
+  type: "mcq",
+  q: `Which layer of the OSI model provides error detection and defines how access to the media is controlled?`,
+  options: {
+    A: `Presentation layer`,
+    B: `Physical layer`,
+    C: `Network layer`,
+    D: `Data link layer`
+  },
+  ok: "D",
+  exp_en: `The Data Link Layer (Layer 2) of the OSI model is responsible for node-to-node data transfer and plays a key role in error detection and media access control.
+
+It is divided into two sublayers: Logical Link Control (LLC) and Media Access Control (MAC). The LLC sublayer manages frame synchronization, flow control, and error checking. The MAC sublayer controls how devices gain access to the transmission medium and when they are allowed to send data.
+
+Together, these mechanisms ensure reliable frame delivery across a local network and help prevent collisions by managing how devices share the physical medium.`,
+  exp_es: `La Capa de Enlace de Datos (Layer 2) del modelo OSI es responsable de la comunicación nodo a nodo y desempeña un papel fundamental en la detección de errores y el control de acceso al medio.
+
+Se divide en dos subcapas: Logical Link Control (LLC) y Media Access Control (MAC). La subcapa LLC gestiona la sincronización de tramas, el control de flujo y la detección de errores. La subcapa MAC controla cómo y cuándo los dispositivos pueden acceder al medio físico para transmitir datos.
+
+En conjunto, estas funciones garantizan una transmisión fiable dentro de la red local y regulan el acceso al medio para evitar colisiones y asegurar una comunicación ordenada.`
+},
+
+
+{
+  id:"mcq-subnet-mask-008",
+  type:"mcq",
+  q:`What is the purpose of a subnet mask?`,
+  options:{
+    A:`Distinguishes the network and host segments`,
+    B:`Provides encryption for network traffic`,
+    C:`Determines the next-hop router`,
+    D:`Aids in route prioritization`
+  },
+  ok:"A",
+
+  exp_en:`A subnet mask is a 32-bit value used in IP networking to divide an IP address into two parts: the network portion and the host portion. This separation is essential for proper routing and IP address management.
+
+The subnet mask works together with the IP address to determine which bits represent the network and which bits identify the individual device within that network. This allows routers and hosts to determine whether a destination is local or remote.
+
+For example, in the address 192.168.1.10 with a subnet mask of 255.255.255.0, the first three octets (192.168.1) identify the network, and the last octet (10) identifies the specific host.
+
+Subnet masks do not provide encryption, determine next-hop routers directly, or prioritize routes.`,
+
+  exp_es:`Una máscara de subred es un valor de 32 bits utilizado en redes IP para dividir una dirección IP en dos partes: la porción de red y la porción de host. Esta separación es fundamental para el enrutamiento correcto y la gestión eficiente de direcciones IP.
+
+La máscara trabaja junto con la dirección IP para identificar qué bits pertenecen a la red y cuáles identifican al dispositivo dentro de esa red. Esto permite determinar si el destino está en la misma red local o en una red remota.
+
+Por ejemplo, en la dirección 192.168.1.10 con máscara 255.255.255.0, los tres primeros octetos (192.168.1) representan la red y el último octeto (10) identifica al host.
+
+La máscara de subred no cifra el tráfico, no determina directamente el siguiente salto (next-hop) ni establece prioridades de rutas.`
+},
+
+
+{
+  id:"mcq-crossover-cable-011",
+  type:"mcq",
+  q:`When should a crossover UTP cable be used instead of a straight-through cable when connecting network devices?`,
+
+  options:{
+    A:`To connect electrically like devices`,
+    B:`To connect a PC to a wireless access point`,
+    C:`To connect a switch to a router`,
+    D:`To connect electrically unlike devices`
+  },
+
+  ok:"A",
+
+  exp_en:`Answer: A
+
+A crossover UTP cable is used to connect electrically like devices directly to each other. Examples include switch-to-switch, router-to-router, and PC-to-PC connections.
+
+The crossover cable swaps the transmit and receive pairs so that both devices can properly communicate without an intermediate device.
+
+Straight-through cables are used to connect unlike devices, such as a PC to a switch or a router to a switch.`,
+
+  exp_es:`Respuesta: A
+
+Un cable UTP cruzado (crossover) se utiliza para conectar directamente dispositivos eléctricamente iguales, como switch a switch, router a router o PC a PC.
+
+El cable cruzado intercambia los pares de transmisión y recepción para permitir la comunicación correcta entre dispositivos similares sin necesidad de un dispositivo intermedio.
+
+Los cables directos (straight-through) se emplean para conectar dispositivos distintos, como PC a switch o router a switch.`
+},
+
+
+{
+  id:"mcq-subnet-bits-012",
+  type:"mcq",
+  q:`How many bits are borrowed from the default host portion of the address to create subnets in a Class B network with a subnet mask 255.255.255.0?`,
+
+  options:{
+    A:`3 bits`,
+    B:`5 bits`,
+    C:`3 bits`,
+    D:`8 bits`
+  },
+
+  ok:"D",
+
+  exp_en:`Answer: D
+
+In a Class B network, the default subnet mask is 255.255.0.0. This means:
+
+• 16 bits are used for the network portion  
+• 16 bits are used for the host portion  
+
+When the subnet mask changes to 255.255.255.0, the network portion increases to 24 bits and the host portion decreases to 8 bits.
+
+This means 8 bits have been borrowed from the original 16-bit host portion to create subnets.
+
+Borrowing host bits allows the original network to be divided into multiple smaller subnetworks, improving scalability, organization, and security.`,
+
+  exp_es:`Respuesta: D
+
+En una red Clase B, la máscara por defecto es 255.255.0.0. Esto implica:
+
+• 16 bits para la parte de red  
+• 16 bits para la parte de host  
+
+Al cambiar la máscara a 255.255.255.0, la parte de red pasa a tener 24 bits y la parte de host se reduce a 8 bits.
+
+Esto significa que se han tomado prestados 8 bits de la porción original de host para crear subredes.
+
+Tomar bits del host permite dividir la red original en múltiples subredes más pequeñas, mejorando la organización, la escalabilidad y la seguridad.`
+
+},
+
+
+{
+  id:"mcq-access-layer-function-013",
+  type:"mcq",
+  q:`What is the function of an access layer device?`,
+
+  options:{
+    A:`Provides high-speed data transport between buildings or different parts of the campus`,
+    B:`Serves as the entry point for end-user devices to connect to the network`,
+    C:`Provides secure external access to internal network components`,
+    D:`Connects remote offices to the main corporate network`
+  },
+
+  ok:"B",
+
+  exp_en:`Answer: B
+
+In the hierarchical network design model, the access layer is the first layer and serves as the entry point for end-user devices to connect to the network.
+
+This layer connects user devices such as PCs, IP phones, wireless access points, printers, and scanners to the network infrastructure.
+
+The access layer also enforces security policies and provides services such as VLAN membership, port security, and Quality of Service (QoS).
+
+Options A, C, and D describe functions typically associated with the core layer, distribution layer, or WAN connectivity rather than the access layer.`,
+
+  exp_es:`Respuesta: B
+
+En el modelo jerárquico de diseño de redes, la capa de acceso es la primera capa y actúa como punto de entrada para que los dispositivos de usuario final se conecten a la red.
+
+Esta capa conecta equipos como PCs, teléfonos IP, puntos de acceso inalámbricos, impresoras y escáneres a la infraestructura de red.
+
+Además, la capa de acceso aplica políticas de seguridad y ofrece servicios como asignación de VLAN, seguridad de puertos y Calidad de Servicio (QoS).
+
+Las opciones A, C y D corresponden a funciones propias de la capa de núcleo, la capa de distribución o de conectividad WAN, no de la capa de acceso.`
+
+},
+
+
+{
+  id:"mcq-wireless-bsa-014",
+  type:"mcq",
+  q:`Which term describes the physical range of radio frequency coverage provided by an access point in a wireless topology?`,
+
+  options:{
+    A:`Service Set Identifier (SSID)`,
+    B:`Basic Service Area (BSA)`,
+    C:`Wireless LAN (WLAN)`,
+    D:`Wireless LAN Controller (WLC)`
+  },
+
+  ok:"B",
+
+  exp_en:`Answer: B
+
+In wireless networking, the Basic Service Area (BSA) refers to the physical area of radio frequency coverage provided by an access point (AP) in a Basic Service Set (BSS).
+
+The BSA defines the coverage area where wireless clients can connect to the network through the AP. The size and shape of a BSA depend on factors such as transmit power, antenna type, and the surrounding physical environment.
+
+Option A (SSID) is the network name broadcast by the access point. Option C (WLAN) refers to the overall wireless network. Option D (WLC) is a controller device used to manage multiple access points.`,
+
+  exp_es:`Respuesta: B
+
+En redes inalámbricas, el Basic Service Area (BSA) es el área física de cobertura de radiofrecuencia proporcionada por un punto de acceso (AP) dentro de un Basic Service Set (BSS).
+
+El BSA define la zona donde los clientes inalámbricos pueden conectarse a la red. Su tamaño y forma dependen de factores como la potencia de transmisión, el tipo de antena y el entorno físico.
+
+La opción A (SSID) es el nombre de la red. La opción C (WLAN) se refiere a la red inalámbrica completa. La opción D (WLC) es el dispositivo que administra múltiples puntos de acceso.`
+},
+
+
+{
+  id:"mcq-cisco-8000-series-016",
+  type:"mcq",
+
+  q:`Which deployment scenarios are Cisco 8000 Series routers primarily designed for?`,
+
+  options:{
+    A:`remote branch offices and retail locations`,
+    B:`service provider and web-scale networks`,
+    C:`small business and home office networks`,
+    D:`campus LAN access and distribution layers`
+  },
+
+  ok:"B",
+
+  exp_en:`Answer: B
+
+Cisco 8000 Series routers are designed primarily for service provider and web-scale networks. They are high-performance routing platforms built to handle massive bandwidth requirements in large-scale environments such as ISP cores, hyperscale data centers, and cloud infrastructures.
+
+These routers use Cisco Silicon One ASICs to deliver terabit-scale throughput, advanced telemetry, and high scalability. They are commonly deployed in service provider core networks, data center interconnect (DCI), and large cloud environments.
+
+Remote branches typically use ISR or ASR 1000/1100 Series routers. Small business environments use Cisco RV or Meraki MX devices. Campus LAN access and distribution layers generally rely on Catalyst switches rather than high-end core routing platforms.`,
+
+  exp_es:`Respuesta: B
+
+Los routers Cisco 8000 Series están diseñados principalmente para entornos de proveedores de servicios y redes web-scale. Son plataformas de alto rendimiento preparadas para manejar grandes volúmenes de tráfico en infraestructuras de gran escala como núcleos de ISP, centros de datos de hiperescala y entornos cloud.
+
+Utilizan ASICs Cisco Silicon One para ofrecer rendimiento a nivel de terabits, telemetría avanzada y alta escalabilidad. Se implementan comúnmente en el core de proveedores, interconexión de centros de datos (DCI) y grandes despliegues en la nube.
+
+Las sucursales suelen utilizar routers ISR o ASR 1000/1100. Las pequeñas empresas usan Cisco RV o Meraki MX. Las capas de acceso y distribución de campus utilizan normalmente switches Catalyst, no routers core de alto rendimiento.`
+},
+
+
+{
+  id:"mcq-catalyst-core-distribution-018",
+  type:"mcq",
+
+  q:`Which Cisco switch series is designed to handle the combined responsibilities of core and distribution layers in a converged architecture?`,
+
+  options:{
+    A:`Meraki MS400 Series`,
+    B:`Catalyst 6500 E-Series`,
+    C:`Catalyst 1300 Series`,
+    D:`Catalyst 9000 Series`
+  },
+
+  ok:"D",
+
+  exp_en:`Answer: D
+
+The Cisco Catalyst 9000 Series is designed to support modern enterprise converged architectures by integrating core and distribution layer functionalities.
+
+Models such as the Catalyst 9500 and 9600 are optimized for high-performance routing and switching at the core and distribution layers. They provide high throughput, advanced security features, automation capabilities, and support for Software-Defined Access (SD-Access).
+
+Meraki MS400 is cloud-managed aggregation-focused and not built for core responsibilities. Catalyst 6500 E-Series is considered legacy hardware. Catalyst 1300 Series is intended for small to medium business environments rather than enterprise core deployments.`,
+
+  exp_es:`Respuesta: D
+
+La serie Cisco Catalyst 9000 está diseñada para soportar arquitecturas empresariales convergentes, integrando funciones de las capas de núcleo (core) y distribución.
+
+Modelos como Catalyst 9500 y 9600 están optimizados para alto rendimiento en core y distribución, ofreciendo gran capacidad de procesamiento, seguridad avanzada, automatización y soporte para Software-Defined Access (SD-Access).
+
+La serie Meraki MS400 está orientada a agregación gestionada en la nube y no a funciones de core. La Catalyst 6500 E-Series es considerada plataforma legacy. La Catalyst 1300 está pensada para pequeñas y medianas empresas, no para núcleo empresarial.`
+},
+
+
+{
+  id:"mcq-merge-tftp-020",
+  type:"mcq",
+
+  q:`Which command is used to download a copied configuration file from a TFTP server to merge it with the running configuration of a replacement Cisco device?`,
+
+  options:{
+    A:`load tftp: running-config`,
+    B:`copy tftp: startup-config`,
+    C:`copy tftp: running-config`,
+    D:`merge tftp: running-config`
+  },
+
+  ok:"C",
+
+  exp_en:`The command copy tftp: running-config retrieves a configuration file from a TFTP server and merges it with the current running configuration.
+
+This process is additive, meaning the new commands are integrated into the active configuration without automatically erasing existing settings.
+
+The command copy tftp: startup-config would overwrite the startup configuration instead of merging with the running configuration.
+
+The commands load tftp: running-config and merge tftp: running-config are not valid Cisco IOS commands.`,
+
+  exp_es:`El comando copy tftp: running-config descarga un archivo de configuración desde un servidor TFTP y lo fusiona con la configuración en ejecución.
+
+El proceso es aditivo: los nuevos comandos se integran en la configuración activa sin borrar automáticamente la configuración existente.
+
+El comando copy tftp: startup-config sobrescribe la configuración de inicio, pero no realiza una fusión con la configuración en ejecución.
+
+Los comandos load tftp: running-config y merge tftp: running-config no son comandos válidos en Cisco IOS.`
+},
+
+
+{
+  id:"mcq-backup-purpose-021",
+  type:"mcq",
+
+  q:`What is the primary purpose of backing up the endpoint configuration prior to replacing the device?`,
+
+  options:{
+    A:`To troubleshoot network connectivity issues`,
+    B:`To update the firmware of the device`,
+    C:`To generate a performance report for the old device`,
+    D:`To restore settings on the new device after replacement`
+  },
+
+  ok:"D",
+
+  exp_en:`The primary purpose of backing up a device configuration before replacement is to restore those settings onto the new device.
+
+This ensures business continuity and minimizes downtime by allowing the replacement device to operate exactly like the original.
+
+The backup preserves interface settings, routing protocols, access control lists, and other critical parameters.
+
+Troubleshooting, firmware updates, and performance reporting are not the main objectives of configuration backups in a replacement scenario.`,
+
+  exp_es:`El objetivo principal de realizar una copia de seguridad antes de reemplazar un dispositivo es restaurar esa configuración en el nuevo equipo.
+
+Esto garantiza continuidad operativa y minimiza el tiempo de inactividad, permitiendo que el nuevo dispositivo funcione igual que el anterior.
+
+La copia incluye configuraciones de interfaces, protocolos de enrutamiento, listas de control de acceso y otros parámetros críticos.
+
+La resolución de problemas, la actualización de firmware o la generación de informes no son el propósito principal en un escenario de reemplazo.`
+},
+{
+  id: "mcq-config-register-password-recovery-027",
+  type: "mcq",
+  q: `What is the primary purpose of changing the configuration register when performing password recovery?`,
+
+  options: {
+    A: `To erase the entire configuration`,
+    B: `To ignore the startup configuration`,
+    C: `To unlock all user accounts`,
+    D: `To enable advanced debugging features`
+  },
+
+  ok: "B",
+
+  exp_en: `During password recovery on Cisco devices, the configuration register is changed (commonly to 0x2142) so the device ignores the startup configuration stored in NVRAM during the next boot. This allows administrators to access the device without being prompted for existing passwords. After resetting passwords, the configuration register is restored to its default value, typically 0x2102.`,
+
+  exp_es: `Durante el proceso de recuperación de contraseña en dispositivos Cisco, se modifica el configuration register (normalmente a 0x2142) para que el equipo ignore la startup-config almacenada en NVRAM en el siguiente arranque. Esto permite acceder al dispositivo sin que se apliquen las contraseñas existentes. Una vez restablecidas las contraseñas, el registro se devuelve a su valor por defecto, normalmente 0x2102.`
+},
+{
+  id: "mcq-windows-diagnostic-commands-028",
+  type: "mcq",
+  q: `Which command prompt commands provide the most thorough network diagnostic information when troubleshooting connectivity issues between a Windows PC and a Cisco device?`,
+
+  options: {
+    A: `ipconfig /all and ping`,
+    B: `netstat -a, netsh wlan show interfaces, ipconfig /release, ipconfig /renew`,
+    C: `ping, tracert, netstat`,
+    D: `nslookup, arp -a, route print`
+  },
+
+  ok: "A",
+
+  exp_en: `When troubleshooting connectivity between a Windows PC and a Cisco device, the combination of ipconfig /all and ping provides the most complete initial diagnostic information. The ipconfig /all command displays detailed IP configuration including IP address, subnet mask, default gateway, DNS servers, and MAC address. The ping command tests reachability and verifies basic Layer 3 connectivity between devices.`,
+
+  exp_es: `Al diagnosticar problemas de conectividad entre un PC Windows y un dispositivo Cisco, la combinación de ipconfig /all y ping proporciona la información inicial más completa. El comando ipconfig /all muestra la configuración IP detallada, incluyendo dirección IP, máscara, gateway, DNS y dirección MAC. El comando ping verifica la conectividad y la alcanzabilidad a nivel de Capa 3 entre dispositivos.`
+},
+
+{
+  id: "mcq-console-mode-config-030",
+  type: "mcq",
+
+  q: `Which mode must the console terminal of the device be in before a prewritten configuration is pasted to transfer the configuration from an old device to a new one?`,
+
+  options: {
+    A: "Interface configuration mode",
+    B: "Global configuration mode",
+    C: "Privileged EXEC mode",
+    D: "User EXEC mode"
+  },
+
+  ok: "B",
+
+  exp_en: `To paste a prewritten configuration into a Cisco device, the terminal must be in Global Configuration mode. This mode allows configuration commands that modify the device's operational settings. Administrators typically enter Privileged EXEC mode with the "enable" command and then access Global Configuration mode using "configure terminal" before pasting the configuration.`,
+
+  exp_es: `Para pegar una configuración preescrita en un dispositivo Cisco, el terminal debe estar en modo de configuración global. Este modo permite introducir comandos que modifican la configuración del dispositivo. Primero se accede al modo EXEC privilegiado con "enable" y luego al modo de configuración global con "configure terminal" antes de pegar la configuración.`
+},
+{
+  id: "mcq-copy-startup-to-usb-031",
+  type: "mcq",
+
+  q: `Which command is used to copy the startup configuration of a device to a USB file system when transferring files to a Cisco device?`,
+
+  options: {
+    A: "Router# copy startup-config tftp://[server_ip]/[destination_file]",
+    B: "Router# copy usbflash0:[filename] startup-config",
+    C: "Router# copy startup-config usbflash0:[filename]",
+    D: "Router# copy running-config usbflash0:[filename]"
+  },
+
+  ok: "C",
+
+  exp_en: `To back up the startup configuration to a USB drive, the correct command is "copy startup-config usbflash0:[filename]". This copies the configuration stored in NVRAM to a file on the USB flash drive. Option A copies the file to a TFTP server, not USB. Option B reverses the direction of the copy operation. Option D copies the running configuration instead of the startup configuration.`,
+
+  exp_es: `Para realizar una copia de seguridad de la startup-config en una unidad USB, el comando correcto es "copy startup-config usbflash0:[filename]". Este comando copia la configuración almacenada en NVRAM a un archivo en la memoria USB. La opción A copia a un servidor TFTP. La opción B invierte el sentido de la copia. La opción D copia la running-config, no la startup-config.`
+},
+{
+  id: "mcq-edit-captured-config-033",
+  type: "mcq",
+
+  q: `Which action must be taken when editing a captured configuration of an old device for reuse in a replacement device?`,
+
+  options: {
+    A: "Remove all configurations under line vty 0 4.",
+    B: "Retain all username entries.",
+    C: "Keep all access-list commands intact.",
+    D: "Add the enable password cisco command."
+  },
+
+  ok: "B",
+
+  exp_en: `When reusing a captured configuration on a replacement device, it is essential to retain all username entries to preserve administrative access and security credentials. Removing vty configurations may break remote access. Access-lists may need adjustment depending on the environment. Adding default passwords such as "cisco" is not recommended and is not required if enable secret is already configured.`,
+
+  exp_es: `Al reutilizar una configuración capturada en un dispositivo de reemplazo, es fundamental conservar todas las entradas de usuario para mantener el acceso administrativo y las credenciales de seguridad. Eliminar configuraciones vty puede afectar el acceso remoto. Las listas de acceso pueden requerir ajustes según el entorno. Añadir contraseñas por defecto como "cisco" no es una buena práctica y no es necesario si ya existe un enable secret configurado.`
+},
+
+{
+  id: "mcq-show-interface-status-034",
+  type: "mcq",
+
+  q: `Which command provides a concise look at important switch port characteristics, such as port ID, VLAN, duplex, speed, and media type?`,
+
+  options: {
+    A: "show cdp neighbors",
+    B: "show interface status",
+    C: "show controllers",
+    D: "show ip interface brief"
+  },
+
+  ok: "B",
+
+  exp_en: `The "show interface status" command provides a concise overview of switch port characteristics including port ID, VLAN assignment, duplex mode, speed, and media type. In contrast, "show cdp neighbors" displays information about directly connected Cisco devices, "show controllers" provides low-level hardware details, and "show ip interface brief" summarizes IP-related interface information.`,
+
+  exp_es: `El comando "show interface status" ofrece una vista resumida de las características de los puertos del switch, incluyendo ID de puerto, VLAN asignada, modo dúplex, velocidad y tipo de medio. En cambio, "show cdp neighbors" muestra información sobre dispositivos Cisco conectados directamente, "show controllers" proporciona detalles de hardware de bajo nivel y "show ip interface brief" resume información relacionada con direcciones IP de las interfaces.`
+},
+
+{
+  id: "mcq-license-type-local-035",
+  type: "mcq",
+
+  q: `Which type of license is locally managed and does not require external tools for management?`,
+
+  options: {
+    A: "Hybrid licenses",
+    B: "PAK licenses",
+    C: "RTU licenses",
+    D: "Smart licenses"
+  },
+
+  ok: "C",
+
+  exp_en: `Right-To-Use (RTU) licenses are locally managed licenses that allow activation of specific features directly on Cisco devices without requiring external licensing tools or connectivity to Cisco's licensing infrastructure. In contrast, PAK licenses require registration through Cisco’s licensing portal, Smart licenses require communication with Cisco Smart Licensing servers, and Hybrid licenses combine elements of traditional and smart licensing models.`,
+
+  exp_es: `Las licencias Right-To-Use (RTU) son licencias gestionadas localmente que permiten activar funciones directamente en dispositivos Cisco sin necesidad de herramientas externas ni conexión a la infraestructura de licenciamiento de Cisco. En cambio, las licencias PAK requieren registro en el portal de Cisco, las Smart licenses necesitan comunicación con los servidores de Smart Licensing y las Hybrid combinan ambos modelos.`
+},
+
+{
+  id: "mcq-install-nxos-036",
+  type: "mcq",
+
+  q: `Which common CLI command is used to install Cisco NX-OS Software?`,
+
+  options: {
+    A: "copy tftp: running-config",
+    B: "install all",
+    C: "install kickstart",
+    D: "boot system"
+  },
+
+  ok: "B",
+
+  exp_en: `The "install all" command is the standard method used to install or upgrade Cisco NX-OS software on Nexus switches. It automates image verification, compatibility checks, and package installation. In contrast, "copy tftp: running-config" copies configuration files, "install kickstart" is associated with older NX-OS processes, and "boot system" only sets the boot variable without performing a full installation.`,
+
+  exp_es: `El comando "install all" es el método estándar para instalar o actualizar Cisco NX-OS en switches Nexus. Automatiza la verificación de la imagen, comprobaciones de compatibilidad y la instalación de paquetes. En cambio, "copy tftp: running-config" copia configuraciones, "install kickstart" está asociado a versiones antiguas de NX-OS y "boot system" solo establece la variable de arranque sin realizar la instalación completa.`
+},
+
+{
+  id: "mcq-standalone-firewall-management-037",
+  type: "mcq",
+
+  q: `Which management option is best suited for standalone Cisco Secure Firewall deployments?`,
+
+  options: {
+    A: "Cisco Secure Firewall Management Center",
+    B: "Cisco Defense Orchestrator",
+    C: "Cisco Security Manager",
+    D: "Cisco Secure Firewall Device Manager"
+  },
+
+  ok: "D",
+
+  exp_en: `Cisco Secure Firewall Device Manager (FDM) is the best option for standalone deployments because it provides on-box, browser-based management for a single firewall without requiring external management infrastructure. In contrast, Cisco Secure Firewall Management Center (FMC) is designed for centralized management of multiple devices, Cisco Defense Orchestrator (CDO) is a cloud-based management solution, and Cisco Security Manager is an older platform mainly used for ASA devices.`,
+
+  exp_es: `Cisco Secure Firewall Device Manager (FDM) es la mejor opción para despliegues independientes, ya que ofrece gestión local basada en navegador para un único firewall sin necesidad de infraestructura externa. En cambio, Cisco Secure Firewall Management Center (FMC) está diseñado para la gestión centralizada de múltiples dispositivos, Cisco Defense Orchestrator (CDO) es una solución en la nube y Cisco Security Manager es una plataforma más antigua utilizada principalmente para dispositivos ASA.`
+},
+
+{
+  id: "mcq-bundle-mode-advantage-038",
+  type: "mcq",
+
+  q: `What is the main advantage of using Bundle mode when installing Cisco IOS XE Software on a switch?`,
+
+  options: {
+    A: "Automatic creation of the packages.conf file",
+    B: "Simplicity, with no need to manage individual packages",
+    C: "Faster boot times compared to Install mode",
+    D: "Ability to install and upgrade packages independently"
+  },
+
+  ok: "B",
+
+  exp_en: `Bundle mode simplifies Cisco IOS XE installation by running the switch directly from a single monolithic image file. This eliminates the need to manage individual software packages, making it straightforward and easier to administer. In contrast, Install mode uses the packages.conf file, supports independent package management, and typically provides faster boot times.`,
+
+  exp_es: `El modo Bundle simplifica la instalación de Cisco IOS XE ejecutando el switch directamente desde una única imagen monolítica. Esto elimina la necesidad de gestionar paquetes individuales, reduciendo la complejidad. En cambio, el modo Install utiliza el archivo packages.conf, permite gestionar paquetes de forma independiente y normalmente ofrece tiempos de arranque más rápidos.`
+},
+{
+  id: "mcq-packages-conf-purpose-039",
+  type: "mcq",
+
+  q: `What is the purpose of the packages.conf file in Install mode on Cisco IOS XE Software supported switches?`,
+
+  options: {
+    A: "It is used to extract the bin file during the installation process.",
+    B: "It determines which software packages need to be loaded and in what order during boot up.",
+    C: "It contains the entire bundled software image in a single file.",
+    D: "It is a subdirectory in flash memory where individual software packages are stored."
+  },
+
+  ok: "B",
+
+  exp_en: `In Install mode, the packages.conf file defines which IOS XE software packages are loaded and the sequence in which they are initialized during boot. It references the extracted package files and ensures that all required components are started properly. It does not extract the .bin file, does not contain the full bundled image, and is not a directory but a configuration file.`,
+
+  exp_es: `En modo Install, el archivo packages.conf define qué paquetes de software IOS XE deben cargarse y el orden en que se inicializan durante el arranque. Hace referencia a los paquetes ya extraídos y garantiza que todos los componentes necesarios se carguen correctamente. No extrae el archivo .bin, no contiene la imagen completa y no es un directorio sino un archivo de configuración.`
+},
+
+{
+  id: "mcq-check-flash-space-041",
+  type: "mcq",
+
+  q: `Which command is used to determine if there is sufficient space in the memory of a device before installing a new Cisco IOS image?`,
+
+  options: {
+    A: "show file-system",
+    B: "show storage",
+    C: "show memory",
+    D: "show flash:"
+  },
+
+  ok: "D",
+
+  exp_en: `The "show flash:" command displays the contents of the device’s flash memory, including file listings, file sizes, and available storage space. Since Cisco IOS images are typically stored in flash memory, this command allows technicians to verify whether there is enough available space before installing or upgrading an image. The "show memory" command refers to RAM usage, "show file-system" lists available file systems without detailed content, and "show storage" is not a standard IOS command.`,
+
+  exp_es: `El comando "show flash:" muestra el contenido de la memoria flash del dispositivo, incluyendo los archivos, sus tamaños y el espacio disponible. Como las imágenes IOS suelen almacenarse en la memoria flash, este comando permite verificar si hay suficiente espacio antes de instalar o actualizar una imagen. "show memory" se refiere a la memoria RAM, "show file-system" solo lista los sistemas de archivos disponibles y "show storage" no es un comando estándar de IOS.`
+},
+
+{
+  id: "mcq-boot-system-command-042",
+  type: "mcq",
+
+  q: `Which command is used to specify the source for the Cisco IOS software image to load during the boot process?`,
+
+  options: {
+    A: "boot image",
+    B: "boot system",
+    C: "boot ios",
+    D: "boot source"
+  },
+
+  ok: "B",
+
+  exp_en: `The "boot system" command is configured in global configuration mode to define the location and filename of the Cisco IOS image that the device loads during startup. It allows administrators to specify images stored in flash memory or on remote servers such as TFTP. The other options are not valid Cisco IOS commands.`,
+
+  exp_es: `El comando "boot system" se configura en modo de configuración global para definir la ubicación y el nombre del archivo de la imagen IOS que el dispositivo cargará durante el arranque. Permite especificar imágenes almacenadas en la memoria flash o en servidores remotos como TFTP. Las demás opciones no son comandos válidos en Cisco IOS.`
+},
+
+{
+  id: "mcq-webex-calling-pbx-043",
+  type: "mcq",
+
+  q: `Which Cisco collaboration component is an enterprise-grade, cloud-based PBX system that enables devices to register to the cloud?`,
+
+  options: {
+    A: "Cisco Webex Calling",
+    B: "Cisco Hosted Collaboration Solutions",
+    C: "Cisco Webex Meetings",
+    D: "Cisco Webex Teams"
+  },
+
+  ok: "A",
+
+  exp_en: `Cisco Webex Calling is a cloud-based, enterprise-grade PBX solution that allows IP phones and softphones to register directly to the Webex cloud. It provides centralized call control, voicemail, and voice services without requiring an on-premises call manager. Cisco Hosted Collaboration Solutions are partner-hosted deployments, Webex Meetings focuses on video conferencing, and Webex Teams (now part of the Webex App) is primarily a messaging and collaboration platform.`,
+
+  exp_es: `Cisco Webex Calling es una solución PBX empresarial basada en la nube que permite que teléfonos IP y softphones se registren directamente en la nube de Webex. Proporciona control de llamadas centralizado, buzón de voz y servicios de voz sin necesidad de un Call Manager local. Cisco Hosted Collaboration Solutions son servicios alojados por partners, Webex Meetings está orientado a videoconferencia y Webex Teams (ahora parte de Webex App) se centra en mensajería y colaboración, no en funcionalidad PBX.`
+},
+{
+  id: "mcq-wlc-primary-function-044",
+  type: "mcq",
+
+  q: `What is the primary function of a wireless LAN controller in a Cisco Unified Wireless Network solution?`,
+
+  options: {
+    A: "To manage and configure associated access points centrally",
+    B: "To operate at Layer 3 of the OSI model",
+    C: "To translate data into a frame format for transmission",
+    D: "To provide wireless connectivity to LAN devices"
+  },
+
+  ok: "A",
+
+  exp_en: `A Wireless LAN Controller (WLC) provides centralized management, configuration, and monitoring of multiple access points within a Cisco Unified Wireless Network. It enables policy enforcement, mobility management, load balancing, and security control across the wireless infrastructure. While it facilitates wireless connectivity indirectly, its primary role is centralized AP management rather than acting as a Layer 3 router or handling frame formatting.`,
+
+  exp_es: `Un Wireless LAN Controller (WLC) proporciona gestión, configuración y monitorización centralizada de múltiples puntos de acceso dentro de una red inalámbrica unificada de Cisco. Permite aplicar políticas, gestionar movilidad, balanceo de carga y control de seguridad. Aunque facilita la conectividad inalámbrica de forma indirecta, su función principal es la administración centralizada de los APs, no actuar como router de Capa 3 ni formatear tramas.`
+},
+
+{
+  id: "mcq-rtp-call-quality-046",
+  type: "mcq",
+
+  q: `Which protocol should be analyzed when troubleshooting call quality between IP phones?`,
+
+  options: {
+    A: "SIP",
+    B: "SCCP",
+    C: "H.323",
+    D: "RTP"
+  },
+
+  ok: "D",
+
+  exp_en: `RTP (Real-Time Transport Protocol) is responsible for carrying the actual voice media stream between IP phones. Call quality issues such as packet loss, jitter, and latency directly affect RTP traffic. Therefore, analyzing RTP streams is essential when troubleshooting voice quality problems. SIP, SCCP, and H.323 are primarily signaling protocols and do not transport the actual voice media.`,
+
+  exp_es: `RTP (Real-Time Transport Protocol) es el protocolo encargado de transportar el flujo real de voz entre teléfonos IP. Problemas de calidad como pérdida de paquetes, jitter o latencia afectan directamente al tráfico RTP. Por ello, es el protocolo que debe analizarse al diagnosticar problemas de calidad de llamada. SIP, SCCP y H.323 son protocolos de señalización y no transportan el audio en sí.`
+},
+
+{
+  id: "mcq-cucm-hardware-platform-049",
+  type: "mcq",
+
+  q: `Which hardware platform is Cisco Unified Communications Manager typically deployed on?`,
+
+  options: {
+    A: "Cisco ASR routers",
+    B: "Cisco Catalyst switches",
+    C: "Cisco ISR routers",
+    D: "Cisco UCS C-Series servers"
+  },
+
+  ok: "D",
+
+  exp_en: `Cisco Unified Communications Manager (CUCM) is typically deployed on Cisco UCS C-Series servers. These rack-mounted servers provide the computing resources required to support CUCM call control and session management in enterprise environments. ASR and ISR routers and Catalyst switches are networking devices and are not intended as deployment platforms for CUCM.`,
+
+  exp_es: `Cisco Unified Communications Manager (CUCM) normalmente se despliega sobre servidores Cisco UCS C-Series. Estos servidores proporcionan los recursos de computación necesarios para soportar el control de llamadas y la gestión de sesiones en entornos empresariales. Los routers ASR e ISR y los switches Catalyst son dispositivos de red y no están destinados a alojar CUCM.`
+},
+{
+  id: "mcq-collaboration-deployment-model-050",
+  type: "mcq",
+
+  q: `Which deployment model minimizes dependence on internet connectivity for core collaboration functions?`,
+
+  options: {
+    A: "Cloud-based deployment",
+    B: "On-premises deployment",
+    C: "Software-as-a-Service model",
+    D: "Hosted Collaboration Solution"
+  },
+
+  ok: "B",
+
+  exp_en: `An on-premises deployment minimizes dependence on internet connectivity because core collaboration services such as call control, messaging, and conferencing are hosted within the organization's local infrastructure. This ensures that internal communication services remain operational even if external internet connectivity is lost. Cloud-based, SaaS, and hosted solutions rely on internet access to reach externally hosted services.`,
+
+  exp_es: `Un despliegue on-premises minimiza la dependencia de la conectividad a Internet porque los servicios principales de colaboración, como control de llamadas, mensajería y conferencias, se alojan en la infraestructura local de la organización. Esto permite que los servicios internos sigan funcionando incluso si se pierde la conexión a Internet. Las soluciones cloud, SaaS y hosted dependen del acceso a Internet para utilizar servicios externos.`
+},
+
+{
+  id:"mcq-cisco-room-quad-camera-replacement-054",
+  type:"mcq",
+
+  q:`Which component of the Cisco Room system requires removal of the upper textile grille and the use of release levers during its replacement process?`,
+
+  options:{
+    A:"Loudspeaker",
+    B:"Quad camera",
+    C:"Codec",
+    D:"Antenna module"
+  },
+
+  ok:"B",
+
+  exp_en:`In Cisco Room systems such as the Room Kit Pro, replacing the Quad camera requires removal of the upper textile grille to access the internal mounting mechanism. Release levers are then used to disengage the quad camera unit from its housing. The loudspeaker, codec, and antenna module do not typically require this specific removal method.`,
+
+  exp_es:`En los sistemas Cisco Room, como el Room Kit Pro, la sustitución de la Quad camera requiere retirar la rejilla textil superior para acceder al mecanismo interno de montaje. Posteriormente, se utilizan palancas de liberación para extraer la unidad de la carcasa. El altavoz, el codec y el módulo de antena no suelen requerir este procedimiento específico.`
+},
+
+{
+  id:"mcq-sfp-replacement-procedure-056",
+  type:"mcq",
+
+  q:`Which step must be performed immediately after disconnecting the network cable when replacing an SFP transceiver module?`,
+
+  options:{
+    A:"Observe the port status LED.",
+    B:"Disconnect the SFP latch.",
+    C:"Reinstall dust plugs in the optical bores.",
+    D:"Install the replacement SFP module."
+  },
+
+  ok:"C",
+
+  exp_en:`Immediately after disconnecting the network cable from an SFP transceiver, the dust plugs should be reinstalled in the optical bores. This prevents contamination from dust or debris that could damage the optical interfaces or degrade performance. Protecting exposed optical ports is a critical step before proceeding with module handling or replacement.`,
+
+  exp_es:`Inmediatamente después de desconectar el cable de red de un transceptor SFP, se deben reinstalar los tapones antipolvo en los orificios ópticos. Esto evita la contaminación por polvo o residuos que podrían dañar las interfaces ópticas o degradar el rendimiento. Proteger los puertos ópticos expuestos es un paso crítico antes de continuar con la manipulación o sustitución del módulo.`
+},
+
+{
+  id:"mcq-nexus-dual-power-057",
+  type:"mcq",
+
+  q:`How must the power to a system with dual power supplies on a Cisco Nexus switch be connected?`,
+
+  options:{
+    A:"Connect the primary power supply to the main source and the secondary to a backup generator.",
+    B:"Connect both power supplies to a power distribution unit with built-in redundancy.",
+    C:"Connect each power supply to a separate power source.",
+    D:"Connect both power supplies to a single power source."
+  },
+
+  ok:"C",
+
+  exp_en:`On a Cisco Nexus switch with dual power supplies, each power supply should be connected to a separate power source. This ensures redundancy and fault tolerance. If one power source fails, the switch continues operating using the other source. Connecting both supplies to the same source defeats the purpose of redundancy.`,
+
+  exp_es:`En un switch Cisco Nexus con fuentes de alimentación duales, cada fuente debe conectarse a una fuente de energía independiente. Esto garantiza redundancia y tolerancia a fallos. Si una fuente de alimentación falla, el equipo continúa funcionando con la otra. Conectar ambas a una sola fuente elimina la redundancia.`
+},
+{
+  id:"mcq-nexus-supervisor-replacement-058",
+  type:"mcq",
+
+  q:`What happens to the switch operation when a supervisor module in a Cisco Nexus switch is replaced by two supervisor modules?`,
+
+  options:{
+    A:"The switch continues to operate without any interruption.",
+    B:"All modules in the switch are reset due to a stateless switchover.",
+    C:"Only the affected line cards reset.",
+    D:"The switch shuts down completely."
+  },
+
+  ok:"B",
+
+  exp_en:`When transitioning from a single supervisor to a dual-supervisor configuration in certain Cisco Nexus environments, the behavior depends on the redundancy mode. In stateless switchover scenarios, the standby supervisor does not maintain synchronized state information. As a result, when a switchover occurs, all modules in the switch are reset due to the stateless nature of the failover.`,
+
+  exp_es:`Al pasar de una configuración con un solo supervisor a una con dos supervisores en determinados entornos Cisco Nexus, el comportamiento depende del modo de redundancia. En un switchover sin estado (stateless), el supervisor en espera no mantiene la información sincronizada con el activo. Como consecuencia, cuando se produce el cambio, todos los módulos del switch se reinician debido a la naturaleza sin estado del proceso.`
+},
+{
+  id:"mcq-asr-oir-meaning-059",
+  type:"mcq",
+
+  q:`What does OIR stand for in the context of Cisco ASR component replacement?`,
+
+  options:{
+    A:"Offline Installation and Reboot",
+    B:"Operational Interface Redundancy",
+    C:"Optical Interface Routing",
+    D:"Online Insertion and Removal"
+  },
+
+  ok:"D",
+
+  exp_en:`OIR stands for Online Insertion and Removal. It is a feature supported by Cisco ASR routers that allows hardware components such as line cards and modules to be inserted or removed while the device is powered on and operating. This capability minimizes network downtime and supports high-availability environments.`,
+
+  exp_es:`OIR significa Online Insertion and Removal. Es una funcionalidad soportada por routers Cisco ASR que permite insertar o retirar componentes de hardware, como tarjetas o módulos, mientras el equipo está encendido y en funcionamiento. Esta capacidad reduce el tiempo de inactividad y es clave en entornos de alta disponibilidad.`
+},
+{
+  id:"mcq-nxos-boot-prompt-key-061",
+  type:"mcq",
+
+  q:`Which key sequence is used to enter the boot prompt mode when the Cisco NX-OS Software begins the software boot process?`,
+
+  options:{
+    A:"Ctrl-X",
+    B:"Ctrl-C",
+    C:"Ctrl-Z",
+    D:"Ctrl-1"
+  },
+
+  ok:"B",
+
+  exp_en:`During the boot process of Cisco devices running NX-OS, pressing Ctrl-C at the correct moment interrupts the boot sequence and brings the system to the boot loader or ROMmon mode (boot prompt). This allows low-level recovery tasks such as password recovery or specifying an alternate boot image.`,
+
+  exp_es:`Durante el proceso de arranque en dispositivos Cisco con NX-OS, al presionar Ctrl-C en el momento adecuado se interrumpe la secuencia de inicio y el sistema entra en el boot loader o modo ROMmon (boot prompt). Esto permite realizar tareas de recuperación como restauración de contraseña o selección de una imagen alternativa.`
+},
+{
+  id:"mcq-collaboration-endpoint-replacement-062",
+  type:"mcq",
+
+  q:`Which action must be taken before powering down the endpoint during the replacement process of a Cisco collaboration device?`,
+
+  options:{
+    A:"Reset the device to factory settings.",
+    B:"Back up the configuration.",
+    C:"Activate the new device.",
+    D:"Install the new hardware."
+  },
+
+  ok:"B",
+
+  exp_en:`Before shutting down a Cisco collaboration device for replacement, the configuration must be backed up. This ensures that user profiles, network settings, and service configurations are preserved and can be restored quickly on the replacement device, minimizing downtime and preventing configuration loss.`,
+
+  exp_es:`Antes de apagar un dispositivo de colaboración Cisco para su sustitución, se debe realizar una copia de seguridad de la configuración. Esto garantiza que perfiles de usuario, configuraciones de red y parámetros de servicio se conserven y puedan restaurarse rápidamente en el nuevo equipo, reduciendo el tiempo de inactividad.`
+},
+
+{
+  id:"mcq-endpoint-pre-service-checklist-063",
+  type:"mcq",
+
+  q:`What is the purpose of the pre-service checklist in the endpoint replacement process?`,
+
+  options:{
+    A:"To ensure all necessary tools and personnel are available",
+    B:"To test the functionality of the existing endpoint",
+    C:"To verify the current configuration settings of the endpoint",
+    D:"To gather information about the replacement unit"
+  },
+
+  ok:"A",
+
+  exp_en:`The pre-service checklist is completed before replacing an endpoint to confirm that all required tools, documentation, and personnel are available. This preparation ensures the replacement can be performed efficiently, minimizes delays, and reduces the risk of service interruption.`,
+
+  exp_es:`La lista de verificación previa al servicio se realiza antes de sustituir un endpoint para confirmar que todas las herramientas, documentación y personal necesarios están disponibles. Esta preparación permite ejecutar el reemplazo de forma eficiente, minimizando retrasos e interrupciones del servicio.`
+},
+{
+  id:"mcq-ethernet-crossover-cable-064",
+  type:"mcq",
+
+  q:`Which cable type should be used when installing replacement hardware and connecting two devices of the same type, like two DTEs or two DCEs?`,
+
+  options:{
+    A:"USB Type A to Type B cable",
+    B:"Rolled RJ-45 to RJ-45 console cable",
+    C:"RJ-45 Ethernet straight-through patch cable",
+    D:"RJ-45 Ethernet crossover patch cable"
+  },
+
+  ok:"D",
+
+  exp_en:`When connecting two devices of the same type (such as two routers, two switches, or two DTEs), an RJ-45 Ethernet crossover cable must be used. The crossover cable swaps the transmit and receive pairs, allowing direct communication without an intermediate device. Straight-through cables are used for different device types, and rolled cables are for console access.`,
+
+  exp_es:`Al conectar dos dispositivos del mismo tipo (como dos routers, dos switches o dos DTE), se debe utilizar un cable RJ-45 Ethernet cruzado. El cable cruzado intercambia los pares de transmisión y recepción, permitiendo la comunicación directa sin un dispositivo intermedio. Los cables directos se usan para dispositivos distintos y los cables enrollados son para acceso por consola.`
+},
+{
+  id:"mcq-ucs-fan-modules-identification-065",
+  type:"mcq",
+  img:"7.PNG",
+
+  q:`Refer to the exhibit. Which replaceable components are highlighted on the three different series of Cisco UCS servers?`,
+
+  options:{
+    A:"storage modules",
+    B:"GPU sockets",
+    C:"fan modules",
+    D:"power supplies"
+  },
+
+  ok:"C",
+
+  exp_en:`The highlighted components in all three Cisco UCS server models (5108 B-Series Blade Server Chassis, X9508 X-Series Modular Server Chassis, and C225 M6 Rack Server) are fan modules. These field-replaceable units (FRUs) are responsible for cooling the system and maintaining proper thermal conditions for internal components.`,
+
+  exp_es:`Los componentes resaltados en los tres modelos de servidores Cisco UCS (5108 B-Series Blade Server Chassis, X9508 X-Series Modular Server Chassis y C225 M6 Rack Server) son módulos de ventiladores. Estas unidades reemplazables en campo (FRU) se encargan de la refrigeración del sistema y de mantener condiciones térmicas adecuadas.`
+},
+
+{
+  id:"mcq-nexus-fan-airflow-consistency-066",
+  type:"mcq",
+
+  q:`What must be considered when installing a new fan module in a fixed-configuration Cisco Nexus switch?`,
+
+  options:{
+    A:"The size of the fan module must match the power supply.",
+    B:"Fan modules can be installed only when the switch is powered off.",
+    C:"The airflow direction must be consistent with other installed modules.",
+    D:"The fan module must be from the same manufacturing batch as the others."
+  },
+
+  ok:"C",
+
+  exp_en:`When installing a fan module in a Cisco Nexus fixed-configuration switch, the airflow direction must match the existing airflow configuration (front-to-back or back-to-front). Mismatched airflow can cause inefficient cooling and overheating. These fan modules are typically hot-swappable, so powering off the switch is not required.`,
+
+  exp_es:`Al instalar un módulo de ventilador en un switch Cisco Nexus de configuración fija, la dirección del flujo de aire debe coincidir con la configuración existente (de adelante hacia atrás o de atrás hacia adelante). Un flujo inconsistente puede provocar refrigeración ineficiente y sobrecalentamiento. Estos módulos suelen ser intercambiables en caliente, por lo que no es necesario apagar el equipo.`
+},
+
+{
+  id:"mcq-switch-serial-number-location-067",
+  type:"mcq",
+
+  q:`A technician must quickly identify multiple Cisco switches in a rack without powering them on. Where should the technician look for serial numbers on the device?`,
+
+  options:{
+    A:"Bottom surface of each switch",
+    B:"Front panel near the status LEDs",
+    C:"Rear panel near the power supplies",
+    D:"Top surface of each switch"
+  },
+
+  ok:"C",
+
+  exp_en:`Cisco switch serial numbers are typically located on a label on the rear panel near the power supplies. This placement allows technicians to identify devices quickly in a rack environment without powering them on. The rear location is practical for inventory, RMA, and support registration purposes.`,
+
+  exp_es:`Los números de serie de los switches Cisco suelen encontrarse en una etiqueta situada en el panel trasero, cerca de las fuentes de alimentación. Esta ubicación permite a los técnicos identificar rápidamente los equipos en un rack sin necesidad de encenderlos, facilitando tareas de inventario y RMA.`
+},
+
+
+{
+  id:"mcq-meraki-replacement-feature-069",
+  type:"mcq",
+
+  q:`What is a feature of Cisco Meraki switches that simplifies the replacement process?`,
+
+  options:{
+    A:"Built-in configuration wizard",
+    B:"Automatic hardware detection",
+    C:"Offline configuration backup",
+    D:"Cloud-based management"
+  },
+
+  ok:"D",
+
+  exp_en:`Cloud-based management is a core feature of Cisco Meraki switches that simplifies hardware replacement. When a device is replaced, the new switch can be claimed in the Meraki dashboard and the previously assigned configuration is automatically applied, eliminating the need for manual local reconfiguration.`,
+
+  exp_es:`La gestión basada en la nube es una característica principal de los switches Cisco Meraki que simplifica el proceso de sustitución. Cuando se reemplaza un equipo, el nuevo switch se registra en el panel Meraki y la configuración previamente asignada se aplica automáticamente, evitando la reconfiguración manual local.`
+},
+{
+  id:"mcq-mds9700-standby-supervisor-removal-071",
+  type:"mcq",
+
+  q:`What is the first action that must be taken before removing a standby supervisor module from a Cisco MDS 9700 Series Switch?`,
+
+  options:{
+    A:"Shut down the entire switch.",
+    B:"Put the module into out-of-service mode.",
+    C:"Disconnect all network interface cables.",
+    D:"Perform a manual failover to the standby supervisor."
+  },
+
+  ok:"B",
+
+  exp_en:`Before removing a standby supervisor module in a Cisco MDS 9700 Series Switch, it must first be placed into out-of-service mode. This ensures the system acknowledges that the supervisor is no longer participating in redundancy, allowing safe removal without disrupting operations. The platform supports high availability and hot-swappable components.`,
+
+  exp_es:`Antes de retirar un supervisor en standby en un Cisco MDS 9700, debe colocarse primero en modo fuera de servicio (out-of-service). Esto garantiza que el sistema reconozca que ya no participa en la redundancia, permitiendo una extracción segura sin afectar al funcionamiento. La plataforma soporta alta disponibilidad y módulos intercambiables en caliente.`
+},
+
+{
+  id:"mcq-cisco-chassis-replacement-step-072",
+  type:"mcq",
+
+  q:`Which step must be performed immediately after powering off the device when replacing a Cisco chassis?`,
+
+  options:{
+    A:"Remove the chassis ground.",
+    B:"Back up the device configuration.",
+    C:"Remove the chassis.",
+    D:"Label and remove all I/O cables."
+  },
+
+  ok:"D",
+
+  exp_en:`Immediately after powering off a Cisco device for chassis replacement, all I/O cables must be labeled and removed. Proper labeling ensures accurate reconnection after installation of the new chassis and prevents misconfiguration. The chassis ground and chassis removal occur only after all cables are safely disconnected.`,
+
+  exp_es:`Inmediatamente después de apagar un dispositivo Cisco para sustituir el chasis, se deben etiquetar y retirar todos los cables de E/S. Un etiquetado correcto garantiza una reconexión precisa tras instalar el nuevo chasis y evita errores de configuración. La retirada de la toma de tierra y del chasis se realiza posteriormente.`
+},
+{
+  id:"mcq-cisco-io-module-led-074",
+  type:"mcq",
+  img:"8.PNG",
+
+  q:`Refer to the exhibit. Which component is highlighted on the Cisco I/O module image?`,
+
+  options:{
+    A:"captive screw",
+    B:"chassis connections LED",
+    C:"fan module LED",
+    D:"fixed port"
+  },
+
+  ok:"B",
+
+  exp_en:`The highlighted component is the chassis connections LED. This LED indicates the connectivity status between the I/O module and the chassis. It is positioned to the left side of the module and is separate from ports, screws, and fan indicators, making it identifiable as the chassis connections LED.`,
+
+  exp_es:`El componente resaltado es el chassis connections LED. Este LED indica el estado de conectividad entre el módulo de E/S y el chasis. Está ubicado en el lado izquierdo del módulo y no corresponde ni a puertos, tornillos ni indicadores de ventilador, lo que permite identificarlo correctamente.`
+},
+
+{
+  id:"mcq-ucs-fabric-interconnect-replacement-075",
+  type:"mcq",
+
+  q:`Which step must be taken to minimize data traffic impact when replacing a fabric interconnect?`,
+
+  options:{
+    A:"Use the fabric evacuation procedure on the subordinate fabric interconnect.",
+    B:"Disable high availability before replacement.",
+    C:"Remove all cable connections at once.",
+    D:"Power down both fabric interconnects simultaneously."
+  },
+
+  ok:"A",
+
+  exp_en:`To minimize traffic disruption when replacing a Cisco UCS fabric interconnect, the fabric evacuation procedure must be used on the subordinate interconnect. This redirects traffic to the active interconnect, maintaining connectivity and redundancy during replacement. Disabling HA or powering down both units would cause service disruption.`,
+
+  exp_es:`Para minimizar el impacto en el tráfico al sustituir un fabric interconnect en Cisco UCS, se debe utilizar el procedimiento de evacuación (fabric evacuation) en el interconnect subordinado. Esto redirige el tráfico al interconnect activo, manteniendo la conectividad y la redundancia durante la sustitución. Desactivar la alta disponibilidad o apagar ambos equipos provocaría interrupción del servicio.`
+},
+
+{
+  id:"mcq-esd-strap-resistance-range-076",
+  type:"mcq",
+
+  q:`What is the recommended resistance value range to ensure proper grounding when using an antistatic strap to perform work on electrical components?`,
+
+  options:{
+    A:"Between 0.1 and 1 megaohms",
+    B:"Between 1 and 10 megaohms",
+    C:"Between 10 and 100 megaohms",
+    D:"Between 100 and 1000 megaohms"
+  },
+
+  ok:"B",
+
+  exp_en:`The recommended resistance range for an ESD wrist strap is between 1 and 10 megaohms. This range safely discharges static electricity to ground while preventing a rapid discharge that could damage sensitive electronic components. Values below 1 megaohm may allow excessive current flow, while values above 10 megaohms may not provide effective static dissipation.`,
+
+  exp_es:`El rango recomendado de resistencia para una pulsera antiestática (ESD) es entre 1 y 10 megaohmios. Este rango permite descargar la electricidad estática de forma segura hacia tierra sin provocar una descarga brusca que pueda dañar componentes electrónicos sensibles. Valores inferiores a 1 megaohmio pueden permitir una corriente excesiva, y valores superiores a 10 megaohmios pueden no disipar la estática eficazmente.`
+},
+
+{
+  id:"mcq-meraki-stack-port1-function-077",
+  type:"mcq",
+
+  q:`Which function does the Stack Port 1 serve on a Cisco Meraki switch?`,
+
+  options:{
+    A:"It provides a dedicated uplink to the Meraki cloud for management.",
+    B:"It serves as a high-speed interconnect for clustered switches.",
+    C:"It connects to the Stack Port 2 of the previous switch in a stack configuration.",
+    D:"It connects to the Stack Port 2 of the next switch in a stack configuration."
+  },
+
+  ok:"B",
+
+  exp_en:`On Cisco Meraki switches, Stack Port 1 (along with Stack Port 2) is used to create a physical stacking connection between switches. These stack ports provide a dedicated high-speed interconnect that allows multiple switches to operate as a single logical unit. They are not used for cloud management or standard uplinks.`,
+
+  exp_es:`En los switches Cisco Meraki, el Stack Port 1 (junto con el Stack Port 2) se utiliza para formar la conexión física de apilamiento entre switches. Estos puertos proporcionan un interconector dedicado de alta velocidad que permite que varios switches funcionen como una única unidad lógica. No se utilizan para gestión en la nube ni como enlaces ascendentes estándar.`
+},
+{
+  id:"mcq-rack-installation-stability-078",
+  type:"mcq",
+
+  q:`What is the primary reason for placing heavier devices toward the bottom of the rack when installing replacement hardware?`,
+
+  options:{
+    A:"To maintain rack stability",
+    B:"To simplify device maintenance",
+    C:"To improve air circulation",
+    D:"To facilitate easier cable management"
+  },
+
+  ok:"A",
+
+  exp_en:`Heavier devices are installed toward the bottom of a rack to maintain stability. Placing heavy equipment low lowers the center of gravity, reducing the risk of tipping and ensuring safer installation and servicing. This is a standard safety practice in rack deployments.`,
+
+  exp_es:`Los dispositivos más pesados se colocan en la parte inferior del rack para mantener la estabilidad. Situar el peso abajo reduce el centro de gravedad y minimiza el riesgo de vuelco, garantizando una instalación y mantenimiento más seguros. Es una práctica estándar de seguridad en instalaciones de racks.`
+},
+{
+  id:"mcq-router-serial-number-cli-079",
+  type:"mcq",
+  img:"9.PNG",
+
+  q:`Refer to the exhibit. Which CLI show command identifies the serial number on a router?`,
+
+  options:{
+    A:"show inventory",
+    B:"show idprom",
+    C:"show version",
+    D:"show platform"
+  },
+
+  ok:"A",
+
+  exp_en:`The show inventory command displays detailed hardware information including the Product ID (PID), Version ID (VID), and Serial Number (SN). In the exhibit, the serial number is shown as part of the inventory output, confirming that show inventory is the correct command.`,
+
+  exp_es:`El comando show inventory muestra información detallada del hardware, incluyendo el Product ID (PID), Version ID (VID) y el número de serie (SN). En la imagen se observa el número de serie dentro del inventario, lo que confirma que show inventory es el comando correcto.`
+},
+
+{
+  id:"mcq-cisco-rack-mount-sequence-080",
+  type:"mcq",
+
+  q:`What are the steps to mount a Cisco device in a rack?`,
+
+  options:{
+    A:"Mount in rack. Install mounting brackets. Ground the device.",
+    B:"Install mounting brackets. Mount in rack. Ground the device.",
+    C:"Ground the device. Install mounting brackets. Mount in rack.",
+    D:"Install mounting brackets. Ground the device. Mount in rack."
+  },
+
+  ok:"B",
+
+  exp_en:`The correct sequence is to first install the mounting brackets on the device, then mount the device in the rack, and finally ground the device. Installing brackets prepares the unit for secure placement, mounting secures it physically, and grounding ensures electrical safety and compliance.`,
+
+  exp_es:`La secuencia correcta es primero instalar los soportes de montaje, después montar el equipo en el rack y finalmente realizar la conexión a tierra. Los soportes preparan el equipo para su fijación, el montaje lo asegura físicamente y la puesta a tierra garantiza la seguridad eléctrica y el cumplimiento normativo.`
+},
+{
+  id:"mcq-ucs-x9508-midplane-design-082",
+  type:"mcq",
+
+  q:`Why is the midplane-free design of the X9508 Modular Chassis significant in the context of Cisco UCS X-Series compute node replacement?`,
+
+  options:{
+    A:"It enables hot-swapping of compute nodes without powering down the chassis.",
+    B:"It enables direct front-to-rear airflow, improving cooling efficiency during node replacement.",
+    C:"It allows for easier future upgrades to faster connectivity standards.",
+    D:"It reduces the overall power consumption of the chassis."
+  },
+
+  ok:"B",
+
+  exp_en:`The midplane-free design of the Cisco UCS X9508 Modular Chassis allows unobstructed front-to-rear airflow. This improves thermal efficiency and cooling performance, which is especially important during compute node replacement or upgrades. The airflow optimization is the primary architectural benefit of removing the midplane.`,
+
+  exp_es:`El diseño sin midplane del Cisco UCS X9508 Modular Chassis permite un flujo de aire directo de frontal a trasero sin obstrucciones. Esto mejora la eficiencia térmica y la refrigeración, algo especialmente importante durante la sustitución o actualización de nodos de cómputo. La optimización del flujo de aire es el beneficio principal de esta arquitectura.`
+},
+{
+  id:"mcq-ucs-standalone-management-084",
+  type:"mcq",
+
+  q:`Which Cisco UCS management platform is specifically designed for managing standalone Cisco UCS C-Series rack servers and E-Series servers?`,
+
+  options:{
+    A:"Cisco Integrated Management Controller",
+    B:"Cisco UCS Central",
+    C:"Cisco UCS Manager",
+    D:"Cisco Intersight"
+  },
+
+  ok:"A",
+
+  exp_en:`Cisco Integrated Management Controller (CIMC) is the embedded out-of-band management platform designed specifically for standalone UCS C-Series rack servers and E-Series servers. It provides direct server-level management capabilities such as BIOS configuration, firmware updates, remote console access, and power control. The other platforms are intended for blade environments, multi-domain management, or cloud-based administration.`,
+
+  exp_es:`Cisco Integrated Management Controller (CIMC) es la plataforma de gestión fuera de banda integrada diseñada específicamente para servidores UCS C-Series y E-Series en modo standalone. Permite funciones como configuración de BIOS, actualización de firmware, acceso remoto a consola y control de energía. Las demás plataformas están orientadas a entornos blade, gestión multi-dominio o administración basada en la nube.`
+},
+{
+  id:"mcq-nexus-os-085",
+  type:"mcq",
+
+  q:`Which operating system powers the Cisco Nexus series of switches and is optimized for modern data center deployments?`,
+
+  options:{
+    A:"IOS",
+    B:"IOS XE",
+    C:"IOS XR",
+    D:"NX-OS"
+  },
+
+  ok:"D",
+
+  exp_en:`Cisco NX-OS is the operating system specifically developed for Cisco Nexus series switches, which are widely deployed in modern data centers. NX-OS is optimized for scalability, high availability, virtualization, and advanced data center features such as vPC and FabricPath. It differs from IOS, IOS XE, and IOS XR, which are designed for other Cisco platforms.`,
+
+  exp_es:`Cisco NX-OS es el sistema operativo desarrollado específicamente para los switches Cisco Nexus, ampliamente utilizados en centros de datos modernos. Está optimizado para escalabilidad, alta disponibilidad, virtualización y funciones avanzadas de data center como vPC y FabricPath. Se diferencia de IOS, IOS XE e IOS XR, que están diseñados para otras plataformas de Cisco.`
+},
+{
+  id:"mcq-ucs-dimm-verification-086",
+  type:"mcq",
+
+  q:`What must be verified before installing or replacing DIMMs in a Cisco UCS server?`,
+
+  options:{
+    A:"Compatibility of the DIMM with the current firmware version of the server",
+    B:"Current DIMM configuration and population order",
+    C:"Exact type, speed, and capacity of the DIMM",
+    D:"Maximum supported DIMM capacity for the server model"
+  },
+
+  ok:"B",
+
+  exp_en:`Before installing or replacing DIMMs in a Cisco UCS server, it is essential to verify the current DIMM configuration and the required population order. Cisco UCS servers follow strict memory population rules to ensure optimal performance and proper channel balancing. Incorrect population order can result in boot failures or degraded performance.`,
+
+  exp_es:`Antes de instalar o reemplazar módulos DIMM en un servidor Cisco UCS, es fundamental verificar la configuración actual de memoria y el orden de población. Los servidores UCS siguen reglas estrictas de población de memoria para garantizar el rendimiento óptimo y el equilibrio de canales. Un orden incorrecto puede provocar fallos de arranque o rendimiento degradado.`
+},
+{
+  id:"mcq-blade-chassis-purpose-087",
+  type:"mcq",
+
+  q:`What is the purpose of the chassis in a blade server environment?`,
+
+  options:{
+    A:"To provide additional processing power",
+    B:"To act as a storage array for the servers",
+    C:"To replace the need for network switches",
+    D:"To house multiple servers"
+  },
+
+  ok:"D",
+
+  exp_en:`In a blade server environment, the chassis functions as the enclosure that houses multiple blade servers. It provides shared power, cooling, and connectivity infrastructure for the blades. The chassis itself does not provide processing power or act as a storage array; instead, it centralizes and supports the blade modules.`,
+
+  exp_es:`En un entorno de servidores blade, el chassis actúa como el bastidor que aloja múltiples servidores blade. Proporciona recursos compartidos de energía, refrigeración y conectividad. El chassis no aporta potencia de procesamiento ni actúa como cabina de almacenamiento; su función es alojar y soportar los módulos blade.`
+},
+{
+  id:"mcq-ucs-huu-verify-status-091",
+  type:"mcq",
+
+  q:`Why is it important to verify the update status after the initial upgrade process when upgrading firmware on a Cisco UCS C-Series server using the Host Upgrade Utility?`,
+
+  options:{
+    A:"To generate a report for compliance documentation",
+    B:"To confirm that all intended components were successfully updated",
+    C:"To ensure compatibility with third-party applications",
+    D:"To activate the new licenses associated with the firmware"
+  },
+
+  ok:"B",
+
+  exp_en:`After performing a firmware upgrade using the Cisco Host Upgrade Utility (HUU), it is critical to verify the update status to ensure that all targeted components—such as BIOS, CIMC, and RAID controller firmware—were successfully updated. Firmware upgrades often involve multiple subsystems, and partial or failed updates can lead to instability. Verification ensures completeness and system integrity.`,
+
+  exp_es:`Después de realizar una actualización de firmware con la Cisco Host Upgrade Utility (HUU), es fundamental verificar el estado de la actualización para confirmar que todos los componentes previstos —como BIOS, CIMC y firmware del controlador RAID— se hayan actualizado correctamente. Las actualizaciones pueden afectar a múltiples subsistemas y un proceso incompleto puede provocar inestabilidad. La verificación garantiza la integridad del sistema.`
+},
+{
+  id:"mcq-pod-based-model-092",
+  type:"mcq",
+
+  q:`Which pod-based deployment model provides the most flexibility and scalability in a modern data center topology?`,
+
+  options:{
+    A:"Spine-and-Leaf",
+    B:"End of Row (EoR)",
+    C:"Top of Rack (ToR)",
+    D:"Fabric Extender model"
+  },
+
+  ok:"A",
+
+  exp_en:`The Spine-and-Leaf architecture is the preferred pod-based deployment model in modern data centers because it offers high scalability, predictable latency, and horizontal expansion. Leaf switches connect to servers, while spine switches interconnect all leaf switches in a non-blocking fabric. This design enables efficient load balancing, redundancy, and cloud-scale growth. EoR and ToR are cabling strategies rather than scalable architectures, and Fabric Extender models depend on upstream switches for intelligence.`,
+
+  exp_es:`La arquitectura Spine-and-Leaf es el modelo de despliegue basado en pods preferido en centros de datos modernos por su alta escalabilidad, latencia predecible y capacidad de crecimiento horizontal. Los switches leaf conectan los servidores y los switches spine interconectan todos los leaf en una topología no bloqueante. EoR y ToR son modelos de cableado, no arquitecturas escalables, y el modelo Fabric Extender depende de switches superiores para la inteligencia de red.`
+},
+{
+  id:"mcq-nexus-deployment-purpose-095",
+  type:"mcq",
+
+  q:`Why is a Cisco Nexus switch typically deployed in a network?`,
+
+  options:{
+    A:"In branch offices for local area networking",
+    B:"In data centers for high-performance, low latency switching",
+    C:"As wireless access points in enterprise campuses",
+    D:"As edge routers connecting to ISPs"
+  },
+
+  ok:"B",
+
+  exp_en:`Cisco Nexus switches are purpose-built for data center environments, where they deliver high-performance, low-latency switching to support virtualization, cloud workloads, and large-scale server deployments. They run NX-OS and support advanced data center technologies such as vPC and ACI. They are not typically used in branch offices, as wireless access points, or as edge routers.`,
+
+  exp_es:`Los switches Cisco Nexus están diseñados específicamente para entornos de centros de datos, donde proporcionan conmutación de alto rendimiento y baja latencia para soportar virtualización, cargas de trabajo en la nube y despliegues a gran escala. Ejecutan NX-OS y soportan tecnologías avanzadas como vPC y ACI. No se utilizan habitualmente en oficinas remotas, como puntos de acceso inalámbricos ni como routers de borde.`
+},
+{
+  id:"mcq-cisco-intersight-advantage-096",
+  type:"mcq",
+
+  q:`What is the primary advantage of the Cisco Intersight cloud-based approach compared to traditional on-premises management tools?`,
+
+  options:{
+    A:"It requires less local storage",
+    B:"It offers better integration with non-Cisco products",
+    C:"It allows management from anywhere without on-premises software",
+    D:"It provides faster hardware upgrades"
+  },
+
+  ok:"C",
+
+  exp_en:`The primary advantage of Cisco Intersight is its cloud-based architecture, which enables administrators to manage infrastructure from anywhere without installing or maintaining on-premises management software. This approach provides centralized visibility, remote configuration, policy-driven automation, and reduces the operational overhead associated with dedicated management infrastructure.`,
+
+  exp_es:`La principal ventaja de Cisco Intersight es su arquitectura basada en la nube, que permite a los administradores gestionar la infraestructura desde cualquier lugar sin necesidad de instalar o mantener software de gestión local. Este enfoque ofrece visibilidad centralizada, configuración remota, automatización basada en políticas y reduce la carga operativa asociada a infraestructura dedicada de gestión.`
+},
+{
+  id:"mcq-ucs-fabric-interconnect-role-097",
+  type:"mcq",
+
+  q:`Which component serves as the central management and communication core and provides a single point of management via Cisco UCS Manager in a Cisco UCS environment?`,
+
+  options:{
+    A:"Nexus 9000 Series Switch",
+    B:"UCS E-Series server in ISR platforms",
+    C:"MDS 9000 Series SAN Switch",
+    D:"UCS Fabric Interconnect"
+  },
+
+  ok:"D",
+
+  exp_en:`The UCS Fabric Interconnect acts as the central management and communication hub in a Cisco UCS environment. It integrates compute, network, and storage connectivity while providing a single point of management through Cisco UCS Manager. It manages all servers and I/O modules within the UCS domain and enables centralized policy control and high availability.`,
+
+  exp_es:`El UCS Fabric Interconnect actúa como el núcleo central de gestión y comunicación en un entorno Cisco UCS. Integra la conectividad de cómputo, red y almacenamiento, proporcionando un único punto de administración mediante Cisco UCS Manager. Gestiona todos los servidores y módulos de E/S del dominio UCS, ofreciendo control centralizado de políticas y alta disponibilidad.`
+},
+
+{
+  id:"mcq-ucs-redundancy-architecture-098",
+  type:"mcq",
+  img:"11.PNG",
+
+  q:`Refer to the exhibit. What is the redundancy implementation in this Cisco UCS architecture?`,
+
+  options:{
+    A:"Redundancy is achieved through dual fabric interconnects, providing separate paths for FCoE, FC, and LAN traffic.",
+    B:"Redundancy is limited to the uplink connections, with no failover capabilities between the fabric interconnects.",
+    C:"The system uses a single point of connectivity, relying on internal redundancy within each UCS chassis.",
+    D:"Redundancy is implemented at the chassis level only, with chassis 1 acting as a backup for chassis 2."
+  },
+
+  ok:"A",
+
+  exp_en:`The architecture shows two Fabric Interconnects (A and B), each independently connected to LAN, FC, and FCoE uplinks and to both UCS chassis through I/O Modules. This active-active design provides full path redundancy for all traffic types. If one fabric interconnect fails, traffic can fail over to the alternate fabric, eliminating single points of failure.`,
+
+  exp_es:`La arquitectura muestra dos Fabric Interconnects (A y B), cada uno conectado de forma independiente a los enlaces LAN, FC y FCoE, así como a ambos chasis UCS mediante módulos de E/S. Este diseño activo-activo proporciona redundancia completa de rutas para todos los tipos de tráfico. Si un Fabric Interconnect falla, el tráfico puede conmutar al alternativo, eliminando puntos únicos de fallo.`
+},
+{
+  id:"mcq-ucs-e-series-branch-advantage-099",
+  type:"mcq",
+
+  q:`What is the primary advantage of installing and deploying Cisco UCS E-Series servers in branch office routers?`,
+
+  options:{
+    A:"To serve as a backup storage system for the main data center",
+    B:"To enhance the wireless capabilities of the router",
+    C:"To provide local compute power for edge applications",
+    D:"To increase the packet forwarding capacity of the router"
+  },
+
+  ok:"C",
+
+  exp_en:`Cisco UCS E-Series servers are integrated compute modules installed inside Cisco ISR routers. Their primary advantage is delivering local compute resources at branch locations without requiring a full data center deployment. This enables local hosting of applications and virtual machines, reduces latency for edge workloads, and decreases dependency on centralized data center resources.`,
+
+  exp_es:`Los servidores Cisco UCS E-Series son módulos de cómputo integrados que se instalan dentro de routers Cisco ISR. Su principal ventaja es proporcionar recursos de procesamiento local en sucursales sin necesidad de un centro de datos completo. Esto permite alojar aplicaciones o máquinas virtuales localmente, reducir la latencia en cargas de trabajo edge y disminuir la dependencia del centro de datos central.`
+}
+    ];
+    
+    const BANK_MSQ = [
+   {
+  id:"msq-wan-devices-007",
+  type:"msq",
+  q:`Which two devices are most commonly used in a WAN environment? (Choose two.)`,
+  pick:2,
+  options:{
+    A:`Hubs`,
+    B:`Optical fiber converters`,
+    C:`Modems`,
+    D:`Network interface cards`,
+    E:`Wireless access points`
+  },
+  ok:["B","C"],
+
+  exp_en:`In a Wide Area Network (WAN), the goal is to connect geographically separated networks using service provider infrastructure.
+
+Modems are commonly used in WAN environments because they modulate and demodulate signals, allowing digital devices such as routers to communicate over analog or carrier-based transmission lines (for example DSL or leased lines).
+
+Optical fiber converters, also known as media converters, are used to convert electrical signals into optical signals and vice versa. They are essential when WAN connections require long-distance, high-speed fiber transmission.
+
+Hubs are obsolete Layer 1 devices typically used in LAN environments. Network interface cards (NICs) are used for local device connectivity, and wireless access points are generally deployed in WLAN environments rather than WAN infrastructure.`,
+
+  exp_es:`En una red WAN (Wide Area Network), el objetivo es interconectar redes geográficamente separadas utilizando infraestructura de proveedores de servicios.
+
+Los módems se utilizan habitualmente en entornos WAN porque modulan y demodulan señales, permitiendo que dispositivos digitales como routers se comuniquen a través de líneas analógicas o enlaces proporcionados por el operador (por ejemplo DSL o líneas dedicadas).
+
+Los conversores de fibra óptica (media converters) transforman señales eléctricas en señales ópticas y viceversa. Son fundamentales cuando la WAN requiere transmisión de larga distancia y alta velocidad sobre fibra.
+
+Los hubs son dispositivos obsoletos de Capa 1 usados en LAN. Las tarjetas de red (NIC) se emplean para conectividad local y los puntos de acceso inalámbricos suelen utilizarse en redes WLAN, no en infraestructura WAN.`
+},
+
+
+{
+  id:"msq-remote-connection-010",
+  type:"msq",
+  img:"2.PNG",
+  q:`Refer to the exhibit. What are two ways remote sites or branches connect to the enterprise campus network? (Choose two.)`,
+  pick:2,
+
+  options:{
+    A:`Access layer switches`,
+    B:`WAN links`,
+    C:`IPsec VPN tunnels`,
+    D:`Ad hoc Wi-Fi network`,
+    E:`LAN core switches`
+  },
+
+  ok:["B","C"],
+
+  exp_en:`Answer: B, C
+
+Remote sites connect to an enterprise campus network using WAN links or secure IPsec VPN tunnels.
+
+WAN links provide dedicated long-distance connectivity such as MPLS or leased lines supplied by service providers.
+
+IPsec VPN tunnels create encrypted connections over the Internet, allowing secure communication between branch offices and the main campus network.
+
+Access layer switches and LAN core switches operate within the internal campus network and do not provide remote connectivity. Ad hoc Wi-Fi networks are temporary and not suitable for enterprise WAN connections.`,
+
+  exp_es:`Respuesta: B, C
+
+Las sedes remotas se conectan a la red principal mediante enlaces WAN o túneles seguros IPsec VPN.
+
+Los enlaces WAN proporcionan conectividad dedicada de larga distancia como MPLS o líneas alquiladas ofrecidas por proveedores de servicios.
+
+Los túneles IPsec crean conexiones cifradas a través de Internet, permitiendo comunicación segura entre sucursales y la red central.
+
+Los switches de acceso y los switches del núcleo LAN son componentes internos del campus y no proporcionan conectividad remota. Las redes Wi-Fi ad hoc son temporales y no adecuadas para conexiones WAN empresariales.`
+},
+
+
+{
+  id:"msq-ip-phone-port-015",
+  type:"msq",
+  q:`Which two configuration parameters are most critical to ensure optimal performance when configuring a network port for a newly installed IP phone in an enterprise environment? (Choose two.)`,
+
+  pick:2,
+
+  options:{
+    A:`VLAN assignment`,
+    B:`Link aggregation`,
+    C:`Spanning Tree Protocol`,
+    D:`Power over Ethernet`,
+    E:`QoS classification`
+  },
+
+  ok:["A","D"],
+
+  exp_en:`Answer: A, D
+
+When configuring a switch port for a newly installed IP phone, two parameters are critical for proper operation and performance.
+
+VLAN assignment is essential to separate voice and data traffic. Typically, a dedicated voice VLAN is configured to isolate and prioritize voice traffic, improving security and call quality.
+
+Power over Ethernet (PoE) allows the switch to supply electrical power to the IP phone through the same Ethernet cable used for data. This simplifies installation and eliminates the need for an external power adapter.
+
+Link aggregation and Spanning Tree Protocol are related to redundancy and loop prevention, not direct IP phone port configuration. QoS classification is important for voice prioritization but is usually applied at a broader policy level rather than being the most critical initial port parameter.`,
+
+  exp_es:`Respuesta: A, D
+
+Al configurar un puerto de switch para un teléfono IP recién instalado, hay dos parámetros críticos para su correcto funcionamiento y rendimiento.
+
+La asignación de VLAN es fundamental para separar el tráfico de voz y datos. Normalmente se configura una VLAN de voz dedicada para aislar y priorizar el tráfico de voz, mejorando la seguridad y la calidad de las llamadas.
+
+Power over Ethernet (PoE) permite que el switch suministre energía eléctrica al teléfono IP a través del mismo cable Ethernet utilizado para los datos. Esto simplifica la instalación y elimina la necesidad de un adaptador de corriente externo.
+
+La agregación de enlaces y Spanning Tree Protocol están relacionados con redundancia y prevención de bucles, no con la configuración directa del puerto del teléfono. La clasificación QoS es importante para priorizar voz, pero suele aplicarse a nivel más general de red.`
+},
+{
+  id:"msq-cisco-console-settings-025",
+  type:"msq",
+  q:`Which two settings are standard Cisco console connections when configuring a terminal emulator to connect to the console port of a Cisco switch? (Choose two.)`,
+  pick:2,
+  options:{
+    A:"Stop bits: 2",
+    B:"Flow control: Hardware",
+    C:"Speed (baud rate): 9600",
+    D:"Data bits: 8",
+    E:"Parity: Even"
+  },
+  ok:["C","D"],
+  exp_en:`The default Cisco console settings are 9600 baud, 8 data bits, no parity, 1 stop bit, and no flow control (9600 8N1). Therefore, Speed 9600 and Data bits 8 are correct. The other options deviate from the standard configuration.`,
+  exp_es:`La configuración estándar de consola Cisco es 9600 baudios, 8 bits de datos, sin paridad, 1 bit de parada y sin control de flujo (9600 8N1). Por lo tanto, 9600 y 8 bits de datos son correctos. Las demás opciones no corresponden a la configuración por defecto.`
+},
+{
+  id: "msq-rommon-password-recovery-032",
+  type: "msq",
+
+  q: `Which two actions are typically performed in ROMMON mode during the password recovery process? (Choose two.)`,
+
+  options: {
+    A: "Change the configuration register.",
+    B: "Load the startup configuration.",
+    C: "Save the configuration.",
+    D: "Modify passwords.",
+    E: "Reboot the device."
+  },
+
+  ok: ["A","E"],
+
+  exp_en: `During password recovery on Cisco devices, ROMMON mode is used to change the configuration register so the device ignores the startup configuration on the next boot (commonly setting it to 0x2142). After modifying the configuration register, the device must be rebooted to apply the change and bypass the saved configuration.`,
+
+  exp_es: `Durante la recuperación de contraseña en dispositivos Cisco, el modo ROMMON se utiliza para cambiar el registro de configuración y hacer que el dispositivo ignore la startup-config en el siguiente arranque (normalmente estableciendo 0x2142). Después de modificar el registro de configuración, es necesario reiniciar el equipo para aplicar el cambio y omitir la configuración guardada.`
+},
+{
+  id:"msq-collaboration-infrastructure-features-051",
+  type:"msq",
+  q:`Which two features are managed by the hardware and software of the collaboration infrastructure? (Choose two.)`,
+  pick:2,
+  options:{
+    A:"Network bandwidth allocation",
+    B:"Hosting large-scale databases",
+    C:"Facilitating connections",
+    D:"Phone book administration",
+    E:"Supporting meeting experiences"
+  },
+  ok:["C","E"],
+  exp_en:`Cisco collaboration infrastructure components such as CUCM, Expressway, media servers, and Webex platforms facilitate real-time connections between users and support voice, video, and content-sharing meeting experiences. Network bandwidth allocation is handled by network QoS policies, large-scale databases belong to data center roles, and phone book administration is typically managed through directory services rather than core collaboration infrastructure.`,
+  exp_es:`Los componentes de la infraestructura de colaboración de Cisco, como CUCM, Expressway, servidores de medios y plataformas Webex, facilitan conexiones en tiempo real entre usuarios y soportan experiencias de reunión con voz, video y compartición de contenido. La asignación de ancho de banda corresponde a políticas de QoS de red, el alojamiento de bases de datos pertenece al entorno de centro de datos y la administración de directorios suele gestionarse mediante servicios de directorio externos.`
+},
+{
+  id:"msq-nic-replacement-indicators-055",
+  type:"msq",
+  q:`What are two indicators that a network interface card must be replaced? (Choose two.)`,
+  pick:2,
+  options:{
+    A:"Connectivity problems",
+    B:"Inability to save configurations",
+    C:"Boot failures",
+    D:"Consistent link down status",
+    E:"Frequent system crashes"
+  },
+  ok:["A","D"],
+  exp_en:`Two common indicators that a Network Interface Card (NIC) may need replacement are persistent connectivity problems and a consistent link down status. Connectivity problems can include failure to obtain an IP address or inability to communicate with other devices. A link LED that remains off or frequently drops despite using a known-good cable and switch port typically indicates a faulty NIC. Other symptoms such as boot failures or configuration issues are usually related to different hardware or software components.`,
+  exp_es:`Dos indicadores comunes de que una tarjeta de red (NIC) puede necesitar reemplazo son problemas persistentes de conectividad y un estado constante de enlace caído. Los problemas de conectividad pueden incluir la imposibilidad de obtener una dirección IP o comunicarse con otros dispositivos. Un LED de enlace que permanece apagado o se cae frecuentemente pese a usar un cable y puerto conocidos como funcionales suele indicar una NIC defectuosa. Otros síntomas como fallos de arranque o problemas de configuración suelen estar relacionados con otros componentes de hardware o software.`
+},
+
+{
+  id:"msq-meraki-restore-button-behavior-068",
+  type:"msq",
+  pick:2,
+
+  q:`Which two results are achieved by briefly pressing the restore/reset button on a Cisco Meraki switch? (Choose two.)`,
+
+  options:{
+    A:"The device reboots.",
+    B:"A full factory restore is performed.",
+    C:"Cloud management is disabled.",
+    D:"The management interface is cleared.",
+    E:"The downloaded configuration is deleted."
+  },
+
+  ok:["A","D"],
+
+  exp_en:`Briefly pressing (less than 5 seconds) the restore/reset button on a Cisco Meraki switch causes the device to reboot and clears the local management interface settings. A full factory reset requires holding the button for a longer duration (typically more than 10 seconds).`,
+
+  exp_es:`Al presionar brevemente (menos de 5 segundos) el botón restore/reset en un switch Cisco Meraki, el equipo se reinicia y se limpian los ajustes de la interfaz de gestión local. Para realizar un restablecimiento completo de fábrica es necesario mantener el botón presionado durante más tiempo (normalmente más de 10 segundos).`
+},
+{
+  id:"msq-catalyst-8000-chassis-cover-components-070",
+  type:"msq",
+  pick:2,
+
+  q:`Which two components are accessed by removing the chassis cover on Cisco Catalyst 8000 Series Edge platforms? (Choose two.)`,
+
+  options:{
+    A:"Transceivers",
+    B:"Network Interface Modules",
+    C:"DIMMs",
+    D:"SSDs",
+    E:"Fan trays"
+  },
+
+  ok:["C","D"],
+
+  exp_en:`On Cisco Catalyst 8000 Series Edge platforms, removing the chassis cover provides access to internal components such as DIMMs (system memory) and SSDs (storage devices). These components are located inside the chassis and require cover removal for maintenance or replacement. Transceivers and NIMs are externally accessible.`,
+
+  exp_es:`En las plataformas Cisco Catalyst 8000 Series Edge, al retirar la cubierta del chasis se accede a componentes internos como los DIMMs (memoria del sistema) y los SSD (almacenamiento). Estos elementos se encuentran dentro del equipo y requieren retirar la tapa para su mantenimiento o sustitución. Los transceptores y NIMs son accesibles externamente.`
+},
+{
+  id:"msq-iaas-vendor-managed-088",
+  type:"msq",
+  q:`Which two cloud computing services are vendor-managed in an Infrastructure as a Service (IaaS) delivery model? (Choose two.)`,
+  pick:2,
+  options:{
+    A:`Applications`,
+    B:`Networking`,
+    C:`Storage`,
+    D:`Data`,
+    E:`Operating System`
+  },
+  ok:["B","C"],
+
+  exp_en:`In an Infrastructure as a Service (IaaS) model, the cloud provider is responsible for managing the underlying infrastructure components. This includes networking infrastructure (physical and virtual networking) and storage systems required to support workloads.
+
+The customer is responsible for managing the operating system, applications, and data. IaaS shifts responsibility for hardware, connectivity, and storage maintenance to the vendor, while software configuration and data management remain under the customer's control.`,
+
+  exp_es:`En el modelo Infrastructure as a Service (IaaS), el proveedor de la nube es responsable de gestionar los componentes de infraestructura subyacentes. Esto incluye la infraestructura de red (física y virtual) y los sistemas de almacenamiento necesarios para soportar las cargas de trabajo.
+
+El cliente es responsable del sistema operativo, las aplicaciones y los datos. IaaS traslada la gestión del hardware, la conectividad y el almacenamiento al proveedor, mientras que la configuración del software y la gestión de la información permanecen bajo control del cliente.`
+},
+{
+  id:"msq-dc-fault-tolerance-089",
+  type:"msq",
+  q:`Which two network design strategies in Cisco data center solutions improve fault tolerance and high availability? (Choose two.)`,
+  pick:2,
+  options:{
+    A:`SAN extension over IP networks (FCIP)`,
+    B:`Redundant supervisor engines and fabric modules`,
+    C:`High-density 10/40/100 gigabit Ethernet connectivity`,
+    D:`Virtual port channels for link aggregation`,
+    E:`Access layer switch deployment`
+  },
+  ok:["B","D"],
+
+  exp_en:`In Cisco data center designs, high availability and fault tolerance are achieved through redundancy and intelligent link design.
+
+Redundant supervisor engines and fabric modules provide hardware-level failover capabilities. If one supervisor or fabric module fails, the redundant component takes over, maintaining uninterrupted network operation.
+
+Virtual Port Channels (vPCs) allow links to connect to two separate physical switches while appearing as a single logical switch. This provides active-active redundancy, load balancing, and loop prevention, which are essential for high-availability environments.
+
+Other options may improve performance or extend functionality but do not directly provide failover or redundancy mechanisms.`,
+
+  exp_es:`En los diseños de centros de datos Cisco, la alta disponibilidad y la tolerancia a fallos se logran mediante redundancia y diseño inteligente de enlaces.
+
+Los supervisor engines y fabric modules redundantes proporcionan capacidades de conmutación por error a nivel hardware. Si uno falla, el componente redundante asume el control sin interrumpir el servicio.
+
+Los Virtual Port Channels (vPC) permiten que los enlaces se conecten a dos switches físicos distintos funcionando como un único switch lógico. Esto proporciona redundancia activa-activa, balanceo de carga y prevención de bucles, fundamentales en entornos de alta disponibilidad.
+
+Las otras opciones pueden mejorar el rendimiento o ampliar funcionalidades, pero no aportan directamente mecanismos de failover o redundancia.`  
+},
+{
+  id:"msq-ucs-cseries-replacement-100",
+  type:"msq",
+
+  q:`Which two actions ensure a smooth transition to the new hardware when replacing a Cisco UCS C-Series Rack-Mount Server? (Choose two.)`,
+
+  pick:2,
+
+  options:{
+    A:"Reconfigure the DHCP server to assign a new IP address to the replacement server.",
+    B:"Back up the server configuration using Cisco Integrated Management Controller.",
+    C:"Temporarily disable all firewalls during the replacement process.",
+    D:"Decommission the server if it is integrated in a Cisco UCS domain.",
+    E:"Update the firmware on the fabric interconnects."
+  },
+
+  ok:["B","D"],
+
+  exp_en:`Two critical steps ensure a smooth Cisco UCS C-Series server replacement.
+
+Backing up the configuration using Cisco Integrated Management Controller (CIMC) preserves BIOS settings, RAID configuration, and network parameters. This allows rapid restoration on the replacement hardware.
+
+If the server is part of a UCS domain, it must be properly decommissioned in UCS Manager before physical removal. This releases it from inventory and prevents profile conflicts or orphaned configurations.
+
+Reconfiguring DHCP, disabling firewalls, or updating fabric interconnect firmware are not required procedures for a standard hardware replacement.`,
+
+  exp_es:`Dos acciones clave garantizan una sustitución correcta de un servidor Cisco UCS C-Series.
+
+Realizar una copia de seguridad de la configuración mediante Cisco Integrated Management Controller (CIMC) preserva ajustes de BIOS, configuración RAID y parámetros de red, permitiendo restaurarlos rápidamente en el nuevo hardware.
+
+Si el servidor forma parte de un dominio UCS, debe descomisionarse correctamente en UCS Manager antes de retirarlo físicamente. Esto evita conflictos de perfiles o configuraciones huérfanas.
+
+Reconfigurar DHCP, desactivar firewalls o actualizar firmware de los fabric interconnects no son pasos necesarios en una sustitución estándar de hardware.`
+}
+    ];
+
+    const BANK_MATCH = [
+  {
+    id: "match-connectivity-tools-003",
+    type: "dragMatch",
+    q: `Drag and drop the network connectivity and management tools onto the correct description.`,
+    leftItems: [
+      "SSH",
+      "Telnet",
+      "PING",
+      "IP address configuration"
+    ],
+    rightItems: [
+      "sends ICMP echo request packets to verify connectivity",
+      "allows virtual terminal connections with unencrypted traffic",
+      "provides secure, encrypted remote access to network devices",
+      "requires the PC and Cisco device to be in the same subnet for direct connection"
+    ],
+    ok: {
+      0: 2,
+      1: 1,
+      2: 0,
+      3: 3
+    },
+    exp_en: `PING sends ICMP echo request packets to verify connectivity.
+Telnet allows remote access but transmits data in plaintext.
+SSH provides secure, encrypted remote CLI access.
+IP address configuration requires both devices to be in the same subnet for direct local connectivity.`,
+    exp_es: `PING envía solicitudes ICMP echo para verificar conectividad.
+Telnet permite acceso remoto pero transmite los datos sin cifrar.
+SSH proporciona acceso remoto seguro y cifrado a la CLI.
+La configuración IP requiere que el PC y el dispositivo Cisco estén en la misma subred para acceso directo.`
+  },
+
+  {
+    id: "match-memory-components-006",
+    type: "dragMatch",
+    img: "1.PNG",
+    q: `Refer to the exhibit.
+Drag and drop the functions from the left onto the corresponding internal memory components on the right.`,
+    leftItems: [
+      "bootstrap code, POST code, ROM monitor",
+      "startup configuration",
+      "running configuration",
+      "Cisco IOS software, backup configuration"
+    ],
+    rightItems: [
+      "NVRAM",
+      "RAM",
+      "ROM",
+      "Flash memory"
+    ],
+    ok: {
+      0: 2,
+      1: 0,
+      2: 1,
+      3: 3
+    },
+    exp_en: `Each internal memory component in a Cisco device serves a specific role during the boot process and normal operation.
+
+ROM stores the bootstrap program, POST (Power-On Self-Test), and the ROM Monitor. These are used during the initial startup process and recovery operations.
+
+NVRAM stores the startup configuration file (startup-config). This configuration is loaded into RAM when the device boots and remains saved even after a reboot.
+
+RAM stores the running configuration (running-config), routing tables, ARP cache, and packet buffers. It is volatile memory, meaning all contents are lost when the device is powered off or restarted.
+
+Flash memory stores the Cisco IOS image and can also store backup configuration files. It is non-volatile, so its contents remain intact after a reboot.`,
+    exp_es: `Cada componente de memoria interna en un dispositivo Cisco cumple una función específica durante el arranque y la operación normal.
+
+ROM almacena el programa de arranque (bootstrap), el POST (Power-On Self-Test) y el ROM Monitor. Se utilizan durante el proceso inicial de encendido y en tareas de recuperación.
+
+NVRAM almacena la configuración de inicio (startup-config). Esta configuración se carga en la RAM durante el arranque y permanece guardada incluso después de reiniciar el equipo.
+
+RAM almacena la configuración en ejecución (running-config), las tablas de enrutamiento, la caché ARP y los buffers de paquetes. Es memoria volátil, por lo que su contenido se pierde al apagar o reiniciar el dispositivo.
+
+La memoria Flash almacena la imagen del Cisco IOS y puede guardar configuraciones de respaldo. Es memoria no volátil, por lo que mantiene la información después de reinicios.`
+  },
+
+  {
+    id: "match-ipv4-address-types-009",
+    type: "dragMatch",
+    q: `Drag and drop the IPv4 address types from the left onto the corresponding descriptions on the right.`,
+    leftItems: [
+      "Loopback",
+      "Broadcast",
+      "Unicast",
+      "Multicast"
+    ],
+    rightItems: [
+      "address used for testing and troubleshooting on the local device",
+      "address used for one-to-everyone communication on the subnet",
+      "address that identifies a unique node on the network",
+      "address used for single packet of one-to-many delivery"
+    ],
+    ok: {
+      0: 0,
+      1: 1,
+      2: 2,
+      3: 3
+    },
+    exp_en: `IPv4 supports different delivery methods. Unicast is one-to-one communication and identifies a single host. Broadcast sends traffic to all devices in the subnet. Multicast sends one packet to a specific group of hosts. Loopback (127.0.0.1) is used internally by a device to test its own TCP/IP stack and never leaves the local machine.`,
+    exp_es: `IPv4 soporta distintos tipos de entrega. Unicast es comunicación uno a uno e identifica un único host. Broadcast envía tráfico a todos los dispositivos de la subred. Multicast envía un único paquete a un grupo específico de hosts. Loopback (127.0.0.1) se utiliza internamente para probar la pila TCP/IP del propio dispositivo y nunca sale a la red.`
+  },
+
+  {
+    id: "match-tcpip-encapsulation-017",
+    type: "dragMatch",
+    img: "3.PNG",
+    q: `Refer to the exhibit. Drag and drop the steps in the TCP/IP encapsulation process from the left onto the corresponding layer on the right.`,
+    leftItems: [
+      "groups the data into frames, adding a header and FCS trailer",
+      "groups the transport data into packets, adding a network header",
+      "groups the data into segments and adds a header",
+      "adds a header to the user data"
+    ],
+    rightItems: [
+      "application layer",
+      "transport layer",
+      "internet layer",
+      "link layer"
+    ],
+    ok: {
+      0: 3,
+      1: 2,
+      2: 1,
+      3: 0
+    },
+    exp_en: `The TCP/IP encapsulation process occurs as data moves down the protocol stack.
+
+Application layer: Adds an application header to the user data, creating the initial payload.
+
+Transport layer: Segments the data and adds a transport-layer header (TCP/UDP) to ensure sequencing and reliability.
+
+Internet layer: Encapsulates segments into IP packets (datagrams) and adds an IP header for routing between networks.
+
+Link layer: Frames the packet with a Layer 2 header and trailer (including FCS) to prepare it for transmission on the physical medium.`,
+    exp_es: `El proceso de encapsulación TCP/IP ocurre cuando los datos descienden por la pila de protocolos.
+
+Capa de aplicación: Añade un encabezado de aplicación a los datos del usuario, creando el payload inicial.
+
+Capa de transporte: Segmenta los datos y añade un encabezado de transporte (TCP/UDP) para control de secuencia y fiabilidad.
+
+Capa de Internet: Encapsula los segmentos en paquetes IP (datagramas) y añade un encabezado IP para permitir el enrutamiento entre redes.
+
+Capa de enlace: Encapsula el paquete en una trama agregando encabezado y tráiler (incluyendo FCS) para su transmisión en el medio físico.`
+  },
+
+  {
+    id: "match-restore-config-019",
+    type: "dragMatch",
+    q: `Drag and drop the configuration tasks for restoring software from the left onto the corresponding commands on the right.`,
+    leftItems: [
+      "Restore configuration from USB drive.",
+      "Save configuration changes.",
+      "Display current configuration.",
+      "Download configuration from TFTP server."
+    ],
+    rightItems: [
+      "show running-config",
+      "copy running-config startup-config",
+      "copy tftp: running-config",
+      "copy usbflash0:backup.cfg running-config"
+    ],
+    ok: {
+      0: 3,
+      1: 1,
+      2: 0,
+      3: 2
+    },
+    exp_en: `This question tests knowledge of basic Cisco IOS configuration management commands.
+
+show running-config displays the active configuration stored in RAM.
+
+copy running-config startup-config saves the current configuration to NVRAM so it persists after a reboot.
+
+copy tftp: running-config downloads a configuration file from a TFTP server and applies it to the current running configuration.
+
+copy usbflash0:backup.cfg running-config restores a configuration file stored on a USB drive and loads it into the running configuration.`,
+    exp_es: `Esta pregunta evalúa conocimientos básicos de gestión de configuración en Cisco IOS.
+
+show running-config muestra la configuración activa almacenada en RAM.
+
+copy running-config startup-config guarda la configuración actual en NVRAM para que persista tras un reinicio.
+
+copy tftp: running-config descarga una configuración desde un servidor TFTP y la aplica a la configuración en ejecución.
+
+copy usbflash0:backup.cfg running-config restaura un archivo de configuración almacenado en una unidad USB y lo carga en la configuración activa.`
+  },
+
+  // Q22 (orden) - mismo formato dragMatch (arrays)
+  {
+    id: "match-capture-status-022",
+    type: "dragMatch",
+    q: `Drag and drop the steps from the left into order to capture the status of a Cisco device.`,
+    leftItems: [
+      "Access the CLI.",
+      "Create a file to capture router status text.",
+      "Connect to the console port.",
+      "Check the router status.",
+      "Save the output file."
+    ],
+    rightItems: [
+      "step 1",
+      "step 2",
+      "step 3",
+      "step 4",
+      "step 5"
+    ],
+    ok: {
+      2: 0, // Connect to the console port. -> step 1
+      0: 1, // Access the CLI. -> step 2
+      1: 2, // Create capture file -> step 3
+      3: 3, // Check status -> step 4
+      4: 4  // Save output -> step 5
+    },
+    exp_en: `The correct order is: connect to the console port, access the CLI, create a capture file, check the router status, and finally save the output file.`,
+    exp_es: `El orden correcto es: conectar al puerto de consola, acceder al CLI, crear el archivo de captura, comprobar el estado del router y finalmente guardar el archivo generado.`
+  },
+
+  // Q23 (estructura interfaz) - mismo formato dragMatch (arrays) + img
+  {
+    id: "match-interface-structure-023",
+    type: "dragMatch",
+    img: "4.PNG",
+    q: `Refer to the exhibit. Drag and drop the command names from the left onto the corresponding elements in the interface configuration mode command structure on the right.`,
+    leftItems: [
+      "component to configure",
+      "interface type",
+      "port",
+      "slot"
+    ],
+    rightItems: [
+      "interface",
+      "FastEthernet",
+      "0",
+      "1"
+    ],
+    ok: {
+      0: 0, // component to configure -> interface
+      1: 1, // interface type -> FastEthernet
+      2: 3, // port -> 1
+      3: 2  // slot -> 0
+    },
+    exp_en: `In the command "interface FastEthernet 0/1", the word "interface" identifies the component to configure. "FastEthernet" specifies the interface type. In the 0/1 format, the first number (0) represents the slot number, and the second number (1) represents the port number within that slot.`,
+    exp_es: `En el comando "interface FastEthernet 0/1", la palabra "interface" indica el componente que se va a configurar. "FastEthernet" especifica el tipo de interfaz. En el formato 0/1, el primer número (0) representa el número de slot y el segundo número (1) representa el puerto dentro de ese slot.`
+  },
+  
+  
+  {
+  id: "match-tftp-advantages-disadvantages-024",
+  type: "dragMatch",
+  q: `Drag and drop the TFTP statements from the left onto the corresponding categories on the right.`,
+  leftItems: [
+    "lack of security features and user authentication",
+    "simple setup and operation",
+    "transferring small files without security concerns",
+    "not suitable for transferring large files"
+  ],
+  rightItems: [
+    "Advantages of TFTP",
+    "Disadvantages of TFTP"
+  ],
+  ok: {
+    0: 1, // lack of security... → Disadvantages
+    1: 0, // simple setup... → Advantages
+    2: 0, // transferring small files... → Advantages
+    3: 1  // not suitable for large files → Disadvantages
+  },
+  exp_en: `TFTP is simple and lightweight, which makes it good for simple setups and small file transfers in trusted networks. However, it lacks authentication/encryption and is not a good choice for large file transfers.`,
+  exp_es: `TFTP es simple y ligero, útil para configuraciones sencillas y transferir ficheros pequeños en redes de confianza. Pero carece de autenticación/cifrado y no es adecuado para transferencias grandes.`
+},
+
+
+{
+  id: "match-boot-sequence-026",
+  type: "dragMatch",
+  q: `Drag and drop the steps of the boot sequence process of a Cisco device into order on the right.`,
+
+  leftItems: [
+    "finds and loads the Cisco IOS software",
+    "runs the configured Cisco IOS software",
+    "loads and runs bootstrap code (firmware)",
+    "performs power on self-test (POST)",
+    "finds and loads the configuration"
+  ],
+
+  rightItems: [
+    "step 1",
+    "step 2",
+    "step 3",
+    "step 4",
+    "step 5"
+  ],
+
+  ok: {
+    3: 0, // POST -> step 1
+    2: 1, // bootstrap -> step 2
+    0: 2, // IOS load -> step 3
+    4: 3, // config load -> step 4
+    1: 4  // run IOS -> step 5
+  },
+
+  exp_en: `When a Cisco device powers on, it first performs POST (Power-On Self-Test) to verify hardware functionality. 
+Then the bootstrap program stored in ROM runs and initiates the boot process. 
+Next, the device locates and loads the Cisco IOS image, typically from Flash memory. 
+After IOS is loaded, the device searches for and loads the startup configuration from NVRAM. 
+Finally, the device enters operational mode and runs IOS using the loaded configuration.`,
+
+  exp_es: `Cuando un dispositivo Cisco se enciende, primero ejecuta el POST (Power-On Self-Test) para verificar el hardware. 
+Después se ejecuta el bootstrap almacenado en ROM, que inicia el proceso de arranque. 
+A continuación, el equipo localiza y carga la imagen de Cisco IOS, normalmente desde la memoria Flash. 
+Una vez cargado el IOS, busca y carga la configuración de inicio (startup-config) desde la NVRAM. 
+Finalmente, el dispositivo entra en modo operativo ejecutando IOS con la configuración cargada.`
+},
+
+{
+  id: "match-field-tools-functions-029",
+  type: "dragMatch",
+
+  q: `Drag and drop the tools from the left onto the corresponding primary functions on the right.`,
+
+  leftItems: [
+    "flash card reader",
+    "USB thumb drive",
+    "RJ-45 Ethernet loopback connector",
+    "RJ-45 coupler"
+  ],
+
+  rightItems: [
+    "copying IOS images to and from a router or switch",
+    "testing router or switch Ethernet port functionality",
+    "connecting two RJ-45 cables to extend length",
+    "copying IOS images and configuration files to/from a PC/laptop or TFTP server"
+  ],
+
+  ok: {
+    0: 0,
+    1: 3,
+    2: 1,
+    3: 2
+  },
+
+  exp_en: `A flash card reader is used with CompactFlash cards commonly found in older Cisco devices to copy IOS images to and from a router or switch. A USB thumb drive is used for transferring IOS images and configuration files between a Cisco device and a PC/laptop or TFTP server. An RJ-45 Ethernet loopback connector is a diagnostic tool used to test Ethernet port functionality. An RJ-45 coupler connects two Ethernet cables to extend their length.`,
+
+  exp_es: `El lector de tarjetas flash se utiliza con tarjetas CompactFlash en dispositivos Cisco para copiar imágenes IOS desde y hacia un router o switch. El USB permite transferir imágenes IOS y archivos de configuración entre un dispositivo Cisco y un PC o servidor TFTP. El conector loopback RJ-45 es una herramienta de diagnóstico para probar la funcionalidad de un puerto Ethernet. El acoplador RJ-45 permite unir dos cables Ethernet para extender su longitud.`
+},
+
+{
+  id: "match-nxos-components-040",
+  type: "dragMatch",
+
+  q: `Drag and drop the Cisco NX-OS components from the left onto the corresponding descriptions on the right.`,
+
+  leftItems: [
+    "Kickstart Image",
+    "System Image",
+    "Global configuration command mode",
+    "EXEC command mode"
+  ],
+
+  rightItems: [
+    "specialized bootloader that initializes the hardware",
+    "contains the full NX-OS kernel and operating system",
+    "allows for displaying device status and configuration information",
+    "provides access to the broadest range of commands that affect the device as a whole"
+  ],
+
+  ok: {
+    0: 0,  // Kickstart → specialized bootloader
+    1: 1,  // System Image → full NX-OS kernel/OS
+    2: 3,  // Global config → broadest range affecting device as whole
+    3: 2   // EXEC → display status/config info
+  },
+
+  exp_en: `The Kickstart Image is a lightweight bootloader that initializes hardware and launches the system image. The System Image contains the full NX-OS operating system and kernel. Global configuration mode allows administrators to configure system-wide parameters affecting the entire device. EXEC command mode is used to display device status and configuration information.`,
+
+  exp_es: `La Kickstart Image es un bootloader ligero que inicializa el hardware y lanza la imagen del sistema. La System Image contiene el sistema operativo completo NX-OS y su kernel. El modo de configuración global permite modificar parámetros que afectan al dispositivo en su conjunto. El modo EXEC permite mostrar el estado del dispositivo y su configuración.`
+},
+{
+  id: "match-collaboration-endpoints-045",
+  type: "dragMatch",
+
+  q: `Drag and drop the Cisco collaboration endpoints from the left onto the corresponding descriptions on the right.`,
+
+  leftItems: [
+    "Cisco Room Kit",
+    "Cisco Desk Series",
+    "Quad Camera",
+    "Room Navigator",
+    "Cisco Board"
+  ],
+
+  rightItems: [
+    "all-in-one devices for personal workspaces and meeting rooms",
+    "interactive touchscreen displays supporting video conferencing",
+    "standalone modular video conferencing systems",
+    "multi-angle video capture for immersive experiences",
+    "touch panel for room controls and scheduling"
+  ],
+
+  ok: {
+    0: 0,  // Cisco Room Kit → all-in-one devices
+    1: 2,  // Cisco Desk Series → standalone modular systems
+    2: 3,  // Quad Camera → multi-angle capture
+    3: 4,  // Room Navigator → touch panel
+    4: 1   // Cisco Board → interactive touchscreen displays
+  },
+
+  exp_en: `Cisco Room Kit integrates camera, codec, microphones, and speakers into an all-in-one solution designed for meeting rooms and personal workspaces. Cisco Desk Series devices are modular video conferencing systems commonly used for desktop environments. Quad Camera provides multi-angle video capture and intelligent framing for immersive experiences. Room Navigator functions as a touch panel for room controls and scheduling. Cisco Board is an interactive touchscreen device that supports video conferencing and digital whiteboarding.`,
+
+  exp_es: `Cisco Room Kit integra cámara, códec, micrófonos y altavoces en una solución todo en uno diseñada para salas de reuniones y espacios personales. Cisco Desk Series son sistemas modulares de videoconferencia orientados a entornos de escritorio. Quad Camera ofrece captura multiángulo y encuadre inteligente para experiencias inmersivas. Room Navigator funciona como panel táctil para control de sala y reservas. Cisco Board es una pantalla táctil interactiva que soporta videoconferencia y pizarra digital.`
+},
+
+{
+  id: "match-cisco-collaboration-devices-047",
+  type: "dragMatch",
+  img: "5.PNG",
+
+  q: `Refer to the exhibit. Drag and drop the functions from the left onto the corresponding devices on the right.`,
+
+  leftItems: [
+    "provides 4K resolution and zoom capabilities",
+    "supports video conferencing and content sharing",
+    "creates panoramic views of meeting participants",
+    "controls room environment and scheduling"
+  ],
+
+  rightItems: [
+    "Cisco Room Navigator",
+    "Cisco PTZ 4K Camera",
+    "Cisco Quad Camera",
+    "Cisco Webex Board Pro"
+  ],
+
+  ok: {
+    0: 1,
+    1: 3,
+    2: 2,
+    3: 0
+  },
+
+  exp_en: `The Cisco PTZ 4K Camera provides high-definition 4K resolution and pan-tilt-zoom capabilities. Cisco Webex Board Pro supports video conferencing and wireless content sharing. Cisco Quad Camera creates panoramic views with speaker tracking and intelligent framing. Cisco Room Navigator is a touchscreen controller used for room controls and scheduling.`,
+
+  exp_es: `La Cisco PTZ 4K Camera ofrece resolución 4K y funciones de zoom y movimiento. Cisco Webex Board Pro soporta videoconferencia y compartición de contenido. Cisco Quad Camera crea vistas panorámicas con encuadre inteligente. Cisco Room Navigator es un panel táctil para control de sala y programación.`
+},
+{
+  id: "match-cisco-collaboration-components-048",
+  type: "dragMatch",
+  q: `Drag and drop the Cisco collaboration components from the left onto the corresponding descriptions on the right.`,
+
+  leftItems: [
+    "edge devices",
+    "conferencing",
+    "call control",
+    "endpoints",
+    "collaboration applications"
+  ],
+
+  rightItems: [
+    "handles call routing and maintains connections between endpoints",
+    "delivers services such as voicemail, messaging, and presence features",
+    "manages external connectivity for remote workers and non-VPN offices",
+    "provides multi-party connections for voice and video conferencing",
+    "includes software and hardware for user interaction with the system"
+  ],
+
+  ok: {
+    0: 2,  // edge devices → manages external connectivity
+    1: 3,  // conferencing → multi-party connections
+    2: 0,  // call control → handles call routing
+    3: 4,  // endpoints → includes software and hardware for user interaction
+    4: 1   // collaboration applications → voicemail, messaging, presence
+  },
+
+  exp_en: `Call control handles routing and connection management between endpoints, typically through CUCM. Collaboration applications deliver value-added services such as voicemail and messaging. Edge devices manage secure external connectivity for remote users and non-VPN environments. Conferencing platforms enable multi-party voice and video sessions. Endpoints include hardware and software devices that users interact with directly.`,
+
+  exp_es: `El control de llamadas gestiona el enrutamiento y la conexión entre endpoints, normalmente mediante CUCM. Las aplicaciones de colaboración ofrecen servicios como buzón de voz y mensajería. Los dispositivos edge gestionan la conectividad externa segura para usuarios remotos. La conferencia permite conexiones multipunto de voz y vídeo. Los endpoints incluyen el hardware y software con el que el usuario interactúa directamente.`
+},
+
+{
+  id:"dragmatch-eseries-install-052",
+  type:"dragMatch",
+
+  q:`Drag and drop the actions that must be taken after installing an E-Series server from the left into order on the right.`,
+
+  leftItems:[
+    "Power up the router and server.",
+    "Verify that the router recognized the server.",
+    "Load a compatible Cisco IOS image onto the ISR.",
+    "Connect the server to the network."
+  ],
+
+  rightItems:[
+    "Step 1",
+    "Step 2",
+    "Step 3",
+    "Step 4"
+  ],
+
+  ok:{
+    0:0,
+    1:1,
+    2:2,
+    3:3
+  },
+
+  exp_en:`After installing an E-Series server, first power up the router and server to initialize hardware. Next verify that the router recognizes the server module. Then load a compatible Cisco IOS image that supports the E-Series module. Finally, connect the server to the network to establish operational connectivity.`,
+
+  exp_es:`Después de instalar un servidor E-Series, primero se debe encender el router y el servidor para inicializar el hardware. Luego verificar que el router reconoce el módulo. A continuación, cargar una imagen Cisco IOS compatible con el E-Series. Finalmente, conectar el servidor a la red para dejarlo operativo.`
+},
+{
+  id:"dragmatch-safety-procedures-053",
+  type:"dragMatch",
+
+  q:`Drag and drop the safety actions that must be taken prior to beginning work into order on the right for working with electrical equipment.`,
+
+  leftItems:[
+    "Verify with multimeter.",
+    "Disconnect power.",
+    "Connect ESD strap.",
+    "Locate emergency power-off switch."
+  ],
+
+  rightItems:[
+    "Step 1",
+    "Step 2",
+    "Step 3",
+    "Step 4"
+  ],
+
+  ok:{
+    3:0,  // Locate emergency power-off switch → Step 1
+    1:1,  // Disconnect power → Step 2
+    0:2,  // Verify with multimeter → Step 3
+    2:3   // Connect ESD strap → Step 4
+  },
+
+  exp_en:`Before working on electrical equipment, first locate the emergency power-off switch in case of a fault. Next disconnect the power source. Then verify with a multimeter that no voltage is present. Finally, connect the ESD strap to prevent electrostatic damage to components.`,
+
+  exp_es:`Antes de trabajar con equipos eléctricos, primero localiza el interruptor de apagado de emergencia. Luego desconecta la alimentación. Después verifica con un multímetro que no haya voltaje presente. Finalmente, conecta la pulsera ESD para evitar daños por electricidad estática.`
+},
+
+{
+  id: "match-catalyst-9400-fru-identification-060",
+  type: "dragMatch",
+  img: "6.PNG",
+
+  q: `Refer to the exhibit. Drag and drop the names of the field-replaceable units from the left onto the corresponding letters on the image of the Cisco Catalyst 9400 modular switch.`,
+
+  leftItems: [
+    "line card slots 1 and 2",
+    "line card slots 5, 6, and 7",
+    "power supply modules",
+    "fan tray assembly",
+    "supervisor modules"
+  ],
+
+  rightItems: [
+    "A",
+    "B",
+    "C",
+    "D",
+    "E"
+  ],
+
+  ok: {
+    0: 2,  // line card slots 1 and 2 -> C
+    1: 4,  // line card slots 5, 6, and 7 -> E
+    2: 0,  // power supply modules -> A
+    3: 1,  // fan tray assembly -> B
+    4: 3   // supervisor modules -> D
+  },
+
+  exp_en: `On a Cisco Catalyst 9400 modular switch, the power supply modules are located at the top of the chassis (A). The fan tray assembly is mounted vertically on the left side (B). Line card slots 1 and 2 are positioned in the upper section (C). The supervisor modules are centrally located for control plane functions (D). Line card slots 5, 6, and 7 are located in the lower section for high-density port expansion (E).`,
+
+  exp_es: `En un Cisco Catalyst 9400 modular, los módulos de alimentación están en la parte superior del chasis (A). El conjunto de ventiladores está montado verticalmente en el lado izquierdo (B). Las ranuras de línea 1 y 2 se encuentran en la sección superior (C). Los módulos supervisor están situados en la zona central para funciones de control (D). Las ranuras 5, 6 y 7 se ubican en la parte inferior para expansión de alta densidad (E).`
+},
+
+{
+  id:"match-mds-fru-failures-073",
+  type:"dragMatch",
+
+  q:`Drag and drop the failures from the left onto the responsible devices in the MDS field-replaceable unit on the right.`,
+
+  leftItems:[
+    "inability to manage or control switch functions",
+    "failure to maintain optimal temperatures",
+    "loss of connectivity on specific ports",
+    "inability to establish fiber optic connections",
+    "degraded internal data transfer between line cards"
+  ],
+
+  rightItems:[
+    "fan module",
+    "supervisor module",
+    "fabric module",
+    "line card",
+    "transceivers"
+  ],
+
+  ok:{
+    0:1,
+    1:0,
+    2:3,
+    3:4,
+    4:2
+  },
+
+  exp_en:`The supervisor module manages control-plane operations, so failure causes loss of management functions. Fan modules maintain cooling; failure leads to temperature issues. Line cards provide port connectivity. Transceivers enable fiber optic links. Fabric modules handle switching between line cards, so their failure degrades internal traffic paths.`,
+
+  exp_es:`El supervisor module gestiona el plano de control; su fallo provoca pérdida de gestión. El fan module mantiene la refrigeración; su fallo causa problemas térmicos. La line card proporciona conectividad de puertos. Los transceivers permiten enlaces de fibra óptica. El fabric module gestiona el tráfico interno entre line cards; su fallo degrada la transferencia interna de datos.`
+},
+{
+  id:"match-cisco-data-center-technologies-081",
+  type:"dragMatch",
+
+  q:`Drag and drop the functions from the left onto the corresponding Cisco data center technologies on the right.`,
+
+  leftItems:[
+    "integrates multiple network layers into a single infrastructure",
+    "provides link aggregation and redundancy between switches",
+    "enables software-defined networking in data centers",
+    "combines storage and network traffic on a single network"
+  ],
+
+  rightItems:[
+    "Unified Fabric",
+    "Fibre Channel over Ethernet (FCoE)",
+    "virtual port channels (vPCs)",
+    "Application Centric Infrastructure (ACI)"
+  ],
+
+  ok:{
+    0:0,
+    1:2,
+    2:3,
+    3:1
+  },
+
+  exp_en:`Unified Fabric integrates multiple network layers into a single infrastructure. Virtual port channels (vPCs) provide link aggregation and redundancy between switches. Application Centric Infrastructure (ACI) enables software-defined networking in data centers. Fibre Channel over Ethernet (FCoE) combines storage and traditional Ethernet traffic on the same network.`,
+
+  exp_es:`Unified Fabric integra múltiples capas de red en una única infraestructura. Los virtual port channels (vPCs) proporcionan agregación de enlaces y redundancia entre switches. Application Centric Infrastructure (ACI) permite redes definidas por software en centros de datos. Fibre Channel over Ethernet (FCoE) combina tráfico de almacenamiento y datos en la misma red Ethernet.`
+},
+{
+  id:"match-ncs5500-fru-identification-083",
+  type:"dragMatch",
+  img:"10.PNG",
+
+  q:`Refer to the exhibit. Drag and drop the names of the field-replaceable units from the left onto the corresponding letters on the image of the Cisco NCS 5500 Series modular router.`,
+
+  leftItems:[
+    "power supplies",
+    "transceivers",
+    "route processor cards",
+    "line cards"
+  ],
+
+  rightItems:[
+    "A",
+    "B",
+    "C",
+    "D"
+  ],
+
+  ok:{
+    0:3,
+    1:2,
+    2:1,
+    3:0
+  },
+
+  exp_en:`A corresponds to line cards, located in the upper slots and providing network interfaces. B identifies the route processor cards, responsible for control-plane and routing functions. C marks the transceivers installed in the line card ports for optical or copper connectivity. D indicates the power supplies located in the lower section, providing redundant and hot-swappable power.`,
+
+  exp_es:`A corresponde a las line cards, ubicadas en la parte superior y encargadas de la conectividad. B identifica las route processor cards, responsables del plano de control y funciones de enrutamiento. C señala los transceivers instalados en los puertos de las line cards. D indica las power supplies situadas en la parte inferior, que proporcionan alimentación redundante y reemplazable en caliente.`
+},
+{
+  id:"dragmatch-ucs-components-090",
+  type:"dragMatch",
+
+  q:`Drag and drop the Cisco UCS components from the left onto the corresponding functionalities on the right.`,
+
+  leftItems:[
+    "fabric interconnects",
+    "virtual interface cards",
+    "fabric extenders",
+    "servers"
+  ],
+
+  rightItems:[
+    "primary point of connectivity for all attached devices",
+    "installed in a chassis and provide compute power",
+    "maintain connectivity by extending ports",
+    "network adapters that allow network interface virtualization"
+  ],
+
+  ok:{
+    0:0,
+    1:3,
+    2:2,
+    3:1
+  },
+
+  exp_en:`Fabric interconnects act as the primary switching and management point for all attached UCS components. Virtual interface cards (VICs) are network adapters that enable virtualization of multiple network interfaces. Fabric extenders (FEX) extend connectivity from the fabric interconnects to the chassis. Servers provide the actual compute resources and are installed in the chassis to run workloads.`,
+
+  exp_es:`Los fabric interconnects actúan como el punto principal de conectividad y gestión del entorno UCS. Las virtual interface cards (VIC) son adaptadores de red que permiten la virtualización de múltiples interfaces. Los fabric extenders (FEX) extienden la conectividad desde los fabric interconnects hacia el chassis. Los servers proporcionan los recursos de cómputo y se instalan en el chassis para ejecutar las cargas de trabajo.`
+},
+{
+  id:"dragmatch-mds-categories-093",
+  type:"dragMatch",
+
+  q:`Drag and drop the characteristics from the left onto the corresponding categories of MDS switch on the right.`,
+
+  leftItems:[
+    "scalable and expandable design",
+    "suitable for small deployments",
+    "enterprise-class performance",
+    "high port densities",
+    "fixed number of ports",
+    "ideal for Edge SAN deployments"
+  ],
+
+  rightItems:[
+    "Director-Class",
+    "Fabric Switches"
+  ],
+
+  ok:{
+    0:0,
+    1:1,
+    2:0,
+    3:0,
+    4:1,
+    5:1
+  },
+
+  exp_en:`Director-Class MDS switches are modular, highly scalable, and designed for enterprise-core SAN environments. They offer scalable and expandable design, enterprise-class performance, and high port densities.
+
+Fabric Switches are fixed-form-factor switches suited for smaller or edge SAN deployments. They typically have a fixed number of ports and are ideal for smaller environments or edge locations.`,
+
+  exp_es:`Los switches MDS Director-Class son modulares y altamente escalables, diseñados para entornos SAN empresariales de núcleo. Ofrecen diseño escalable y expandible, rendimiento de clase empresarial y alta densidad de puertos.
+
+Los Fabric Switches son equipos de formato fijo orientados a despliegues pequeños o entornos SAN de borde. Normalmente tienen un número fijo de puertos y son ideales para entornos reducidos o ubicaciones Edge.`
+},
+{
+  id:"dragmatch-virtualized-components-094",
+  type:"dragMatch",
+
+  q:`Drag and drop the virtualized data center components from the left onto the corresponding descriptions on the right.`,
+
+  leftItems:[
+    "virtual switch",
+    "Type 1 hypervisor",
+    "virtual machine (VM)",
+    "Type 2 hypervisor"
+  ],
+
+  rightItems:[
+    "emulation of a computer system that operates like it has its own physical hardware",
+    "emulates a Layer 2 switch and provides network connectivity for all VMs or a host machine",
+    "runs directly on the physical server hardware, often used in large-scale deployments",
+    "runs as a software layer on a host operating system, typically used for development and testing"
+  ],
+
+  ok:{
+    0:1,
+    1:2,
+    2:0,
+    3:3
+  },
+
+  exp_en:`A virtual machine (VM) is an emulation of a computer system that behaves like it has its own dedicated hardware. A virtual switch operates inside a hypervisor and replicates Layer 2 switching behavior for VM connectivity. A Type 1 hypervisor (bare-metal) runs directly on physical hardware and is optimized for data center deployments. A Type 2 hypervisor runs on top of a host operating system and is commonly used for development and testing environments.`,
+
+  exp_es:`Una máquina virtual (VM) es una emulación de un sistema informático que funciona como si tuviera su propio hardware físico. Un virtual switch opera dentro del hipervisor y replica el comportamiento de un switch de Capa 2 para la conectividad de las VMs. Un hipervisor Tipo 1 (bare-metal) se ejecuta directamente sobre el hardware físico y está optimizado para centros de datos. Un hipervisor Tipo 2 se ejecuta sobre un sistema operativo anfitrión y se utiliza habitualmente en entornos de desarrollo y pruebas.`
+}
+
+];
+
+     const QUESTIONS = [
+      ...BANK_MCQ,
+      ...BANK_MSQ,
+      ...BANK_MATCH
+    ];
+
+    /* =========================
+       STATE
+    ========================== */
+    const LS_KEY = "cisco_exam_trainer_full_v3"; // v3 para cortar residuos viejos
+
+    let state = {
+      mode: "exam",     // "exam" | "study"
+      idx: 0,
+      order: [],
+      answers: {},      // { [q.id]: {type,value,isCorrect,answered} }
+      finished: false,  // boton Corregir
+      optOrder: {}      // { [q.id]: ["B","D","A","C"] }
+    };
+
+    /* =========================
+       UTIL
+    ========================== */
+    const $ = sel => document.querySelector(sel);
+
+    function toast(msg){
+      const el = $("#toast");
+      el.textContent = msg;
+      el.classList.add("show");
+      setTimeout(()=>el.classList.remove("show"), 1400);
+    }
+
+    function clamp(n,min,max){ return Math.max(min, Math.min(max,n)); }
+
+    function save(){
+      localStorage.setItem(LS_KEY, JSON.stringify(state));
+    }
+
+    function load(){
+      try{
+        const raw = localStorage.getItem(LS_KEY);
+        if(!raw) return false;
+        const s = JSON.parse(raw);
+        if(!s || typeof s !== "object") return false;
+
+        state = s;
+        if(!Array.isArray(state.order)) state.order = [];
+        if(!state.answers || typeof state.answers !== "object") state.answers = {};
+        if(!state.optOrder || typeof state.optOrder !== "object") state.optOrder = {};
+        if(state.mode !== "exam" && state.mode !== "study") state.mode = "exam";
+        if(typeof state.finished !== "boolean") state.finished = false;
+        if(typeof state.idx !== "number") state.idx = 0;
+
+        return true;
+      }catch(e){
+        return false;
+      }
+    }
+
+    function showCorrectionsFor(q){
+  if(state.mode === "exam") return state.finished === true;
+  // study: solo cuando esa pregunta ya está "cerrada"
+  return state.answers[q.id]?.answered === true;
+}
+
+
+function showCorrections(){
+  // Compatibilidad para DROP/MATCH (que llaman showCorrections())
+  // EXAM: solo cuando pulsas "Corregir"
+  // STUDY: solo cuando la pregunta está cerrada (answered)
+  const q = currentQ();
+  return showCorrectionsFor(q);
+}
+
+
+    // Explicación: se muestra cuando la pregunta está marcada como answered (MCQ al contestar, MSQ al completar pick)
+ function shouldShowExplanation(q){
+  // ✅ En EXAMEN: nunca (aunque esté contestada)
+  if(state.mode === "exam") return false;
+
+  // ✅ En ESTUDIO: solo cuando ya has “cerrado” la respuesta
+  const a = state.answers[q.id];
+  const hasAnyExp = !!(q.exp || q.exp_en || q.exp_es);
+  return !!(a && a.answered === true && hasAnyExp);
+}
+
+function renderExplanation(host, q){
+  if(!shouldShowExplanation(q)) return;
+
+  const parts = [];
+  if(q.exp) parts.push(String(q.exp));
+  if(q.exp_en) parts.push("EN: " + String(q.exp_en));
+  if(q.exp_es) parts.push("ES: " + String(q.exp_es));
+
+  const box = document.createElement("div");
+  box.className = "note";
+  box.style.marginTop = "12px";
+  box.innerHTML = "<b>Explanation:</b><br/>" + parts.join("\n\n").replace(/\n/g,"<br/>");
+  host.appendChild(box);
+}
+
+    function setEquals(aArr, bArr){
+      const a = new Set(aArr);
+      const b = new Set(bArr);
+      if(a.size !== b.size) return false;
+      for(const v of a){ if(!b.has(v)) return false; }
+      return true;
+    }
+
+    function shuffleInPlace(arr){
+      for(let i=arr.length-1;i>0;i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    // Orden aleatorio ESTABLE de opciones por pregunta
+    function getOptKeys(q){
+      if(!q.options) return [];
+      if(!state.optOrder) state.optOrder = {};
+      if(!state.optOrder[q.id]){
+        state.optOrder[q.id] = shuffleInPlace(Object.keys(q.options).slice());
+      }
+      return state.optOrder[q.id];
+    }
+
+    // Resolver rutas de imagen: si pones "1.PNG", intentará también "img/1.PNG"
+    function resolveImgCandidates(src){
+      if(!src) return [];
+      const s = String(src).trim();
+      if(!s) return [];
+      const hasSlash = s.includes("/") || s.includes("\\");
+      if(hasSlash) return [s];
+      return [s, "img/" + s];
+    }
+
+    /* =========================
+       ORDER (preguntas)
+    ========================== */
+    function initOrder(){
+      state.order = QUESTIONS.map((_,i)=>i);
+    }
+
+    function shuffleQuestions(){
+      if(!Array.isArray(state.order) || state.order.length !== QUESTIONS.length){
+        initOrder();
+      }
+      shuffleInPlace(state.order);
+      state.idx = 0;
+    }
+
+    function currentQ(){
+      return QUESTIONS[state.order[state.idx]];
+    }
+
+    /* =========================
+       STATS
+    ========================== */
+    function isAnswered(q, a){
+      if(!a) return false;
+      if(q.type === "mcq") return !!a.value;
+      if(q.type === "msq") return Array.isArray(a.value) && a.value.length > 0;
+      if(q.type === "dropOrder") return Array.isArray(a.value) && a.value.length === q.items.length;
+      if(q.type === "dragMatch") return a.value && typeof a.value === "object" && Object.keys(a.value).length > 0;
+      return false;
+    }
+
+    function computeStats(){
+      const total = QUESTIONS.length;
+      let answered = 0, correct = 0;
+
+      for(const q of QUESTIONS){
+        const a = state.answers[q.id];
+        if(isAnswered(q,a)) answered++;
+        if(a && a.isCorrect) correct++;
+      }
+
+      const score = total ? Math.round((correct/total)*100) : 0;
+      return { total, answered, correct, score };
+    }
+
+    function updatePanel(){
+      const { total, answered, correct, score } = computeStats();
+
+      $("#kAnswered").textContent = answered + " / " + total;
+      $("#kCorrect").textContent = correct;
+      $("#kScore").textContent = score + "%";
+      $("#dbInfo").textContent = total + " preguntas";
+
+      $("#qIndex").textContent = "Pregunta " + (state.idx+1) + " / " + total;
+      $("#progress").style.width = total ? Math.round(((state.idx+1)/total)*100) + "%" : "0%";
+
+      $("#pillMode").textContent = "Modo: " + (state.mode==="exam" ? "Examen" : "Estudio");
+      $("#btnMode").textContent = state.mode==="exam" ? "Cambiar a modo Estudio" : "Cambiar a modo Examen";
+      $("#btnFinish").textContent = state.finished ? "Ocultar corrección" : "Corregir";
+    }
+
+    /* =========================
+       RENDER
+    ========================== */
+    function render(){
+      const host = $("#questionHost");
+      host.innerHTML = "";
+
+      const q = currentQ();
+
+      const title = document.createElement("div");
+      title.className = "qtitle";
+      title.textContent = (state.idx + 1) + ")";
+      host.appendChild(title);
+
+      const text = document.createElement("div");
+      text.className = "qtext";
+      text.textContent = q.q;
+      host.appendChild(text);
+
+      if(q.img){
+        const box = document.createElement("div");
+        box.className = "qmedia";
+
+        const img = document.createElement("img");
+        img.alt = "Imagen de la pregunta";
+        img.loading = "lazy";
+
+        const candidates = resolveImgCandidates(q.img);
+        let ci = 0;
+
+        function tryNext(){
+          if(ci >= candidates.length){
+            box.innerHTML = `<div class="cap">⚠️ No se pudo cargar la imagen: <b>${String(q.img)}</b><br/>Prueba a ponerla en la misma carpeta o en <b>/img/</b>.</div>`;
+            return;
+          }
+          img.src = candidates[ci++];
+        }
+
+        img.onerror = tryNext;
+        box.appendChild(img);
+
+        if(q.caption){
+          const cap = document.createElement("div");
+          cap.className = "cap";
+          cap.textContent = q.caption;
+          box.appendChild(cap);
+        }
+
+        host.appendChild(box);
+        tryNext();
+      }
+
+      if(q.type === "mcq") renderMCQ(host, q);
+      if(q.type === "msq") renderMSQ(host, q);
+      if(q.type === "dropOrder") renderDROP(host, q);
+      if(q.type === "dragMatch") renderMATCH(host, q);
+
+      updatePanel();
+      save();
+    }
+
+    /* =========================
+       MCQ
+    ========================== */
+    function renderMCQ(host, q){
+      const opts = document.createElement("div");
+      opts.className = "opts";
+
+      const saved = state.answers[q.id]?.value || null;
+
+      getOptKeys(q).forEach((key)=>{
+        const val = q.options[key];
+
+        const label = document.createElement("label");
+        label.className = "opt";
+
+        const inp = document.createElement("input");
+        inp.type = "radio";
+        inp.name = "mcq_" + q.id;
+        inp.value = key;
+        if(saved === key) inp.checked = true;
+
+    inp.addEventListener("change", ()=>{
+  const value = inp.value;
+  const isCorrect = (value === q.ok);
+
+  state.answers[q.id] = { type:"mcq", value, isCorrect, answered:true };
+  save();
+
+  // ✅ EXAM + AUTO NEXT: NO re-render aquí (evita doble render)
+  if(AUTO_NEXT_EXAM && state.mode === "exam"){
+    setTimeout(()=>go(1), 150);
+    return;
+  }
+
+  // ✅ Si estás en Study o no hay autonext, re-render (para mostrar explicación en Study)
+  render();
+});
+
+        const txt = document.createElement("div");
+        txt.innerHTML = "<b>"+key+".</b> " + val;
+
+        label.appendChild(inp);
+        label.appendChild(txt);
+        opts.appendChild(label);
+      });
+
+      host.appendChild(opts);
+
+      const meta = document.createElement("div");
+      meta.className = "note";
+      meta.id = "meta_" + q.id;
+      host.appendChild(meta);
+
+      if(showCorrectionsFor(q)) applyMCQStyles(opts, q);
+      else {
+        const a = state.answers[q.id];
+        meta.textContent = a?.answered ? "Respuesta registrada." : "Selecciona una opción.";
+      }
+
+      renderExplanation(host, q);
+    }
+
+    function applyMCQStyles(opts, q){
+      const meta = $("#meta_" + q.id);
+      const picked = state.answers[q.id]?.value;
+
+      [...opts.children].forEach(el=>{
+        el.classList.remove("correct","wrong");
+        const k = el.querySelector("input").value;
+
+        if(!picked) return;
+        if(k === q.ok) el.classList.add("correct");
+        if(k === picked && picked !== q.ok) el.classList.add("wrong");
+      });
+
+      if(!picked){
+        meta.innerHTML = '<span class="warnText">Sin responder.</span>';
+        return;
+      }
+
+      meta.innerHTML = (picked === q.ok)
+        ? '<span class="okText">Correcto.</span>'
+        : '<span class="badText">Incorrecto.</span>';
+    }
+
+    /* =========================
+       MSQ
+    ========================== */
+function renderMSQ(host, q){
+  const pick = q.pick ?? 2;
+
+  const guide = document.createElement("div");
+  guide.className = "note";
+  guide.innerHTML = "<b>Selecciona exactamente " + pick + " opción(es).</b>";
+  guide.style.marginBottom = "10px";
+  host.appendChild(guide);
+
+  const opts = document.createElement("div");
+  opts.className = "opts";
+
+  const saved = state.answers[q.id]?.value || [];
+
+  function selected(){
+    const arr = [];
+    opts.querySelectorAll("input[type=checkbox]").forEach(cb=>{
+      if(cb.checked) arr.push(cb.value);
+    });
+    return arr;
+  }
+
+  function updateAnswer(){
+    const chosen = selected();
+    const complete = (chosen.length === pick);
+    const isCorrect = complete && setEquals(chosen, q.ok);
+
+    state.answers[q.id] = {
+      type:"msq",
+      value: chosen,
+      isCorrect,
+      answered: complete
+    };
+    save();
+
+    if(showCorrectionsFor(q)) applyMSQStyles(opts, q);
+
+    // ✅ Al completar: examen salta sin render previo / estudio render para explicación
+    if(complete){
+      if(AUTO_NEXT_EXAM && state.mode === "exam"){
+        setTimeout(()=>go(1), 150);
+        return;
+      }
+      render();
+    }
+  }
+
+  // ✅ AQUÍ (fuera de updateAnswer) pintas opciones
+  getOptKeys(q).forEach((key)=>{
+    const val = q.options[key];
+
+    const label = document.createElement("label");
+    label.className = "opt";
+
+    const inp = document.createElement("input");
+    inp.type = "checkbox";
+    inp.value = key;
+    if(saved.includes(key)) inp.checked = true;
+
+    inp.addEventListener("change", ()=>{
+      const chosenNow = selected();
+      if(chosenNow.length > pick){
+        inp.checked = false;
+        toast("Máximo " + pick);
+        return;
+      }
+      updateAnswer();
+    });
+
+    const txt = document.createElement("div");
+    txt.innerHTML = "<b>"+key+".</b> " + val;
+
+    label.appendChild(inp);
+    label.appendChild(txt);
+    opts.appendChild(label);
+  });
+
+  host.appendChild(opts);
+
+  const meta = document.createElement("div");
+  meta.className = "note";
+  meta.id = "meta_" + q.id;
+  host.appendChild(meta);
+
+  // Estado inicial coherente
+  const completeSaved = (saved.length === pick);
+  state.answers[q.id] = {
+    type:"msq",
+    value: saved,
+    isCorrect: completeSaved && setEquals(saved, q.ok),
+    answered: completeSaved
+  };
+  save();
+
+  if(showCorrectionsFor(q)) applyMSQStyles(opts, q);
+  else meta.textContent = completeSaved ? "Respuesta registrada." : "Marca tus opciones.";
+
+  renderExplanation(host, q);
+}
+
+    function applyMSQStyles(opts, q){
+      const meta = $("#meta_" + q.id);
+      const pick = q.pick ?? 2;
+      const chosen = state.answers[q.id]?.value || [];
+      const okSet = new Set(q.ok);
+
+      [...opts.children].forEach(el=>{
+        el.classList.remove("correct","wrong");
+        const k = el.querySelector("input").value;
+        if(okSet.has(k)) el.classList.add("correct");
+        if(chosen.includes(k) && !okSet.has(k)) el.classList.add("wrong");
+      });
+
+      const ok = (chosen.length === pick) && setEquals(chosen, q.ok);
+      meta.innerHTML = ok
+        ? '<span class="okText">Correcto.</span>'
+        : '<span class="badText">Incorrecto.</span>';
+    }
+
+    /* =========================
+       DROP (si lo usas)
+    ========================== */
+    function renderDROP(host, q){
+      const guide = document.createElement("div");
+      guide.className = "note";
+      guide.innerHTML = "<b>Ordena con ↑ ↓.</b>";
+      host.appendChild(guide);
+
+      const list = document.createElement("div");
+      list.className = "dropList";
+      host.appendChild(list);
+
+      const meta = document.createElement("div");
+      meta.className = "note";
+      meta.id = "meta_" + q.id;
+      host.appendChild(meta);
+
+      const n = q.items.length;
+
+      let order = state.answers[q.id]?.value
+        ? [...state.answers[q.id].value]
+        : Array.from({length:n}, (_,i)=>i);
+
+      function isCorrectOrder(ord){
+        return JSON.stringify(ord) === JSON.stringify(q.okOrder);
+      }
+
+      function persist(markAnswered=false){
+        const isCorrect = isCorrectOrder(order);
+        const prev = state.answers[q.id] || {};
+        state.answers[q.id] = {
+          type:"dropOrder",
+          value:[...order],
+          isCorrect,
+          answered: markAnswered ? true : (prev.answered === true)
+        };
+        save(); updatePanel();
+      }
+
+      function swap(i,j){
+        const tmp = order[i];
+        order[i] = order[j];
+        order[j] = tmp;
+      }
+
+      function paint(){
+        list.innerHTML = "";
+
+        order.forEach((itemIndex, pos)=>{
+          const row = document.createElement("div");
+          row.className = "dropRow";
+
+          const num = document.createElement("div");
+          num.className = "dropNum";
+          num.textContent = (pos+1);
+
+          const txt = document.createElement("div");
+          txt.className = "dropText";
+          txt.textContent = q.items[itemIndex];
+
+          const btns = document.createElement("div");
+          btns.className = "dropBtns";
+
+          const up = document.createElement("button");
+          up.className = "mini ghost";
+          up.textContent = "↑";
+          up.disabled = (pos === 0);
+          up.addEventListener("click", ()=>{
+            swap(pos, pos-1);
+            persist(true);
+            paint();
+            render();
+          });
+
+          const down = document.createElement("button");
+          down.className = "mini ghost";
+          down.textContent = "↓";
+          down.disabled = (pos === order.length-1);
+          down.addEventListener("click", ()=>{
+            swap(pos, pos+1);
+            persist(true);
+            paint();
+            render();
+          });
+
+          btns.appendChild(up);
+          btns.appendChild(down);
+
+          row.appendChild(num);
+          row.appendChild(txt);
+          row.appendChild(btns);
+
+          list.appendChild(row);
+        });
+
+        if(showCorrections()){
+          const ok = isCorrectOrder(order);
+          [...list.children].forEach(r=>{
+            r.classList.remove("correct","wrong");
+            r.classList.add(ok ? "correct" : "wrong");
+          });
+          meta.innerHTML = ok
+            ? '<span class="okText">Correcto.</span>'
+            : '<span class="badText">Incorrecto.</span>';
+        }else{
+          const a = state.answers[q.id];
+          meta.textContent = a?.answered ? "Orden actualizado." : "Ajusta el orden y pasa a la siguiente.";
+        }
+      }
+
+      persist(false);
+      paint();
+
+      renderExplanation(host, q);
+    }
+
+    /* =========================
+       MATCH (soporta MANY-TO-ONE)
+    ========================== */
+    function renderMATCH(host, q){
+      const guide = document.createElement("div");
+      guide.className = "note";
+      guide.innerHTML = "<b>Empareja:</b> iPad/táctil: toca izquierda y luego toca derecha. (Puedes deshacer con ✕).";
+      host.appendChild(guide);
+
+      const wrap = document.createElement("div");
+      wrap.className = "matchWrap";
+      host.appendChild(wrap);
+
+      const leftCol = document.createElement("div");
+      const rightCol = document.createElement("div");
+      wrap.appendChild(leftCol);
+      wrap.appendChild(rightCol);
+
+      const lTitle = document.createElement("div");
+      lTitle.className = "matchColTitle";
+      lTitle.textContent = "IZQUIERDA";
+      leftCol.appendChild(lTitle);
+
+      const rTitle = document.createElement("div");
+      rTitle.className = "matchColTitle";
+      rTitle.textContent = "DERECHA (destinos)";
+      rightCol.appendChild(rTitle);
+
+      const meta = document.createElement("div");
+      meta.className = "note";
+      meta.id = "meta_" + q.id;
+      host.appendChild(meta);
+
+      let assignments = (state.answers[q.id]?.value && typeof state.answers[q.id].value === "object")
+        ? { ...state.answers[q.id].value }
+        : {};
+
+      const manyToOne = (q.rightItems.length < q.leftItems.length);
+      let selectedLeft = null;
+
+      function isComplete(){
+        return Object.keys(assignments).length === q.leftItems.length;
+      }
+
+      function isCorrect(){
+        if(!isComplete()) return false;
+        for(let li=0; li<q.leftItems.length; li++){
+          if(String(assignments[li]) !== String(q.ok[li])) return false;
+        }
+        return true;
+      }
+
+      function persist(){
+        const complete = isComplete();
+        state.answers[q.id] = {
+          type:"dragMatch",
+          value:{...assignments},
+          isCorrect: isCorrect(),
+          answered: complete
+        };
+        save(); updatePanel();
+      }
+
+      function clearLeft(li){
+        delete assignments[li];
+        persist();
+        paint();
+        render();
+      }
+
+      function buildRightToLefts(){
+        const map = {};
+        for(const [liStr, riStr] of Object.entries(assignments)){
+          const li = Number(liStr);
+          const ri = Number(riStr);
+          if(!map[ri]) map[ri] = [];
+          map[ri].push(li);
+        }
+        for(const ri of Object.keys(map)){
+          map[ri].sort((a,b)=>a-b);
+        }
+        return map;
+      }
+
+      function assign(li, ri){
+        if(!manyToOne){
+          for(const [liStr, riStr] of Object.entries(assignments)){
+            if(Number(riStr) === ri){
+              delete assignments[Number(liStr)];
+              break;
+            }
+          }
+        }
+        assignments[li] = ri;
+        persist();
+        paint();
+        render();
+      }
+
+      function paint(){
+        leftCol.querySelectorAll(".matchItem").forEach(n=>n.remove());
+        rightCol.querySelectorAll(".matchZone").forEach(n=>n.remove());
+
+        const rightToLefts = buildRightToLefts();
+
+        q.leftItems.forEach((txt, li)=>{
+          const it = document.createElement("div");
+          it.className = "matchItem draggable";
+          it.textContent = txt;
+
+          if(selectedLeft === li) it.classList.add("selected");
+
+          it.addEventListener("click", ()=>{
+            selectedLeft = (selectedLeft === li) ? null : li;
+            paint();
+          });
+
+          it.draggable = true;
+          it.addEventListener("dragstart", (e)=>{
+            e.dataTransfer.setData("text/plain", String(li));
+          });
+
+          leftCol.appendChild(it);
+        });
+
+        q.rightItems.forEach((txt, ri)=>{
+          const zone = document.createElement("div");
+          zone.className = "matchZone";
+          zone.dataset.ri = String(ri);
+
+          const zt = document.createElement("div");
+          zt.className = "zText";
+          zt.textContent = txt;
+          zone.appendChild(zt);
+
+          const leftsHere = rightToLefts[ri] || [];
+          leftsHere.forEach(li=>{
+            const chip = document.createElement("div");
+            chip.className = "assign";
+            chip.innerHTML = `Assigned: L${li+1}`;
+
+            const x = document.createElement("button");
+            x.className = "x";
+            x.textContent = "✕";
+            x.addEventListener("click", (e)=>{
+              e.stopPropagation();
+              clearLeft(li);
+            });
+
+            chip.appendChild(x);
+            zone.appendChild(chip);
+          });
+
+          zone.addEventListener("click", ()=>{
+            if(selectedLeft === null) return;
+            assign(selectedLeft, ri);
+            selectedLeft = null;
+          });
+
+          zone.addEventListener("dragover", (e)=>{
+            e.preventDefault();
+            zone.classList.add("over");
+          });
+          zone.addEventListener("dragleave", ()=> zone.classList.remove("over"));
+          zone.addEventListener("drop", (e)=>{
+            e.preventDefault();
+            zone.classList.remove("over");
+            const li = Number(e.dataTransfer.getData("text/plain"));
+            if(Number.isFinite(li)) assign(li, ri);
+          });
+
+          rightCol.appendChild(zone);
+        });
+
+        if(showCorrections()){
+          meta.innerHTML = isCorrect()
+            ? '<span class="okText">Correcto.</span>'
+            : '<span class="badText">Incorrecto.</span>';
+        }else{
+          meta.textContent = state.answers[q.id]?.answered ? "Emparejamiento completado." : "Empareja y pasa a la siguiente.";
+        }
+      }
+
+      persist();
+      paint();
+
+      renderExplanation(host, q);
+    }
+
+    /* =========================
+       NAV
+    ========================== */
+    function go(delta){
+      const total = QUESTIONS.length;
+      state.idx = clamp(state.idx + delta, 0, total - 1);
+      render();
+    }
+
+    /* =========================
+       EVENTS
+    ========================== */
+    $("#btnPrev").addEventListener("click", ()=>go(-1));
+    $("#btnNext").addEventListener("click", ()=>go(1));
+
+    $("#btnShuffle").addEventListener("click", ()=>{
+      shuffleQuestions();
+      state.optOrder = {}; // remezcla opciones también
+      toast("Preguntas y respuestas mezcladas");
+      save();
+      render();
+    });
+
+  $("#btnReset").addEventListener("click", ()=>{
+  state.answers = {};
+  state.finished = false;
+
+  initOrder();
+  shuffleQuestions();
+  state.optOrder = {};
+  state.idx = 0;
+
+  toast("Nuevo intento (remezclado)");
+  save();
+  render();
+});
+    $("#btnMode").addEventListener("click", ()=>{
+      state.mode = (state.mode === "exam") ? "study" : "exam";
+      if(state.mode === "exam") state.finished = false;
+      toast("Modo cambiado");
+      save();
+      render();
+    });
+
+    $("#btnFinish").addEventListener("click", ()=>{
+      state.finished = !state.finished;
+      toast(state.finished ? "Corrección activada" : "Corrección ocultada");
+      save();
+      render();
+    });
+
+    $("#btnClear").addEventListener("click", ()=>{
+      localStorage.removeItem(LS_KEY);
+      state = { mode:"exam", idx:0, order:[], answers:{}, finished:false, optOrder:{} };
+      initOrder();
+      shuffleQuestions();
+      toast("Progreso borrado");
+      save();
+      render();
+    });
+
+    window.addEventListener("keydown", e=>{
+      if(e.key==="ArrowLeft") go(-1);
+      if(e.key==="ArrowRight") go(1);
+    });
+
+    /* =========================
+       BOOT
+       - carga si existe
+       - si cambió el banco, sanea
+       - siempre remezcla al abrir
+    ========================== */
+    (function boot(){
+      load();
+
+      // si el banco cambió de tamaño, limpia
+      if(!Array.isArray(state.order) || state.order.length !== QUESTIONS.length){
+        state.answers = {};
+        state.finished = false;
+      }
+
+      initOrder();
+      shuffleQuestions();
+      state.optOrder = {};
+
+      save();
+      render();
+    })();
+  </script>
+</body>
+</html>

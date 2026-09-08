@@ -1,0 +1,11 @@
+{
+  "id": "derecho-trabajo",
+  "nombre": "Derecho Trabajo",
+  "codigo": "66024019",
+  "creditos": 6,
+  "caracter": "OBLIGATORIAS",
+  "icon": "👷",
+  "temas": [
+    { "id": "tema1", "titulo": "Tema 1 - Introducción" }
+  ]
+}

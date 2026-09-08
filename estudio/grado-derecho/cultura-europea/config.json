@@ -1,0 +1,11 @@
+{
+  "id": "cultura-europea",
+  "nombre": "Cultura Europea",
+  "codigo": "66021050",
+  "creditos": 6,
+  "caracter": "FORMACIÓN BÁSICA",
+  "icon": "🌍",
+  "temas": [
+    { "id": "tema1", "titulo": "Tema 1 - Introducción" }
+  ]
+}

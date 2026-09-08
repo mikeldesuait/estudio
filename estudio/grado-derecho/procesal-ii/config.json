@@ -1,0 +1,11 @@
+{
+  "id": "procesal-ii",
+  "nombre": "Procesal Ii",
+  "codigo": "66024025",
+  "creditos": 5,
+  "caracter": "OBLIGATORIAS",
+  "icon": "📋",
+  "temas": [
+    { "id": "tema1", "titulo": "Tema 1 - Introducción" }
+  ]
+}

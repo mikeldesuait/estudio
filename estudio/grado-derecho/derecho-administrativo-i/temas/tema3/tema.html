@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Resumen: Teoría General del Reglamento</title>
+    <style>
+        /* ===== ESTILO ÚNICO PARA RESÚMENES UNED ===== */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            max-width: 950px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #f5f7fa;
+            color: #1a1a2e;
+            line-height: 1.8;
+            font-size: 17px;
+        }
+        h1 {
+            font-size: 30px;
+            color: #0a1628;
+            border-bottom: 4px solid #1a3d66;
+            padding-bottom: 14px;
+        }
+        h2 {
+            font-size: 23px;
+            color: #1a3d66;
+            margin-top: 32px;
+            border-left: 4px solid #1a3d66;
+            padding-left: 16px;
+        }
+        h3 {
+            font-size: 20px;
+            color: #2a4a7a;
+            margin-top: 26px;
+        }
+        h4 {
+            font-size: 18px;
+            color: #3a5a8a;
+            margin-top: 20px;
+        }
+        strong {
+            color: #0a2a4a;
+        }
+        ul {
+            padding-left: 24px;
+        }
+        li {
+            margin-bottom: 6px;
+        }
+        blockquote {
+            background: #e8edf4;
+            padding: 12px 20px;
+            border-left: 4px solid #1a3d66;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        hr {
+            border: none;
+            border-top: 2px solid #d0d8e4;
+            margin: 28px 0;
+        }
+        .indice {
+            background: #e8edf4;
+            padding: 16px 24px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .indice ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .indice li {
+            padding: 3px 0;
+        }
+        .indice li.h1 {
+            font-weight: 600;
+        }
+        .indice li.h2 {
+            padding-left: 20px;
+            font-weight: 400;
+        }
+        .indice a {
+            color: #1a3d66;
+            text-decoration: none;
+        }
+        .indice a:hover {
+            text-decoration: underline;
+        }
+        .idea-central {
+            background: #e0e8f4;
+            padding: 18px 24px;
+            border-radius: 12px;
+            margin: 20px 0 30px 0;
+            border-left: 5px solid #1a3d66;
+        }
+        .idea-central h2 {
+            margin-top: 0;
+            border-left: none;
+            padding-left: 0;
+        }
+        .modo-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            padding: 8px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #1a3d66;
+            color: #fff;
+            font-size: 14px;
+            z-index: 999;
+        }
+        .modo-btn:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode {
+            background: #0d1a2b;
+            color: #d6e2f5;
+        }
+        .dark-mode h1 {
+            color: #b0c8e8;
+            border-bottom-color: #2a5a8a;
+        }
+        .dark-mode h2 {
+            color: #8ab0e0;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode h3 {
+            color: #6a9ac0;
+        }
+        .dark-mode h4 {
+            color: #5a8aaa;
+        }
+        .dark-mode strong {
+            color: #c8ddf0;
+        }
+        .dark-mode blockquote {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode .indice {
+            background: #142a44;
+        }
+        .dark-mode .indice a {
+            color: #8ab0e0;
+        }
+        .dark-mode .idea-central {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode hr {
+            border-top-color: #2a4a6a;
+        }
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+                padding: 14px;
+            }
+            h1 {
+                font-size: 25px;
+            }
+            h2 {
+                font-size: 21px;
+            }
+        }
+
+        /* ===== ESTILOS PARA PREGUNTAS INTERACTIVAS ===== */
+        .pregunta {
+            background: #f0f4fa;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            border: 1px solid #d0d8e4;
+        }
+        .dark-mode .pregunta {
+            background: #142a44;
+            border-color: #2a4a6a;
+        }
+        .pregunta .enunciado {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .pregunta .opciones {
+            list-style: none;
+            padding-left: 8px;
+        }
+        .pregunta .opciones li {
+            margin-bottom: 4px;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .pregunta .opciones li.correcta {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .dark-mode .pregunta .opciones li.correcta {
+            background: #1a4a3a;
+            color: #8fdfb0;
+            border-left-color: #2ecc71;
+        }
+        .pregunta .respuesta-oculta {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta .respuesta-oculta {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta .respuesta-oculta.visible {
+            display: block;
+        }
+        .pregunta .btn-respuesta {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #1a3d66;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta .btn-respuesta:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta:hover {
+            background: #3a7aaa;
+        }
+        .pregunta .trampa {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #6a4a2a;
+            font-style: italic;
+        }
+        .dark-mode .pregunta .trampa {
+            color: #c8a878;
+        }
+        .pregunta-desarrollo .esquema-oculto {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta-desarrollo .esquema-oculto {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta-desarrollo .esquema-oculto.visible {
+            display: block;
+        }
+
+        /* Estilos para las preguntas de reserva */
+        .pregunta-reserva {
+            background: #fcf4e8;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            border: 1px solid #e0d0b8;
+        }
+        .dark-mode .pregunta-reserva {
+            background: #2a2a1a;
+            border-color: #4a4a3a;
+        }
+        .pregunta-reserva .enunciado {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .pregunta-reserva .opciones {
+            list-style: none;
+            padding-left: 8px;
+        }
+        .pregunta-reserva .opciones li {
+            margin-bottom: 4px;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .pregunta-reserva .opciones li.correcta {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .dark-mode .pregunta-reserva .opciones li.correcta {
+            background: #1a4a3a;
+            color: #8fdfb0;
+            border-left-color: #2ecc71;
+        }
+        .pregunta-reserva .respuesta-oculta {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #f0e8d8;
+            border-radius: 8px;
+            border-left: 4px solid #b88a4a;
+        }
+        .dark-mode .pregunta-reserva .respuesta-oculta {
+            background: #3a3020;
+            border-left-color: #b88a4a;
+        }
+        .pregunta-reserva .respuesta-oculta.visible {
+            display: block;
+        }
+        .pregunta-reserva .btn-respuesta {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #b88a4a;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta-reserva .btn-respuesta:hover {
+            background: #c89a5a;
+        }
+        .dark-mode .pregunta-reserva .btn-respuesta {
+            background: #8a6a3a;
+        }
+        .dark-mode .pregunta-reserva .btn-respuesta:hover {
+            background: #9a7a4a;
+        }
+        .pregunta-reserva .trampa {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #6a4a2a;
+            font-style: italic;
+        }
+        .dark-mode .pregunta-reserva .trampa {
+            color: #c8a878;
+        }
+    </style>
+</head>
+<body>
+    <button class="modo-btn" onclick="toggleModo()">🌙 Modo oscuro</button>
+
+    <h1>📘 Teoría general del Reglamento</h1>
+
+    <!-- ===== ÍNDICE ===== -->
+    <div class="indice">
+        <ul>
+            <li class="h1"><a href="#idea-central">Idea central (5 minutos)</a></li>
+            <li class="h1"><a href="#epigrafe-1">1. Aproximación al reglamento</a></li>
+            <li class="h2"><a href="#epigrafe-1-1">1.1. Noción</a></li>
+            <li class="h2"><a href="#epigrafe-1-2">1.2. Delimitación</a></li>
+            <li class="h2"><a href="#epigrafe-1-3">1.3. La legitimidad democrática</a></li>
+            <li class="h1"><a href="#epigrafe-2">2. El ejercicio de la potestad reglamentaria</a></li>
+            <li class="h2"><a href="#epigrafe-2-1">2.1. El objeto de la potestad reglamentaria</a></li>
+            <li class="h2"><a href="#epigrafe-2-2">2.2. La reserva de ley</a></li>
+            <li class="h2"><a href="#epigrafe-2-3">2.3. La primacía de la ley</a></li>
+            <li class="h2"><a href="#epigrafe-2-4">2.4. La vinculación a los principios generales</a></li>
+            <li class="h1"><a href="#epigrafe-3">3. Los titulares de la potestad reglamentaria</a></li>
+            <li class="h2"><a href="#epigrafe-3-1">3.1. La administración general del Estado</a></li>
+            <li class="h2"><a href="#epigrafe-3-2">3.2. La administración autonómica</a></li>
+            <li class="h1"><a href="#epigrafe-4">4. El procedimiento de elaboración</a></li>
+            <li class="h2"><a href="#epigrafe-4-1">4.1. El encuadramiento competencial</a></li>
+            <li class="h2"><a href="#epigrafe-4-2">4.2. El procedimiento en la AGE</a></li>
+            <li class="h2"><a href="#epigrafe-4-3">4.3. El procedimiento en la administración autonómica</a></li>
+            <li class="h1"><a href="#epigrafe-5">5. La invalidez de los reglamentos</a></li>
+            <li class="h2"><a href="#epigrafe-5-1">5.1. La invalidez y sus consecuencias</a></li>
+            <li class="h2"><a href="#epigrafe-5-2">5.2. El control administrativo</a></li>
+            <li class="h2"><a href="#epigrafe-5-3">5.3. El control judicial</a></li>
+            <li class="h2"><a href="#epigrafe-5-4">5.4. El control constitucional</a></li>
+            <li class="h1"><a href="#preguntas-test">📝 Preguntas tipo test</a></li>
+            <li class="h1"><a href="#preguntas-reserva">🔥 Preguntas de reserva (muy difíciles)</a></li>
+        </ul>
+    </div>
+
+    <!-- ===== IDEA CENTRAL ===== -->
+    <div id="idea-central" class="idea-central">
+        <h2>🎯 Idea central (5 minutos)</h2>
+        <p>El tema aborda la teoría general del <strong>reglamento</strong> como norma jurídica de rango inferior a la ley, dictada por el Gobierno y otras Administraciones en ejercicio de su potestad normativa. Se analiza su naturaleza, delimitación frente a otras figuras afines (actos administrativos e instrucciones internas), y su <strong>legitimidad democrática</strong> en el Estado constitucional. A continuación, se examinan los <strong>límites sustanciales</strong> a su ejercicio: el objeto (ámbito administrativo), la <strong>reserva de ley</strong> (con su significado, extensión e intensidad), la <strong>primacía de la ley</strong> (que da lugar a los reglamentos ejecutivo, independiente y de necesidad) y la vinculación a los <strong>principios generales del Derecho</strong> (irretroactividad, jerarquía, seguridad jurídica y publicidad). Se identifican los <strong>titulares</strong> de la potestad en la Administración estatal y autonómica, se detalla el <strong>procedimiento de elaboración</strong> (con un análisis competencial entre Estado y CCAA), y se concluye con el <strong>régimen de invalidez</strong>, sus efectos y los diversos mecanismos de control (administrativo, judicial y constitucional).</p>
+    </div>
+
+    <hr>
+
+    <!-- ===== EPÍGRAFE 1 ===== -->
+    <h2 id="epigrafe-1">1. APROXIMACIÓN AL REGLAMENTO</h2>
+
+    <h3 id="epigrafe-1-1">1.1. Noción</h3>
+    <p><strong>Resumen:</strong> El reglamento es el producto de la potestad normativa subordinada a la ley, cuyo rango es inferior. Su titularidad está más repartida que la potestad legislativa, pudiendo emanar de los poderes ejecutivos (estatal y autonómico), otras administraciones (local, foral) y entes con potestad normativa (universidades, colegios profesionales). Los reglamentos comparten naturaleza normativa con la ley, diferenciándose por su rango inferior. La Constitución y las leyes usan diversos términos para referirse a ellos: "decretos", "potestad reglamentaria", "disposiciones administrativas", todos con el mismo significado. Se distingue entre "reglamento" (ejercicio de la potestad reglamentaria general atribuida al Gobierno) y "disposición administrativa en sentido estricto" (emanada de otros órganos por atribución legal específica). Su adopción obedece a dos necesidades: complementar el desarrollo normativo de las leyes (reglamento ejecutivo) o regular ámbitos sin ley previa (reglamento independiente). Su definición no es formal (como la ley), sino material: debe tratarse de una disposición de carácter general sin rango de ley. No tienen una forma específica (real decreto, orden ministerial), por lo que para distinguirlos del acto administrativo hay que atender a su contenido general y abstracto. La distinción entre norma y acto es crucial, ya que determina su régimen jurídico (procedimiento, eficacia, validez y control). Los reglamentos también sirven como instrumentos de intervención social y políticas públicas.</p>
+
+    <blockquote>
+        <strong>Definiciones literales:</strong><br>
+        "Por debajo de la potestad legislativa se sitúa una potestad normativa tendencialmente subordinada denominada reglamentaria, cuyo producto normativo tiene un rango inferior al de la ley."<br><br>
+        "El reglamento expresa el ejercicio de la potestad reglamentaria general otorgada en exclusiva por la Constitución al Gobierno de la Nación o por el Estatuto de Autonomía al órgano de gobierno colegiado de cada comunidad autónoma."<br><br>
+        "La distinción entre norma y acto, entre reglamento y acto administrativo, está llena de consecuencias jurídicas: determina el régimen jurídico diferenciado que les resulta aplicable en materia de procedimiento de elaboración, eficacia, validez y control."
+    </blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Contenido.</strong> La definición de reglamento es <strong>material</strong> (disposición de carácter general), no formal (como la ley).</p>
+
+    <h3 id="epigrafe-1-2">1.2. Delimitación</h3>
+    <h4>1.2.1. El acto administrativo</h4>
+    <p><strong>Resumen:</strong> El acto administrativo se diferencia del reglamento porque se refiere a una situación singular o concreta y suele tener destinatario determinado. Aunque existan actos administrativos generales (convocatoria de subvenciones) con destinatarios indeterminados, el criterio clave es el <strong>criterio consuntivo</strong>: el acto administrativo se consume con su aplicación al caso concreto (se agota), mientras que el reglamento tiene una vigencia indefinida y se aplica a un número ilimitado de supuestos de hecho. No debe confundirse la vigencia prolongada de un acto (ej. permiso de conducción) con la aplicabilidad renovada de una norma.</p>
+    <blockquote><strong>Definición literal:</strong> "El acto administrativo y el reglamento son actos jurídicos de la Administración con eficacia externa. El acto administrativo se diferencia del reglamento en que aquel se refiere a una situación singular o concreta."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Consuntivo.</strong> El elemento clave no es el destinatario (determinado o no), sino el carácter <strong>consuntivo</strong> del acto frente a la aplicación reiterada e indefinida del reglamento.</p>
+
+    <h4>1.1.2. Instrucciones y órdenes de servicio</h4>
+    <p><strong>Resumen:</strong> Son actos jurídicos con eficacia meramente interna, basados en el poder de dirección jerárquico (art. 6 LRJSP). Su finalidad es coordinar la interpretación y aplicación del Derecho por los órganos inferiores, vinculando a estos pero no a los particulares. No constituyen normas ni se incorporan al ordenamiento. Su incumplimiento no invalida los actos dictados en contra, pero puede acarrear responsabilidad disciplinaria. Pueden publicarse por conveniencia, pero no es requisito de eficacia. Lo determinante para distinguirlos de un reglamento no es su denominación (nomen iuris), sino su <strong>contenido</strong>: si pretenden tener eficacia ad extra (vincular a terceros), son una norma reglamentaria nula por no seguir el procedimiento establecido.</p>
+    <blockquote><strong>Definición literal:</strong> "Las instrucciones y órdenes de servicio no constituyen normas: no producen efectos externos, no se incorporan al ordenamiento y, por tanto, su elaboración y adopción no tienen que cumplir las formalidades a las que están sujetos los reglamentos."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Interna.</strong> La clave es su eficacia <strong>meramente interna</strong>. Si pretenden eficacia "ad extra", dejan de ser instrucciones para convertirse en reglamentos.</p>
+
+    <h3 id="epigrafe-1-3">1.3. La legitimidad democrática de la potestad reglamentaria</h3>
+    <p><strong>Resumen:</strong> La potestad reglamentaria es legítima en el Estado constitucional, atribuida directamente al Gobierno por el art. 97 CE. Los prejuicios del constitucionalismo liberal (que veía en ella un poder monárquico rival) deben descartarse. La diferencia entre ley y reglamento no es que una sea democrática y el otro no. La ley tiene una <strong>legitimidad democrática de primer grado</strong> (elección directa), mientras que el reglamento la tiene de <strong>segundo grado</strong> (los gobernantes no son elegidos directamente, sino por los representantes). Además, el procedimiento legislativo incluye a la minoría política (debate, enmiendas), mientras que el reglamentario la excluye, supliéndose esta carencia con trámites de información pública y audiencia. Esta diferencia justifica que los reglamentos puedan ser objeto de un control judicial pleno por los particulares, a diferencia de las leyes.</p>
+    <blockquote><strong>Definición literal:</strong> "La diferencia entre ley y reglamento no estriba en el carácter democrático de la primera y el carácter no democrático del segundo. Ambos son productos democráticos."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Segundo grado.</strong> La legitimidad del reglamento es de <strong>segundo grado</strong>, no de primer grado.</p>
+
+    <hr>
+
+    <!-- ===== EPÍGRAFE 2 ===== -->
+    <h2 id="epigrafe-2">2. EL EJERCICIO DE LA POTESTAD REGLAMENTARIA</h2>
+
+    <h3 id="epigrafe-2-1">2.1. El objeto de la potestad reglamentaria</h3>
+    <p><strong>Resumen:</strong> Es una limitación implícita: el reglamento solo puede intervenir en el "ámbito administrativo". No es un sustituto perfecto de la ley, ya que esta puede regular cualquier aspecto de la vida social, mientras que la Administración solo puede ejecutar las leyes que son de su responsabilidad (ej. no puede ejecutar leyes civiles o penales, salvo que una ley le atribuya funciones específicas). La noción de "ámbito administrativo" no está definida en una disposición y puede ser modulada por la ley o incluso deducirse de la Constitución. Por regla general, si la ley no dice nada, la Administración solo puede adoptar reglamentos en el ámbito del Derecho público.</p>
+    <blockquote><strong>Definición literal:</strong> "El reglamento solo puede intervenir en el 'ámbito administrativo'. La potestad reglamentaria no es un sustituto perfecto de la potestad legislativa: no es una potestad legislativa de segundo nivel."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Derecho público.</strong> El ámbito natural del reglamento es el <strong>Derecho público</strong>, salvo habilitación expresa en Derecho privado.</p>
+
+    <h3 id="epigrafe-2-2">2.2. La reserva de ley</h3>
+    <h4>2.2.1. Significado</h4>
+    <p><strong>Resumen:</strong> La reserva de ley es un mandato constitucional que exige que una materia sea regulada por ley (o norma con rango de ley), excluyendo la regulación por normas de rango inferior. Tiene un doble destinatario: prohíbe al legislador autorizar al reglamento en esa materia y prohíbe al Gobierno regularla. Su infracción es controlada por el TC (si la comete el legislador) o por la jurisdicción contencioso-administrativa (si la comete el reglamento). Es un mandato con contenido determinado, no un principio, y su cumplimiento puede realizarse mediante decretos legislativos o decretos-leyes, salvo en materias reservadas a ley orgánica (art. 86.1 CE).</p>
+    <blockquote><strong>Definición literal:</strong> "Existe la llamada 'reserva de ley' cuando la Constitución exige que una cuestión o una materia sea regulada por ley, excluyendo con ello que la pueda regular una norma de rango inferior."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Mandato.</strong> La reserva de ley es un <strong>mandato</strong> con un contenido determinado, no un mero principio de preferencia por la ley.</p>
+
+    <h4>2.2.2. Extensión</h4>
+    <p><strong>Resumen:</strong> Las materias reservadas a ley son muy numerosas (más de cien) y están dispersas en el texto constitucional. El constituyente quiso "parlamentarizar" la creación jurídica primaria. Se usan diversos sintagmas ("la ley regulará", "solo por ley", etc.). Además de las reservas materiales, existen reservas específicas a ley orgánica (art. 81.1 CE). Se rechaza la tesis de una "reserva general de ley" implícita, ya que no tiene apoyo constitucional, contradice el gran número de reservas explícitas, reduce el ámbito propio del Gobierno (art. 97 CE) y podría impedir la actuación de los poderes públicos en el Estado social.</p>
+    <blockquote><strong>Definición literal:</strong> "Parece más correcta la postura que rechaza la tesis de la reserva general (De Otto, 1988; Balaguer, 1992; Villacorta, 1994, 74) con cuatro argumentos: 1) en la Constitución no hay apoyo para afirmar la existencia de una reserva general; 2) la concepción de una reserva implícita de carácter general resulta contradictoria con el gran número de reservas explícitas de ley que contiene la Constitución..."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Implícita.</strong> No existe una <strong>reserva general de ley implícita</strong> en la Constitución.</p>
+
+    <h4>2.2.3. Intensidad</h4>
+    <p><strong>Resumen:</strong> El alcance de la reserva de ley es variable y depende de cada materia. La regla general es que las reservas de ley son <strong>relativas</strong>, permitiendo la colaboración del reglamento ejecutivo. La excepción es el ámbito penal, con una concepción <strong>absoluta</strong> (ley orgánica), aunque matizada por las "leyes penales en blanco". La reserva de ley no es un veto al reglamento, sino una exigencia de que la decisión previa sea del legislador. El punto de partida para delimitar la intensidad es el texto constitucional. Los conceptos "legislación" o "ley" pueden ser ambiguos, con un significado estricto para delitos y penas, y uno amplio (leyes y reglamentos) para sanciones administrativas (art. 25.1 CE).</p>
+    <blockquote><strong>Definición literal:</strong> "La mayoría de las reservas de ley (también las reservas de ley orgánica) no tienen un alcance absoluto: permiten y conviven con naturalidad con el reglamento (ejecutivo, por supuesto)."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Relativas.</strong> En Derecho administrativo, las reservas de ley son generalmente <strong>relativas</strong>, no absolutas, permitiendo la colaboración reglamentaria.</p>
+
+    <h4>2.2.4. Modulaciones</h4>
+    <p><strong>Resumen:</strong> El alcance de la reserva de ley puede modularse atendiendo al titular de la potestad normativa. Las principales causas de modulación son las ordenanzas locales y las normas forales, que cuentan con fundamento constitucional y cumplen con el principio democrático, especialmente en materias reservadas a ley (como la potestad tributaria y sancionadora). También se mencionan las relaciones de sujeción especial (teoría descartada) y los reglamentos de necesidad.</p>
+    <blockquote><strong>Definición literal:</strong> "Como se expondrá en el tema 4, las ordenanzas locales y las normas forales son, actualmente, las principales causas de modulación de las reservas materiales de ley porque cuentan con un fundamento constitucional y cumplen ampliamente con el principio democrático o criterio de autoimposición que subyace a las reservas de ley."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Locales/Forales.</strong> Las modulaciones más relevantes provienen de las normas de los entes <strong>locales y forales</strong>.</p>
+
+    <h3 id="epigrafe-2-3">2.3. La primacía de la Ley</h3>
+    <p><strong>Resumen:</strong> No existe reserva reglamentaria en sentido estricto en España; la ley puede regular cualquier materia y ocupar el espacio del reglamento. El alcance del reglamento depende del espacio no ocupado por la ley. La relación ley-reglamento no es estática. Se distinguen tres tipos: ejecutivo, independiente y de necesidad.</p>
+
+    <h4>2.3.1. El reglamento ejecutivo</h4>
+    <p><strong>Resumen:</strong> Presupone la existencia de una ley a la que complementa, desarrolla y ejecuta. No es un mero instrumento de ejecución, sino un instrumento de <strong>colaboración normativa</strong>. Su característica no es ejecutar, sino estar habilitado por una ley y complementarla. Por eso algunos autores prefieren llamarlo "secundum legem" o "habilitado". Aunque la Constitución atribuye la potestad directamente al Gobierno, las habilitaciones legales (cláusulas de desarrollo) son necesarias para ampliar el objeto "natural" de la potestad reglamentaria (ej. Derecho privado) o en materias reservadas a la ley, y pueden modular el alcance del desarrollo normativo. En materias sin reserva, la habilitación es innecesaria.</p>
+    <blockquote><strong>Definición literal:</strong> "El reglamento ejecutivo presupone la existencia de, al menos, una ley. El Tribunal Constitucional los ha definido como 'aquellos que están directa y concretamente ligados a una Ley, a un artículo o artículos de una Ley o a un conjunto de Leyes, de manera que dicha Ley (o leyes) es completada, desarrollada, pormenorizada, aplicada y cumplimentada o ejecutada por el Reglamento' (STC 18/1982, de 4 de mayo, FJ 4)."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Colaboración.</strong> El reglamento ejecutivo es un instrumento de <strong>colaboración normativa</strong>, no solo de ejecución.</p>
+
+    <h4>2.3.2. El reglamento independiente</h4>
+    <p><strong>Resumen:</strong> Se dicta en un ámbito sin ley previa ni reserva de ley. Se fundamenta directamente en la potestad reglamentaria del Gobierno (art. 97 CE). Es un concepto controvertido por prejuicios históricos. La postura que mejor se ajusta a la Constitución es la que lo admite en materias sin reserva constitucional de ley ni ocupadas por una ley, rechazando la necesidad de una habilitación legal previa. El nombre "independiente" es equívoco, ya que no es "libre" de sujeciones; debe respetar todas las leyes existentes. Para evitar equívocos, se prefiere "praeter legem" (fuera del ámbito de la ley). La pregunta práctica es si queda espacio para él en el actual "espeso" marco legislativo.</p>
+    <blockquote><strong>Definición literal:</strong> "La postura que mejor se ajusta a la Constitución es la que excluye el reglamento solo en las materias en las que exista una reserva constitucional de ley o estén ya ocupadas por una ley (De Otto, Balaguer, Rodríguez de Santiago)."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Sin ley.</strong> El reglamento independiente se dicta en un ámbito <strong>sin una ley previa que lo desarrolle</strong>.</p>
+
+    <h4>2.3.3. Elevación, degradación y mantenimiento del rango</h4>
+    <p><strong>Resumen:</strong> La relación ley-reglamento es dinámica. Cuando una ley posterior ocupa el espacio de un reglamento independiente, se produce una <strong>"congelación de rango"</strong> (reserva formal de ley o principio de preferencia de la ley): el reglamento queda subordinado a la ley y no puede modificarla. Cuando el legislador deroga una ley (deslegalización), permite que el reglamento ocupe ese espacio. Si una disposición legal se deslegaliza, sus futuras modificaciones podrán hacerse por reglamento. También es posible que una norma con rango de ley modifique el contenido de un reglamento sin alterar su rango (manteniendo la regulación como reglamentaria para facilitar futuras modificaciones).</p>
+    <blockquote><strong>Definición literal:</strong> "La promulgación de una ley restringe las posibilidades de intervención de las normas de rango inferior: esa intervención ya no podrá ser autónoma o independiente de la ley, sino conforme a ella. El reglamento no puede modificar o derogar lo que establece una ley, sin necesidad de acudir a la idea plástica de 'congelación'."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Formal.</strong> La "congelación de rango" es una <strong>reserva formal de ley</strong> (o preferencia de la ley), creada por el legislador, no por la Constitución (material).</p>
+
+    <h4>2.3.4. El reglamento de necesidad</h4>
+    <p><strong>Resumen:</strong> Se dicta en situaciones de necesidad excepcionales, suspendiendo temporalmente el principio de legalidad (contra legem). Su aceptación es teórica en el Estado constitucional actual, que ha juridificado las emergencias (art. 116 CE) y dispone de otros instrumentos como el decreto-ley, que es un mecanismo mucho más ágil y democrático. Aunque los alcaldes tienen poderes de necesidad (art. 21.1 m) LBRL), las posibilidades reales del reglamento de necesidad son más bien teóricas.</p>
+    <blockquote><strong>Definición literal:</strong> "La categoría del reglamento de necesidad fue teorizada en la doctrina del Derecho público europeo en un escenario muy distinto del actual, en el que las comunicaciones entre los distintos poderes y con la ciudadanía en todo el territorio son casi automáticas y en el que el Estado constitucional ha juridificado intensamente las diversas situaciones de emergencia..."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Contra legem.</strong> El reglamento de necesidad puede ser <strong>contra legem</strong>, aunque su aplicación práctica es hoy muy limitada.</p>
+
+    <h3 id="epigrafe-2-4">2.4. La vinculación a los principios generales del Derecho</h3>
+    <p><strong>Resumen:</strong> El ejercicio de la potestad reglamentaria está vinculado a los principios generales del Derecho (arts. 9.3 y 14 CE), al igual que la potestad legislativa. La visión tradicional de una sujeción "plus" del reglamento proviene de una época sin justicia constitucional. Hoy, ambos poderes están igualmente vinculados a la Constitución.</p>
+
+    <h4>2.4.1. El principio de irretroactividad</h4>
+    <p><strong>Resumen:</strong> La retroactividad de los reglamentos es una cuestión controvertida. La Constitución prohíbe la retroactividad de disposiciones sancionadoras no favorables y restrictivas de derechos individuales (art. 9.3 CE). Se discute si los reglamentos tienen más limitaciones que las leyes. La interpretación correcta es que los reglamentos pueden tener efectos retroactivos si cuentan con una <strong>habilitación legal</strong> que lo ampare, y esta no vulnere los límites del art. 9.3 CE. La retroactividad puede estar justificada, por ejemplo, si es favorable o si se trata de una norma sustitutoria de otra anulada. La jurisprudencia distingue grados de retroactividad y da una interpretación restrictiva de "derechos individuales" (no incluye derechos tributarios).</p>
+    <blockquote><strong>Definición literal:</strong> "De la Constitución y el resto del ordenamiento jurídico no se puede deducir argumento alguno para diferenciar entre leyes y disposiciones con rango de ley, por un lado, y disposiciones reglamentarias, por otro, por lo que respecta a su posible retroactividad."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Habilitación legal.</strong> Un reglamento puede ser retroactivo si existe una <strong>habilitación legal</strong> que lo permita, siempre que se respeten los límites del art. 9.3 CE.</p>
+
+    <h4>2.4.2. El principio de jerarquía normativa</h4>
+    <p><strong>Resumen:</strong> Los reglamentos deben respetar el principio de jerarquía normativa (art. 9.3 CE), ajustándose al orden que establezcan las leyes. Ninguna disposición administrativa puede vulnerar preceptos de rango superior (arts. 47.2 y 128.3 LPAC).</p>
+    <blockquote><strong>Definición literal:</strong> "Ninguna disposición administrativa podrá vulnerar los preceptos de otra de rango superior (arts. 47.2 y 128.3 LPAC)."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Rango superior.</strong> El reglamento está subordinado a la ley y a las disposiciones de <strong>rango superior</strong> en la jerarquía normativa.</p>
+
+    <h4>2.4.3. El principio de seguridad jurídica</h4>
+    <p><strong>Resumen:</strong> El principio de seguridad jurídica (art. 9.3 CE), entendido como certeza sobre el ordenamiento aplicable y expectativa razonable, se aplica a los reglamentos. Una deficiente técnica legislativa no implica por sí misma una infracción del principio, salvo que la falta de claridad sea tan extrema que deje la construcción de la regla de Derecho en manos del aplicador (caso de la STSJ País Vasco 267/2015).</p>
+    <blockquote><strong>Definición literal:</strong> "El principio de seguridad jurídica previsto en el art. 9.3 CE ha sido entendido por el Tribunal Constitucional como la certeza sobre el ordenamiento jurídico aplicable y los intereses jurídicamente tutelados, procurando 'la claridad y no la confusión normativa' (STC 46/1990, de 15 de marzo, FJ 4)."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Claridad.</strong> Lo que se exige es <strong>claridad y certeza</strong>, no una depuración técnica perfecta.</p>
+
+    <h4>2.4.4. El principio de publicidad</h4>
+    <p><strong>Resumen:</strong> Es el único principio con un contenido imperativo preciso. Para entrar en vigor, los reglamentos deben publicarse en el diario oficial correspondiente (art. 131 LPAC). Las ediciones electrónicas tienen los mismos efectos que las impresas.</p>
+    <blockquote><strong>Definición literal:</strong> "El de publicidad es el único 'principio' que en realidad tiene un contenido imperativo preciso. Las normas reglamentarias, al igual que las legales o supralegales (art. 1.5 CC), tienen que publicarse en el diario oficial correspondiente para que entren en vigor y produzcan efectos jurídicos (art. 131 LPAC)..."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Oficial.</strong> La publicidad debe ser en el <strong>diario oficial correspondiente</strong>.</p>
+
+    <hr>
+
+    <!-- ===== EPÍGRAFE 3 ===== -->
+    <h2 id="epigrafe-3">3. LOS TITULARES DE LA POTESTAD REGLAMENTARIA</h2>
+
+    <h3 id="epigrafe-3-1">3.1. La administración general del Estado</h3>
+    <p><strong>Resumen:</strong> La titularidad corresponde al "Gobierno" en sentido amplio (Consejo de Ministros y ministros), según la interpretación del TC (STC 135/1992) y el art. 62 f) CE. La Ley del Gobierno (LG) concreta:</p>
+    <ul>
+        <li><strong>Presidente del Gobierno:</strong> Potestad para crear, modificar y suprimir departamentos y secretarías de Estado.</li>
+        <li><strong>Consejo de Ministros:</strong> Titular más amplio, aprueba reglamentos de desarrollo y ejecución de leyes y demás disposiciones reglamentarias que procedan (art. 5.1 h) LG).</li>
+        <li><strong>Ministros:</strong> Pueden dictar reglamentos en las "materias propias de su Departamento" (art. 4.1 b) LG), generalmente no ejecutivos (ej. bases de ayudas). Existe una tensión con el art. 129.4 LPAC, que considera excepcional la atribución directa a ministros. La habilitación legal puede ser más amplia o restringida. Las órdenes ministeriales tienen su propio sistema de numeración (código, número y año). Las Comisiones Delegadas del Gobierno carecen de potestad reglamentaria. El art. 129.4 LPAC permite, con carácter excepcional, habilitar a otros órganos subordinados, pero no se puede delegar el ejercicio de la potestad reglamentaria.</li>
+    </ul>
+    <blockquote><strong>Definición literal:</strong> "El Tribunal Constitucional se inclinó por la interpretación amplia del Gobierno a los efectos de la titularidad de la potestad reglamentaria: Gobierno a estos efectos, no solo es el Consejo de Ministros, sino también los ministros en cuanto forman parte de él (STC 135/1992, de 5 de octubre, FJ 3)."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Amplio.</strong> El término "Gobierno" en el art. 97 CE se interpreta en sentido <strong>amplio</strong> (Consejo de Ministros y ministros), no restringido.</p>
+
+    <h3 id="epigrafe-3-2">3.2. La administración autonómica</h3>
+    <p><strong>Resumen:</strong> La titularidad y el alcance de la potestad reglamentaria son parte del "contenido necesario y reservado" del Estatuto de Autonomía (art. 147.2 c) CE). El TC ha rechazado que el legislador estatal pueda distribuir esta potestad dentro de las CCAA (STC 55/2018). No obstante, las CCAA han adoptado un modelo similar al estatal: el órgano colegiado de gobierno (Consejo de Gobierno, Govern, etc.) tiene la potestad originaria, y las leyes autonómicas pueden confiar desarrollos específicos a consejerías, siguiendo la interpretación amplia del TC. Los estatutos y leyes de gobierno autonómicas regulan la forma (decretos y órdenes).</p>
+    <blockquote><strong>Definición literal:</strong> "El legislador estatal ordinario carece de competencia para distribuir poderes normativos entre las instituciones autonómicas, en general, y para asignar, quitar, limitar o repartir la potestad reglamentaria en las comunidades autónomas, en particular (STC 55/2018, de 24 de mayo, FJ 5)."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Estatutario.</strong> La regulación de la titularidad es competencia del <strong>Estatuto de Autonomía</strong>, no del legislador estatal ordinario.</p>
+
+    <hr>
+
+    <!-- ===== EPÍGRAFE 4 ===== -->
+    <h2 id="epigrafe-4">4. EL PROCEDIMIENTO DE ELABORACIÓN DE LOS REGLAMENTOS</h2>
+
+    <h3 id="epigrafe-4-1">4.1. El encuadramiento competencial de la regulación del procedimiento</h3>
+    <h4>4.1.1. Incertidumbres iniciales</h4>
+    <p><strong>Resumen:</strong> La CE atribuye al Estado la competencia exclusiva sobre el procedimiento administrativo común y las bases del régimen jurídico de las AA.PP. (art. 149.1.18). Se debatió si el procedimiento de elaboración de reglamentos encajaba en este título. Inicialmente se entendió que sí, pero el TC en 1989 (STC 15/1989) lo rechazó, señalando que no formaba parte del procedimiento administrativo común. Más tarde (STC 204/1992), el TC declaró que la exigencia de dictamen del Consejo de Estado para las CCAA era una norma básica, pero que podía cumplirse con un órgano consultivo autonómico equivalente.</p>
+    <blockquote><strong>Definición literal:</strong> "El Tribunal Constitucional rechazó en 1989 la inicial interpretación mayoritaria, señalando que el procedimiento de elaboración de los reglamentos no formaba parte de la noción de procedimiento administrativo común (STC 15/1989, de 26 de enero, FJ 7)."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>No común.</strong> El procedimiento de elaboración de reglamentos no forma parte del "procedimiento administrativo <strong>común</strong>".</p>
+
+    <h4>4.1.2. Progresivo estrechamiento del margen autonómico</h4>
+    <p><strong>Resumen:</strong> El legislador estatal ha ido introduciendo regulaciones sectoriales (consumidores, planeamiento) que afectan al procedimiento autonómico, siendo declaradas constitucionales. En 2011, la Ley de Economía Sostenible estableció principios de buena regulación y participación aplicables a todas las AA.PP., y el TC los declaró constitucionales (STC 91/2017). En 2015, la LPAC reguló ampliamente el procedimiento. El TC (STC 55/2018) declaró inconstitucional su aplicación a la iniciativa legislativa autonómica, pero mantuvo los arts. 129 y 130 (principios de buena regulación) y la exigencia de consulta pública previa del art. 133 LPAC. Declaró inconstitucional la regulación detallada de la participación ciudadana del art. 133 y de la planificación normativa (art. 132), por lo que en la práctica ni la LPAC ni otra ley estatal regulan un procedimiento común para las CCAA, aunque el TC deja abierta la posibilidad de intervenir a través de "garantías específicas" al amparo de las "bases del régimen jurídico".</p>
+    <blockquote><strong>Definición literal:</strong> "En resumen, ni la LPAC ni ley estatal alguna regula los trámites de un procedimiento común de elaboración de normas reglamentarias aplicable a las comunidades autónomas."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Bases.</strong> La intervención del Estado en este procedimiento autonómico es posible al amparo de las <strong>"bases del régimen jurídico"</strong>, no del "procedimiento común".</p>
+
+    <h3 id="epigrafe-4-2">4.2. El procedimiento en la administración general del Estado</h3>
+    <p><strong>Resumen:</strong> Regulado por el art. 26 LG. Los trámites son:</p>
+    <ul>
+        <li><strong>Consulta pública previa:</strong> Se recaba opinión sobre problemas, necesidad y objetivos, a través del portal web. Es preceptiva, salvo excepciones (normas presupuestarias, organizativas, sin impacto significativo o urgentes).</li>
+        <li><strong>Memoria del análisis de impacto normativo:</strong> Preceptiva, debe contener oportunidad, análisis jurídico, distribución de competencias, impacto económico, cargas administrativas, impacto de género y de cambio climático.</li>
+        <li><strong>Informes y dictámenes:</strong> Preceptivos de la Secretaría General Técnica, del Ministerio de Hacienda (si afecta a organización, personal, procedimientos o competencias con CCAA), y de otros órganos sectoriales (AEPD, CGPJ, Fiscal).</li>
+        <li><strong>Audiencia e información pública:</strong> Se publica el texto en el portal web cuando afecte a derechos e intereses legítimos. Se oirá a organizaciones reconocidas por ley. Plazo mínimo de 15 días hábiles (7 en urgencia). No aplica a normas presupuestarias u organizativas.</li>
+        <li><strong>Dictamen del Consejo de Estado:</strong> Preceptivo para reglamentos ejecutivos y los que desarrollen tratados o Derecho de la UE (art. 22 LOCE). Facultativo en los demás casos.</li>
+        <li><strong>Aprobación:</strong> Tras la Comisión General de Secretarios de Estado y Subsecretarios, se eleva al Consejo de Ministros.</li>
+        <li><strong>Tramitación urgente:</strong> Reduce plazos a la mitad, suprime la consulta pública, reduce a seis días la audiencia y permite continuar sin informes preceptivos.</li>
+    </ul>
+    <blockquote><strong>Definición literal:</strong> "La redacción de cualquier borrador o anteproyecto estará precedida de cuantos estudios y consultas se estimen convenientes para garantizar el acierto y la legalidad de la norma. En todo caso, se sustanciará una consulta pública, a través del portal web del departamento competente, con carácter previo a la elaboración del texto..."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Preceptiva.</strong> La consulta pública previa es un trámite <strong>preceptivo</strong> (salvo excepciones).</p>
+
+    <h3 id="epigrafe-4-3">4.3. El procedimiento en la administración autonómica</h3>
+    <p><strong>Resumen:</strong> Esencialmente bajo competencia autonómica, pero debe respetar la legislación básica estatal. Por tanto, debe incluir: audiencia a los ciudadanos (art. 105 b CE), principios de buena regulación (art. 129 LPAC), evaluación normativa (art. 130 LPAC), consulta pública (sin la regulación detallada del art. 133), y dictamen preceptivo del Consejo de Estado o del órgano autonómico equivalente para reglamentos ejecutivos o de desarrollo de tratados (art. 24 LOCE). Solo Cantabria y Extremadura carecen de órgano consultivo propio. Tras su aprobación, deben publicarse en el diario oficial correspondiente (art. 131 LPAC).</p>
+    <blockquote><strong>Definición literal:</strong> "Como se desprende de lo expuesto en el epígrafe 4.1., la regulación del procedimiento de elaboración de los reglamentos autonómicos sigue estando esencialmente bajo la competencia de las comunidades autónomas, si bien deberán ejercer su competencia legislativa con pleno respeto a las previsiones constitucionales y a la legislación básica estatal."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Esencialmente.</strong> La regulación del procedimiento en las CCAA es <strong>esencialmente</strong> competencia autonómica, sujeta a la legislación básica estatal.</p>
+
+    <hr>
+
+    <!-- ===== EPÍGRAFE 5 ===== -->
+    <h2 id="epigrafe-5">5. LA INVALIDEZ DE LOS REGLAMENTOS</h2>
+
+    <h3 id="epigrafe-5-1">5.1. La invalidez y sus consecuencias</h3>
+    <h4>5.1.1. La nulidad y sus razones</h4>
+    <p><strong>Resumen:</strong> La infracción de los requisitos determina la nulidad de pleno derecho del reglamento (art. 47.2 LPAC). Esta es la sanción más grave, prevista para todas las infracciones de los reglamentos, a diferencia de los actos administrativos (donde la nulidad es excepcional). Las razones son: <strong>cuantitativas</strong> (el efecto multiplicador del reglamento, que puede reiterar la infracción indefinidamente) y <strong>cualitativas</strong> (un reglamento que vulnera la ley la "deroga" implícitamente). La nulidad maximiza las vías de ataque para los particulares.</p>
+    <blockquote><strong>Definición literal:</strong> "También serán nulas de pleno derecho las disposiciones administrativas que vulneren la Constitución, las leyes u otras disposiciones administrativas de rango superior, las que regulen materias reservadas a la Ley, y las que establezcan la retroactividad de disposiciones sancionadoras no favorables o restrictivas de derechos individuales" (art. 47.2 LPAC).</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Efecto multiplicador.</strong> La sanción de nulidad se justifica por el <strong>efecto multiplicador</strong> de la infracción a través de sucesivos actos de aplicación.</p>
+
+    <h4>5.1.2. La flexibilización de la nulidad y sus razones</h4>
+    <p><strong>Resumen:</strong> Aunque la ley prevé la nulidad, la jurisprudencia la ha flexibilizado para <strong>vicios procedimentales</strong>. Una línea minoritaria (STS 1391/2000) sostiene que los vicios procedimentales no deben conllevar automáticamente la nulidad si no causan indefensión o el resultado es adecuado, aplicando "prudencia y moderación". También se han mantenido temporalmente los efectos de un reglamento anulado por defectos formales por razones de seguridad (STS 1684/2014). Esta línea se basa en que el procedimiento es un instrumento, no un fin, y los vicios procedimentales no tienen "efecto multiplicador". La <strong>línea mayoritaria</strong> (SSTS 8714/1988 y muchas otras) limita la impugnación de los vicios procedimentales a la vía directa (plazo de 2 meses), no permitiendo la impugnación indirecta, salvo en casos de incompetencia manifiesta u omisión total del procedimiento, por razones de seguridad jurídica, ya que son indetectables por el mero examen del reglamento.</p>
+    <blockquote><strong>Definición literal:</strong> "La línea jurisprudencial que huye del automatismo de la nulidad de pleno derecho parece, a nuestro juicio, la perspectiva correcta. Las justificaciones tradicionales de la nulidad de pleno de derecho de los reglamentos irregulares no valen para los vicios procedimentales. El hecho de que en la elaboración de un reglamento no se haya respetado un trámite o cumplido una formalidad no tiene efecto multiplicador alguno."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Indirecta.</strong> La impugnación de vicios procedimentales por vía <strong>indirecta</strong> es excepcional; la regla general es que solo pueden impugnarse por vía directa.</p>
+
+    <h4>5.1.3. Los efectos de los reglamentos nulos</h4>
+    <p><strong>Resumen:</strong> Los reglamentos nulos producen efectos mientras no sean declarados nulos, porque su eficacia no depende de su validez. La declaración de nulidad los expulsa del ordenamiento para el futuro y puede determinar qué efectos pasados se mantienen. Los actos firmes dictados al amparo de un reglamento nulo <strong>subsisten</strong> por el principio de seguridad jurídica (art. 9.3 CE), salvo que el acto de aplicación incurra en una causa de nulidad propia. Esta regla está recogida en el art. 106.4 LPAC, art. 73 LJCA y arts. 55.1 a) y 66 LOTC.</p>
+    <blockquote><strong>Definición literal:</strong> "Por regla general, subsisten los actos firmes dictados al amparo de una disposición administrativa declarada nula de pleno derecho. Los principios de constitucionalidad, legalidad y jerarquía normativa exigen la inmediata restauración de la eficacia de la norma superior vulnerada, mediante la expulsión de la disposición administrativa irregular y la exclusión de la producción de nuevos efectos. En cambio, por regla general, no exigen la retirada de los actos firmes..."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Subsisten.</strong> Los actos <strong>firmes</strong> dictados al amparo de un reglamento nulo <strong>subsisten</strong>.</p>
+
+    <h3 id="epigrafe-5-2">5.2. El control administrativo</h3>
+    <p><strong>Resumen:</strong> Existen dos modalidades:</p>
+    <ol>
+        <li><strong>Revisión de oficio:</strong> La Administración puede, en cualquier momento, declarar la nulidad de sus disposiciones (art. 106.2 LPAC), previo dictamen favorable del Consejo de Estado u órgano consultivo equivalente. Los particulares <strong>no</strong> pueden solicitarlo (no tienen "acción de nulidad"). La declaración de nulidad expulsa la norma y puede establecer indemnizaciones. La diferencia con la derogación son los efectos hacia el pasado.</li>
+        <li><strong>Recurso administrativo indirecto:</strong> No existe recurso directo contra reglamentos en vía administrativa (art. 112.3 LPAC). Lo que cabe es el recurso contra un acto de aplicación fundado en la ilegalidad del reglamento. Si se interpone directamente ante el órgano que dictó el reglamento (per saltum), la estimación podría ir más allá del acto y declarar la nulidad de la disposición (aunque la ley no lo aclara).</li>
+    </ol>
+    <blockquote><strong>Definición literal:</strong> "Los recursos contra un acto administrativo que se funden únicamente en la nulidad de alguna disposición administrativa de carácter general podrán interponerse directamente ante el órgano que dictó dicha disposición" (art. 112.3, párrafo segundo, LPAC).</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>No directo.</strong> No cabe recurso administrativo <strong>directo</strong> contra reglamentos.</p>
+
+    <h3 id="epigrafe-5-3">5.3. El control judicial</h3>
+    <p><strong>Resumen:</strong> La sanción básica es la <strong>inaplicación</strong> (art. 6 LOPJ), que pueden hacer jueces de cualquier jurisdicción a través de la "excepción de ilegalidad". En la jurisdicción contencioso-administrativa hay dos vías:</p>
+    <ul>
+        <li><strong>Impugnación directa:</strong> Recurso contra el reglamento en sí, en plazo de dos meses desde su publicación. La estimación produce la <strong>anulación con efectos erga omnes</strong>.</li>
+        <li><strong>Impugnación indirecta:</strong> Recurso contra un acto de aplicación fundado en la invalidez del reglamento. Su efecto depende de la competencia del tribunal (art. 27 LJCA):
+            <ul>
+                <li>Si es competente para el recurso directo, anula el reglamento en la sentencia.</li>
+                <li>Si no es competente, anula el acto y, si la sentencia es firme, debe <strong>plantear la cuestión de ilegalidad</strong> ante el tribunal competente para el recurso directo. Esta cuestión se plantea <strong>después</strong> de dictar sentencia y, si se estima, produce efectos erga omnes. El Tribunal Supremo puede anular directamente cualquier disposición en un recurso indirecto.</li>
+            </ul>
+        </li>
+    </ul>
+    <blockquote><strong>Definición literal:</strong> "Los Jueces y Tribunales no aplicarán los reglamentos o cualquier otra disposición contrarios a la Constitución, a la ley o al principio de jerarquía normativa (art. 6 LOPJ)."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Erga omnes.</strong> La impugnación directa y la cuestión de ilegalidad estimada producen efectos <strong>erga omnes</strong>.</p>
+
+    <h3 id="epigrafe-5-4">5.4. El control constitucional</h3>
+    <p><strong>Resumen:</strong> El TC controla reglamentos, pero no tiene el monopolio. El parámetro es exclusivamente constitucional. Las vías son:</p>
+    <ol>
+        <li><strong>Conflicto positivo de competencia:</strong> Pueden plantearlo el Gobierno y los ejecutivos autonómicos (arts. 60 y ss. LOTC). La sentencia declara la titularidad de la competencia y puede anular la disposición por vicio de incompetencia. Hay <strong>prevalencia</strong> del control constitucional sobre el contencioso-administrativo (suspende el proceso judicial).</li>
+        <li><strong>Impugnación de disposiciones normativas sin fuerza de ley y resoluciones de las CCAA (Título V LOTC):</strong> Iniciada solo por el Gobierno. Sirve para cualquier infracción constitucional. Permite solicitar la suspensión de la disposición impugnada.</li>
+        <li><strong>Recurso de amparo:</strong> Protege contra violaciones de derechos fundamentales (arts. 14 a 29 CE) originadas por disposiciones administrativas. Quienes pueden interponerlo son el interesado, el Defensor del Pueblo y el Fiscal. El control es <strong>subsidiario</strong> del contencioso-administrativo (se requiere haber agotado la vía judicial previa).</li>
+    </ol>
+    <blockquote><strong>Definición literal:</strong> "La diferencia con el control que realiza la jurisdicción contencioso-administrativa es que el control constitucional es más limitado, pues su parámetro de control está únicamente conformado por las disposiciones constitucionales (sobre distribución de competencias, derechos fundamentales y otras cuestiones constitucionales), mientras que el parámetro de la jurisdicción contencioso-administrativa está constituido por la totalidad del ordenamiento jurídico español y el de la Unión Europea."</blockquote>
+    <p><strong>Matiz a recordar:</strong> <strong>Subsidiario.</strong> El recurso de amparo contra reglamentos es <strong>subsidiario</strong>; se requiere agotar la vía judicial previa.</p>
+
+    <hr>
+
+    <!-- ===== PREGUNTAS TIPO TEST ===== -->
+    <h2 id="preguntas-test">📝 Preguntas tipo test</h2>
+
+    <div id="pregunta-1" class="pregunta">
+        <div class="enunciado">1. ¿Cuál es el criterio fundamental para distinguir un reglamento de un acto administrativo?</div>
+        <ul class="opciones">
+            <li>A) La publicación en el diario oficial.</li>
+            <li>B) Que tenga un destinatario determinado o determinable.</li>
+            <li>C) Su carácter general y la aplicación reiterada e indefinida a casos futuros (carácter consuntivo).</li>
+            <li>D) La forma jurídica que adopta (real decreto, orden ministerial, etc.).</li>
+        </ul>
+        <button class="btn-respuesta" onclick="toggleRespuesta('respuesta-1')">Mostrar respuesta</button>
+        <div id="respuesta-1" class="respuesta-oculta">
+            <p><strong>✅ Respuesta correcta:</strong> C</p>
+            <p class="trampa"><strong>🎯 Trampa identificada:</strong> La opción B es incorrecta porque, aunque los actos suelen tener destinatario determinado, existen actos administrativos generales con destinatarios indeterminados. La opción D es incorrecta porque la forma no indica el contenido. El criterio clave es el carácter consuntivo del acto frente a la aplicación ilimitada del reglamento.</p>
+        </div>
+    </div>
+
+    <div id="pregunta-2" class="pregunta">
+        <div class="enunciado">2. Según la doctrina del Tribunal Constitucional, ¿qué tipo de legitimidad democrática tiene el reglamento?</div>
+        <ul class="opciones">
+            <li>A) Legitimidad democrática directa de primer grado.</li>
+            <li>B) Legitimidad democrática de segundo grado, al no ser sus autores elegidos directamente por los ciudadanos.</li>
+            <li>C) Carece de legitimidad democrática, ya que emana del poder ejecutivo.</li>
+            <li>D) La misma legitimidad que la ley, pues ambos procedimientos garantizan la participación de las minorías políticas.</li>
+        </ul>
+        <button class="btn-respuesta" onclick="toggleRespuesta('respuesta-2')">Mostrar respuesta</button>
+        <div id="respuesta-2" class="respuesta-oculta">
+            <p><strong>✅ Respuesta correcta:</strong> B</p>
+            <p class="trampa"><strong>🎯 Trampa identificada:</strong> La opción A es incorrecta porque la legitimidad de primer grado corresponde a la ley. La C es falsa, ya que sí tiene legitimidad. La D es incorrecta porque el procedimiento reglamentario no incluye a la minoría política, sino trámites de participación ciudadana.</p>
+        </div>
+    </div>
+
+    <div id="pregunta-3" class="pregunta">
+        <div class="enunciado">3. ¿En qué consiste la "reserva de ley" y cuál es su efecto principal?</div>
+        <ul class="opciones">
+            <li>A) Es un principio que recomienda que las materias importantes sean reguladas por ley.</li>
+            <li>B) Es un mandato constitucional que exige que una materia sea regulada por ley, excluyendo la regulación por normas de rango inferior.</li>
+            <li>C) Es una facultad del Gobierno para decidir qué materias serán reguladas por ley.</li>
+            <li>D) Es una habilitación que el legislador concede al Gobierno para que dicte reglamentos en una materia determinada.</li>
+        </ul>
+        <button class="btn-respuesta" onclick="toggleRespuesta('respuesta-3')">Mostrar respuesta</button>
+        <div id="respuesta-3" class="respuesta-oculta">
+            <p><strong>✅ Respuesta correcta:</strong> B</p>
+            <p class="trampa"><strong>🎯 Trampa identificada:</strong> La opción A es incorrecta porque no es un simple principio, sino un mandato. La C es incorrecta, ya que la reserva lo que hace es privar de competencia al Gobierno. La D es lo contrario de una reserva (es una habilitación).</p>
+        </div>
+    </div>
+
+    <div id="pregunta-4" class="pregunta">
+        <div class="enunciado">4. ¿Cuál de las siguientes afirmaciones sobre la "reserva de ley" es correcta?</div>
+        <ul class="opciones">
+            <li>A) La Constitución establece una única y amplia reserva general de ley para todo el ordenamiento.</li>
+            <li>B) Las materias reservadas a ley están todas recogidas en el art. 53.1 CE.</li>
+            <li>C) La mayoría de las reservas de ley en el ámbito administrativo son de carácter relativo, permitiendo la colaboración del reglamento.</li>
+            <li>D) La reserva de ley implica siempre una regulación exhaustiva y excluyente por parte del legislador.</li>
+        </ul>
+        <button class="btn-respuesta" onclick="toggleRespuesta('respuesta-4')">Mostrar respuesta</button>
+        <div id="respuesta-4" class="respuesta-oculta">
+            <p><strong>✅ Respuesta correcta:</strong> C</p>
+            <p class="trampa"><strong>🎯 Trampa identificada:</strong> La opción A es falsa, la doctrina mayoritaria rechaza la reserva general implícita. La B es falsa, las reservas están dispersas. La D es falsa, ya que la regla general es la colaboración, salvo excepciones como el ámbito penal.</p>
+        </div>
+    </div>
+
+    <div id="pregunta-5" class="pregunta">
+        <div class="enunciado">5. ¿Qué es un "reglamento ejecutivo" según la jurisprudencia del Tribunal Constitucional?</div>
+        <ul class="opciones">
+            <li>A) Un reglamento que se limita a ejecutar materialmente una ley previa, sin añadir nada nuevo.</li>
+            <li>B) Un reglamento que se dicta en un ámbito sin ley previa.</li>
+            <li>C) Un reglamento que está directa y concretamente ligado a una ley, a la que complementa, desarrolla y ejecuta.</li>
+            <li>D) Un reglamento que se dicta en situaciones de emergencia y puede ser contra legem.</li>
+        </ul>
+        <button class="btn-respuesta" onclick="toggleRespuesta('respuesta-5')">Mostrar respuesta</button>
+        <div id="respuesta-5" class="respuesta-oculta">
+            <p><strong>✅ Respuesta correcta:</strong> C</p>
+            <p class="trampa"><strong>🎯 Trampa identificada:</strong> La opción A es incorrecta porque el reglamento ejecutivo no solo ejecuta, sino que también desarrolla y complementa. La B es la definición del reglamento independiente. La D es la del reglamento de necesidad.</p>
+        </div>
+    </div>
+
+    <div id="pregunta-6" class="pregunta">
+        <div class="enunciado">6. ¿Cuál es la posición más ajustada a la Constitución Española en relación con el "reglamento independiente"?</div>
+        <ul class="opciones">
+            <li>A) Está prohibido por la Constitución, que solo permite reglamentos habilitados por la ley.</li>
+            <li>B) Es posible en cualquier ámbito, incluso si existe una ley previa.</li>
+            <li>C) Solo es posible en el ámbito de la organización administrativa (eficacia interna).</li>
+            <li>D) Es posible en aquellas materias donde no exista una reserva constitucional de ley ni estén ocupadas por una ley.</li>
+        </ul>
+        <button class="btn-respuesta" onclick="toggleRespuesta('respuesta-6')">Mostrar respuesta</button>
+        <div id="respuesta-6" class="respuesta-oculta">
+            <p><strong>✅ Respuesta correcta:</strong> D</p>
+            <p class="trampa"><strong>🎯 Trampa identificada:</strong> La A es una postura doctrinal que contradice el art. 97 CE. La B es falsa, ya que si existe una ley previa, el reglamento debe ser ejecutivo. La C es una visión restrictiva que también contradice el art. 97 CE.</p>
+        </div>
+    </div>
+
+    <div id="pregunta-7" class="pregunta">
+        <div class="enunciado">7. Se produce una "congelación de rango" cuando:</div>
+        <ul class="opciones">
+            <li>A) El Gobierno dicta un reglamento en una materia reservada a la ley.</li>
+            <li>B) El legislador deroga una ley y permite que su contenido sea regulado por un reglamento.</li>
+            <li>C) Un reglamento independiente queda subordinado a una ley posterior que regula la misma materia, de forma que no puede modificarla.</li>
+            <li>D) El Tribunal Constitucional declara la nulidad de un reglamento.</li>
+        </ul>
+        <button class="btn-respuesta" onclick="toggleRespuesta('respuesta-7')">Mostrar respuesta</button>
+        <div id="respuesta-7" class="respuesta-oculta">
+            <p><strong>✅ Respuesta correcta:</strong> C</p>
+            <p class="trampa"><strong>🎯 Trampa identificada:</strong> La opción A describe una infracción de la reserva de ley. La B describe el proceso de "deslegalización". La D es un efecto de una sentencia, no una congelación de rango.</p>
+        </div>
+    </div>
+
+    <div id="pregunta-8" class="pregunta">
+        <div class="enunciado">8. ¿Cuál es la diferencia fundamental entre la "congelación de rango" (o reserva formal de ley) y la "reserva material de ley" establecida por la Constitución?</div>
+        <ul class="opciones">
+            <li>A) La congelación de rango puede ser eliminada por un legislador posterior, mientras que la reserva material no.</li>
+            <li>B) La congelación de rango protege los derechos fundamentales, mientras que la reserva material no.</li>
+            <li>C) La congelación de rango se aplica solo a las CCAA, mientras que la reserva material solo al Estado.</li>
+            <li>D) No hay diferencia, son términos sinónimos.</li>
+        </ul>
+        <button class="btn-respuesta" onclick="toggleRespuesta('respuesta-8')">Mostrar respuesta</button>
+        <div id="respuesta-8" class="respuesta-oculta">
+            <p><strong>✅ Respuesta correcta:</strong> A</p>
+            <p class="trampa"><strong>🎯 Trampa identificada:</strong> La clave es que la reserva formal (o impropia) es obra del legislador y puede ser eliminada por él. La reserva material (propia) es constitucional y su modificación requiere reforma constitucional. La C es totalmente falsa, ambas se aplican a todo el Estado.</p>
+        </div>
+    </div>
+
+    <div id="pregunta-9" class="pregunta">
+        <div class="enunciado">9. Según la Ley del Gobierno, ¿qué órgano NO tiene potestad reglamentaria?</div>
+        <ul class="opciones">
+            <li>A) El Presidente del Gobierno.</li>
+            <li>B) El Consejo de Ministros.</li>
+            <li>C) Los Ministros.</li>
+            <li>D) Las Comisiones Delegadas del Gobierno.</li>
+        </ul>
+        <button class="btn-respuesta" onclick="toggleRespuesta('respuesta-9')">Mostrar respuesta</button>
+        <div id="respuesta-9" class="respuesta-oculta">
+            <p><strong>✅ Respuesta correcta:</strong> D</p>
+            <p class="trampa"><strong>🎯 Trampa identificada:</strong> Los arts. 2.2 j), 5.1 h) y 4.1 b) de la LG atribuyen potestad reglamentaria a A, B y C. El art. 20.2 LG establece que el Consejo de Ministros solo puede delegar funciones administrativas en las Comisiones Delegadas, no la potestad reglamentaria. Por tanto, D es la correcta.</p>
+        </div>
+    </div>
+
+    <div id="pregunta-10" class="pregunta">
+        <div class="enunciado">10. ¿Cuál de los siguientes trámites del procedimiento de elaboración de reglamentos estatales es considerado "preceptivo", aunque con excepciones?</div>
+        <ul class="opciones">
+            <li>A) El dictamen del Consejo de Estado para cualquier tipo de reglamento.</li>
+            <li>B) La consulta pública previa a la elaboración del texto.</li>
+            <li>C) La audiencia de los ciudadanos afectados.</li>
+            <li>D) El informe de la Secretaría General Técnica.</li>
+        </ul>
+        <button class="btn-respuesta" onclick="toggleRespuesta('respuesta-10')">Mostrar respuesta</button>
+        <div id="respuesta-10" class="respuesta-oculta">
+            <p><strong>✅ Respuesta correcta:</strong> B</p>
+            <p class="trampa"><strong>🎯 Trampa identificada:</strong> La opción A es incorrecta, el dictamen del Consejo de Estado es preceptivo solo para reglamentos ejecutivos y los que desarrollen tratados, no para todos. La C y la D son preceptivas, pero la pregunta se centra en el trámite que es preceptivo "con excepciones" (normas presupuestarias, sin impacto, urgentes, etc.), que encaja mejor con la consulta pública del art. 26 LG. La consulta pública es preceptiva, pero con las excepciones indicadas.</p>
+        </div>
+    </div>
+
+    <div id="pregunta-11" class="pregunta">
+        <div class="enunciado">11. En el procedimiento de elaboración de reglamentos estatales, el dictamen del Consejo de Estado es preceptivo para:</div>
+        <ul class="opciones">
+            <li>A) Todos los reglamentos, sin excepción.</li>
+            <li>B) Los reglamentos de necesidad.</li>
+            <li>C) Los reglamentos ejecutivos y los que desarrollen tratados internacionales o Derecho de la UE.</li>
+            <li>D) Los reglamentos organizativos de los ministerios.</li>
+        </ul>
+        <button class="btn-respuesta" onclick="toggleRespuesta('respuesta-11')">Mostrar respuesta</button>
+        <div id="respuesta-11" class="respuesta-oculta">
+            <p><strong>✅ Respuesta correcta:</strong> C</p>
+            <p class="trampa"><strong>🎯 Trampa identificada:</strong> El art. 22 LOCE establece la preceptividad para los reglamentos ejecutivos y los que desarrollen tratados o Derecho de la UE. Para los demás, es facultativo.</p>
+        </div>
+    </div>
+
+    <div id="pregunta-12" class="pregunta">
+        <div class="enunciado">12. ¿Qué consecuencias tiene la declaración de nulidad de un reglamento sobre los actos firmes que se dictaron al amparo de él?</div>
+        <ul class="opciones">
+            <li>A) Todos los actos dictados bajo el reglamento nulo son automáticamente nulos.</li>
+            <li>B) Los actos firmes subsisten por el principio de seguridad jurídica, salvo que el acto de aplicación incurra en una causa de nulidad propia.</li>
+            <li>C) La nulidad del reglamento implica la obligación de revisar todos los actos dictados en el pasado.</li>
+            <li>D) La Administración debe indemnizar automáticamente a todos los afectados.</li>
+        </ul>
+        <button class="btn-respuesta" onclick="toggleRespuesta('respuesta-12')">Mostrar respuesta</button>
+        <div id="respuesta-12" class="respuesta-oculta">
+            <p><strong>✅ Respuesta correcta:</strong> B</p>
+            <p class="trampa"><strong>🎯 Trampa identificada:</strong> La opción A es incorrecta (no es automática). La C es incorrecta (no hay obligación de revisión general). La D es incorrecta (la indemnización no es automática, debe concurrir responsabilidad patrimonial). El art. 106.4 LPAC y el 73 LJCA confirman la subsistencia de los actos firmes.</p>
+        </div>
+    </div>
+
+    <div id="pregunta-13" class="pregunta">
+        <div class="enunciado">13. ¿Quién puede solicitar a la Administración la revisión de oficio de una disposición reglamentaria?</div>
+        <ul class="opciones">
+            <li>A) Cualquier particular afectado.</li>
+            <li>B) El Defensor del Pueblo.</li>
+            <li>C) Cualquier ciudadano, en virtud de la acción popular.</li>
+            <li>D) Nadie, los particulares no tienen "acción de nulidad" para solicitar la revisión de oficio de reglamentos.</li>
+        </ul>
+        <button class="btn-respuesta" onclick="toggleRespuesta('respuesta-13')">Mostrar respuesta</button>
+        <div id="respuesta-13" class="respuesta-oculta">
+            <p><strong>✅ Respuesta correcta:</strong> D</p>
+            <p class="trampa"><strong>🎯 Trampa identificada:</strong> La STS 657/2022 establece que, desde 1992, los particulares no pueden solicitar la revisión de oficio de disposiciones administrativas, a diferencia de los actos administrativos.</p>
+        </div>
+    </div>
+
+    <div id="pregunta-14" class="pregunta">
+        <div class="enunciado">14. En el recurso indirecto contra un reglamento en la vía contencioso-administrativa, si el Tribunal que conoce del acto de aplicación no es competente para conocer del recurso directo contra el reglamento y dicta sentencia firme estimatoria por ilegalidad del mismo, ¿qué debe hacer?</div>
+        <ul class="opciones">
+            <li>A) Nada, la sentencia firme anula el acto y el reglamento queda expulsado del ordenamiento por esa vía.</li>
+            <li>B) Debe plantear una cuestión de ilegalidad ante el Tribunal competente para el recurso directo.</li>
+            <li>C) Debe suspender el procedimiento y plantear una cuestión de inconstitucionalidad.</li>
+            <li>D) Debe esperar a que la Administración revise de oficio el reglamento.</li>
+        </ul>
+        <button class="btn-respuesta" onclick="toggleRespuesta('respuesta-14')">Mostrar respuesta</button>
+        <div id="respuesta-14" class="respuesta-oculta">
+            <p><strong>✅ Respuesta correcta:</strong> B</p>
+            <p class="trampa"><strong>🎯 Trampa identificada:</strong> Es el mecanismo previsto en el art. 27.2 LJCA. La opción A solo ocurre si el tribunal es competente para el recurso directo o es el TS. La C es para normas con rango de ley. La D no es una obligación del juez.</p>
+        </div>
+    </div>
+
+    <div id="pregunta-15" class="pregunta">
+        <div class="enunciado">15. ¿Cuál es la diferencia clave entre la "cuestión de ilegalidad" y la "cuestión de inconstitucionalidad"?</div>
+        <ul class="opciones">
+            <li>A) La cuestión de ilegalidad se plantea después de dictar sentencia firme, mientras que la de inconstitucionalidad se plantea antes, suspendiendo el procedimiento.</li>
+            <li>B) La cuestión de ilegalidad se plantea ante el Tribunal Constitucional y la de inconstitucionalidad ante el Tribunal Supremo.</li>
+            <li>C) La cuestión de ilegalidad solo puede ser planteada por el Gobierno, mientras que la de inconstitucionalidad por cualquier juez.</li>
+            <li>D) No hay diferencia, son el mismo instrumento con distinto nombre.</li>
+        </ul>
+        <button class="btn-respuesta" onclick="toggleRespuesta('respuesta-15')">Mostrar respuesta</button>
+        <div id="respuesta-15" class="respuesta-oculta">
+            <p><strong>✅ Respuesta correcta:</strong> A</p>
+            <p class="trampa"><strong>🎯 Trampa identificada:</strong> La diferencia procedimental es la clave. La cuestión de ilegalidad (art. 27 LJCA) se promueve <em>después</em> de haber dictado sentencia firme en el recurso indirecto, sin suspender el procedimiento. La cuestión de inconstitucionalidad (art. 35 LOTC) se plantea <em>antes</em> de dictar sentencia y suspende el procedimiento. La B es falsa, la primera es para reglamentos y se plantea ante la jurisdicción contencioso-administrativa, la segunda ante el TC.</p>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- ===== PREGUNTAS DE RESERVA ===== -->
+    <h2 id="preguntas-reserva">🔥 Preguntas de reserva (muy difíciles)</h2>
+
+    <div id="reserva-1" class="pregunta-reserva">
+        <div class="enunciado">PREGUNTA DE RESERVA 1 (MUY DIFÍCIL)</div>
+        <p>El Gobierno aprueba un Real Decreto por el que se crea una nueva tasa por la prestación de un servicio público, y lo hace al amparo de una ley anterior que establecía los elementos esenciales de la tasa (hecho imponible, sujeto pasivo y tipo de gravamen máximo), pero que no contenía ninguna habilitación expresa para su desarrollo reglamentario. El Real Decreto fija el tipo de gravamen en su cuantía máxima. Una asociación de usuarios recurre el Real Decreto. ¿Cuál de los siguientes argumentos es el <strong>más sólido</strong> para que el Tribunal Supremo anule el Real Decreto?</p>
+        <ul class="opciones">
+            <li>A) Es nulo por vulnerar el principio de jerarquía normativa, ya que la ley no lo habilita expresamente para fijar el tipo de gravamen, y la habilitación es necesaria para ejercer la potestad reglamentaria en toda materia.</li>
+            <li>B) Es nulo por vulnerar la reserva de ley en materia tributaria (art. 31.3 CE), ya que la determinación de los elementos esenciales de una tasa, incluido su tipo de gravamen, debe ser regulada por ley, y la ley anterior no lo fijó con la suficiencia necesaria.</li>
+            <li>C) Es nulo por no haber sido sometido al dictamen preceptivo del Consejo de Estado, al ser un reglamento ejecutivo.</li>
+            <li>D) Es válido, ya que la potestad reglamentaria del Gobierno es originaria (art. 97 CE) y no necesita habilitación legal para desarrollar una materia no reservada a la ley, y la ley ya fijó los elementos esenciales.</li>
+        </ul>
+        <button class="btn-respuesta" onclick="toggleRespuesta('respuesta-reserva-1')">Mostrar respuesta</button>
+        <div id="respuesta-reserva-1" class="respuesta-oculta">
+            <p><strong>✅ Respuesta correcta:</strong> B</p>
+            <p class="trampa"><strong>🎯 Trampa identificada:</strong> La opción A es incorrecta porque la Constitución otorga potestad reglamentaria directa al Gobierno (art. 97 CE), y no toda habilitación es necesaria, especialmente en materias sin reserva de ley. La C es incorrecta porque el dictamen del Consejo de Estado es preceptivo para reglamentos ejecutivos, pero su ausencia es un vicio procedimental, no el argumento más sólido frente a una reserva de ley. La D es incorrecta porque, aunque la potestad es originaria, en materia tributaria existe una <strong>reserva de ley</strong> (art. 31.3 CE) que exige que la ley regule los elementos esenciales. La ley fijó el máximo, pero no el tipo concreto, lo que puede considerarse una insuficiencia en la determinación legal del tributo. El argumento más sólido es la vulneración de la reserva de ley, que es un vicio de nulidad de pleno derecho por regular una materia reservada a la ley (art. 47.2 LPAC).</p>
+        </div>
+    </div>
+
+    <div id="reserva-2" class="pregunta-reserva">
+        <div class="enunciado">PREGUNTA DE RESERVA 2 (MUY DIFÍCIL)</div>
+        <p>El Consejo de Ministros aprueba un Real Decreto que modifica el Reglamento de Armas, añadiendo un nuevo tipo de arma prohibida. Esta modificación se realiza mediante una Orden Ministerial del Ministerio del Interior, que se dicta al amparo de una habilitación contenida en el propio Reglamento de Armas (disposición final cuarta), y no en una ley. La Orden Ministerial se publica en el BOE. Un particular recurre la Orden Ministerial. ¿Cuál de las siguientes afirmaciones es correcta?</p>
+        <ul class="opciones">
+            <li>A) La Orden Ministerial es válida, porque el Reglamento de Armas es una norma de rango reglamentario y puede habilitar a otros órganos, como el Ministro del Interior, para su desarrollo.</li>
+            <li>B) La Orden Ministerial es nula, porque la potestad reglamentaria para desarrollar una materia con reserva de ley solo puede ser ejercida por el Consejo de Ministros, no por un Ministro, y la habilitación de una norma reglamentaria (no legal) es insuficiente.</li>
+            <li>C) La Orden Ministerial es nula, porque la modificación de un reglamento ejecutivo solo puede hacerse por otra norma del mismo rango (Real Decreto), no por una Orden Ministerial.</li>
+            <li>D) La Orden Ministerial es válida, porque el Ministro del Interior tiene potestad reglamentaria en las materias propias de su Departamento (art. 4.1 b) LG), y la habilitación reglamentaria es suficiente.</li>
+        </ul>
+        <button class="btn-respuesta" onclick="toggleRespuesta('respuesta-reserva-2')">Mostrar respuesta</button>
+        <div id="respuesta-reserva-2" class="respuesta-oculta">
+            <p><strong>✅ Respuesta correcta:</strong> B</p>
+            <p class="trampa"><strong>🎯 Trampa identificada:</strong> La opción A y D son incorrectas porque, en una materia con <strong>reserva de ley en materia penal</strong> (art. 25.1 CE), la determinación de conductas típicas (armas prohibidas) exige una cobertura legal suficiente. La STC 24/2004 declaró que una habilitación contenida en una norma reglamentaria (no en una ley) para modificar el concepto de arma prohibida es inconstitucional, ya que diluye la garantía de certeza y seguridad jurídica propia de la reserva de ley en materia penal. La opción C es incorrecta porque, aunque la modificación de un Real Decreto mediante Orden Ministerial podría vulnerar el principio de jerarquía normativa, el problema de fondo es más grave: la falta de cobertura legal para la habilitación. Por lo tanto, la opción B es la correcta al señalar que la habilitación debe ser legal y la reserva de ley exige que sea el Consejo de Ministros (no un ministro) quien, con la cobertura legal adecuada, pueda regular esta materia.</p>
+        </div>
+    </div>
+
+    <div id="reserva-3" class="pregunta-reserva">
+        <div class="enunciado">PREGUNTA DE RESERVA 3 (MUY DIFÍCIL)</div>
+        <p>Un Ayuntamiento aprueba una Ordenanza que regula el uso de las terrazas de los establecimientos hosteleros, estableciendo un sistema de autorización previa y fijando el importe de la tasa por ocupación de la vía pública. La Ordenanza se aprueba sin realizar el trámite de información pública. Un hostelero recurre la Ordenanza ante la jurisdicción contencioso-administrativa, alegando que es nula por vulnerar la reserva de ley en materia tributaria (art. 31.3 CE) y, además, por omisión del trámite de información pública. La Sala de lo Contencioso-Administrativo del Tribunal Superior de Justicia, que es competente para conocer del recurso directo contra la Ordenanza, <strong>desestima</strong> el recurso, considerando que la Ordenanza es válida tanto en su fondo como en su forma. El hostelero no recurre en casación. ¿Qué ocurre?</p>
+        <ul class="opciones">
+            <li>A) La Ordenanza adquiere firmeza y no puede ser impugnada nuevamente, ni por vía directa ni indirecta, al haber quedado consentida.</li>
+            <li>B) La Ordenanza adquiere firmeza para el hostelero recurrente, pero cualquier otro ciudadano puede impugnarla directamente en el plazo de dos meses desde la publicación de la sentencia.</li>
+            <li>C) La Ordenanza adquiere firmeza, pero su declaración de validez no impide que un particular, en un procedimiento posterior contra un acto de aplicación, pueda plantear la <strong>excepción de ilegalidad</strong> (art. 6 LOPJ) y solicitar la inaplicación de la Ordenanza, aunque no pueda plantear la cuestión de ilegalidad porque el Tribunal que conoció del recurso directo ya se pronunció sobre su validez.</li>
+            <li>D) La Ordenanza adquiere firmeza, pero el hostelero, al no poder recurrir el acto de aplicación (la licencia) por ser un acto firme, no puede hacer nada.</li>
+        </ul>
+        <button class="btn-respuesta" onclick="toggleRespuesta('respuesta-reserva-3')">Mostrar respuesta</button>
+        <div id="respuesta-reserva-3" class="respuesta-oculta">
+            <p><strong>✅ Respuesta correcta:</strong> C</p>
+            <p class="trampa"><strong>🎯 Trampa identificada:</strong> La opción A es incorrecta porque, aunque el recurso directo ha sido desestimado y la Ordenanza es firme, el art. 6 LOPJ permite a cualquier juez o tribunal inaplicar un reglamento que considera ilegal en el caso concreto. Este es el mecanismo de la <strong>excepción de ilegalidad</strong>, que es un medio de defensa (exceptio) disponible para el particular en el procedimiento judicial contra el acto de aplicación. La opción B es incorrecta porque la cosa juzgada material de la sentencia que desestima el recurso directo produce efectos <em>erga omnes</em> en cuanto a la validez de la Ordenanza; no puede ser impugnada por otros ciudadanos en un nuevo recurso directo. La opción C es correcta porque la sentencia firme que declara la validez de la Ordenanza impide plantear la <strong>cuestión de ilegalidad</strong> (art. 27 LJCA), que requiere que el tribunal que conoce del recurso indirecto no sea competente para el directo y que no haya sentencia firme sobre la validez de la disposición. Sin embargo, la <strong>excepción de ilegalidad</strong> no está sujeta a este límite; el juez del acto de aplicación puede inaplicar la Ordenanza si la considera contraria a la ley, aunque la disposición haya sido declarada válida en otro proceso, porque la inaplicación solo produce efectos <em>inter partes</em>, no <em>erga omnes</em>. La opción D es incorrecta porque la licencia es un acto de aplicación que puede ser recurrido, y en ese recurso se puede invocar la excepción de ilegalidad.</p>
+        </div>
+    </div>
+
+    <hr>
+
+    <script>
+        // Función para alternar el modo oscuro/claro
+        function toggleModo() {
+            const body = document.body;
+            body.classList.toggle('dark-mode');
+            const btn = document.querySelector('.modo-btn');
+            if (body.classList.contains('dark-mode')) {
+                btn.textContent = '☀️ Modo claro';
+            } else {
+                btn.textContent = '🌙 Modo oscuro';
+            }
+        }
+
+        // Función para mostrar/ocultar respuestas
+        function toggleRespuesta(id) {
+            const div = document.getElementById(id);
+            const btn = div.parentElement.querySelector('.btn-respuesta');
+            if (div.classList.contains('visible')) {
+                div.classList.remove('visible');
+                btn.textContent = 'Mostrar respuesta';
+            } else {
+                div.classList.add('visible');
+                btn.textContent = 'Ocultar respuesta';
+            }
+        }
+
+        // Comprobar si el usuario tiene preferencia de modo oscuro
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.body.classList.add('dark-mode');
+            document.querySelector('.modo-btn').textContent = '☀️ Modo claro';
+        }
+    </script>
+</body>
+</html>

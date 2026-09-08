@@ -1,0 +1,16 @@
+{
+  "asignaturas": [
+    {
+      "id": "cisco",
+      "nombre": "Cisco Exam Trainer",
+      "codigo": "🏅",
+      "creditos": 0,
+      "caracter": "HERRAMIENTA",
+      "icon": "🏅",
+      "curso": "0",
+      "semestre": "0",
+      "matriculada": false,
+      "path": "cisco/"
+    }
+  ]
+}

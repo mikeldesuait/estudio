@@ -1,0 +1,21 @@
+{
+  "id": "derecho-administrativo-i",
+  "nombre": "Derecho Administrativo I",
+  "codigo": "66901029",
+  "creditos": 6,
+  "caracter": "FORMACIÓN BÁSICA",
+  "icon": "🏢",
+  "temas": [
+    { "id": "tema1", "titulo": "Tema 1: El Derecho Administrativo. Concepto y Bases" },
+    { "id": "tema2", "titulo": "Tema 2: Las Fuentes del Derecho Administrativo" },
+    { "id": "tema3", "titulo": "Tema 3: La Organización Administrativa" },
+    { "id": "tema4", "titulo": "Tema 4: El Acto Administrativo" },
+    { "id": "tema5", "titulo": "Tema 5: El Procedimiento Administrativo" },
+    { "id": "tema6", "titulo": "Tema 6: La Revisión de los Actos Administrativos" },
+    { "id": "tema7", "titulo": "Tema 7: La Responsabilidad Patrimonial de la Administración" },
+    { "id": "tema8", "titulo": "Tema 8: Los Contratos del Sector Público" },
+    { "id": "tema9", "titulo": "Tema 9: La Expropiación Forzosa" },
+    { "id": "tema10", "titulo": "Tema 10: La Jurisdicción Contencioso-Administrativa" },
+    { "id": "tema11", "titulo": "Tema 11: El Empleo Público y la Función Pública" }
+  ]
+}

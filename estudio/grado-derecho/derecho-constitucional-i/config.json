@@ -1,0 +1,10 @@
+{
+  "id": "derecho-constitucional-i",
+  "nombre": "Derecho Constitucional I",
+  "codigo": "66021073",
+  "creditos": 5,
+  "icon": "📋",
+  "temas": [
+    { "id": "tema1", "titulo": "La Constitución Española de 1978" }
+  ]
+}

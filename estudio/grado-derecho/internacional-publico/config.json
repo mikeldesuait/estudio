@@ -1,0 +1,11 @@
+{
+  "id": "internacional-publico",
+  "nombre": "Internacional Publico",
+  "codigo": "66023043",
+  "creditos": 9,
+  "caracter": "OBLIGATORIAS",
+  "icon": "🌐",
+  "temas": [
+    { "id": "tema1", "titulo": "Tema 1 - Introducción" }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "id": "derecho-administrativo-ii",
+  "nombre": "Derecho Administrativo Ii",
+  "codigo": "66902017",
+  "creditos": 5,
+  "caracter": "OBLIGATORIAS",
+  "icon": "🏢",
+  "temas": [
+    { "id": "tema1", "titulo": "Tema 1 - Introducción" }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "asignaturas": [
+    {
+      "id": "introduccion-pnl",
+      "nombre": "Introducción a la PNL",
+      "codigo": "PNL-101",
+      "creditos": 4,
+      "caracter": "FORMACIÓN BÁSICA",
+      "icon": "🧠",
+      "path": "introduccion-pnl/"
+    }
+  ]
+}

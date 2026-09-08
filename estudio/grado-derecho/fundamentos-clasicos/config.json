@@ -1,0 +1,11 @@
+{
+  "id": "fundamentos-clasicos",
+  "nombre": "Fundamentos Clasicos",
+  "codigo": "66901012",
+  "creditos": 6,
+  "caracter": "FORMACIÓN BÁSICA",
+  "icon": "🏛️",
+  "temas": [
+    { "id": "tema1", "titulo": "Tema 1 - Introducción" }
+  ]
+}

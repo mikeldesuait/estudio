@@ -1,0 +1,11 @@
+{
+  "id": "derecho-consumo",
+  "nombre": "Derecho Consumo",
+  "codigo": "66014073",
+  "creditos": 6,
+  "caracter": "OPTATIVAS",
+  "icon": "🛒",
+  "temas": [
+    { "id": "tema1", "titulo": "Tema 1 - Introducción" }
+  ]
+}

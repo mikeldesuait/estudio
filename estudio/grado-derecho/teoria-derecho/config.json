@@ -1,0 +1,11 @@
+{
+  "id": "teoria-derecho",
+  "nombre": "Teoria Derecho",
+  "codigo": "66021021",
+  "creditos": 6,
+  "caracter": "FORMACIÓN BÁSICA",
+  "icon": "⚖️",
+  "temas": [
+    { "id": "tema1", "titulo": "Tema 1 - Introducción" }
+  ]
+}

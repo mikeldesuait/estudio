@@ -1,0 +1,11 @@
+{
+  "id": "financiero-ii1",
+  "nombre": "Financiero Ii1",
+  "codigo": "66023089",
+  "creditos": 4.5,
+  "caracter": "OBLIGATORIAS",
+  "icon": "💰",
+  "temas": [
+    { "id": "tema1", "titulo": "Tema 1 - Introducción" }
+  ]
+}
