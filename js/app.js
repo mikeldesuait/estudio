@@ -578,6 +578,56 @@ async function mostrarConfiguracion(main) {
 }
 
 // ============================================================
+// VOLVER A ASIGNATURAS (DINÁMICO)
+// ============================================================
+
+function volverAsignaturas() {
+    // Obtener el área de la URL actual
+    const params = new URLSearchParams(window.location.search);
+    const area = params.get('area') || '';
+    const curso = params.get('curso') || '0';
+    const semestre = params.get('semestre') || '0';
+    
+    // Si no hay área en la URL, intentar detectarla de la ruta
+    let areaId = area;
+    if (!areaId) {
+        const path = window.location.pathname;
+        if (path.includes('grado-derecho')) areaId = 'grado-derecho';
+        else if (path.includes('pnl')) areaId = 'pnl';
+        else if (path.includes('herramientas')) areaId = 'herramientas';
+        else if (path.includes('networking')) areaId = 'networking';
+    }
+    
+    // Si no se detecta área, ir al inicio
+    if (!areaId) {
+        window.location.href = '../../index.html';
+        return;
+    }
+    
+    // Determinar si el área tiene cursos/semestres
+    const areaObj = areas.find(a => a.id === areaId);
+    let tieneCursos = false;
+    if (areaObj) {
+        const asig = asignaturasCache[areaId] || [];
+        tieneCursos = asig.some(a => parseInt(a.curso) > 0 || parseInt(a.semestre) > 0);
+    }
+    
+    // Construir la URL de vuelta
+    let url = '../../?nivel=asignaturas&area=' + areaId;
+    
+    if (tieneCursos) {
+        url += '&curso=' + curso + '&semestre=' + semestre;
+    } else {
+        url += '&curso=0&semestre=0';
+    }
+    
+    window.location.href = url;
+}
+
+// Exponer la función globalmente
+window.volverAsignaturas = volverAsignaturas;
+
+// ============================================================
 // TEMA OSCURO / CLARO
 // ============================================================
 
