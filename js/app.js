@@ -1,6 +1,5 @@
 // ============================================================
 // ESTUDIO PERSONAL - NÚCLEO DE LA HERRAMIENTA
-// VERSIÓN: ESTILOS SEGÚN ESTADO (matriculada, aprobada, pendiente)
 // ============================================================
 
 let areas = [];
@@ -145,37 +144,14 @@ function navegar(nivel, areaId, cursoId, semestreId, asignaturaId, temaId) {
 }
 
 // ============================================================
-// DASHBOARD - VERSIÓN PROFESIONAL
+// DASHBOARD - VERSIÓN FINAL
 // ============================================================
 
 async function mostrarDashboard(main) {
-    const areasConAsignaturas = [];
-    let totalAsignaturas = 0;
-    let aprobadas = 0;
-    let matriculadas = 0;
     let ultimaAsignatura = null;
     let ultimoProgreso = 0;
     
     for (let area of areas) {
-        const asig = await getAsignaturas(area.id);
-        const aprobadasArea = asig.filter(a => {
-            const key = 'aprobada_' + area.id + '_' + a.id;
-            return localStorage.getItem(key) === 'true';
-        }).length;
-        const matriculadasArea = asig.filter(a => a.matriculada === true).length;
-        
-        areasConAsignaturas.push({
-            id: area.id,
-            nombre: area.nombre,
-            icon: area.icon || '📚',
-            aprobadas: aprobadasArea,
-            matriculadas: matriculadasArea,
-            total: asig.length
-        });
-        totalAsignaturas += asig.length;
-        aprobadas += aprobadasArea;
-        matriculadas += matriculadasArea;
-        
         const ultimaVisita = localStorage.getItem('ultima_visita');
         if (ultimaVisita) {
             try {
@@ -190,8 +166,6 @@ async function mostrarDashboard(main) {
     }
     
     const notas = JSON.parse(localStorage.getItem('tablero_notas') || '[]');
-    const pctTotal = totalAsignaturas > 0 ? Math.round((aprobadas/totalAsignaturas)*100) : 0;
-    
     const colors = {
         'grado-derecho': '#3b82f6',
         'pnl': '#9b59b6',
@@ -199,262 +173,264 @@ async function mostrarDashboard(main) {
         'networking': '#00b4d8'
     };
     
+    // Fechas de exámenes (ejemplo - puedes añadir más)
+    const eventos = JSON.parse(localStorage.getItem('eventos_calendario') || '[]');
+    
     let html = `
     <style>
-        .dashboard-pro {
+        .dashboard-final {
             display: grid;
-            grid-template-columns: 200px 1fr;
-            gap: 20px;
+            grid-template-columns: 1fr 320px;
+            gap: 16px;
             height: calc(100vh - 150px);
-            min-height: 450px;
+            min-height: 400px;
             padding: 5px 0;
         }
         
-        .menu-pro {
-            background: var(--bg-card);
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            padding: 16px 12px;
+        /* COLUMNA IZQUIERDA */
+        .col-izquierda {
             display: flex;
             flex-direction: column;
-            gap: 4px;
-            box-shadow: var(--shadow);
+            gap: 12px;
         }
-        .menu-pro .menu-titulo {
-            font-size: 10px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-secondary);
-            font-weight: 700;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border);
-            margin-bottom: 6px;
-            text-align: center;
+        
+        /* ÁREAS - PESTAÑAS FIJAS */
+        .areas-pestanas {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
         }
-        .menu-pro .btn-menu {
-            padding: 10px 12px;
+        .btn-area-pestana {
+            padding: 8px 16px;
             border-radius: 10px;
-            border: none;
-            background: transparent;
+            border: 2px solid var(--border);
+            background: var(--bg-card);
             cursor: pointer;
-            font-weight: 500;
+            font-weight: 600;
             font-size: 13px;
             transition: all 0.2s;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 6px;
             color: var(--text-primary);
-            width: 100%;
-            text-align: left;
+            max-width: 140px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            flex-shrink: 0;
         }
-        .menu-pro .btn-menu:hover {
-            background: var(--bg-hover);
-            transform: translateX(4px);
+        .btn-area-pestana .icono { font-size: 16px; flex-shrink: 0; }
+        .btn-area-pestana .nombre {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
-        .menu-pro .btn-menu .icono { font-size: 18px; width: 24px; text-align: center; }
-        .menu-pro .btn-menu .badge {
-            margin-left: auto;
-            font-size: 10px;
-            background: var(--bg-hover);
-            padding: 2px 10px;
-            border-radius: 12px;
-            color: var(--text-secondary);
+        .btn-area-pestana:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent);
+            box-shadow: var(--shadow-hover);
         }
-        .menu-pro .btn-menu.continuar {
+        .btn-area-pestana.continuar {
             background: var(--accent);
             color: white;
-            margin-bottom: 4px;
+            border-color: var(--accent);
         }
-        .menu-pro .btn-menu.continuar:hover {
+        .btn-area-pestana.continuar:hover {
             opacity: 0.85;
-            transform: translateX(4px);
         }
-        .menu-pro .btn-menu.continuar .badge {
+        .btn-area-pestana .badge {
+            font-size: 10px;
+            background: rgba(0,0,0,0.1);
+            padding: 1px 8px;
+            border-radius: 12px;
+            flex-shrink: 0;
+        }
+        .btn-area-pestana.continuar .badge {
             background: rgba(255,255,255,0.2);
-            color: white;
         }
         
-        .contenido-pro {
-            display: grid;
-            grid-template-rows: auto 1fr auto;
-            gap: 14px;
-            min-height: 0;
+        /* COLUMNA DERECHA */
+        .col-derecha {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
         }
         
-        .fila-pro {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 14px;
-        }
-        
-        .calendario-pro {
+        /* CALENDARIO SEMANAL */
+        .calendario-semanal {
             background: var(--bg-card);
             border-radius: 16px;
             border: 1px solid var(--border);
-            padding: 14px 16px;
+            padding: 12px 14px;
             box-shadow: var(--shadow);
         }
-        .calendario-pro .cal-header {
+        .calendario-semanal .cal-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
-        .calendario-pro .cal-header h4 {
+        .calendario-semanal .cal-header h4 {
             margin: 0;
-            font-size: 13px;
+            font-size: 12px;
             color: var(--text-secondary);
             font-weight: 600;
         }
-        .calendario-pro .cal-header .cal-mes {
-            color: var(--text-primary);
+        .calendario-semanal .cal-header .cal-semana {
+            font-size: 12px;
             font-weight: 600;
+            color: var(--text-primary);
         }
-        .calendario-pro .cal-grid {
+        .calendario-semanal .cal-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 2px;
         }
-        .calendario-pro .cal-grid .cal-dia-semana {
-            font-size: 9px;
+        .calendario-semanal .cal-grid .cal-dia-semana {
+            font-size: 8px;
             text-align: center;
             font-weight: 700;
             color: var(--text-secondary);
             padding: 2px 0;
+            text-transform: uppercase;
         }
-        .calendario-pro .cal-grid .cal-dia {
+        .calendario-semanal .cal-grid .cal-dia {
             aspect-ratio: 1;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            font-size: 11px;
             border-radius: 6px;
             cursor: pointer;
             transition: all 0.15s;
             background: var(--bg-hover);
             color: var(--text-primary);
             font-weight: 500;
+            position: relative;
+            min-height: 32px;
         }
-        .calendario-pro .cal-grid .cal-dia:hover { background: var(--accent); color: white; }
-        .calendario-pro .cal-grid .cal-dia.hoy { background: var(--accent); color: white; font-weight: 700; }
-        .calendario-pro .cal-grid .cal-dia.estudio { background: #4ecdc4; color: white; }
-        .calendario-pro .cal-grid .cal-dia.vacio { background: transparent; cursor: default; }
-        .calendario-pro .cal-info {
+        .calendario-semanal .cal-grid .cal-dia:hover { background: var(--accent); color: white; }
+        .calendario-semanal .cal-grid .cal-dia.hoy { background: var(--accent); color: white; font-weight: 700; }
+        .calendario-semanal .cal-grid .cal-dia.estudio { background: #4ecdc4; color: white; }
+        .calendario-semanal .cal-grid .cal-dia.evento { background: #ff6b6b; color: white; }
+        .calendario-semanal .cal-grid .cal-dia .punto {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: #ff6b6b;
+            position: absolute;
+            bottom: 2px;
+        }
+        .calendario-semanal .cal-grid .cal-dia.vacio { background: transparent; cursor: default; }
+        .calendario-semanal .cal-info {
             display: flex;
             justify-content: space-between;
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-secondary);
-            margin-top: 6px;
-            padding-top: 6px;
+            margin-top: 4px;
+            padding-top: 4px;
             border-top: 1px solid var(--border);
         }
-        
-        .continuar-pro {
-            background: var(--bg-card);
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            padding: 14px 18px;
-            box-shadow: var(--shadow);
+        .calendario-semanal .cal-acciones {
             display: flex;
-            align-items: center;
-            gap: 14px;
+            gap: 4px;
+            margin-top: 4px;
         }
-        .continuar-pro .c-icono { font-size: 32px; }
-        .continuar-pro .c-info { flex: 1; min-width: 0; }
-        .continuar-pro .c-nombre { font-weight: 600; font-size: 15px; }
-        .continuar-pro .c-tema { font-size: 13px; color: var(--text-secondary); }
-        .continuar-pro .c-progreso { font-size: 12px; color: var(--text-secondary); }
-        .continuar-pro .c-btn {
-            padding: 6px 20px;
-            border-radius: 20px;
-            border: none;
-            background: var(--accent);
-            color: white;
-            font-weight: 600;
-            font-size: 13px;
+        .calendario-semanal .cal-acciones button {
+            padding: 2px 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: transparent;
+            font-size: 10px;
             cursor: pointer;
-            white-space: nowrap;
+            color: var(--text-secondary);
+            transition: all 0.2s;
         }
-        .continuar-pro .c-btn:hover { opacity: 0.85; }
+        .calendario-semanal .cal-acciones button:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
         
-        .corcho-pro {
+        /* CORCHO */
+        .corcho-final {
             background: #c4956a;
             background-image: radial-gradient(circle, rgba(0,0,0,0.05) 1px, transparent 1px);
             background-size: 20px 20px;
             border-radius: 16px;
             border: 4px solid #a87b53;
-            padding: 16px 18px;
+            padding: 12px 14px;
             box-shadow: inset 0 4px 20px rgba(0,0,0,0.15), 0 4px 20px rgba(0,0,0,0.08);
             flex: 1;
             display: flex;
             flex-direction: column;
             min-height: 120px;
         }
-        .corcho-pro .corcho-header {
+        .corcho-final .corcho-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
-        .corcho-pro .corcho-header h4 {
+        .corcho-final .corcho-header h4 {
             margin: 0;
-            font-size: 13px;
+            font-size: 12px;
             color: rgba(255,255,255,0.9);
             font-weight: 600;
             text-shadow: 0 1px 3px rgba(0,0,0,0.2);
         }
-        .corcho-pro .corcho-header span {
-            font-size: 11px;
+        .corcho-final .corcho-header span {
+            font-size: 10px;
             color: rgba(255,255,255,0.6);
         }
-        .corcho-pro .notas-corcho {
+        .corcho-final .notas-corcho {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
+            gap: 8px;
             flex: 1;
             align-content: flex-start;
             padding: 4px 0;
             overflow-y: auto;
-            min-height: 60px;
+            min-height: 50px;
         }
-        .corcho-pro .nota-corcho {
+        .corcho-final .nota-corcho {
             background: #ffd93d;
-            padding: 10px 14px 8px 14px;
-            border-radius: 3px 3px 8px 8px;
-            font-size: 13px;
-            min-width: 70px;
-            max-width: 170px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05);
+            padding: 6px 10px 4px 10px;
+            border-radius: 3px 3px 6px 6px;
+            font-size: 11px;
+            min-width: 50px;
+            max-width: 140px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
             position: relative;
             transform: rotate(var(--rot, 0deg));
             transition: transform 0.2s;
             word-break: break-word;
         }
-        .corcho-pro .nota-corcho:hover {
+        .corcho-final .nota-corcho:hover {
             transform: scale(1.02) rotate(0deg);
             z-index: 10;
         }
-        .corcho-pro .nota-corcho::before {
+        .corcho-final .nota-corcho::before {
             content: '📌';
             position: absolute;
-            top: -12px;
+            top: -10px;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 18px;
+            font-size: 14px;
             filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
         }
-        .corcho-pro .nota-corcho .nota-texto { margin-top: 4px; line-height: 1.3; }
-        .corcho-pro .nota-corcho .nota-del {
+        .corcho-final .nota-corcho .nota-texto { margin-top: 2px; line-height: 1.2; }
+        .corcho-final .nota-corcho .nota-del {
             position: absolute;
-            top: -6px;
-            right: -6px;
+            top: -4px;
+            right: -4px;
             background: rgba(0,0,0,0.25);
             border: none;
             border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            width: 16px;
+            height: 16px;
             color: white;
-            font-size: 12px;
+            font-size: 10px;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -462,211 +438,134 @@ async function mostrarDashboard(main) {
             opacity: 0;
             transition: opacity 0.2s;
         }
-        .corcho-pro .nota-corcho:hover .nota-del { opacity: 1; }
-        .corcho-pro .nota-corcho .nota-del:hover { background: rgba(200,0,0,0.6); }
-        .corcho-pro .nota-vacia {
+        .corcho-final .nota-corcho:hover .nota-del { opacity: 1; }
+        .corcho-final .nota-corcho .nota-del:hover { background: rgba(200,0,0,0.6); }
+        .corcho-final .nota-vacia {
             width: 100%;
             text-align: center;
-            color: rgba(255,255,255,0.7);
-            font-size: 14px;
-            padding: 16px 0;
+            color: rgba(255,255,255,0.6);
+            font-size: 12px;
+            padding: 10px 0;
         }
-        .corcho-pro .nota-input-row {
+        .corcho-final .nota-input-row {
             display: flex;
-            gap: 6px;
-            margin-top: 8px;
-            padding-top: 8px;
+            gap: 4px;
+            margin-top: 6px;
+            padding-top: 6px;
             border-top: 2px solid rgba(255,255,255,0.15);
         }
-        .corcho-pro .nota-input-row input {
+        .corcho-final .nota-input-row input {
             flex: 1;
-            padding: 6px 12px;
-            border-radius: 8px;
+            padding: 4px 10px;
+            border-radius: 6px;
             border: none;
             background: rgba(255,255,255,0.9);
             color: #2d3748;
-            font-size: 13px;
-            min-height: 34px;
+            font-size: 11px;
+            min-height: 28px;
         }
-        .corcho-pro .nota-input-row input:focus { outline: 2px solid rgba(255,255,255,0.4); }
-        .corcho-pro .nota-input-row .btn-add {
-            padding: 6px 16px;
-            border-radius: 8px;
+        .corcho-final .nota-input-row input:focus { outline: 2px solid rgba(255,255,255,0.4); }
+        .corcho-final .nota-input-row .btn-add {
+            padding: 4px 12px;
+            border-radius: 6px;
             border: none;
             background: rgba(255,255,255,0.9);
             color: #2d3748;
             font-weight: 600;
-            font-size: 13px;
+            font-size: 11px;
             cursor: pointer;
         }
-        .corcho-pro .nota-input-row .btn-add:hover { background: white; }
-        .corcho-pro .nota-colores {
+        .corcho-final .nota-input-row .btn-add:hover { background: white; }
+        .corcho-final .nota-colores {
             display: flex;
-            gap: 4px;
-            margin-top: 6px;
+            gap: 3px;
+            margin-top: 4px;
         }
-        .corcho-pro .nota-colores .c-btn {
-            width: 22px;
-            height: 22px;
+        .corcho-final .nota-colores .c-btn {
+            width: 18px;
+            height: 18px;
             border-radius: 50%;
             border: 2px solid rgba(255,255,255,0.25);
             cursor: pointer;
             transition: all 0.15s;
         }
-        .corcho-pro .nota-colores .c-btn:hover { transform: scale(1.1); }
-        .corcho-pro .nota-colores .c-btn.sel { border-color: white; box-shadow: 0 0 10px rgba(255,255,255,0.4); }
-        
-        .progreso-pro {
-            background: var(--bg-card);
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            padding: 10px 18px;
-            box-shadow: var(--shadow);
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-        .progreso-pro .p-label {
-            font-size: 11px;
-            color: var(--text-secondary);
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            white-space: nowrap;
-        }
-        .progreso-pro .p-bar {
-            flex: 1;
-            min-width: 80px;
-            height: 6px;
-            background: var(--bg-hover);
-            border-radius: 3px;
-            overflow: hidden;
-        }
-        .progreso-pro .p-bar .p-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--accent), #4ecdc4);
-            transition: width 0.5s;
-            border-radius: 3px;
-        }
-        .progreso-pro .p-stats {
-            display: flex;
-            gap: 14px;
-            font-size: 12px;
-            color: var(--text-secondary);
-            white-space: nowrap;
-        }
-        .progreso-pro .p-stats strong { color: var(--text-primary); }
-        .progreso-pro .p-areas {
-            display: flex;
-            gap: 10px;
-            font-size: 11px;
-            color: var(--text-secondary);
-            flex-wrap: wrap;
-        }
-        .progreso-pro .p-areas .ok { color: #4ecdc4; font-weight: 600; }
+        .corcho-final .nota-colores .c-btn:hover { transform: scale(1.1); }
+        .corcho-final .nota-colores .c-btn.sel { border-color: white; box-shadow: 0 0 10px rgba(255,255,255,0.4); }
         
         @media (max-width: 768px) {
-            .dashboard-pro {
+            .dashboard-final {
                 grid-template-columns: 1fr;
                 height: auto;
                 min-height: auto;
             }
-            .menu-pro { flex-direction: row; flex-wrap: wrap; padding: 10px; }
-            .menu-pro .menu-titulo { display: none; }
-            .menu-pro .btn-menu { width: auto; padding: 6px 12px; font-size: 12px; }
-            .fila-pro { grid-template-columns: 1fr; }
-            .corcho-pro { min-height: 100px; }
-            .progreso-pro { flex-direction: column; align-items: stretch; gap: 6px; }
+            .col-derecha { order: -1; }
+            .calendario-semanal { min-height: 200px; }
+            .btn-area-pestana { max-width: 120px; font-size: 12px; padding: 6px 12px; }
         }
     </style>
     
-    <div class="dashboard-pro">
+    <div class="dashboard-final">
         
-        <div class="menu-pro">
-            <div class="menu-titulo">📋 Navegación</div>
-            ${ultimaAsignatura ? `
-                <button class="btn-menu continuar" onclick="window.location.href='${ultimaAsignatura.url || '#'}'">
-                    <span class="icono">▶</span> Continuar
-                    <span class="badge">${ultimoProgreso}%</span>
+        <!-- COLUMNA IZQUIERDA: ÁREAS -->
+        <div class="col-izquierda">
+            <div class="areas-pestanas">
+                ${ultimaAsignatura ? `
+                    <button class="btn-area-pestana continuar" onclick="window.location.href='${ultimaAsignatura.url || '#'}'">
+                        <span class="icono">▶</span>
+                        <span class="nombre">Continuar</span>
+                        <span class="badge">${ultimoProgreso}%</span>
+                    </button>
+                ` : ''}
+                ${areas.map(area => `
+                    <button class="btn-area-pestana" onclick="window.location.href='/estudio/?area=${area.id}'" style="border-color: ${colors[area.id] || '#6c757d'};">
+                        <span class="icono">${area.icon || '📚'}</span>
+                        <span class="nombre">${area.nombre}</span>
+                    </button>
+                `).join('')}
+                <button class="btn-area-pestana" onclick="cargarVista('configuracion')" style="border-color: #ef4444;">
+                    <span class="icono">⚙️</span>
+                    <span class="nombre">Config</span>
                 </button>
-            ` : `
-                <button class="btn-menu continuar" onclick="cargarVista('estudio')">
-                    <span class="icono">📖</span> Empezar
-                </button>
-            `}
-            ${areas.map(area => `
-                <button class="btn-menu" onclick="window.location.href='/estudio/?area=${area.id}'" style="border-left: 3px solid ${colors[area.id] || '#6c757d'};">
-                    <span class="icono">${area.icon || '📚'}</span> ${area.nombre}
-                </button>
-            `).join('')}
-            <button class="btn-menu" onclick="cargarVista('configuracion')" style="margin-top:auto; border-top:1px solid var(--border); padding-top:10px;">
-                <span class="icono">⚙️</span> Configuración
-            </button>
+            </div>
+            
+            <!-- Espacio para futuros widgets -->
+            <div style="flex:1; min-height:50px;"></div>
         </div>
         
-        <div class="contenido-pro">
+        <!-- COLUMNA DERECHA: CALENDARIO + CORCHO -->
+        <div class="col-derecha">
             
-            <div class="fila-pro">
-                
-                <div class="calendario-pro">
-                    <div class="cal-header">
-                        <h4><i class="fas fa-calendar-alt"></i> <span class="cal-mes" id="calMesLabelPro"></span></h4>
-                        <span style="font-size:11px; color:var(--text-secondary);" id="calHorasLabelPro">⏱️ 0h hoy</span>
-                    </div>
-                    <div class="cal-grid" id="calGridPro"></div>
+            <!-- CALENDARIO SEMANAL -->
+            <div class="calendario-semanal">
+                <div class="cal-header">
+                    <h4><i class="fas fa-calendar-alt"></i> <span class="cal-semana" id="calSemanaLabel"></span></h4>
+                    <span style="font-size:10px; color:var(--text-secondary);" id="calHorasLabelFinal">⏱️ 0h hoy</span>
                 </div>
-                
-                <div class="continuar-pro">
-                    ${ultimaAsignatura ? `
-                        <span class="c-icono">${ultimaAsignatura.icon || '📚'}</span>
-                        <div class="c-info">
-                            <div class="c-nombre">${ultimaAsignatura.asignaturaNombre || 'Asignatura'}</div>
-                            <div class="c-tema">${ultimaAsignatura.temaNombre || 'Tema'}</div>
-                            <div class="c-progreso">Progreso: ${ultimoProgreso}%</div>
-                        </div>
-                        <button class="c-btn" onclick="window.location.href='${ultimaAsignatura.url || '#'}'">▶ Continuar</button>
-                    ` : `
-                        <span class="c-icono">📖</span>
-                        <div class="c-info">
-                            <div class="c-nombre">Sin actividad</div>
-                            <div class="c-tema">Empieza a estudiar</div>
-                        </div>
-                        <button class="c-btn" onclick="cargarVista('estudio')">Ir</button>
-                    `}
+                <div class="cal-grid" id="calGridFinal"></div>
+                <div class="cal-info">
+                    <span>📅 ${new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'short' })}</span>
+                    <span id="eventosCount">📌 0 eventos</span>
+                </div>
+                <div class="cal-acciones">
+                    <button onclick="agregarEventoCalendario()">+ Añadir evento</button>
+                    <button onclick="limpiarEventosCalendario()">🗑️ Limpiar</button>
                 </div>
             </div>
             
-            <div class="corcho-pro">
+            <!-- CORCHO NOTAS -->
+            <div class="corcho-final">
                 <div class="corcho-header">
                     <h4><i class="fas fa-thumbtack"></i> Notas</h4>
-                    <span>📌 ${notas.length} notas</span>
+                    <span>📌 ${notas.length}</span>
                 </div>
-                <div class="notas-corcho" id="notasCorchoPro">
-                    ${notas.length === 0 ? `<div class="nota-vacia">📌 Pincha una nota aquí</div>` : ''}
+                <div class="notas-corcho" id="notasCorchoFinal">
+                    ${notas.length === 0 ? `<div class="nota-vacia">📌 Pincha una nota</div>` : ''}
                 </div>
                 <div class="nota-input-row">
-                    <input type="text" id="notaInputPro" placeholder="Escribe una nota..." maxlength="60" />
-                    <button class="btn-add" onclick="agregarNotaPro()">+ Añadir</button>
+                    <input type="text" id="notaInputFinal" placeholder="Nota..." maxlength="50" />
+                    <button class="btn-add" onclick="agregarNotaFinal()">+</button>
                 </div>
-                <div class="nota-colores" id="notaColoresPro"></div>
-            </div>
-            
-            <div class="progreso-pro">
-                <span class="p-label">📊 Progreso</span>
-                <div class="p-bar">
-                    <div class="p-fill" style="width:${pctTotal}%;"></div>
-                </div>
-                <div class="p-stats">
-                    <span>✅ <strong>${aprobadas}</strong> aprob.</span>
-                    <span>📌 <strong>${matriculadas}</strong> mat.</span>
-                    <span>📚 <strong>${totalAsignaturas}</strong> total</span>
-                </div>
-                <div class="p-areas">
-                    ${areasConAsignaturas.map(a => `
-                        <span>${a.icon} <span class="ok">${a.aprobadas}</span>/${a.total}</span>
-                    `).join('')}
-                </div>
+                <div class="nota-colores" id="notaColoresFinal"></div>
             </div>
             
         </div>
@@ -675,16 +574,17 @@ async function mostrarDashboard(main) {
     
     main.innerHTML = html;
     
-    inicializarCalendarioPro();
-    inicializarNotasPro();
+    inicializarCalendarioFinal();
+    inicializarNotasFinal();
+    actualizarEventosCount();
 }
 
 // ============================================================
-// CALENDARIO
+// CALENDARIO SEMANAL
 // ============================================================
 
-function inicializarCalendarioPro() {
-    const grid = document.getElementById('calGridPro');
+function inicializarCalendarioFinal() {
+    const grid = document.getElementById('calGridFinal');
     if (!grid) return;
     
     const hoy = new Date();
@@ -692,118 +592,171 @@ function inicializarCalendarioPro() {
     const mes = hoy.getMonth();
     const diasSemana = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
     
+    // Obtener inicio de semana (lunes)
+    const diaSemana = hoy.getDay();
+    const diff = diaSemana === 0 ? 6 : diaSemana - 1;
+    const inicioSemana = new Date(hoy);
+    inicioSemana.setDate(hoy.getDate() - diff);
+    
     let html = diasSemana.map(d => `<div class="cal-dia-semana">${d}</div>`).join('');
     
-    const primerDia = new Date(año, mes, 1).getDay();
-    const diasAntes = primerDia === 0 ? 6 : primerDia - 1;
-    const diasEnMes = new Date(año, mes + 1, 0).getDate();
-    const hoyNum = hoy.getDate();
-    
-    for (let i = 0; i < diasAntes; i++) {
-        html += `<div class="cal-dia vacio"></div>`;
-    }
-    for (let d = 1; d <= diasEnMes; d++) {
-        const esHoy = (d === hoyNum);
-        const key = 'estudio_fecha_' + año + '-' + String(mes+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    // Mostrar 7 días de la semana
+    for (let i = 0; i < 7; i++) {
+        const fecha = new Date(inicioSemana);
+        fecha.setDate(inicioSemana.getDate() + i);
+        const dia = fecha.getDate();
+        const mesNum = fecha.getMonth() + 1;
+        const añoNum = fecha.getFullYear();
+        const esHoy = (dia === hoy.getDate() && mesNum === hoy.getMonth() + 1 && añoNum === hoy.getFullYear());
+        const key = 'estudio_fecha_' + añoNum + '-' + String(mesNum).padStart(2,'0') + '-' + String(dia).padStart(2,'0');
         const esEstudio = localStorage.getItem(key);
-        const clase = esHoy ? 'cal-dia hoy' : esEstudio ? 'cal-dia estudio' : 'cal-dia';
-        html += `<div class="${clase}" onclick="marcarDiaPro(${d})">${d}</div>`;
+        
+        // Comprobar si hay evento
+        const eventos = JSON.parse(localStorage.getItem('eventos_calendario') || '[]');
+        const tieneEvento = eventos.some(e => e.fecha === key);
+        
+        let clase = 'cal-dia';
+        if (esHoy) clase += ' hoy';
+        if (esEstudio) clase += ' estudio';
+        if (tieneEvento) clase += ' evento';
+        
+        html += `<div class="${clase}" onclick="marcarDiaFinal(${dia}, ${mesNum}, ${añoNum})">
+            ${dia}
+            ${tieneEvento ? '<span class="punto"></span>' : ''}
+        </div>`;
     }
     grid.innerHTML = html;
     
-    const mesEl = document.getElementById('calMesLabelPro');
+    // Actualizar etiqueta de semana
+    const mesEl = document.getElementById('calSemanaLabel');
     if (mesEl) {
-        const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-        mesEl.textContent = `${meses[mes]} ${año}`;
+        const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+        const finSemana = new Date(inicioSemana);
+        finSemana.setDate(inicioSemana.getDate() + 6);
+        mesEl.textContent = `${meses[inicioSemana.getMonth()]} ${inicioSemana.getDate()} - ${meses[finSemana.getMonth()]} ${finSemana.getDate()}, ${año}`;
     }
-    actualizarHorasPro();
+    actualizarHorasFinal();
 }
 
-function marcarDiaPro(dia) {
-    const hoy = new Date();
-    const fecha = hoy.getFullYear() + '-' + String(hoy.getMonth()+1).padStart(2,'0') + '-' + String(dia).padStart(2,'0');
+function marcarDiaFinal(dia, mes, año) {
+    const fecha = año + '-' + String(mes).padStart(2,'0') + '-' + String(dia).padStart(2,'0');
     const key = 'estudio_fecha_' + fecha;
     if (localStorage.getItem(key)) {
         localStorage.removeItem(key);
     } else {
         localStorage.setItem(key, 'true');
     }
-    inicializarCalendarioPro();
-    actualizarHorasPro();
+    inicializarCalendarioFinal();
+    actualizarHorasFinal();
 }
 
-function actualizarHorasPro() {
+function actualizarHorasFinal() {
     const hoy = new Date();
     const key = 'estudio_fecha_' + hoy.getFullYear() + '-' + String(hoy.getMonth()+1).padStart(2,'0') + '-' + String(hoy.getDate()).padStart(2,'0');
     const horas = localStorage.getItem(key) ? 1 : 0;
-    const el = document.getElementById('calHorasLabelPro');
+    const el = document.getElementById('calHorasLabelFinal');
     if (el) el.textContent = `⏱️ ${horas}h hoy`;
 }
 
 // ============================================================
-// NOTAS
+// EVENTOS DEL CALENDARIO
 // ============================================================
 
-let colorNotaPro = '#ffd93d';
+function agregarEventoCalendario() {
+    const titulo = prompt('📌 Título del evento (ej: "Examen Derecho"):');
+    if (!titulo) return;
+    const fecha = prompt('📅 Fecha (formato: DD/MM/YYYY):');
+    if (!fecha) return;
+    const partes = fecha.split('/');
+    if (partes.length !== 3) { alert('Formato incorrecto. Usa DD/MM/YYYY'); return; }
+    const fechaObj = new Date(partes[2], partes[1]-1, partes[0]);
+    if (isNaN(fechaObj.getTime())) { alert('Fecha inválida'); return; }
+    
+    const key = fechaObj.getFullYear() + '-' + String(fechaObj.getMonth()+1).padStart(2,'0') + '-' + String(fechaObj.getDate()).padStart(2,'0');
+    const eventos = JSON.parse(localStorage.getItem('eventos_calendario') || '[]');
+    eventos.push({ titulo, fecha: key });
+    localStorage.setItem('eventos_calendario', JSON.stringify(eventos));
+    inicializarCalendarioFinal();
+    actualizarEventosCount();
+}
 
-function inicializarNotasPro() {
+function limpiarEventosCalendario() {
+    if (!confirm('¿Eliminar todos los eventos del calendario?')) return;
+    localStorage.removeItem('eventos_calendario');
+    inicializarCalendarioFinal();
+    actualizarEventosCount();
+}
+
+function actualizarEventosCount() {
+    const eventos = JSON.parse(localStorage.getItem('eventos_calendario') || '[]');
+    const el = document.getElementById('eventosCount');
+    if (el) el.textContent = `📌 ${eventos.length} eventos`;
+}
+
+// ============================================================
+// NOTAS (FINAL)
+// ============================================================
+
+let colorNotaFinal = '#ffd93d';
+
+function inicializarNotasFinal() {
     const notas = JSON.parse(localStorage.getItem('tablero_notas') || '[]');
-    const container = document.getElementById('notasCorchoPro');
+    const container = document.getElementById('notasCorchoFinal');
     if (!container) return;
     
     const colores = ['#ffd93d', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#dda0dd', '#ff9ff3', '#feca57'];
     
     if (notas.length === 0) {
-        container.innerHTML = '<div class="nota-vacia">📌 Pincha una nota aquí</div>';
+        container.innerHTML = '<div class="nota-vacia">📌 Pincha una nota</div>';
     } else {
         container.innerHTML = notas.map((n, i) => `
             <div class="nota-corcho" style="background:${n.color || '#ffd93d'}; --rot: ${(Math.random() - 0.5) * 4}deg;">
-                <button class="nota-del" onclick="eliminarNotaPro(${i})">✕</button>
+                <button class="nota-del" onclick="eliminarNotaFinal(${i})">✕</button>
                 <div class="nota-texto">${n.texto}</div>
             </div>
         `).join('');
     }
     
-    const colorContainer = document.getElementById('notaColoresPro');
+    const colorContainer = document.getElementById('notaColoresFinal');
     if (colorContainer) {
         colorContainer.innerHTML = colores.map(c => `
-            <button class="c-btn ${c === colorNotaPro ? 'sel' : ''}" onclick="seleccionarColorPro('${c}')" style="background:${c};"></button>
+            <button class="c-btn ${c === colorNotaFinal ? 'sel' : ''}" onclick="seleccionarColorFinal('${c}')" style="background:${c};"></button>
         `).join('');
     }
 }
 
-function seleccionarColorPro(color) {
-    colorNotaPro = color;
-    document.querySelectorAll('#notaColoresPro .c-btn').forEach(b => {
+function seleccionarColorFinal(color) {
+    colorNotaFinal = color;
+    document.querySelectorAll('#notaColoresFinal .c-btn').forEach(b => {
         b.classList.toggle('sel', b.style.background === color);
     });
 }
 
-function agregarNotaPro() {
-    const input = document.getElementById('notaInputPro');
+function agregarNotaFinal() {
+    const input = document.getElementById('notaInputFinal');
     const texto = input.value.trim();
     if (!texto) return;
     
     const notas = JSON.parse(localStorage.getItem('tablero_notas') || '[]');
     notas.push({
         texto: texto,
-        color: colorNotaPro || '#ffd93d',
+        color: colorNotaFinal || '#ffd93d',
         fecha: new Date().toLocaleDateString()
     });
     localStorage.setItem('tablero_notas', JSON.stringify(notas));
     input.value = '';
-    inicializarNotasPro();
+    inicializarNotasFinal();
 }
 
-function eliminarNotaPro(index) {
+function eliminarNotaFinal(index) {
     const notas = JSON.parse(localStorage.getItem('tablero_notas') || '[]');
     notas.splice(index, 1);
     localStorage.setItem('tablero_notas', JSON.stringify(notas));
-    inicializarNotasPro();
+    inicializarNotasFinal();
 }
 
 // ============================================================
-// ESTUDIO - NAVEGACIÓN JERÁRQUICA
+// RESTO DE FUNCIONES (ESTUDIO, ÁREAS, CURSOS, SEMESTRES, ETC.)
 // ============================================================
 
 function mostrarEstudio(main) {
@@ -827,10 +780,6 @@ function mostrarEstudio(main) {
     else if (nivel === 'temas') mostrarTemas(main, areaId, cursoId, semestreId, asignaturaId);
     else if (nivel === 'tema') mostrarTema(main, areaId, cursoId, semestreId, asignaturaId, temaId);
 }
-
-// ============================================================
-// NIVEL 1: ÁREAS
-// ============================================================
 
 async function mostrarAreas(main) {
     let html = `<h1 class="page-title">📚 Áreas de Estudio</h1><div class="area-grid">`;
@@ -874,10 +823,6 @@ async function mostrarAreas(main) {
     main.innerHTML = html;
 }
 
-// ============================================================
-// NIVEL 2: CURSOS
-// ============================================================
-
 async function mostrarCursos(main, areaId) {
     const area = areas.find(a => a.id === areaId);
     if (!area) { main.innerHTML = '<h2>Área no encontrada</h2>'; return; }
@@ -915,10 +860,6 @@ async function mostrarCursos(main, areaId) {
     html += `</div>`;
     main.innerHTML = html;
 }
-
-// ============================================================
-// NIVEL 3: SEMESTRES
-// ============================================================
 
 async function mostrarSemestres(main, areaId, cursoId) {
     const area = areas.find(a => a.id === areaId);
@@ -959,10 +900,6 @@ async function mostrarSemestres(main, areaId, cursoId) {
     html += `</div>`;
     main.innerHTML = html;
 }
-
-// ============================================================
-// NIVEL 4: ASIGNATURAS CON ESTILOS SEGÚN ESTADO
-// ============================================================
 
 async function mostrarAsignaturas(main, areaId, cursoId, semestreId) {
     const area = areas.find(a => a.id === areaId);
@@ -1052,10 +989,6 @@ async function mostrarAsignaturas(main, areaId, cursoId, semestreId) {
     main.innerHTML = html;
 }
 
-// ============================================================
-// NIVEL 5: TEMAS (SPA)
-// ============================================================
-
 function mostrarTemas(main, areaId, cursoId, semestreId, asignaturaId) {
     const area = areas.find(a => a.id === areaId);
     if (!area) { main.innerHTML = '<h2>Área no encontrada</h2>'; return; }
@@ -1118,10 +1051,6 @@ function mostrarTemas(main, areaId, cursoId, semestreId, asignaturaId) {
         });
 }
 
-// ============================================================
-// NIVEL 6: TEMA (SPA)
-// ============================================================
-
 function mostrarTema(main, areaId, cursoId, semestreId, asignaturaId, temaId) {
     const area = areas.find(a => a.id === areaId);
     if (!area) { main.innerHTML = '<h2>Área no encontrada</h2>'; return; }
@@ -1162,10 +1091,6 @@ function mostrarTema(main, areaId, cursoId, semestreId, asignaturaId, temaId) {
         });
 }
 
-// ============================================================
-// CONFIGURACIÓN
-// ============================================================
-
 async function mostrarConfiguracion(main) {
     let total = 0, ap = 0, mat = 0;
     for (let area of areas) {
@@ -1189,10 +1114,6 @@ async function mostrarConfiguracion(main) {
         </div>
     `;
 }
-
-// ============================================================
-// VOLVER A ASIGNATURAS (DINÁMICO)
-// ============================================================
 
 function volverAsignaturas() {
     const params = new URLSearchParams(window.location.search);
@@ -1257,7 +1178,9 @@ document.getElementById('menuToggle').addEventListener('click', function() {
 window.cargarVista = cargarVista;
 window.navegar = navegar;
 window.toggleAprobada = toggleAprobada;
-window.marcarDiaPro = marcarDiaPro;
-window.agregarNotaPro = agregarNotaPro;
-window.eliminarNotaPro = eliminarNotaPro;
-window.seleccionarColorPro = seleccionarColorPro;
+window.marcarDiaFinal = marcarDiaFinal;
+window.agregarNotaFinal = agregarNotaFinal;
+window.eliminarNotaFinal = eliminarNotaFinal;
+window.seleccionarColorFinal = seleccionarColorFinal;
+window.agregarEventoCalendario = agregarEventoCalendario;
+window.limpiarEventosCalendario = limpiarEventosCalendario;
