@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Tema 5: El Metamodelo del Lenguaje · Resumen UNED</title>
+    <style>
+        /* ===== ESTILO ÚNICO PARA RESÚMENES UNED ===== */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            max-width: 950px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #f5f7fa;
+            color: #1a1a2e;
+            line-height: 1.8;
+            font-size: 17px;
+        }
+        h1 {
+            font-size: 30px;
+            color: #0a1628;
+            border-bottom: 4px solid #1a3d66;
+            padding-bottom: 14px;
+        }
+        h2 {
+            font-size: 23px;
+            color: #1a3d66;
+            margin-top: 32px;
+            border-left: 4px solid #1a3d66;
+            padding-left: 16px;
+        }
+        h3 {
+            font-size: 20px;
+            color: #2a4a7a;
+            margin-top: 26px;
+        }
+        h4 {
+            font-size: 18px;
+            color: #3a5a8a;
+            margin-top: 20px;
+        }
+        strong {
+            color: #0a2a4a;
+        }
+        ul {
+            padding-left: 24px;
+        }
+        li {
+            margin-bottom: 6px;
+        }
+        blockquote {
+            background: #e8edf4;
+            padding: 12px 20px;
+            border-left: 4px solid #1a3d66;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        hr {
+            border: none;
+            border-top: 2px solid #d0d8e4;
+            margin: 28px 0;
+        }
+        .indice {
+            background: #e8edf4;
+            padding: 16px 24px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .indice ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .indice li {
+            padding: 3px 0;
+        }
+        .indice li.h1 {
+            font-weight: 600;
+        }
+        .indice li.h2 {
+            padding-left: 20px;
+            font-weight: 400;
+        }
+        .indice a {
+            color: #1a3d66;
+            text-decoration: none;
+        }
+        .indice a:hover {
+            text-decoration: underline;
+        }
+        .idea-central {
+            background: #e0e8f4;
+            padding: 18px 24px;
+            border-radius: 12px;
+            margin: 20px 0 30px 0;
+            border-left: 5px solid #1a3d66;
+        }
+        .idea-central h2 {
+            margin-top: 0;
+            border-left: none;
+            padding-left: 0;
+        }
+        .modo-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            padding: 8px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #1a3d66;
+            color: #fff;
+            font-size: 14px;
+            z-index: 999;
+        }
+        .modo-btn:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode {
+            background: #0d1a2b;
+            color: #d6e2f5;
+        }
+        .dark-mode h1 {
+            color: #b0c8e8;
+            border-bottom-color: #2a5a8a;
+        }
+        .dark-mode h2 {
+            color: #8ab0e0;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode h3 {
+            color: #6a9ac0;
+        }
+        .dark-mode h4 {
+            color: #5a8aaa;
+        }
+        .dark-mode strong {
+            color: #c8ddf0;
+        }
+        .dark-mode blockquote {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode .indice {
+            background: #142a44;
+        }
+        .dark-mode .indice a {
+            color: #8ab0e0;
+        }
+        .dark-mode .idea-central {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode hr {
+            border-top-color: #2a4a6a;
+        }
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+                padding: 14px;
+            }
+            h1 {
+                font-size: 25px;
+            }
+            h2 {
+                font-size: 21px;
+            }
+        }
+
+        /* ===== ESTILOS PARA PREGUNTAS INTERACTIVAS ===== */
+        .pregunta {
+            background: #f0f4fa;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            border: 1px solid #d0d8e4;
+        }
+        .dark-mode .pregunta {
+            background: #142a44;
+            border-color: #2a4a6a;
+        }
+        .pregunta .enunciado {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .pregunta .opciones {
+            list-style: none;
+            padding-left: 8px;
+        }
+        .pregunta .opciones li {
+            margin-bottom: 4px;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .pregunta .opciones li.correcta {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .dark-mode .pregunta .opciones li.correcta {
+            background: #1a4a3a;
+            color: #8fdfb0;
+            border-left-color: #2ecc71;
+        }
+        .pregunta .respuesta-oculta {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta .respuesta-oculta {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta .respuesta-oculta.visible {
+            display: block;
+        }
+        .pregunta .btn-respuesta {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #1a3d66;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta .btn-respuesta:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta:hover {
+            background: #3a7aaa;
+        }
+        .pregunta .trampa {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #6a4a2a;
+            font-style: italic;
+        }
+        .dark-mode .pregunta .trampa {
+            color: #c8a878;
+        }
+        .pregunta-desarrollo .esquema-oculto {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta-desarrollo .esquema-oculto {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta-desarrollo .esquema-oculto.visible {
+            display: block;
+        }
+        .pregunta-desarrollo .btn-esquema {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #1a3d66;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta-desarrollo .btn-esquema:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta-desarrollo .btn-esquema {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta-desarrollo .btn-esquema:hover {
+            background: #3a7aaa;
+        }
+    </style>
+</head>
+<body>
+
+<button class="modo-btn" id="modoBtn" aria-label="Cambiar modo claro/oscuro">🌓 Modo</button>
+
+<h1>Tema 5: El Metamodelo del Lenguaje</h1>
+
+<!-- ===== ÍNDICE ===== -->
+<div class="indice">
+    <h2 style="margin-top:0; border-left:none; padding-left:0;">📑 Índice</h2>
+    <ul>
+        <li class="h1"><a href="#idea-central">1. Idea Central (5 minutos)</a></li>
+        <li class="h1"><a href="#resumen-epigrafes">2. Resumen por Epígrafes</a></li>
+        <li class="h2"><a href="#introduccion">Introducción</a></li>
+        <li class="h2"><a href="#que-es">¿Qué es un Metamodelo?</a></li>
+        <li class="h2"><a href="#aporta">El Metalenguaje de la PNL Aporta</a></li>
+        <li class="h2"><a href="#es-vs-ep">Estructura Superficial vs. Estructura Profunda</a></li>
+        <li class="h2"><a href="#objetivos">Objetivos del Metamodelo</a></li>
+        <li class="h2"><a href="#clasificacion">Clasificación de las Violaciones</a></li>
+        <li class="h2"><a href="#generalizaciones">A) Generalizaciones</a></li>
+        <li class="h2"><a href="#eliminaciones">B) Eliminaciones</a></li>
+        <li class="h2"><a href="#distorsiones">C) Distorsiones</a></li>
+        <li class="h2"><a href="#ejercicios">Ejercicios de Identificación y Desafío</a></li>
+        <li class="h2"><a href="#resumen-violaciones">Resumen de las Violaciones</a></li>
+        <li class="h2"><a href="#estrategias">Estrategias de Preguntas</a></li>
+        <li class="h2"><a href="#condiciones">Condiciones de Buena Formulación</a></li>
+        <li class="h2"><a href="#preguntas-buena">Preguntas para la Buena Formulación</a></li>
+        <li class="h2"><a href="#orientar-vida">Preguntas para Orientar la Vida</a></li>
+        <li class="h2"><a href="#solucionar-problemas">Preguntas para Solucionar Problemas</a></li>
+        <li class="h2"><a href="#ejercicio-claro">Ejercicio "¿Lo tienes claro?"</a></li>
+        <li class="h2"><a href="#vivir-vida">Preguntas para Vivir la Propia Vida</a></li>
+        <li class="h1"><a href="#mini-resumen">3. Mini-resumen por Epígrafe</a></li>
+        <li class="h1"><a href="#preguntas-desarrollo">4. Preguntas de Desarrollo</a></li>
+        <li class="h1"><a href="#preguntas-reserva">5. Preguntas de Reserva</a></li>
+    </ul>
+</div>
+
+<!-- ===== 1. IDEA CENTRAL ===== -->
+<div id="idea-central" class="idea-central">
+    <h2>💡 Idea Central (5 minutos)</h2>
+    <p>El Metamodelo del Lenguaje es una herramienta de la PNL que permite identificar y desafiar las violaciones lingüísticas que cometemos al expresar nuestra experiencia, con el objetivo de recuperar la información perdida en el proceso de transformación de la Estructura Profunda (el pensamiento completo) a la Estructura Superficial (las palabras que decimos). Estas violaciones se clasifican en tres categorías: Generalizaciones (cuantificadores universales, operadores modales, pérdida de concreción), Eliminaciones (omisión simple, falta de índice referencial, omisión de comparación, verbos inespecíficos) y Distorsiones (nominalizaciones, modelo causal, lectura mental, equivalencia compleja, presuposiciones). El Metamodelo, basado en la gramática transformacional de Chomsky y desarrollado por Grinder y Bandler a partir del modelaje de terapeutas como Perls, Satir y Erickson, proporciona preguntas específicas ("desafíos") para cada tipo de violación, con el fin de especificar las generalizaciones, completar las eliminaciones y clarificar las distorsiones, conectando así a la persona con su experiencia primaria.</p>
+</div>
+
+<!-- ===== 2. RESUMEN POR EPÍGRAFES ===== -->
+<h2 id="resumen-epigrafes">📘 Resumen por Epígrafes</h2>
+
+<!-- Introducción -->
+<h3 id="introduccion">Introducción</h3>
+<p><strong>Concepto clave:</strong> El lenguaje es el sistema de representación de nuestra experiencia más elaborado, aunque su contenido digital solo representa el 7% de la comunicación. La PNL ha creado un modelo lingüístico (Metamodelo) para acceder a la estructura profunda que opera detrás de nuestras palabras.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>El lenguaje nos diferencia de otras especies y permite comunicarnos con los demás y con nosotros mismos.</li>
+    <li>La conducta humana, aunque compleja, tiene estructura y se rige por reglas.</li>
+    <li>El lenguaje, al regirse por estructuras comprensibles, es una herramienta operativa para profundizar en la comprensión y realizar cambios en la experiencia subjetiva.</li>
+    <li>Las estrategias de comportamiento surgen espontáneamente en la conversación; el Metamodelo saca a la luz esa estructura profunda.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta con el Tema 2 (comunicación, lenguaje digital/analógico) y establece la base para entender por qué el Metamodelo es una herramienta fundamental en PNL.</p>
+<hr>
+
+<!-- ¿Qué es un Metamodelo? -->
+<h3 id="que-es">¿Qué es un Metamodelo?</h3>
+<p><strong>Concepto clave:</strong> Un metamodelo es "la representación de una representación" o "un modelo de un modelo". El Metamodelo del Lenguaje (o Metalenguaje) tiene su origen en la gramática transformacional de Chomsky y fue desarrollado por Grinder y Bandler a partir del modelaje de Perls, Satir y Erickson.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>El lenguaje es la representación de nuestro mapa del mundo (experiencia); el Metamodelo es el modelo de ese lenguaje.</li>
+    <li>Origen en la gramática transformacional de Chomsky: describe las pautas de configuración normal de la comunicación verbal.</li>
+    <li>Grinder y Bandler aportaron un modelo más útil para esclarecer conductas humanas.</li>
+    <li><strong>Estructura Superficial (ES):</strong> el sonido real o la secuencia escrita de símbolos y frases.</li>
+    <li><strong>Estructura Profunda (EP):</strong> sistema más complejo y abstracto, la representación lingüística completa de la experiencia; el intento o pensamiento real detrás de la ES.</li>
+    <li>La EP se transforma en ES mediante reglas que implican generalización, eliminación y distorsión.</li>
+    <li>El Metalenguaje fue el producto del modelaje de los grandes genios de la psicoterapia: Perls, Satir y Erickson.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe introduce los conceptos fundamentales de ES y EP que son la base de todo el tema. Se conecta con el Tema 2 (mapa del mundo, representaciones internas) y con la teoría de la comunicación.</p>
+<hr>
+
+<!-- El Metalenguaje de la PNL Aporta -->
+<h3 id="aporta">El Metalenguaje de la PNL Aporta</h3>
+<p><strong>Concepto clave:</strong> El Metalenguaje proporciona tres aportaciones principales: técnicas interrogativas para comprender mejor el mensaje, claves verbales para iniciar cambios, y estrategias para acceder a la estructura profunda y eliminar la raíz de los problemas.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Conjunto de técnicas interrogativas basadas en la comunicación verbal del cliente.</li>
+    <li>Claves verbales para iniciar cambios, transformaciones y motivaciones.</li>
+    <li>Capacidad y estrategias verbales para acceder a la EP e identificar y eliminar la raíz de los problemas.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe resume la utilidad práctica del Metamodelo, conectando con el Tema 2 (comunicación eficaz) y el Tema 3 (rapport).</p>
+<hr>
+
+<!-- Estructura Superficial vs. Estructura Profunda -->
+<h3 id="es-vs-ep">Estructura Superficial vs. Estructura Profunda</h3>
+<p><strong>Concepto clave:</strong> La ES son las palabras que pronunciamos; la EP es el significado completo que esas palabras tienen para el hablante en su experiencia interna. La diferencia entre ambas se debe a los procesos de Generalización, Eliminación y Distorsión que ocurren al transformar la EP en ES, proceso llamado Derivación.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>El lenguaje es un sistema representacional de la experiencia, sujeto a las tres universales del modelaje humano: Generalización, Eliminación y Distorsión.</li>
+    <li>No somos conscientes del proceso de selección de palabras.</li>
+    <li>El lenguaje tiene estructura y reglas, pero la corrección sintáctica no garantiza la corrección semántica.</li>
+    <li><strong>Estructura de Superficie:</strong> palabras con sonido (habla) o símbolos (escrito).</li>
+    <li><strong>Estructura Profunda:</strong> lo que significan esos sonidos y símbolos en la experiencia interna del hablante.</li>
+    <li>Ejemplo: "La casa fue reformada" (ES) implica un agente, un sujeto, un hecho anterior y herramientas (EP).</li>
+    <li><strong>Derivación:</strong> proceso de transformación de la EP a la ES, donde se pierde información.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe es el núcleo teórico que explica por qué el Metamodelo es necesario. Se conecta con el Tema 2 (mapa del mundo, lenguaje) y con la teoría de la comunicación.</p>
+<hr>
+
+<!-- Objetivos del Metamodelo -->
+<h3 id="objetivos">Objetivos del Metamodelo de Lenguaje en PNL</h3>
+<p><strong>Concepto clave:</strong> Cuatro objetivos: 1) Encontrar información perdida en la derivación, 2) Identificar distorsiones, eliminaciones y generalizaciones limitantes, 3) Descubrir limitaciones del mapa, 4) Reconectar a la persona con su experiencia primaria.</p>
+<p><strong>Argumentos del autor:</strong> Los objetivos son recuperar información, identificar limitaciones, descubrir las limitaciones del mapa y reconectar con la experiencia primaria y el territorio.</p>
+<p><strong>Conexiones:</strong> Estos objetivos conectan el Metamodelo con el Tema 2 (mapa del mundo, representaciones internas) y con el objetivo general de la PNL de enriquecer los mapas.</p>
+<hr>
+
+<!-- Clasificación de las Violaciones -->
+<h3 id="clasificacion">Clasificación de las Violaciones del Metamodelo</h3>
+<p><strong>Concepto clave:</strong> Las violaciones del lenguaje se clasifican en tres categorías: Generalizaciones, Eliminaciones y Distorsiones. Cada una tiene subtipos específicos que se identifican mediante patrones lingüísticos concretos.</p>
+<p><strong>Argumentos del autor:</strong> La clasificación es la siguiente:</p>
+<ul>
+    <li><strong>A) GENERALIZACIONES:</strong> 1. Cuantificadores universales, 2. Operadores modales, 3. Pérdida de concreción.</li>
+    <li><strong>B) ELIMINACIONES:</strong> 1. Omisión simple, 2. Falta de índice referencial, 3. Omisión de comparación, 4. Verbos inespecíficos.</li>
+    <li><strong>C) DISTORSIONES:</strong> 1. Nominalizaciones, 2. Modelo causal, 3. Lectura mental, 4. Equivalencia compleja, 5. Presuposiciones.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta clasificación es la estructura que organiza todo el tema y proporciona la guía práctica para identificar violaciones. Se conecta con el Tema 2 (lenguaje, comunicación).</p>
+<hr>
+
+<!-- A) Generalizaciones -->
+<h3 id="generalizaciones">A) Generalizaciones</h3>
+<p><strong>Concepto clave:</strong> Las generalizaciones ocurren cuando se toma una experiencia particular y se aplica a toda una categoría, limitando el modelo del mundo del sujeto. Se dividen en cuantificadores universales, operadores modales y pérdida de concreción.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>1. Cuantificador universal:</strong> Palabras que indican extensión de las generalizaciones (todos, nadie, siempre, nunca). Ejemplo: <em>"Todas las mujeres son peligrosas"</em> → Desafío: <em>"¿Todas las mujeres?"</em></li>
+    <li><strong>2. Operador modal:</strong> Palabras que constituyen limitaciones (puedo, no debo, tengo que) basadas en creencias. Ejemplo: <em>"No puedo decírselo"</em> → Desafío: <em>"¿Qué te lo impide?"</em>.</li>
+    <li><strong>3. Pérdida de concreción:</strong> Afirmaciones que dan por supuesto algo no especificado. Ejemplo: <em>"Tendrías que comportarte de otro modo"</em> → Desafío: <em>"¿De qué modo específicamente?"</em></li>
+    <li><strong>Casos especiales:</strong> Comparativos/superlativos ("Ella es mejor que mi marido" → "¿En qué?") y adverbios terminados en -mente ("Desgraciadamente olvidó saludar").</li>
+</ul>
+<p><strong>Conexiones:</strong> Las generalizaciones se conectan con las creencias limitantes (Tema 2) y con la necesidad de especificar para enriquecer el mapa del mundo.</p>
+<hr>
+
+<!-- B) Eliminaciones -->
+<h3 id="eliminaciones">B) Eliminaciones</h3>
+<p><strong>Concepto clave:</strong> Las eliminaciones ocurren cuando se omite información en la ES. El objetivo del Metamodelo es recuperar esa información perdida mediante preguntas específicas.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>1. Omisión simple:</strong> Parte del material eliminado. Ejemplo: <em>"Soy incapaz"</em> → <em>"¿Incapaz de qué?"</em></li>
+    <li><strong>2. Falta de índice referencial:</strong> Referencia a persona, lugar o cosa sin especificar. Ejemplo: <em>"Los acontecimientos me han hecho cambiar de idea"</em> → <em>"¿Qué acontecimientos?"</em></li>
+    <li><strong>3. Omisión de comparación:</strong> Referencia no explícita en la ES usando mejor/peor, más/menos. Ejemplo: <em>"Es mejor no decir nada"</em> → <em>"¿Mejor que qué?"</em></li>
+    <li><strong>4. Verbos inespecíficos:</strong> Verbos que no clarifican el significado real. Ejemplo: <em>"Me lo voy a montar yo solo"</em> → <em>"¿Vas a montarte qué?"</em></li>
+</ul>
+<p><strong>Conexiones:</strong> Las eliminaciones se conectan con la necesidad de completar la información para acceder a la experiencia completa del sujeto (Tema 2, estructura profunda).</p>
+<hr>
+
+<!-- C) Distorsiones -->
+<h3 id="distorsiones">C) Distorsiones</h3>
+<p><strong>Concepto clave:</strong> Las distorsiones ocurren cuando se modifica la experiencia al representarla lingüísticamente, creando interpretaciones erróneas de la realidad. El objetivo es clarificar mediante preguntas específicas.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>1. Nominalización:</strong> Transformación de un verbo en sustantivo (proceso en cosa). Ejemplo: <em>"Necesito experiencia"</em> → <em>"¿Qué es lo que necesita experimentar?"</em></li>
+    <li><strong>2. Modelo causal:</strong> Afirmaciones que unen dos situaciones como causa-efecto. Ejemplo: <em>"El tono de su voz me irrita"</em> → <em>"¿Cómo específicamente hace que su voz te irrite?"</em></li>
+    <li><strong>3. Lectura mental:</strong> El hablante "desentraña" pensamientos y estados internos de otros. Ejemplo: <em>"Conozco tus intenciones"</em> → <em>"¿Cuáles son mis intenciones?"</em></li>
+    <li><strong>4. Equivalencia compleja:</strong> Dos experiencias diferentes se unen en una relación de equivalencia. Ejemplo: <em>"Ve los partidos todos los domingos; no me quiere"</em> → <em>"¿Cómo el ver fútbol significa que no te quiera?"</em></li>
+    <li><strong>5. Presuposiciones:</strong> Afirmaciones que basan su consistencia en un supuesto previo. Ejemplo: <em>"Ya ha vuelto a hacerlo, como la otra vez"</em> → <em>"¿Qué hizo, cuándo?"</em></li>
+</ul>
+<p><strong>Conexiones:</strong> Las distorsiones se conectan con las creencias limitantes y la interpretación subjetiva de la realidad (Tema 2). Las nominalizaciones se relacionan con la falta de responsabilidad (evitar el verbo activo).</p>
+<hr>
+
+<!-- Ejercicios de Identificación y Desafío -->
+<h3 id="ejercicios">Ejercicios de Identificación y Desafío</h3>
+<p><strong>Concepto clave:</strong> Ejercicios prácticos para familiarizarse con la identificación de violaciones y los desafíos correspondientes, con el objetivo de clarificar, potenciar y llamar a la responsabilidad.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Ejercicio 1:</strong> Tabla de frases con violaciones para completar identificando el tipo y el desafío adecuado.</li>
+    <li><strong>Ejercicio 2:</strong> Distinguir entre lenguaje sensorial (observable) e imaginativo (interpretativo).</li>
+    <li>Las violaciones son limitantes, ambigüedades, falta de responsabilidad, inconsciencia, falsedad.</li>
+    <li>Los desafíos pretenden clarificar, potenciar, asumir responsabilidad y llamar a la conciencia.</li>
+</ul>
+<p><strong>Conexiones:</strong> Los ejercicios conectan la teoría con la práctica, desarrollando las habilidades de observación y preguntas del Metamodelo, relacionadas con la calibración (Tema 3).</p>
+<hr>
+
+<!-- Resumen de las Violaciones -->
+<h3 id="resumen-violaciones">Resumen de las Violaciones</h3>
+<p><strong>Concepto clave:</strong> El objetivo del metalenguaje es: para Generalizaciones → Especificar; para Eliminaciones → Completar; para Distorsiones → Clarificar.</p>
+<p><strong>Argumentos del autor:</strong> Resumen de los tres objetivos fundamentales.</p>
+<p><strong>Conexiones:</strong> Este resumen conecta las tres categorías con sus acciones correspondientes, proporcionando una guía rápida para la aplicación del Metamodelo.</p>
+<hr>
+
+<!-- Estrategias de Preguntas -->
+<h3 id="estrategias">Estrategias de Preguntas para el Metamodelo</h3>
+<p><strong>Concepto clave:</strong> Siete estrategias de preguntas para identificar y desafiar diferentes tipos de violaciones, con ejemplos concretos de cada una.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>1. Información inespecífica/generalizada:</strong> ¿Quién, qué, dónde, cuándo, cómo... específicamente? Ejemplo: <em>"Estoy angustiado"</em> → <em>"¿Qué es lo que te angustia específicamente?"</em></li>
+    <li><strong>2. El sujeto dice algo sobre otro que podría aplicarse a sí mismo:</strong> ¿Puedes decir eso sobre ti mismo? Ejemplo: <em>"Ella no me demuestra que me quiere"</em> → <em>"¿Podrías decir: yo no le demuestro que la quiero?"</em></li>
+    <li><strong>3. Imposibilidad o perspectivas catastróficas:</strong> ¿Qué te detiene? ¿Qué pasaría si lo hicieras? Ejemplo: <em>"Tengo que ser bueno con todos"</em> → <em>"¿Qué pasaría si no lo fueras?"</em></li>
+    <li><strong>4. Creencias sin excepciones:</strong> ¿Puedes recordar alguna ocasión en que no fue así? Ejemplo: <em>"Siempre estoy preocupado"</em> → <em>"¿Siempre?"</em></li>
+    <li><strong>5. Lectura mental:</strong> ¿Cómo lo sabes? Ejemplo: <em>"Sé que intenta hacerme daño"</em> → <em>"¿Cómo lo sabes?"</em></li>
+    <li><strong>6. Causa y efecto con emociones:</strong> ¿Qué hacen ellos para que tú te sientas así? ¿Cómo haces tú que se sientan de esa forma? Ejemplo: <em>"Su forma de actuar me pone enfermo"</em> → <em>"¿Qué hace para ponerte enfermo?"</em></li>
+    <li><strong>7. Juicio insustancial:</strong> ¿Según quién? Ejemplo: <em>"Los libros son muy aburridos"</em> → <em>"¿Según quién?"</em></li>
+</ul>
+<p><strong>Conexiones:</strong> Estas estrategias conectan el Metamodelo con el Tema 2 (comunicación eficaz, preguntas, escucha activa) y el Tema 3 (rapport, calibración).</p>
+<hr>
+
+<!-- Condiciones de Buena Formulación -->
+<h3 id="condiciones">Condiciones de Buena Formulación</h3>
+<p><strong>Concepto clave:</strong> Seis condiciones que debe cumplir un objetivo o estado deseado para ser accesible y ecológico: planteado en positivo, que no dependa de terceros, que esté dentro de las capacidades del sujeto, que sea ecológico, que se pueda medir sensorialmente, y que sea claro, concreto y específico.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>a) Planteado en positivo (sin negaciones).</li>
+    <li>b) Que no dependa de terceros (ni en inicio ni en desarrollo).</li>
+    <li>c) Dentro de las capacidades, habilidades y medios del sujeto.</li>
+    <li>d) Ecológico (no perjudique al individuo o su entorno).</li>
+    <li>e) Medible sensorialmente (ver, tocar, oír, etc.).</li>
+    <li>f) Definición clara, concreta y específica.</li>
+</ul>
+<p><strong>Conexiones:</strong> Estas condiciones se conectan con el Tema 2 (estados deseados, intención) y con la práctica del cambio personal en PNL.</p>
+<hr>
+
+<!-- Preguntas para la Buena Formulación -->
+<h3 id="preguntas-buena">Preguntas para la Buena Formulación</h3>
+<p><strong>Concepto clave:</strong> Conjunto de preguntas específicas para verificar y clarificar objetivos, asegurando que cumplen con las condiciones de buena formulación.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>¿Qué es lo que quieres específicamente?</li>
+    <li>¿Cómo comprobarás que has logrado el objetivo?</li>
+    <li>¿Qué ves, sientes, escuchas... cuando consideras que has logrado ese estado?</li>
+    <li>¿Cuándo, dónde, cómo y con quién lo deseas?</li>
+    <li>¿Cómo va a afectar a tu vida?</li>
+    <li>¿Qué necesitas para conseguirlo?</li>
+    <li>¿Qué podría impedir que lo consiguieras?</li>
+    <li>¿Es realmente valioso? ¿Cómo lo sabes?</li>
+    <li>¿Merece la pena el esfuerzo?</li>
+    <li>¿Es ecológico? ¿Supone algún riesgo?</li>
+    <li>¿Cómo sabrás que no te estás aproximando?</li>
+    <li>¿Qué vas a hacer en caso de que detectes que no te aproximas?</li>
+    <li>¿Cuándo prevés haber alcanzado tu objetivo?</li>
+</ul>
+<p><strong>Conexiones:</strong> Estas preguntas son la aplicación práctica de las condiciones de buena formulación, conectando con el Tema 2 (estados deseados, objetivos) y con la práctica terapéutica de la PNL.</p>
+<hr>
+
+<!-- Preguntas para Orientar la Vida -->
+<h3 id="orientar-vida">Preguntas para Orientar la Vida</h3>
+<p><strong>Concepto clave:</strong> Preguntas profundas para reflexionar sobre la dirección de la vida, el control personal y la creación del futuro deseado.</p>
+<p><strong>Argumentos del autor:</strong> Preguntas como: "¿Cómo puedo tomar inmediatamente el control de mi vida?", "¿Dónde estaré dentro de diez o quince años?", "¿Cómo voy a vivir hoy para crear el mañana que yo quiero?", etc.</p>
+<p><strong>Conexiones:</strong> Estas preguntas aplican el Metamodelo a la reflexión existencial, conectando con el Tema 2 (estados deseados, intención) y con el objetivo general de la PNL de empoderar a la persona.</p>
+<hr>
+
+<!-- Preguntas para Solucionar Problemas -->
+<h3 id="solucionar-problemas">Preguntas para Solucionar Problemas</h3>
+<p><strong>Concepto clave:</strong> Preguntas para abordar problemas de manera estructurada, identificando su naturaleza, importancia y las acciones necesarias para resolverlos.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>¿Cuál es específicamente el problema?</li>
+    <li>¿Qué tiene de importante, de grande, de transcendente?</li>
+    <li>¿Qué hay en el problema que haga que la situación no sea la correcta?</li>
+    <li>¿Qué estoy dispuesto a hacer para lograr que sea como yo quiero?</li>
+    <li>¿Qué estoy dispuesto a dejar de hacer para lograr el cambio?</li>
+    <li>¿Cómo puedo disfrutar durante este proceso?</li>
+</ul>
+<p><strong>Conexiones:</strong> Estas preguntas conectan el Metamodelo con la resolución de problemas prácticos, aplicando los principios de especificación y clarificación.</p>
+<hr>
+
+<!-- Ejercicio "¿Lo tienes claro?" -->
+<h3 id="ejercicio-claro">Ejercicio: "¿Lo tienes claro?"</h3>
+<p><strong>Concepto clave:</strong> Ejercicio estructurado en nueve pasos para la fijación y consecución de objetivos, aplicando los principios del Metamodelo y las condiciones de buena formulación.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>1. Inventario de todo lo que se quiere conseguir.</li>
+    <li>2. Fijar plazos realistas.</li>
+    <li>3. Seleccionar 3-4 objetivos para un año.</li>
+    <li>4. Especificar cómo se sabrá que se ha conseguido (sensorialmente).</li>
+    <li>5. Lista de recursos disponibles.</li>
+    <li>6. Recordar usos hábiles de esos recursos.</li>
+    <li>7. Describir qué más se necesita.</li>
+    <li>8. Identificar lo que impide alcanzar los objetivos.</li>
+    <li>9. Plan inicial de actuación paso a paso con plazos.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este ejercicio integra todos los conceptos del tema (especificación, clarificación, condiciones de buena formulación) en una herramienta práctica de planificación personal.</p>
+<hr>
+
+<!-- Preguntas para Vivir la Propia Vida -->
+<h3 id="vivir-vida">Preguntas para Vivir la Propia Vida</h3>
+<p><strong>Concepto clave:</strong> Preguntas profundas para examinar las creencias, la autenticidad y el control de la propia vida, cuestionando las influencias externas y los condicionamientos.</p>
+<p><strong>Argumentos del autor:</strong> Preguntas como: "¿Estoy viviendo mi propia vida?", "¿De dónde proviene la forma de pensar que tengo?", "¿Son mis actitudes, convicciones, creencias?", "¿Le gustaría ser su propio generador de creencias?", "¿Quiere realmente ser el dueño de tu vida?"</p>
+<p><strong>Conexiones:</strong> Estas preguntas aplican el Metamodelo a la reflexión sobre creencias y autenticidad, conectando con el Tema 2 (creencias, representaciones internas) y con el objetivo de empoderamiento personal.</p>
+<hr>
+
+<!-- ===== 3. MINI-RESÚMEN ===== -->
+<h2 id="mini-resumen">📌 Mini-resumen por Epígrafe (Repaso rápido)</h2>
+<ul>
+    <li><strong>Introducción:</strong> El lenguaje es el modelo más representativo de nuestra experiencia. La PNL ha creado el Metamodelo como herramienta para acceder a la estructura profunda que opera detrás de nuestras palabras.</li>
+    <li><strong>¿Qué es un Metamodelo?:</strong> Es la representación de una representación (un modelo de un modelo). Origen en la gramática transformacional de Chomsky; desarrollado por Grinder y Bandler. Distingue entre Estructura Superficial (ES: palabras) y Estructura Profunda (EP: significado completo). La EP se transforma en ES mediante Generalización, Eliminación y Distorsión (proceso de Derivación).</li>
+    <li><strong>El Metalenguaje de la PNL Aporta:</strong> Técnicas interrogativas, claves verbales para iniciar cambios, y estrategias para acceder a la EP y eliminar la raíz de los problemas.</li>
+    <li><strong>Estructura Superficial vs. Estructura Profunda:</strong> ES son las palabras; EP es el significado interno completo. La diferencia se debe a la Derivación. Ejemplo: "La casa fue reformada" (ES) implica agente, sujeto, hecho anterior, herramientas (EP).</li>
+    <li><strong>Objetivos del Metamodelo:</strong> 1) Recuperar información perdida, 2) Identificar distorsiones/eliminaciones/generalizaciones limitantes, 3) Descubrir limitaciones del mapa, 4) Reconectar con la experiencia primaria.</li>
+    <li><strong>Clasificación de las Violaciones:</strong> Generalizaciones (cuantificadores universales, operadores modales, pérdida de concreción), Eliminaciones (omisión simple, falta de índice referencial, omisión de comparación, verbos inespecíficos), Distorsiones (nominalizaciones, modelo causal, lectura mental, equivalencia compleja, presuposiciones).</li>
+    <li><strong>A) Generalizaciones:</strong> Cuantificador universal (todos, nadie → "¿Todos?"); Operador modal (puedo, no debo, tengo que → "¿Qué te lo impide?"); Pérdida de concreción ("comportarte de otro modo" → "¿De qué modo específicamente?"). Casos especiales: comparativos/superlativos y adverbios en -mente.</li>
+    <li><strong>B) Eliminaciones:</strong> Omisión simple ("Soy incapaz" → "¿Incapaz de qué?"); Falta de índice referencial ("Los acontecimientos" → "¿Qué acontecimientos?"); Omisión de comparación ("Es mejor" → "¿Mejor que qué?"); Verbos inespecíficos ("Me lo voy a montar" → "¿Vas a montarte qué?").</li>
+    <li><strong>C) Distorsiones:</strong> Nominalización (proceso en cosa: "Necesito experiencia" → "¿Experimentar qué?"); Modelo causal ("Su voz me irrita" → "¿Cómo específicamente?"); Lectura mental ("Conozco tus intenciones" → "¿Cuáles?"); Equivalencia compleja ("Ve fútbol, no me quiere" → "¿Cómo significa eso?"); Presuposiciones ("Ya ha vuelto a hacerlo" → "¿Qué hizo?").</li>
+    <li><strong>Ejercicios de Identificación y Desafío:</strong> Ejercicios prácticos para identificar violaciones y aplicar desafíos. Las violaciones son limitantes; los desafíos clarifican, potencian y llaman a la responsabilidad.</li>
+    <li><strong>Resumen de las Violaciones:</strong> Generalizaciones → Especificar; Eliminaciones → Completar; Distorsiones → Clarificar.</li>
+    <li><strong>Estrategias de Preguntas:</strong> 7 estrategias según el tipo de violación: información inespecífica (¿quién, qué, dónde...?), proyección (¿puedes decirlo sobre ti?), imposibilidad (¿qué te detiene?), sin excepciones (¿recuerdas alguna ocasión?), lectura mental (¿cómo lo sabes?), causa-efecto (¿qué hacen para que te sientas así?), juicio insustancial (¿según quién?).</li>
+    <li><strong>Condiciones de Buena Formulación:</strong> Seis condiciones: en positivo, no dependa de terceros, dentro de capacidades, ecológico, medible sensorialmente, claro y específico.</li>
+    <li><strong>Preguntas para la Buena Formulación:</strong> Conjunto de preguntas para verificar y clarificar objetivos (qué, cómo, cuándo, dónde, con quién, qué necesitas, qué podría impedirlo, es ecológico, etc.).</li>
+    <li><strong>Preguntas para Orientar la Vida:</strong> Preguntas profundas sobre control de la vida, dirección futura, autenticidad ("¿Estoy viviendo mi propia vida?").</li>
+    <li><strong>Preguntas para Solucionar Problemas:</strong> Preguntas estructuradas para abordar problemas: ¿cuál es el problema?, ¿qué estoy dispuesto a hacer/dejar de hacer?, ¿cómo puedo disfrutar durante el proceso?</li>
+    <li><strong>Ejercicio "¿Lo tienes claro?":</strong> Ejercicio de 9 pasos para fijar objetivos: inventario, plazos, selección, especificación sensorial, recursos, plan de acción.</li>
+    <li><strong>Preguntas para Vivir la Propia Vida:</strong> Preguntas sobre creencias, autenticidad y control: ¿vivo mi propia vida?, ¿de dónde vienen mis creencias?, ¿quiero ser dueño de mis opciones?</li>
+</ul>
+
+<!-- ===== 4. PREGUNTAS DE DESARROLLO ===== -->
+<h2 id="preguntas-desarrollo">✍️ Preguntas de Desarrollo</h2>
+
+<!-- Pregunta 1 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 1:</strong> Explique el concepto de Metamodelo del Lenguaje en PNL, su origen en la gramática transformacional de Chomsky y la distinción fundamental entre Estructura Superficial y Estructura Profunda. Describa el proceso de Derivación y las tres universales del modelaje humano.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir Metamodelo: representación de una representación (modelo de un modelo); el lenguaje es la representación de nuestra experiencia.</li>
+            <li>Origen: gramática transformacional de Chomsky; desarrollado por Grinder y Bandler a partir del modelaje de Perls, Satir y Erickson.</li>
+            <li>Definir <strong>Estructura Superficial (ES):</strong> palabras con sonido o símbolos; lo que se dice/escucha.</li>
+            <li>Definir <strong>Estructura Profunda (EP):</strong> significado completo en la experiencia interna del hablante; el pensamiento real detrás de la ES.</li>
+            <li>Explicar la <strong>Derivación:</strong> proceso de transformación de EP a ES mediante reglas.</li>
+            <li>Explicar las tres universales del modelaje: <strong>Generalización, Eliminación y Distorsión</strong> (procesos que ocurren al transformar EP en ES).</li>
+            <li>Ejemplo: "La casa fue reformada" (ES) → EP incluye agente, sujeto, hecho anterior, herramientas.</li>
+            <li>Concluir que el Metamodelo recupera la información perdida en la Derivación.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Metamodelo, Estructura Superficial, Estructura Profunda, Derivación, Generalización, Eliminación, Distorsión, Chomsky, Grinder, Bandler.</p>
+    </div>
+</div>
+
+<!-- Pregunta 2 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 2:</strong> Describa los tres objetivos del Metalenguaje de la PNL y los cuatro objetivos específicos del Metamodelo. Explique cómo estos objetivos se relacionan con la práctica de la comunicación y el cambio personal.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li><strong>Tres aportaciones del Metalenguaje:</strong>
+                <ul>
+                    <li>Técnicas interrogativas para comprender mejor el mensaje.</li>
+                    <li>Claves verbales para iniciar cambios y motivaciones.</li>
+                    <li>Estrategias para acceder a la EP y eliminar la raíz de los problemas.</li>
+                </ul>
+            </li>
+            <li><strong>Cuatro objetivos del Metamodelo:</strong>
+                <ul>
+                    <li>Encontrar información perdida en la derivación.</li>
+                    <li>Identificar distorsiones, eliminaciones y generalizaciones limitantes.</li>
+                    <li>Descubrir limitaciones del mapa del mundo.</li>
+                    <li>Reconectar a la persona con su experiencia primaria.</li>
+                </ul>
+            </li>
+            <li>Relacionar con la comunicación: el Metamodelo mejora la comprensión y clarifica mensajes.</li>
+            <li>Relacionar con el cambio personal: al identificar limitaciones del mapa, se pueden ampliar las opciones.</li>
+            <li>La reconexión con la experiencia primaria permite acceder a recursos olvidados.</li>
+            <li>Concluir que el Metamodelo es una herramienta tanto para la comprensión como para la transformación.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Metalenguaje, técnicas interrogativas, claves verbales, estructura profunda, información perdida, limitaciones del mapa, experiencia primaria, cambio personal.</p>
+    </div>
+</div>
+
+<!-- Pregunta 3 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 3:</strong> Clasifique y explique los tres tipos de violaciones del Metamodelo (Generalizaciones, Eliminaciones y Distorsiones), describiendo los subtipos de cada uno y proporcionando ejemplos de desafíos para cada caso.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li><strong>Generalizaciones:</strong> Ocurren cuando se toma una experiencia particular y se aplica a toda una categoría.
+                <ul>
+                    <li><strong>Cuantificador universal:</strong> todos, nadie, siempre, nunca. Desafío: "¿Todas/os?".</li>
+                    <li><strong>Operador modal:</strong> puedo, no debo, tengo que. Desafío: "¿Qué te lo impide?" o "¿Qué pasaría si...?".</li>
+                    <li><strong>Pérdida de concreción:</strong> afirmaciones no específicas. Desafío: "¿De qué modo específicamente?"</li>
+                </ul>
+            </li>
+            <li><strong>Eliminaciones:</strong> Ocurren cuando se omite información.
+                <ul>
+                    <li><strong>Omisión simple:</strong> falta información básica. Desafío: "¿Incapaz de qué?".</li>
+                    <li><strong>Falta de índice referencial:</strong> referencia vaga. Desafío: "¿Qué acontecimientos?".</li>
+                    <li><strong>Omisión de comparación:</strong> comparación sin referencia. Desafío: "¿Mejor que qué?".</li>
+                    <li><strong>Verbos inespecíficos:</strong> verbo que no clarifica. Desafío: "¿Vas a montarte qué?".</li>
+                </ul>
+            </li>
+            <li><strong>Distorsiones:</strong> Ocurren cuando se modifica la experiencia al representarla.
+                <ul>
+                    <li><strong>Nominalización:</strong> verbo en sustantivo. Desafío: "¿Qué es lo que necesita experimentar?".</li>
+                    <li><strong>Modelo causal:</strong> causa-efecto. Desafío: "¿Cómo específicamente hace que te irrite?".</li>
+                    <li><strong>Lectura mental:</strong> adivinar pensamientos. Desafío: "¿Cómo lo sabes?".</li>
+                    <li><strong>Equivalencia compleja:</strong> dos experiencias unidas. Desafío: "¿Cómo el ver fútbol significa que no te quiera?".</li>
+                    <li><strong>Presuposiciones:</strong> supuesto previo. Desafío: "¿Qué hizo, cuándo?".</li>
+                </ul>
+            </li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Generalizaciones, Eliminaciones, Distorsiones, cuantificador universal, operador modal, nominalización, modelo causal, lectura mental, equivalencia compleja, presuposiciones.</p>
+    </div>
+</div>
+
+<!-- Pregunta 4 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 4:</strong> Explique las "Condiciones de Buena Formulación" y su importancia en el establecimiento de objetivos. Proporcione ejemplos de preguntas para cada condición y explique cómo se relacionan con el Metamodelo.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir las Condiciones de Buena Formulación: criterios que debe cumplir un objetivo para ser accesible y ecológico.</li>
+            <li>Enumerar las seis condiciones:
+                <ul>
+                    <li>a) <strong>Planteado en positivo</strong> (sin negaciones). Ejemplo: "Quiero estar tranquilo" en lugar de "No quiero estar nervioso".</li>
+                    <li>b) <strong>Que no dependa de terceros.</strong> Ejemplo: "Quiero aprender a relajarme" en lugar de "Quiero que los demás no me irriten".</li>
+                    <li>c) <strong>Dentro de las capacidades del sujeto.</strong> Ejemplo: "Voy a estudiar dos horas diarias".</li>
+                    <li>d) <strong>Ecológico</strong> (que no perjudique). Pregunta: "¿Supone algún riesgo?".</li>
+                    <li>e) <strong>Medible sensorialmente.</strong> Pregunta: "¿Qué ves, oyes, sientes cuando lo hayas logrado?".</li>
+                    <li>f) <strong>Claro, concreto y específico.</strong> Pregunta: "¿Qué es lo que quieres específicamente?".</li>
+                </ul>
+            </li>
+            <li>Relacionar con el Metamodelo: las preguntas desafían violaciones como la falta de especificación, la dependencia de terceros (lectura mental) y las generalizaciones.</li>
+            <li>Importancia: asegura que los objetivos sean realistas, alcanzables y ecológicos.</li>
+            <li>Concluir que las Condiciones son una aplicación práctica del Metamodelo.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Condiciones de Buena Formulación, positivo, dependencia de terceros, capacidades, ecología, medición sensorial, especificidad, Metamodelo.</p>
+    </div>
+</div>
+
+<!-- Pregunta 5 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 5:</strong> Analice las estrategias de preguntas del Metamodelo para los siguientes casos: información inespecífica, lectura mental, causa-efecto y juicios insustanciales. Proporcione ejemplos de cada uno y explique cómo estas preguntas ayudan a clarificar el mensaje.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li><strong>Información inespecífica/generalizada:</strong>
+                <ul>
+                    <li>Preguntas: ¿Quién, qué, dónde, cuándo, cómo... específicamente?</li>
+                    <li>Ejemplo: "Estoy angustiado" → "¿Qué te angustia específicamente?"</li>
+                    <li>Objetivo: especificar y concretar.</li>
+                </ul>
+            </li>
+            <li><strong>Lectura mental:</strong>
+                <ul>
+                    <li>Pregunta: ¿Cómo lo sabes?</li>
+                    <li>Ejemplo: "Sé que intenta hacerme daño" → "¿Cómo lo sabes?"</li>
+                    <li>Objetivo: hacer consciente la base de la suposición.</li>
+                </ul>
+            </li>
+            <li><strong>Causa-efecto:</strong>
+                <ul>
+                    <li>Preguntas: ¿Qué hacen ellos para que te sientas así? ¿Cómo haces tú que se sientan de esa forma?</li>
+                    <li>Ejemplo: "Su forma de actuar me pone enfermo" → "¿Qué hace para ponerte enfermo?"</li>
+                    <li>Objetivo: desarmar la relación causal automática.</li>
+                </ul>
+            </li>
+            <li><strong>Juicios insustanciales:</strong>
+                <ul>
+                    <li>Pregunta: ¿Según quién?</li>
+                    <li>Ejemplo: "Los libros son muy aburridos" → "¿Según quién?"</li>
+                    <li>Objetivo: identificar al emisor del juicio.</li>
+                </ul>
+            </li>
+            <li>Concluir que las preguntas del Metamodelo clarifican, especifican y devuelven la responsabilidad al hablante.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Estrategias de preguntas, información inespecífica, lectura mental, causa-efecto, juicios insustanciales, desafío, clarificación.</p>
+    </div>
+</div>
+
+<!-- Pregunta 6 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 6:</strong> Compare y contraste los conceptos de "Estructura Superficial" y "Estructura Profunda" con los conceptos de "Mapa del Mundo" y "Territorio" (del Tema 2). Explique cómo el Metamodelo ayuda a enriquecer el mapa del mundo al reconectar con el territorio.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir <strong>Estructura Superficial (ES):</strong> palabras que decimos; la comunicación externa.</li>
+            <li>Definir <strong>Estructura Profunda (EP):</strong> el significado completo interno; el pensamiento real.</li>
+            <li>Definir <strong>Mapa del Mundo:</strong> la representación interna de la realidad (Tema 2).</li>
+            <li>Definir <strong>Territorio:</strong> la realidad en sí misma; la experiencia primaria (Tema 2).</li>
+            <li>Relacionar ES con el Mapa del Mundo: la ES es una representación lingüística del mapa.</li>
+            <li>Relacionar EP con el Mapa del Mundo: la EP es la representación lingüística más completa del mapa.</li>
+            <li>Relacionar el Territorio con la experiencia primaria: el Metamodelo reconecta a la persona con su experiencia sensorial (el territorio).</li>
+            <li>Explicar que la ES es una versión empobrecida del mapa (por Generalización, Eliminación, Distorsión), y el Metamodelo recupera la información para enriquecer el mapa y acercarlo al territorio.</li>
+            <li>Concluir que el Metamodelo es una herramienta para "actualizar" el mapa, haciéndolo más rico y cercano a la realidad.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Estructura Superficial, Estructura Profunda, Mapa del Mundo, Territorio, Metamodelo, experiencia primaria, enriquecimiento del mapa.</p>
+    </div>
+</div>
+
+<!-- Pregunta 7 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 7:</strong> Describa el ejercicio "¿Lo tienes claro?" como una aplicación práctica del Metamodelo y las Condiciones de Buena Formulación. Explique cómo cada paso del ejercicio contribuye a la clarificación de objetivos.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Presentar el ejercicio "¿Lo tienes claro?" como una herramienta de planificación personal.</li>
+            <li>Describir los nueve pasos:
+                <ul>
+                    <li><strong>Paso 1:</strong> Inventario de deseos (identifica el estado deseado).</li>
+                    <li><strong>Paso 2:</strong> Fijar plazos (especifica el "cuándo").</li>
+                    <li><strong>Paso 3:</strong> Seleccionar 3-4 objetivos (focaliza).</li>
+                    <li><strong>Paso 4:</strong> Especificar la evidencia sensorial (condición de medición sensorial).</li>
+                    <li><strong>Paso 5:</strong> Lista de recursos disponibles (identifica capacidades).</li>
+                    <li><strong>Paso 6:</strong> Recordar usos hábiles (ancla recursos).</li>
+                    <li><strong>Paso 7:</strong> Describir qué más se necesita (identifica carencias).</li>
+                    <li><strong>Paso 8:</strong> Identificar impedimentos (identifica obstáculos; relacionado con operadores modales).</li>
+                    <li><strong>Paso 9:</strong> Plan de acción paso a paso (especifica el "cómo").</li>
+                </ul>
+            </li>
+            <li>Relacionar con el Metamodelo: cada paso desafía violaciones (falta de especificación, generalizaciones, eliminaciones).</li>
+            <li>Relacionar con las Condiciones de Buena Formulación: el ejercicio aplica todas las condiciones.</li>
+            <li>Concluir que el ejercicio integra teoría y práctica para la consecución de objetivos.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Ejercicio "¿Lo tienes claro?", objetivos, especificación sensorial, recursos, plan de acción, Metamodelo, Condiciones de Buena Formulación.</p>
+    </div>
+</div>
+
+<!-- ===== 5. PREGUNTAS DE RESERVA ===== -->
+<h2 id="preguntas-reserva">⭐ Preguntas de Reserva</h2>
+
+<!-- Reserva 1 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 1:</strong> Realice un análisis integrador que conecte el Metamodelo del Lenguaje con los conceptos de "Estados Internos", "Representaciones Internas" y "Fisiología" del Tema 2, y con el "Rapport" y la "Calibración" del Tema 3. Explique cómo el lenguaje (y sus violaciones) refleja los estados internos, y cómo el Metamodelo puede ser utilizado como herramienta de calibración y cambio en el contexto del rapport.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Recordar del Tema 2: los estados internos se generan por R.I. + Fisiología; el lenguaje (ES) es una manifestación externa de las R.I.</li>
+            <li>Explicar que las violaciones del Metamodelo (generalizaciones, eliminaciones, distorsiones) reflejan las limitaciones del mapa y, por tanto, del estado interno del sujeto.</li>
+            <li>Recordar del Tema 3: el rapport permite conectar con el otro; la calibración permite detectar cambios fisiológicos.</li>
+            <li>Explicar que el lenguaje es también un canal de calibración: las violaciones lingüísticas son pistas sobre el estado interno.</li>
+            <li>Explicar que el Metamodelo, al desafiar violaciones, puede modificar las R.I. y, por tanto, el estado interno (cambio).</li>
+            <li>En el contexto del rapport: el terapeuta calibra el lenguaje del cliente, identifica violaciones, y utiliza preguntas del Metamodelo para desafiar las limitaciones, manteniendo el rapport.</li>
+            <li>Concluir que el Metamodelo es una herramienta de calibración lingüística y de cambio de estados internos.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Metamodelo, estados internos, Representaciones Internas, fisiología, rapport, calibración, violaciones lingüísticas, cambio.</p>
+    </div>
+</div>
+
+<!-- Reserva 2 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 2:</strong> Compare el Metamodelo del Lenguaje (desafiar violaciones para clarificar) con el Modelo Milton (inducir trance mediante ambigüedad y generalización). Explique cómo son inversiones el uno del otro y cómo se complementan en la práctica terapéutica de la PNL, utilizando ejemplos concretos.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir el <strong>Metamodelo:</strong> desafiar violaciones lingüísticas para especificar, completar y clarificar; recuperar información perdida; trabajar con la ES para acceder a la EP.</li>
+            <li>Definir el <strong>Modelo Milton:</strong> inversión del Metamodelo; utilizar lenguaje vago, ambiguo y generalizado para inducir trance; acceder directamente al subconsciente.</li>
+            <li>Explicar la <strong>inversión:</strong>
+                <ul>
+                    <li>Metamodelo: específico, claro, preguntas directas, consciente.</li>
+                    <li>Modelo Milton: vago, ambiguo, sugestiones indirectas, subconsciente.</li>
+                </ul>
+            </li>
+            <li>Ejemplos:
+                <ul>
+                    <li>Metamodelo: "Todos los hombres son iguales" → "¿Todos?" (especifica).</li>
+                    <li>Modelo Milton: "Algunas personas han sentido una profunda relajación..." (vago, evoca).</li>
+                </ul>
+            </li>
+            <li>Explicar la complementariedad en terapia:
+                <ul>
+                    <li>Se usa el Metamodelo cuando el cliente está consciente y hay que clarificar limitaciones.</li>
+                    <li>Se usa el Modelo Milton para inducir trance y acceder a recursos subconscientes.</li>
+                </ul>
+            </li>
+            <li>Ambos requieren rapport y calibración.</li>
+            <li>Concluir que son herramientas complementarias, no opuestas; el terapeuta elige según el estado del cliente y el objetivo.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Metamodelo, Modelo Milton, inversión, clarificación vs. inducción, consciente vs. subconsciente, complementariedad, terapia.</p>
+    </div>
+</div>
+
+<!-- Reserva 3 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 3:</strong> Analice en profundidad el ejercicio "¿Lo tienes claro?" como una aplicación integradora del Metamodelo, las Condiciones de Buena Formulación y las estrategias de preguntas. Identifique en cada paso del ejercicio qué violaciones del Metamodelo se están desafiando y cómo se aplican las Condiciones de Buena Formulación.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Presentar el ejercicio como una aplicación práctica y secuencial.</li>
+            <li><strong>Paso 1 (Inventario):</strong> Desafía la eliminación por omisión (¿qué quieres realmente?) y la falta de especificación.</li>
+            <li><strong>Paso 2 (Plazos):</strong> Desafía la pérdida de concreción (¿cuándo específicamente?).</li>
+            <li><strong>Paso 3 (Selección):</strong> Aplica la condición de focalización (especificar).</li>
+            <li><strong>Paso 4 (Evidencia sensorial):</strong> Aplica la condición de medición sensorial; desafía nominalizaciones (convertir "éxito" en "ver, oír, sentir").</li>
+            <li><strong>Paso 5 (Recursos):</strong> Desafía la omisión simple (¿qué tienes?) y la falta de índice referencial.</li>
+            <li><strong>Paso 6 (Recordar usos):</strong> Ancla recursos; aplica la condición de capacidades.</li>
+            <li><strong>Paso 7 (Qué más se necesita):</strong> Desafía la omisión de comparación y el operador modal (¿qué te falta?).</li>
+            <li><strong>Paso 8 (Impedimentos):</strong> Identifica operadores modales (¿qué te detiene?) y presuposiciones.</li>
+            <li><strong>Paso 9 (Plan de acción):</strong> Aplica la condición de claridad y especificidad; desafía verbos inespecíficos.</li>
+            <li>Concluir que el ejercicio es una aplicación sistemática de todas las herramientas del Metamodelo para la consecución de objetivos.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Ejercicio "¿Lo tienes claro?", Metamodelo, Condiciones de Buena Formulación, violaciones, especificación, recursos, plan de acción.</p>
+    </div>
+</div>
+
+<script>
+    // Alternar modo claro/oscuro
+    document.getElementById('modoBtn').addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        this.textContent = document.body.classList.contains('dark-mode') ? '☀️ Modo' : '🌓 Modo';
+    });
+
+    // Toggle para esquemas de desarrollo
+    function toggleEsquema(btn) {
+        const container = btn.parentElement;
+        const esquema = container.querySelector('.esquema-oculto');
+        if (esquema) {
+            esquema.classList.toggle('visible');
+            btn.textContent = esquema.classList.contains('visible') ? '📖 Ocultar esquema' : '📖 Mostrar esquema';
+        }
+    }
+</script>
+
+</body>
+</html>

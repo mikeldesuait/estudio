@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Tema 8: Anclajes · Resumen UNED</title>
+    <style>
+        /* ===== ESTILO ÚNICO PARA RESÚMENES UNED ===== */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            max-width: 950px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #f5f7fa;
+            color: #1a1a2e;
+            line-height: 1.8;
+            font-size: 17px;
+        }
+        h1 {
+            font-size: 30px;
+            color: #0a1628;
+            border-bottom: 4px solid #1a3d66;
+            padding-bottom: 14px;
+        }
+        h2 {
+            font-size: 23px;
+            color: #1a3d66;
+            margin-top: 32px;
+            border-left: 4px solid #1a3d66;
+            padding-left: 16px;
+        }
+        h3 {
+            font-size: 20px;
+            color: #2a4a7a;
+            margin-top: 26px;
+        }
+        h4 {
+            font-size: 18px;
+            color: #3a5a8a;
+            margin-top: 20px;
+        }
+        strong {
+            color: #0a2a4a;
+        }
+        ul {
+            padding-left: 24px;
+        }
+        li {
+            margin-bottom: 6px;
+        }
+        blockquote {
+            background: #e8edf4;
+            padding: 12px 20px;
+            border-left: 4px solid #1a3d66;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        hr {
+            border: none;
+            border-top: 2px solid #d0d8e4;
+            margin: 28px 0;
+        }
+        .indice {
+            background: #e8edf4;
+            padding: 16px 24px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .indice ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .indice li {
+            padding: 3px 0;
+        }
+        .indice li.h1 {
+            font-weight: 600;
+        }
+        .indice li.h2 {
+            padding-left: 20px;
+            font-weight: 400;
+        }
+        .indice a {
+            color: #1a3d66;
+            text-decoration: none;
+        }
+        .indice a:hover {
+            text-decoration: underline;
+        }
+        .idea-central {
+            background: #e0e8f4;
+            padding: 18px 24px;
+            border-radius: 12px;
+            margin: 20px 0 30px 0;
+            border-left: 5px solid #1a3d66;
+        }
+        .idea-central h2 {
+            margin-top: 0;
+            border-left: none;
+            padding-left: 0;
+        }
+        .modo-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            padding: 8px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #1a3d66;
+            color: #fff;
+            font-size: 14px;
+            z-index: 999;
+        }
+        .modo-btn:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode {
+            background: #0d1a2b;
+            color: #d6e2f5;
+        }
+        .dark-mode h1 {
+            color: #b0c8e8;
+            border-bottom-color: #2a5a8a;
+        }
+        .dark-mode h2 {
+            color: #8ab0e0;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode h3 {
+            color: #6a9ac0;
+        }
+        .dark-mode h4 {
+            color: #5a8aaa;
+        }
+        .dark-mode strong {
+            color: #c8ddf0;
+        }
+        .dark-mode blockquote {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode .indice {
+            background: #142a44;
+        }
+        .dark-mode .indice a {
+            color: #8ab0e0;
+        }
+        .dark-mode .idea-central {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode hr {
+            border-top-color: #2a4a6a;
+        }
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+                padding: 14px;
+            }
+            h1 {
+                font-size: 25px;
+            }
+            h2 {
+                font-size: 21px;
+            }
+        }
+
+        /* ===== ESTILOS PARA PREGUNTAS INTERACTIVAS ===== */
+        .pregunta {
+            background: #f0f4fa;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            border: 1px solid #d0d8e4;
+        }
+        .dark-mode .pregunta {
+            background: #142a44;
+            border-color: #2a4a6a;
+        }
+        .pregunta .enunciado {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .pregunta .opciones {
+            list-style: none;
+            padding-left: 8px;
+        }
+        .pregunta .opciones li {
+            margin-bottom: 4px;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .pregunta .opciones li.correcta {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .dark-mode .pregunta .opciones li.correcta {
+            background: #1a4a3a;
+            color: #8fdfb0;
+            border-left-color: #2ecc71;
+        }
+        .pregunta .respuesta-oculta {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta .respuesta-oculta {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta .respuesta-oculta.visible {
+            display: block;
+        }
+        .pregunta .btn-respuesta {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #1a3d66;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta .btn-respuesta:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta:hover {
+            background: #3a7aaa;
+        }
+        .pregunta .trampa {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #6a4a2a;
+            font-style: italic;
+        }
+        .dark-mode .pregunta .trampa {
+            color: #c8a878;
+        }
+        .pregunta-desarrollo .esquema-oculto {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta-desarrollo .esquema-oculto {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta-desarrollo .esquema-oculto.visible {
+            display: block;
+        }
+        .pregunta-desarrollo .btn-esquema {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #1a3d66;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta-desarrollo .btn-esquema:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta-desarrollo .btn-esquema {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta-desarrollo .btn-esquema:hover {
+            background: #3a7aaa;
+        }
+    </style>
+</head>
+<body>
+
+<button class="modo-btn" id="modoBtn" aria-label="Cambiar modo claro/oscuro">🌓 Modo</button>
+
+<h1>Tema 8: Anclajes</h1>
+
+<!-- ===== ÍNDICE ===== -->
+<div class="indice">
+    <h2 style="margin-top:0; border-left:none; padding-left:0;">📑 Índice</h2>
+    <ul>
+        <li class="h1"><a href="#idea-central">1. Idea Central (5 minutos)</a></li>
+        <li class="h1"><a href="#resumen-epigrafes">2. Resumen por Epígrafes</a></li>
+        <li class="h2"><a href="#definicion">Definición de Anclaje</a></li>
+        <li class="h2"><a href="#principios">Principios y Funciones de los Anclajes</a></li>
+        <li class="h2"><a href="#premisas">Premisas para el Anclaje Correcto</a></li>
+        <li class="h2"><a href="#demostracion">Demostración Práctica de Anclaje</a></li>
+        <li class="h2"><a href="#colapsamiento">Colapsamiento de Anclas</a></li>
+        <li class="h2"><a href="#ejercicio-colapsamiento">Ejercicio de Colapsamiento de Anclas</a></li>
+        <li class="h2"><a href="#ejercicio-visual">Ejercicio de Colapsamiento con Anclas Visuales</a></li>
+        <li class="h2"><a href="#apilamiento">Apilamiento de Anclas</a></li>
+        <li class="h2"><a href="#autoanclaje-exterior">Autoanclaje de Apilamiento (Exterior)</a></li>
+        <li class="h2"><a href="#autoanclaje-interior">Autoanclaje de Apilamiento (Interior)</a></li>
+        <li class="h2"><a href="#apilamiento-colapsamiento">Apilamiento y Colapsamiento Combinados</a></li>
+        <li class="h2"><a href="#manipulacion">Sobre la "Manipulación"</a></li>
+        <li class="h2"><a href="#usos">Usos de los Anclajes</a></li>
+        <li class="h1"><a href="#mini-resumen">3. Mini-resumen por Epígrafe</a></li>
+        <li class="h1"><a href="#preguntas-desarrollo">4. Preguntas de Desarrollo</a></li>
+        <li class="h1"><a href="#preguntas-reserva">5. Preguntas de Reserva</a></li>
+    </ul>
+</div>
+
+<!-- ===== 1. IDEA CENTRAL ===== -->
+<div id="idea-central" class="idea-central">
+    <h2>💡 Idea Central (5 minutos)</h2>
+    <p>El anclaje en PNL es el proceso por el cual cualquier representación sensorial (externa o interna) desencadena otra representación o serie de representaciones, funcionando como una versión del estímulo-respuesta pero con características únicas: se establece en un único intento, no requiere refuerzos y la experiencia interna es tan significativa como la externa. Las anclas pueden ser visuales, auditivas, kinestésicas, olfativas o gustativas, y su efectividad depende de la selectividad del estímulo, la habilidad para establecer la asociación y el contexto. Una estrategia es, en esencia, una secuencia de modalidades del 4-R donde cada modalidad está anclada a la que le precede. El colapsamiento de anclas ocurre cuando se activan dos anclajes simultáneamente, fusionando dos estados para crear una nueva experiencia integrada. El apilamiento consiste en anclar sucesivamente diferentes estados de la misma naturaleza para construir un ancla potente. Los anclajes tienen múltiples aplicaciones en terapia, desarrollo personal, educación y salud, y su uso ético busca ampliar las alternativas de decisión de las personas, no manipularlas.</p>
+</div>
+
+<!-- ===== 2. RESUMEN POR EPÍGRAFES ===== -->
+<h2 id="resumen-epigrafes">📘 Resumen por Epígrafes</h2>
+
+<!-- Definición de Anclaje -->
+<h3 id="definicion">Definición de Anclaje</h3>
+<p><strong>Concepto clave:</strong> Un ancla es cualquier representación (externa o interna) que desencadena otra representación o serie de representaciones. Las estrategias son secuencias de modalidades del 4-R donde cada modalidad está anclada a la que le precede.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Las anclas pueden instalarse y desencadenarse en cualquier modalidad del 4-R (V, A, K, O/G).</li>
+    <li>Un mismo ancla puede provocar representaciones en todas las modalidades (ejemplo: la palabra "coche" activa imágenes, sonidos, sensaciones y olores).</li>
+    <li>Otros anclajes solo desencadenan representaciones en una sola modalidad (ejemplo: "profundo pesar" activa solo kinestesia interna).</li>
+    <li>Las anclas pueden ser visuales, auditivas, kinestésicas, olfativas y gustativas.</li>
+    <li>El tiempo de duración de un ancla es variable: puede durar momentos, horas, semanas, meses, años o toda la vida.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta directamente con el Tema 6 (Sistemas Representacionales) y el Tema 7 (Estrategias), estableciendo que las anclas son los "eslabones" que conectan las modalidades en una estrategia.</p>
+<hr>
+
+<!-- Principios y Funciones -->
+<h3 id="principios">Principios y Funciones de los Anclajes</h3>
+<p><strong>Concepto clave:</strong> Los anclajes son mecanismos que aseguran acceso fácil a representaciones, pueden establecerse a través de cualquier modalidad sensorial, y su efectividad depende de la selectividad del estímulo, la habilidad del practitioner y el contexto.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>a) El anclaje asegura acceso fácil a una representación particular.</li>
+    <li>b) Un ancla es cualquier representación que desencadena otra.</li>
+    <li>c) Cualquier porción de experiencia puede usarse como anclaje.</li>
+    <li>d) Los anclajes se diferencian del condicionamiento clásico en tres aspectos:
+        <ul>
+            <li>1. No necesitan largos períodos de condicionamiento; se establecen "a la primera".</li>
+            <li>2. No requieren refuerzos ni recompensas.</li>
+            <li>3. La experiencia interna es tan significativa como las respuestas externas.</li>
+        </ul>
+    </li>
+    <li>e) Pueden establecerse a través de cualquier modalidad sensorial (expresiones faciales, gestos, tonalidad, tacto, olores, sabores, etc.).</li>
+    <li>f) Una estrategia es una serie de representaciones donde cada una está anclada a la que le precede.</li>
+    <li>g) Factores que determinan duración y efectividad:
+        <ul>
+            <li><strong>Selectividad del estímulo:</strong> las zonas de poco uso (lóbulo, muñeca) son mejores que zonas de mucho contacto (mano, espalda).</li>
+            <li><strong>Habilidad para establecer la asociación.</strong></li>
+            <li><strong>Contexto:</strong> lo que funciona en un entorno puede no funcionar en otro.</li>
+        </ul>
+    </li>
+</ul>
+<p><strong>Conexiones:</strong> Estos principios conectan con el Tema 4 (hipnosis, sugestión) y el Tema 3 (calibración, contexto).</p>
+<hr>
+
+<!-- Premisas para el Anclaje Correcto -->
+<h3 id="premisas">Premisas para el Anclaje Correcto</h3>
+<p><strong>Concepto clave:</strong> Para un anclaje efectivo, debemos ser sistemáticos, elegir el sistema de anclaje adecuado, esperar una respuesta expresiva, y anclar cuando el sujeto esté asociado a la experiencia. La redundancia (anclar en todas las modalidades del 4-R) asegura la recuperación de la experiencia.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Todos los sistemas de anclaje funcionan si se es sistemático.</li>
+    <li>La elección del sistema depende del tipo de respuesta que se obtenga.</li>
+    <li>Si se quiere evitar que el sujeto se percate del anclaje, usar un sistema no representado en el consciente.</li>
+    <li>Esperar una respuesta adecuada del sentimiento; cuanto más expresiva, mejor el ancla.</li>
+    <li>Una vez que el sujeto se encuentre asociado a la experiencia, <strong>ANCLA</strong>.</li>
+    <li>Para estrategias complicadas, establecer anclas en <strong>todas las modalidades del 4-R</strong> (redundancia).</li>
+</ul>
+<p><strong>Conexiones:</strong> Estas premisas conectan con el Tema 2 (asociado/disociado) y el Tema 3 (calibración, observación de respuestas).</p>
+<hr>
+
+<!-- Demostración Práctica -->
+<h3 id="demostracion">Demostración Práctica de Anclaje</h3>
+<p><strong>Concepto clave:</strong> Ejemplo práctico de una demostración de anclaje en un curso, donde se muestra cómo un ancla kinestésica (tocar el hombro) activa un estado específico en el sujeto, y los alumnos calibran los cambios fisiológicos.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>El trainer pide al sujeto que reviva asociadamente dos experiencias distintas.</li>
+    <li>Los alumnos calibran cambios en respiración, coloración, tono muscular, gestos, postura, movimientos oculares.</li>
+    <li>El trainer ancla tocando el hombro derecho durante el pico de la experiencia.</li>
+    <li>Al activar el ancla, el sujeto reproduce los cambios fisiológicos del estado anclado.</li>
+    <li>La práctica se repite activando salteadamente las anclas.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este ejemplo conecta con la calibración (Tema 3) y la observación de claves de acceso (Tema 6).</p>
+<hr>
+
+<!-- Colapsamiento de Anclas -->
+<h3 id="colapsamiento">Colapsamiento de Anclas</h3>
+<p><strong>Concepto clave:</strong> El colapsamiento de anclas ocurre cuando se activan dos anclajes simultáneamente, fusionando dos estados neurológicos para crear una nueva experiencia integrada, generando así un nuevo recurso para el sujeto.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Al activar dos anclajes al mismo tiempo, se produce un colapsamiento.</li>
+    <li>Se generan dos actividades neurológicas simultáneas que se fusionan.</li>
+    <li>La fusión crea una nueva combinación de modalidades del 4-R.</li>
+    <li>El resultado es una nueva estrategia y un nuevo recurso para el sujeto.</li>
+    <li>Gráficamente: Ancla Nº1 (estado limitante) + Ancla Nº2 (estado potenciador) → Colapsamiento → Nuevo estado integrado.</li>
+</ul>
+<p><strong>Conexiones:</strong> El colapsamiento conecta con el Tema 2 (cambio de estados internos) y el Tema 7 (diseño de nuevas estrategias).</p>
+<hr>
+
+<!-- Ejercicio de Colapsamiento -->
+<h3 id="ejercicio-colapsamiento">Ejercicio de Colapsamiento de Anclas</h3>
+<p><strong>Concepto clave:</strong> Ejercicio paso a paso para realizar un colapsamiento de anclas: se ancla un estado limitante y un estado potenciador, luego se activan simultáneamente para integrarlos, y finalmente se prueba en una situación futura.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Establecer rapport.</li>
+    <li>Identificar un estado limitante que el sujeto desee modificar.</li>
+    <li>Asociar al sujeto al estado limitante y anclarlo (ej. presionar rodilla derecha).</li>
+    <li>Romper el estado (pensar en algo neutro).</li>
+    <li>Asociar al sujeto a un estado potenciador y anclarlo (ej. presionar rodilla izquierda).</li>
+    <li>Romper el estado (pensar en algo neutro).</li>
+    <li>Verificar ambos anclajes por separado.</li>
+    <li><strong>Activar ambas anclas simultáneamente</strong> hasta que se genere un estado de confusión (cambios fisiológicos en el rostro).</li>
+    <li>Retirar el ancla del estado limitante y mantener el ancla potenciadora hasta observar un nuevo cambio fisiológico.</li>
+    <li>Neutralizar y pedir al sujeto que imagine una situación futura similar; si el proceso fue correcto, ya no será limitante.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este ejercicio integra rapport (Tema 3), asociación/disociación (Tema 2), anclaje (Tema 8) y cambio de estados.</p>
+<hr>
+
+<!-- Ejercicio de Colapsamiento con Anclas Visuales -->
+<h3 id="ejercicio-visual">Ejercicio de Colapsamiento con Anclas Visuales</h3>
+<p><strong>Concepto clave:</strong> Variante del colapsamiento utilizando cartulinas de colores como anclas visuales: cartulina roja para el estado potenciador, cartulina amarilla para el estado limitante, activando ambas simultáneamente y luego manteniendo solo la roja.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>El consultor pide al cliente que recuerde un momento de creatividad, confianza y recursos.</li>
+    <li>Durante el pico de la experiencia, se muestra una cartulina <strong>ROJA</strong>.</li>
+    <li>Se estimula al sujeto con preguntas para activar todas las modalidades del 4-R (¿cómo te sientes?, ¿cómo respiras?, ¿qué oyes?, ¿qué ves?, ¿qué hueles?).</li>
+    <li>Se refuerza y comprueba el anclaje.</li>
+    <li>Se ancla un estado limitante con una cartulina <strong>AMARILLA</strong>.</li>
+    <li>Se verifica el anclaje.</li>
+    <li>Se distrae al sujeto durante 1-2 minutos.</li>
+    <li>Se activan ambas cartulinas simultáneamente, se retira la amarilla y se mantiene la roja hasta observar un cambio fisiológico.</li>
+    <li>Se chequea pidiendo al sujeto que se proyecte a una experiencia futura similar.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este ejercicio utiliza anclas visuales (Tema 6) y se conecta con el Tema 2 (asociación, visualización).</p>
+<hr>
+
+<!-- Apilamiento de Anclas -->
+<h3 id="apilamiento">Apilamiento de Anclas</h3>
+<p><strong>Concepto clave:</strong> El apilamiento consiste en el anclaje sucesivo de diferentes estados o estrategias de la misma naturaleza, para construir un ancla potente que agrupa múltiples recursos.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Es una de las aplicaciones más eficaces de los anclajes.</li>
+    <li>Permite grabar todas las experiencias útiles y beneficiosas.</li>
+    <li>Se anclan sucesivamente diferentes estados de la misma naturaleza.</li>
+</ul>
+<p><strong>Conexiones:</strong> El apilamiento se conecta con el Tema 2 (recursos, estados internos) y con la construcción de estrategias potenciadoras (Tema 7).</p>
+<hr>
+
+<!-- Autoanclaje de Apilamiento (Exterior) -->
+<h3 id="autoanclaje-exterior">Ejercicio: Autoanclaje de Apilamiento (Ancla Sintonizadora con el Entorno)</h3>
+<p><strong>Concepto clave:</strong> Ejercicio de autoanclaje para sintonizar con el entorno: se accede sucesivamente a los sistemas V, A, K, O/G externos, presionando la muñeca en cada acceso, hasta que el simple gesto active la sintonía con el entorno.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Encontrar un lugar para sentarse o pasear.</li>
+    <li>Enfocar la consciencia hacia el entorno a través de cada sistema:
+        <ul>
+            <li>Viendo: objetos, colores, movimientos.</li>
+            <li>Sintiendo: temperatura, texturas.</li>
+            <li>Oyendo: voces, ruidos, respiración.</li>
+            <li>Oliendo: el aire, objetos.</li>
+        </ul>
+    </li>
+    <li>Presionar la muñeca izquierda con la mano derecha en cada acceso.</li>
+    <li>Sintonizar todos los sistemas simultáneamente y presionar de nuevo.</li>
+    <li>Repetir hasta que el gesto active automáticamente la sintonía con el entorno.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este ejercicio conecta con la calibración (Tema 3) y la conciencia sensorial (Tema 6).</p>
+<hr>
+
+<!-- Autoanclaje de Apilamiento (Interior) -->
+<h3 id="autoanclaje-interior">Ejercicio: Autoanclaje de Apilamiento (Ancla Sintonizadora con el Interior)</h3>
+<p><strong>Concepto clave:</strong> Ejercicio similar al anterior pero enfocado hacia el interior: se accede a los sistemas V, A, K, O/G internos, apretando las manos en cada acceso, hasta que el gesto active la sintonía interior.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Encontrar un lugar cómodo.</li>
+    <li>Enfocar la atención hacia adentro:
+        <ul>
+            <li>Escuchando: voces internas, diálogos.</li>
+            <li>Mirando: imágenes, recuerdos.</li>
+            <li>Sintiendo: emociones, respiración.</li>
+            <li>Hueliendo/saboreando: recuerdos imaginados.</li>
+        </ul>
+    </li>
+    <li>Juntar y apretar las manos en cada acceso.</li>
+    <li>Acceder a todos los sistemas simultáneamente y apretar las manos.</li>
+    <li>Repetir hasta que el gesto active automáticamente la sintonía interior.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este ejercicio conecta con el Tema 2 (representaciones internas, diálogo interno) y el Tema 4 (autohipnosis).</p>
+<hr>
+
+<!-- Apilamiento y Colapsamiento Combinados -->
+<h3 id="apilamiento-colapsamiento">Ejercicio de Apilamiento y Colapsamiento Combinados</h3>
+<p><strong>Concepto clave:</strong> Método combinado que utiliza apilamiento y colapsamiento para transformar una experiencia que solo tiene orientación externa en una experiencia rica y completa, añadiendo los elementos del 4-R ausentes.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Preguntar al cliente por una situación en la que no logra conectar confortablemente (solo orientación externa).</li>
+    <li>Anclar kinestésicamente (brazo izquierdo) solo los aspectos externos de esa situación.</li>
+    <li>Preguntar por algo con lo que disfruta y anclar (brazo derecho) solo las respuestas internas.</li>
+    <li>Activar ambos anclajes simultáneamente para emparejar las representaciones externas con respuestas internas agradables.</li>
+    <li>Como refuerzo, pedir al sujeto que imagine la primera experiencia como si pudiera disfrutar, disparando los anclajes al unísono.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este ejercicio integra apilamiento, colapsamiento y el enriquecimiento del mapa del mundo (Tema 2).</p>
+<hr>
+
+<!-- Sobre la "Manipulación" -->
+<h3 id="manipulacion">Sobre la "Manipulación"</h3>
+<p><strong>Concepto clave:</strong> Los anclajes no son manipulación porque la gente solo hace lo que quiere hacer; además, estamos constantemente expuestos a anclajes externos (publicidad, medios) sin posibilidad de defensa. El objetivo de la PNL es ampliar las alternativas de decisión.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>La gente solo hace aquello que quiere o está dispuesta a hacer (cita de Erickson: "Si pudiera conseguir que la gente hiciera lo que yo quiero, habría mucha más gente buena").</li>
+    <li>Estamos sujetos a anclajes poderosos en la vida cotidiana (publicidad, impactos sonoros y luminosos) sin poder defendernos.</li>
+    <li>Los canales no verbales son los más poderosos y están fuera del consciente.</li>
+    <li>La PNL busca suministrar el mayor número de alternativas de decisión posible.</li>
+    <li><strong>Ley de la variedad de recursos:</strong> el elemento con mayor número de alternativas controla el sistema.</li>
+    <li>La PNL pretende que adquiramos una amplia gama de alternativas de conducta.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta con el Tema 2 (mapa del mundo, creencias) y con los principios éticos de la PNL.</p>
+<hr>
+
+<!-- Usos de los Anclajes -->
+<h3 id="usos">Usos de los Anclajes</h3>
+<p><strong>Concepto clave:</strong> Los anclajes tienen múltiples aplicaciones en terapia, desarrollo personal, ámbito profesional, educativo y para la salud.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>En terapia:</strong> eliminar fobias, traumas, ansiedad, estrés, depresión.</li>
+    <li><strong>En el ámbito personal:</strong> anclar estados de confianza, calma, creatividad, motivación.</li>
+    <li><strong>En el ámbito profesional:</strong> mejorar comunicación, persuasión, liderazgo, ventas.</li>
+    <li><strong>En el ámbito educativo:</strong> anclar atención, concentración, aprendizaje.</li>
+    <li><strong>Para la salud:</strong> anclar bienestar y facilitar procesos de curación.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta con todos los temas anteriores: comunicación (Tema 2), rapport (Tema 3), hipnosis (Tema 4), Metamodelo (Tema 5), SR (Tema 6), estrategias (Tema 7).</p>
+<hr>
+
+<!-- ===== 3. MINI-RESÚMEN ===== -->
+<h2 id="mini-resumen">📌 Mini-resumen por Epígrafe (Repaso rápido)</h2>
+<ul>
+    <li><strong>Definición de Anclaje:</strong> Un ancla es cualquier representación que desencadena otra. Las estrategias son secuencias de modalidades donde cada una está anclada a la anterior. Las anclas pueden ser V, A, K, O/G y su duración es variable.</li>
+    <li><strong>Principios y Funciones:</strong> Los anclajes aseguran acceso fácil a representaciones. Se diferencian del condicionamiento clásico: se establecen en un intento, no requieren refuerzos, y la experiencia interna es tan significativa como la externa. Su efectividad depende de la selectividad del estímulo, habilidad del practitioner y contexto.</li>
+    <li><strong>Premisas para el Anclaje Correcto:</strong> Ser sistemático, elegir el sistema adecuado, esperar una respuesta expresiva, anclar cuando el sujeto esté asociado, y usar redundancia (anclar en todas las modalidades del 4-R).</li>
+    <li><strong>Demostración Práctica:</strong> Ejemplo de anclaje kinestésico (tocar hombro) que activa un estado específico; los alumnos calibran cambios fisiológicos.</li>
+    <li><strong>Colapsamiento de Anclas:</strong> Activar dos anclas simultáneamente para fusionar dos estados neurológicos en uno nuevo integrado, generando un nuevo recurso.</li>
+    <li><strong>Ejercicio de Colapsamiento:</strong> Anclar estado limitante y potenciador, activarlos simultáneamente, retirar el ancla limitante, mantener la potenciadora, probar en situación futura.</li>
+    <li><strong>Ejercicio con Anclas Visuales:</strong> Usar cartulinas de colores: roja para estado potenciador, amarilla para limitante, activar ambas y mantener solo la roja.</li>
+    <li><strong>Apilamiento de Anclas:</strong> Anclar sucesivamente diferentes estados de la misma naturaleza para construir un ancla potente.</li>
+    <li><strong>Autoanclaje de Apilamiento (Exterior):</strong> Presionar muñeca al acceder a cada sistema externo (V, A, K, O/G) hasta que el gesto active la sintonía con el entorno.</li>
+    <li><strong>Autoanclaje de Apilamiento (Interior):</strong> Apretar manos al acceder a cada sistema interno hasta que el gesto active la sintonía interior.</li>
+    <li><strong>Apilamiento y Colapsamiento Combinados:</strong> Transformar una experiencia de orientación externa en una completa, añadiendo los elementos del 4-R ausentes.</li>
+    <li><strong>Sobre la "Manipulación":</strong> Los anclajes no son manipulación; la gente solo hace lo que quiere. La PNL busca ampliar las alternativas de decisión (Ley de la variedad de recursos).</li>
+    <li><strong>Usos de los Anclajes:</strong> Terapia (fobias, ansiedad), personal (confianza, creatividad), profesional (persuasión, liderazgo), educativo (atención, aprendizaje), salud (bienestar).</li>
+</ul>
+
+<!-- ===== 4. PREGUNTAS DE DESARROLLO ===== -->
+<h2 id="preguntas-desarrollo">✍️ Preguntas de Desarrollo</h2>
+
+<!-- Pregunta 1 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 1:</strong> Explique el concepto de anclaje en PNL, su relación con las estrategias y los sistemas representacionales. Describa los tipos de anclas según su modalidad y los factores que determinan su duración y efectividad.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir anclaje: cualquier representación (externa o interna) que desencadena otra representación o serie de representaciones.</li>
+            <li>Relación con estrategias: una estrategia es una secuencia de modalidades del 4-R donde cada modalidad está anclada a la que le precede.</li>
+            <li>Relación con los SR: las anclas pueden ser visuales, auditivas, kinestésicas, olfativas y gustativas (ejemplos de cada una).</li>
+            <li>Un mismo ancla puede activar representaciones en todas las modalidades (ejemplo: "coche" activa Vr, Ai, Ki, Or).</li>
+            <li>Factores que determinan duración y efectividad:
+                <ul>
+                    <li>Selectividad del estímulo (zonas de poco uso).</li>
+                    <li>Habilidad para establecer la asociación.</li>
+                    <li>Contexto.</li>
+                </ul>
+            </li>
+            <li>Concluir que el anclaje es el mecanismo que conecta las modalidades en las estrategias.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Anclaje, estrategia, sistemas representacionales, modalidades (V, A, K, O/G), selectividad del estímulo, contexto.</p>
+    </div>
+</div>
+
+<!-- Pregunta 2 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 2:</strong> Describa los principios y funciones de los anclajes, explicando las diferencias entre el anclaje en PNL y el condicionamiento clásico (Pavlov). ¿Por qué se afirma que la experiencia interna es tan significativa como la externa?</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Enumerar los principios:
+                <ul>
+                    <li>a) El anclaje asegura acceso fácil a una representación.</li>
+                    <li>b) Un ancla es cualquier representación que desencadena otra.</li>
+                    <li>c) Cualquier porción de experiencia puede usarse como anclaje.</li>
+                    <li>d) Los anclajes pueden establecerse a través de cualquier modalidad sensorial.</li>
+                    <li>e) Una estrategia es una secuencia de representaciones ancladas.</li>
+                </ul>
+            </li>
+            <li>Diferencias con el condicionamiento clásico (Pavlov):
+                <ul>
+                    <li>No necesitan largos períodos de condicionamiento; se establecen "a la primera".</li>
+                    <li>No requieren refuerzos ni recompensas.</li>
+                    <li>La experiencia interna es considerada tan significativa como las respuestas externas (un diálogo interno, una imagen o un sentimiento son respuestas tan válidas como la salivación).</li>
+                </ul>
+            </li>
+            <li>Explicar por qué la experiencia interna es significativa: en PNL, las representaciones internas (V, A, K, O/G) son la base de los estados internos y las conductas; modificarlas produce cambios reales.</li>
+            <li>Concluir que el anclaje en PNL es un fenómeno más flexible y poderoso que el condicionamiento clásico.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Principios del anclaje, condicionamiento clásico, Pavlov, experiencia interna, representaciones internas, aprendizaje de un único intento.</p>
+    </div>
+</div>
+
+<!-- Pregunta 3 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 3:</strong> Explique el concepto de colapsamiento de anclas y su utilidad para generar nuevas estrategias. Describa el proceso paso a paso del ejercicio de colapsamiento de anclas (con ancla kinestésica) y su fundamento.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir colapsamiento de anclas: activación simultánea de dos anclajes que fusiona dos estados neurológicos.</li>
+            <li>Utilidad: crear una nueva combinación de modalidades del 4-R, generando una nueva estrategia y un nuevo recurso para el sujeto.</li>
+            <li>Gráfico: Ancla Nº1 (limitante) + Ancla Nº2 (potenciador) → Colapsamiento → Nuevo estado integrado.</li>
+            <li>Pasos del ejercicio:
+                <ul>
+                    <li>Establecer rapport.</li>
+                    <li>Identificar un estado limitante y anclarlo (ej. rodilla derecha).</li>
+                    <li>Romper el estado (pensar en algo neutro).</li>
+                    <li>Identificar un estado potenciador y anclarlo (ej. rodilla izquierda).</li>
+                    <li>Romper el estado (pensar en algo neutro).</li>
+                    <li>Verificar ambos anclajes por separado.</li>
+                    <li>Activar ambas anclas simultáneamente hasta que se genere confusión (cambios fisiológicos en el rostro).</li>
+                    <li>Retirar el ancla limitante y mantener la potenciadora hasta observar un nuevo cambio.</li>
+                    <li>Neutralizar y probar en una situación futura.</li>
+                </ul>
+            </li>
+            <li>Fundamentos: el colapsamiento integra el estado limitante con el potenciador, neutralizando el primero.</li>
+            <li>Concluir que el colapsamiento es una herramienta poderosa para el cambio de estados.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Colapsamiento de anclas, estados limitante/potenciador, integración, nueva estrategia, confusión, cambios fisiológicos.</p>
+    </div>
+</div>
+
+<!-- Pregunta 4 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 4:</strong> Explique el concepto de apilamiento de anclas y su utilidad. Describa los ejercicios de autoanclaje de apilamiento (sintonizadora con el entorno y sintonizadora con el interior), explicando su objetivo y paso a paso.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir apilamiento: anclaje sucesivo de diferentes estados o estrategias de la misma naturaleza.</li>
+            <li>Utilidad: construir un ancla potente que agrupa múltiples recursos.</li>
+            <li><strong>Ejercicio: Ancla sintonizadora con el entorno:</strong>
+                <ul>
+                    <li>Encontrar un lugar para sentarse o pasear.</li>
+                    <li>Enfocar la consciencia hacia el entorno a través de V, A, K, O/G externos.</li>
+                    <li>Presionar la muñeca izquierda con la mano derecha en cada acceso.</li>
+                    <li>Sintonizar todos los sistemas simultáneamente y presionar de nuevo.</li>
+                    <li>Repetir hasta que el gesto active automáticamente la sintonía.</li>
+                </ul>
+            </li>
+            <li><strong>Ejercicio: Ancla sintonizadora con el interior:</strong>
+                <ul>
+                    <li>Encontrar un lugar cómodo.</li>
+                    <li>Enfocar la atención hacia adentro a través de V, A, K, O/G internos.</li>
+                    <li>Juntar y apretar las manos en cada acceso.</li>
+                    <li>Acceder a todos los sistemas simultáneamente y apretar las manos.</li>
+                    <li>Repetir hasta que el gesto active automáticamente la sintonía interior.</li>
+                </ul>
+            </li>
+            <li>Concluir que el apilamiento permite crear anclas de gran potencia y utilidad.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Apilamiento de anclas, autoanclaje, sintonía con el entorno, sintonía con el interior, sistemas representacionales.</p>
+    </div>
+</div>
+
+<!-- Pregunta 5 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 5:</strong> Describa el ejercicio de colapsamiento con anclas visuales (cartulinas de colores). Explique cómo se utilizan las cartulinas roja y amarilla, el papel de las preguntas para activar todas las modalidades del 4-R, y la salida potenciadora.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Participantes: Consultor, Cliente, Observador.</li>
+            <li><strong>Paso 1:</strong> El consultor pide al cliente que recuerde un momento de creatividad, confianza y recursos.</li>
+            <li>Durante el pico, se muestra una cartulina <strong>ROJA</strong>.</li>
+            <li>Se estimula al sujeto con preguntas para activar todas las modalidades del 4-R:
+                <ul>
+                    <li>¿Cómo te sientes? (K)</li>
+                    <li>¿Cómo respiras? (K)</li>
+                    <li>¿Qué oyes? (A)</li>
+                    <li>¿Qué ves? (V)</li>
+                    <li>¿Qué hueles? (O/G)</li>
+                </ul>
+            </li>
+            <li>Se refuerza y comprueba el anclaje rojo.</li>
+            <li>Se ancla un estado limitante con una cartulina <strong>AMARILLA</strong>.</li>
+            <li>Se verifica el anclaje amarillo.</li>
+            <li>Se distrae al sujeto 1-2 minutos.</li>
+            <li>Se activan ambas cartulinas simultáneamente, se retira la amarilla y se mantiene la roja hasta observar un cambio fisiológico.</li>
+            <li>Se chequea pidiendo al sujeto que se proyecte a una experiencia futura similar.</li>
+            <li>Concluir que el colapsamiento visual integra el estado limitante en el potenciador.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Colapsamiento visual, cartulinas roja/amarilla, anclas visuales, activación del 4-R, salida potenciadora, cambios fisiológicos.</p>
+    </div>
+</div>
+
+<!-- Pregunta 6 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 6:</strong> Explique el ejercicio de apilamiento y colapsamiento combinados. ¿Para qué tipo de sujetos es especialmente útil y por qué? Describa el proceso paso a paso.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir el ejercicio: método que combina apilamiento y colapsamiento para crear nuevas experiencias.</li>
+            <li>Especialmente útil para sujetos con una orientación dominante (interna o externa) y un mapa reducido.</li>
+            <li><strong>Pasos:</strong>
+                <ul>
+                    <li>Preguntar al cliente por una situación en la que no logra conectar confortablemente (solo orientación externa).</li>
+                    <li>Anclar kinestésicamente (brazo izquierdo) solo los aspectos externos de esa situación.</li>
+                    <li>Preguntar por algo con lo que disfruta y anclar (brazo derecho) solo las respuestas internas.</li>
+                    <li>Activar ambos anclajes simultáneamente para emparejar las representaciones externas con respuestas internas agradables.</li>
+                    <li>Como refuerzo, pedir al sujeto que imagine la primera experiencia como si pudiera disfrutar, disparando los anclajes al unísono.</li>
+                </ul>
+            </li>
+            <li>Resultado: la experiencia externa ahora provoca respuestas internas agradables.</li>
+            <li>Concluir que el ejercicio enriquece el mapa del sujeto añadiendo elementos ausentes del 4-R.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Apilamiento y colapsamiento combinados, orientación externa/interna, enriquecimiento del mapa, 4-R, respuestas internas.</p>
+    </div>
+</div>
+
+<!-- Pregunta 7 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 7:</strong> Analice la cuestión ética de la "manipulación" en relación con los anclajes. ¿Qué argumentos ofrece el autor para defender el uso de anclajes? Explique la "Ley de la variedad de recursos" y su relación con el objetivo de la PNL.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Planteamiento de la cuestión: el anclaje puede ser visto como manipulación.</li>
+            <li>Argumentos del autor:
+                <ul>
+                    <li>La gente solo hace lo que quiere o está dispuesta a hacer (cita de Erickson).</li>
+                    <li>Estamos expuestos constantemente a anclajes externos (publicidad, medios) sin poder defendernos.</li>
+                    <li>Los canales no verbales son los más poderosos y están fuera del consciente.</li>
+                </ul>
+            </li>
+            <li>El objetivo de la PNL no es manipular, sino ampliar las alternativas de decisión.</li>
+            <li><strong>Ley de la variedad de recursos:</strong> el elemento con mayor número de alternativas dentro de un sistema controla el sistema.</li>
+            <li>La PNL busca que el sujeto adquiera una amplia gama de alternativas de conducta.</li>
+            <li>Concluir que el uso ético de los anclajes empodera a la persona, no la controla.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Manipulación, ética, Ley de la variedad de recursos, alternativas de decisión, empoderamiento, PNL.</p>
+    </div>
+</div>
+
+<!-- ===== 5. PREGUNTAS DE RESERVA ===== -->
+<h2 id="preguntas-reserva">⭐ Preguntas de Reserva</h2>
+
+<!-- Reserva 1 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 1:</strong> Realice un análisis integrador que conecte el concepto de anclajes (Tema 8) con el Sistema Representacional y las submodalidades (Tema 6), las estrategias (Tema 7) y la hipnosis (Tema 4). Explique cómo los anclajes son la base de las estrategias y cómo se utilizan en la hipnosis para acceder a recursos.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Recordar del Tema 6: el SR (V, A, K, O/G) y las submodalidades son las cualidades de las representaciones.</li>
+            <li>Recordar del Tema 7: las estrategias son secuencias de modalidades del 4-R.</li>
+            <li>Definir anclajes (Tema 8): cualquier representación que desencadena otra; las estrategias son secuencias donde cada modalidad está anclada a la que le precede.</li>
+            <li>Explicar que las submodalidades críticas (Tema 6) pueden ser ancladas para modificar una representación.</li>
+            <li>Conectar con hipnosis (Tema 4): los anclajes se utilizan para acceder a recursos subconscientes, para instalar sugestiones y para la inducción (anclas contextuales).</li>
+            <li>Ejemplo: en hipnosis, se ancla un estado de relajación profunda (K) con una palabra o gesto (A/V).</li>
+            <li>Concluir que los anclajes son el "pegamento" que conecta las modalidades en las estrategias y el acceso a recursos en hipnosis.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Anclajes, SR, submodalidades, estrategias, hipnosis, recursos, acceso subconsciente.</p>
+    </div>
+</div>
+
+<!-- Reserva 2 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 2:</strong> Compare el modelo de anclaje en PNL con el condicionamiento clásico de Pavlov y el condicionamiento operante de Skinner. ¿Qué elementos comparten y en qué se diferencian? ¿Por qué los anclajes en PNL se consideran más eficientes?</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir <strong>condicionamiento clásico (Pavlov):</strong> estímulo neutro + estímulo incondicionado → respuesta condicionada. Requiere múltiples repeticiones.</li>
+            <li>Definir <strong>condicionamiento operante (Skinner):</strong> refuerzo o castigo para aumentar/disminuir una conducta.</li>
+            <li>Definir <strong>anclaje en PNL:</strong> cualquier representación que desencadena otra.</li>
+            <li>Elementos compartidos:
+                <ul>
+                    <li>Todos implican una asociación entre estímulos.</li>
+                    <li>Todos pueden modificar la conducta.</li>
+                </ul>
+            </li>
+            <li>Diferencias del anclaje en PNL:
+                <ul>
+                    <li>Se establece en un único intento (no requiere repeticiones).</li>
+                    <li>No requiere refuerzos ni recompensas directas.</li>
+                    <li>La experiencia interna es tan significativa como la externa.</li>
+                    <li>Puede establecerse en cualquier modalidad sensorial.</li>
+                    <li>Es más flexible y rápido.</li>
+                </ul>
+            </li>
+            <li>Razones de mayor eficiencia: aprovecha la capacidad natural del cerebro para asociar experiencias y accede directamente a los sistemas representacionales.</li>
+            <li>Concluir que el anclaje en PNL es una versión más sofisticada y eficiente del condicionamiento.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Condicionamiento clásico, Pavlov, condicionamiento operante, Skinner, anclaje PNL, aprendizaje único, experiencia interna.</p>
+    </div>
+</div>
+
+<!-- Reserva 3 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 3:</strong> Analice el ejercicio de colapsamiento de anclas (con ancla kinestésica) en profundidad, identificando en cada paso los fundamentos de PNL que se aplican: rapport, asociación/disociación, calibración, anclaje, y cambio de estado. Explique por qué se produce el estado de "confusión" y qué indica.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li><strong>Rapport:</strong> establecido al inicio para crear confianza y sintonía.</li>
+            <li><strong>Asociación/disociación:</strong> el sujeto se asocia al estado limitante y al potenciador (revive la experiencia "como si" estuviera allí).</li>
+            <li><strong>Calibración:</strong> el practitioner observa cambios fisiológicos (respiración, coloración, tono muscular) para identificar el pico de la experiencia y verificar los anclajes.</li>
+            <li><strong>Anclaje:</strong> se ancla cada estado en el pico de la experiencia (kinestésicamente, presionando la rodilla).</li>
+            <li><strong>Colapsamiento:</strong> se activan ambas anclas simultáneamente.</li>
+            <li><strong>Confusión:</strong> ocurre porque el cerebro recibe dos señales contradictorias al mismo tiempo (estado limitante + estado potenciador); esto indica que se está produciendo la integración.</li>
+            <li><strong>Salida potenciadora:</strong> al retirar el ancla limitante y mantener la potenciadora, el nuevo estado integrado se consolida.</li>
+            <li><strong>Cambio de estado:</strong> el sujeto ya no experimenta el estado limitante en la situación futura.</li>
+            <li>Concluir que cada paso del ejercicio aplica un fundamento de PNL, y la confusión es un indicador positivo del proceso de integración.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Colapsamiento, rapport, asociación/disociación, calibración, anclaje, confusión, salida potenciadora, cambio de estado.</p>
+    </div>
+</div>
+
+<script>
+    // Alternar modo claro/oscuro
+    document.getElementById('modoBtn').addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        this.textContent = document.body.classList.contains('dark-mode') ? '☀️ Modo' : '🌓 Modo';
+    });
+
+    // Toggle para esquemas de desarrollo
+    function toggleEsquema(btn) {
+        const container = btn.parentElement;
+        const esquema = container.querySelector('.esquema-oculto');
+        if (esquema) {
+            esquema.classList.toggle('visible');
+            btn.textContent = esquema.classList.contains('visible') ? '📖 Ocultar esquema' : '📖 Mostrar esquema';
+        }
+    }
+</script>
+
+</body>
+</html>

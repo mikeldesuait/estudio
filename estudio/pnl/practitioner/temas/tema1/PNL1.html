@@ -1,0 +1,1150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resumen PNL · Tema 1</title>
+    <style>
+        /* ===== ESTILO ÚNICO PARA RESÚMENES UNED ===== */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            max-width: 950px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #f5f7fa;
+            color: #1a1a2e;
+            line-height: 1.8;
+            font-size: 17px;
+        }
+        h1 {
+            font-size: 30px;
+            color: #0a1628;
+            border-bottom: 4px solid #1a3d66;
+            padding-bottom: 14px;
+        }
+        h2 {
+            font-size: 23px;
+            color: #1a3d66;
+            margin-top: 32px;
+            border-left: 4px solid #1a3d66;
+            padding-left: 16px;
+        }
+        h3 {
+            font-size: 20px;
+            color: #2a4a7a;
+            margin-top: 26px;
+        }
+        h4 {
+            font-size: 18px;
+            color: #3a5a8a;
+            margin-top: 20px;
+        }
+        strong {
+            color: #0a2a4a;
+        }
+        ul {
+            padding-left: 24px;
+        }
+        li {
+            margin-bottom: 6px;
+        }
+        blockquote {
+            background: #e8edf4;
+            padding: 12px 20px;
+            border-left: 4px solid #1a3d66;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        hr {
+            border: none;
+            border-top: 2px solid #d0d8e4;
+            margin: 28px 0;
+        }
+        .indice {
+            background: #e8edf4;
+            padding: 16px 24px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .indice ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .indice li {
+            padding: 3px 0;
+        }
+        .indice li.h1 {
+            font-weight: 600;
+        }
+        .indice li.h2 {
+            padding-left: 20px;
+            font-weight: 400;
+        }
+        .indice a {
+            color: #1a3d66;
+            text-decoration: none;
+        }
+        .indice a:hover {
+            text-decoration: underline;
+        }
+        .idea-central {
+            background: #e0e8f4;
+            padding: 18px 24px;
+            border-radius: 12px;
+            margin: 20px 0 30px 0;
+            border-left: 5px solid #1a3d66;
+        }
+        .idea-central h2 {
+            margin-top: 0;
+            border-left: none;
+            padding-left: 0;
+        }
+        .modo-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            padding: 8px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #1a3d66;
+            color: #fff;
+            font-size: 14px;
+            z-index: 999;
+        }
+        .modo-btn:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode {
+            background: #0d1a2b;
+            color: #d6e2f5;
+        }
+        .dark-mode h1 {
+            color: #b0c8e8;
+            border-bottom-color: #2a5a8a;
+        }
+        .dark-mode h2 {
+            color: #8ab0e0;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode h3 {
+            color: #6a9ac0;
+        }
+        .dark-mode h4 {
+            color: #5a8aaa;
+        }
+        .dark-mode strong {
+            color: #c8ddf0;
+        }
+        .dark-mode blockquote {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode .indice {
+            background: #142a44;
+        }
+        .dark-mode .indice a {
+            color: #8ab0e0;
+        }
+        .dark-mode .idea-central {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode hr {
+            border-top-color: #2a4a6a;
+        }
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+                padding: 14px;
+            }
+            h1 {
+                font-size: 25px;
+            }
+            h2 {
+                font-size: 21px;
+            }
+        }
+
+        /* ===== ESTILOS PARA PREGUNTAS INTERACTIVAS ===== */
+        .pregunta {
+            background: #f0f4fa;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            border: 1px solid #d0d8e4;
+        }
+        .dark-mode .pregunta {
+            background: #142a44;
+            border-color: #2a4a6a;
+        }
+        .pregunta .enunciado {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .pregunta .opciones {
+            list-style: none;
+            padding-left: 8px;
+        }
+        .pregunta .opciones li {
+            margin-bottom: 4px;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .pregunta .opciones li.correcta {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .dark-mode .pregunta .opciones li.correcta {
+            background: #1a4a3a;
+            color: #8fdfb0;
+            border-left-color: #2ecc71;
+        }
+        .pregunta .respuesta-oculta {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta .respuesta-oculta {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta .respuesta-oculta.visible {
+            display: block;
+        }
+        .pregunta .btn-respuesta {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #1a3d66;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta .btn-respuesta:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta:hover {
+            background: #3a7aaa;
+        }
+        .pregunta .trampa {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #6a4a2a;
+            font-style: italic;
+        }
+        .dark-mode .pregunta .trampa {
+            color: #c8a878;
+        }
+        .pregunta-desarrollo .esquema-oculto {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta-desarrollo .esquema-oculto {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta-desarrollo .esquema-oculto.visible {
+            display: block;
+        }
+        .pregunta-desarrollo .btn-esquema {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #1a3d66;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta-desarrollo .btn-esquema:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta-desarrollo .btn-esquema {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta-desarrollo .btn-esquema:hover {
+            background: #3a7aaa;
+        }
+        .pregunta-desarrollo {
+            background: #f0f4fa;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            border: 1px solid #d0d8e4;
+        }
+        .dark-mode .pregunta-desarrollo {
+            background: #142a44;
+            border-color: #2a4a6a;
+        }
+        .pregunta-desarrollo .enunciado {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .pregunta-desarrollo .conceptos {
+            margin-top: 6px;
+            font-size: 15px;
+            color: #3a5a7a;
+        }
+        .dark-mode .pregunta-desarrollo .conceptos {
+            color: #8ab0d0;
+        }
+    </style>
+</head>
+<body>
+
+<button class="modo-btn" id="modoBtn">🌙 Modo oscuro</button>
+
+<h1>📘 Tema 1: Introducción y Fundamentos de la PNL</h1>
+
+<!-- ===== ÍNDICE ===== -->
+<div class="indice">
+    <h3 style="margin-top:0; color:#1a3d66;">Índice</h3>
+    <ul>
+        <li class="h1"><a href="#idea-central">Idea central (5 min)</a></li>
+        <li class="h1"><a href="#prologo">Prólogo</a></li>
+        <li class="h1"><a href="#que-es">¿Qué es la PNL?</a></li>
+        <li class="h1"><a href="#advertencia">¡Advertencia!</a></li>
+        <li class="h1"><a href="#historia">Un poco de historia</a></li>
+        <li class="h1"><a href="#presuposiciones">Las presuposiciones de la PNL</a></li>
+        <li class="h2"><a href="#presup-1">1. El mapa no es el territorio</a></li>
+        <li class="h2"><a href="#presup-2">2. Vida y mente son sistemas en proceso continuo de transformación</a></li>
+        <li class="h2"><a href="#presup-3">3. Las personas tienen todos los recursos necesarios</a></li>
+        <li class="h2"><a href="#presup-4">4. Toda conducta tiene una intención positiva</a></li>
+        <li class="h2"><a href="#presup-5">5. El individuo con más alternativas tiene control</a></li>
+        <li class="h2"><a href="#presup-6">6. No hay errores en la comunicación, sólo resultados</a></li>
+        <li class="h2"><a href="#presup-7">7. Los individuos tienen varios niveles de comunicación</a></li>
+        <li class="h2"><a href="#presup-8">8. Contacto (Rapport)</a></li>
+        <li class="h1"><a href="#premisas">Premisas teóricas complementarias</a></li>
+        <li class="h1"><a href="#reglas-mente">Reglas de la mente</a></li>
+        <li class="h2"><a href="#regla-1">1. Todo pensamiento causa una reacción física</a></li>
+        <li class="h2"><a href="#regla-2">2. Lo que se espera tiende a hacerse realidad</a></li>
+        <li class="h2"><a href="#regla-3">3. La imaginación es más poderosa que el conocimiento</a></li>
+        <li class="h2"><a href="#regla-4">4. La mente no puede mantener indefinidamente dos ideas opuestas</a></li>
+        <li class="h2"><a href="#regla-5">5. Una idea aceptada por el inconsciente permanece hasta que otra la reemplaza</a></li>
+        <li class="h2"><a href="#regla-6">6. Un síntoma inducido emocionalmente, si persiste, tiende a generar cambios orgánicos</a></li>
+        <li class="h2"><a href="#regla-7">7. Cada cambio de idea llevado a la práctica disminuye la resistencia a sucesivos cambios</a></li>
+        <li class="h2"><a href="#regla-8">8. A mayor esfuerzo consciente, menor es la respuesta inconsciente</a></li>
+        <li class="h1"><a href="#curva">La curva del aprendizaje (Curva de Vandura)</a></li>
+        <li class="h1"><a href="#esquema">Esquema general del modelo de PNL</a></li>
+        <li class="h1"><a href="#test">Preguntas tipo test</a></li>
+        <li class="h1"><a href="#desarrollo">Preguntas de desarrollo</a></li>
+    </ul>
+</div>
+
+<!-- ===== IDEA CENTRAL ===== -->
+<div id="idea-central" class="idea-central">
+    <h2>💡 Idea central (5 minutos)</h2>
+    <p>La Programación Neuro-Lingüística (PNL) es un modelo de cambio humano que estudia cómo las personas construyen su realidad a través de representaciones internas basadas en la información sensorial, y cómo esa estructura puede ser modificada para generar mejoras en diversos ámbitos (terapéutico, profesional, personal). Surgida en los años 70 del estudio de terapeutas exitosos, la PNL se fundamenta en presuposiciones como "el mapa no es el territorio" y "toda conducta tiene una intención positiva", y ofrece un marco sistemático para comprender y transformar los patrones de pensamiento, comunicación y comportamiento mediante técnicas específicas que permiten acceder y reprogramar los procesos mentales.</p>
+</div>
+
+<!-- ===== PRÓLOGO ===== -->
+<h2 id="prologo">📖 Prólogo</h2>
+<p><strong>Concepto clave:</strong> La PNL se presenta como un modelo de comunicación que permite comprender cómo construimos nuestros pensamientos y, a partir de ese conocimiento, generar cambios positivos en distintos ámbitos. El autor destaca su utilidad frente a otros sistemas que quedan obsoletos, y enfatiza la importancia de la presuposición "el mapa no es el territorio" como llave de acceso al modelo. La PNL se define como el "arte-ciencia de la excelencia", y su nombre responde a los procesos que utilizamos para pensar y actuar.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>La PNL permite identificar y aprovechar habilidades propias y ajenas para generar cambios remediativos, generativos y evolutivos.</li>
+    <li>Toda conducta humana es ejecutada tras ser programada en el cerebro mediante impulsos sensoriales.</li>
+    <li>El entrenamiento en PNL posibilita desarrollar habilidades para obtener resultados propuestos en terapia, profesión o vida personal.</li>
+    <li>Como ciencia aplicada, ofrece procedimientos prácticos para educación, entrenamiento, terapia y negocios.</li>
+</ul>
+<p><strong>Conexiones:</strong> El prólogo introduce la definición y el ámbito de aplicación de la PNL, que se desarrollarán en epígrafes posteriores (historia, presuposiciones, premisas).</p>
+
+<hr>
+
+<!-- ===== ¿QUÉ ES LA PNL? ===== -->
+<h2 id="que-es">❓ ¿Qué es la PNL?</h2>
+<p><strong>Concepto clave:</strong> La PNL se concibe como una actitud de curiosidad y aprendizaje permanente, una metodología que sostiene que toda conducta tiene estructura modelable, y una tecnología para manejar informaciones y percepciones que permiten aplicar técnicas precisas para obtener resultados.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Como actitud:</strong> caracterizada por la curiosidad, el deseo de aprender la excelencia humana y ver la vida como aprendizaje permanente.</li>
+    <li><strong>Como metodología:</strong> toda conducta humana tiene una estructura que puede ser modelada, aprendida, modificada y reprogramada.</li>
+    <li><strong>Como tecnología:</strong> desarrolla habilidades en el Practitioner para manejar informaciones y aplicar técnicas precisas que pueden producir resultados sorprendentes.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta triple definición (actitud-metodología-tecnología) conecta con las presuposiciones (especialmente la 3, sobre recursos) y con la aplicación práctica del esquema general del modelo.</p>
+
+<hr>
+
+<!-- ===== ADVERTENCIA ===== -->
+<h2 id="advertencia">⚠️ ¡Advertencia!</h2>
+<p><strong>Concepto clave:</strong> El texto es un libro de trabajo para la formación de Practitioner, no un manual divulgativo. Se centra en la técnica y el modelo teórico de la PNL, no en anécdotas o testimonios, y remite a la bibliografía especializada para profundizar.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Es un texto de trabajo, no divulgativo.</li>
+    <li>Se centra en la técnica, el modelo y la teoría aplicada.</li>
+    <li>Quien quiera profundizar debe consultar la bibliografía indicada.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe contextualiza el nivel de profundidad del texto, que se desarrolla técnicamente en los epígrafes siguientes (historia, presuposiciones, premisas y reglas de la mente).</p>
+
+<hr>
+
+<!-- ===== HISTORIA ===== -->
+<h2 id="historia">📜 Un poco de historia</h2>
+<p><strong>Concepto clave:</strong> La PNL surgió en la Universidad de Santa Cruz (California) en los años 70, cuando Richard Bandler y John Grinder estudiaron sistemáticamente las técnicas de terapeutas exitosos (Perls, Satir y Erickson) para identificar y sistematizar los patrones comunes que utilizaban en sus tratamientos, con el objetivo de enseñarlos y aprenderlos.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Bandler y Grinder no buscaban crear un nuevo método, sino estudiar y simplificar las técnicas de los terapeutas más exitosos del momento.</li>
+    <li>Los patrones identificados se publicaron inicialmente en "La estructura de la Magia I" (1975) y "Patterns of the Hypnotic of Milton H. Erickson" (1975), sin mencionar aún la N.L.P.</li>
+    <li>El término "Neuro Linguistic Programming" aparece en 1977 de la mano de Robert Dilts, quien se convirtió en el principal desarrollador del modelo.</li>
+    <li>En 1976 se creó "The Society of Neuro-Linguistic Programming", propietaria de la marca.</li>
+    <li>La PNL se expandió rápidamente por EE.UU. y posteriormente por el mundo, llegando a España en los años 80.</li>
+</ul>
+<p><strong>Conexiones:</strong> La historia conecta directamente con las presuposiciones (especialmente la 3, sobre la posibilidad de modelar recursos) y con la metodología de la PNL como modelado de la excelencia.</p>
+
+<hr>
+
+<!-- ===== PRESUPOSICIONES ===== -->
+<h2 id="presuposiciones">🧩 Las presuposiciones de la PNL</h2>
+<p><strong>Concepto clave:</strong> Las presuposiciones son los postulados básicos que fundamentan todo el modelo de la PNL. Establecen cómo se percibe la conducta, la toma de información y el esfuerzo personal. El grado de competencia para provocar cambios depende de cómo se integren estas premisas en la propia conducta.</p>
+
+<h3 id="presup-1">1. El mapa no es el territorio</h3>
+<p><strong>Concepto clave:</strong> Las personas no operan directamente sobre la realidad, sino sobre sus representaciones internas (mapas) construidas a partir de la información sensorial. La PNL trabaja sobre el cambio de estos mapas, no sobre la realidad misma. El comportamiento es la expresión de estas representaciones.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>La información del entorno es recibida, organizada y transmitida a través de sistemas neuronales hasta el cerebro.</li>
+    <li>Cada persona elabora su propio mapa interno basado en sus experiencias y percepciones.</li>
+    <li>Las personas responden a sus percepciones de la realidad, no a la realidad en sí.</li>
+    <li>Ningún mapa es más "real" que otro; unos son más efectivos que otros.</li>
+    <li>Los mapas más efectivos son aquellos que ofrecen más alternativas.</li>
+    <li>El cambio se logra enriqueciendo el mapa del mundo de la persona con recursos apropiados.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta presuposición es la base epistemológica de toda la PNL y conecta con las premisas teóricas (especialmente la v sobre percepción y la x sobre el mapa interno), con los sistemas representacionales y con el esquema general del modelo.</p>
+
+<h3 id="presup-2">2. Vida y mente son sistemas en proceso continuo de transformación</h3>
+<p><strong>Concepto clave:</strong> Todo está formado por sistemas y subsistemas en permanente interacción e influencia mutua, que buscan estados de equilibrio. Las personas no pueden no influenciarse; las interacciones forman circuitos de retroalimentación. La resistencia es una respuesta provocada por la inflexibilidad del comunicador.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>El Universo, la sociedad, los individuos, la mente: todo son sistemas en transformación continua.</li>
+    <li>Los sistemas se rigen por principios de organización propios y forman una red simbiótica que busca equilibrio y armonía.</li>
+    <li>Es imposible aislar completamente una parte del sistema del todo.</li>
+    <li>Si una conducta no produce la respuesta deseada, hay que variar algo en la comunicación.</li>
+    <li>La flexibilidad es clave para obtener la respuesta deseada.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta presuposición conecta con la regla de la mente nº 7 (cambio y resistencia), con las premisas teóricas (ab, ac, ad, ae) sobre sistemas y programas, y con la curva del aprendizaje.</p>
+
+<h3 id="presup-3">3. Las personas tienen todos los recursos necesarios para realizar los cambios deseados</h3>
+<p><strong>Concepto clave:</strong> Las personas poseen o pueden potencialmente poseer todos los recursos necesarios para actuar eficazmente, dentro de sus posibilidades físicas y su grado de conocimiento y modelo del mundo. Los recursos son transferibles y pueden ser modelados de unas personas a otras.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Los recursos son transferibles: se pueden aprender y modelar.</li>
+    <li>La conducta aprendida por una persona puede ser modelada por otra.</li>
+    <li>La tecnología (como la PNL) ofrece nuevas formas de contactar y movilizar recursos internos, incrementarlos y modelarlos.</li>
+    <li>Todos poseemos o potencialmente poseemos todos los recursos o capacidades que necesitamos.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta presuposición conecta con el origen de la PNL (modelado de terapeutas exitosos) y con la metodología de la PNL (aprender a hacer lo que otros han conseguido). También se relaciona con la premisa teórica b (el subconsciente no es solo un depósito).</p>
+
+<h3 id="presup-4">4. Toda conducta tiene una intención positiva</h3>
+<p><strong>Concepto clave:</strong> Incluso los comportamientos aparentemente dañinos tienen (o tuvieron alguna vez) una intención positiva desde la perspectiva de quien los realiza. Es más productivo responder a la intención que a la conducta problemática, y buscar esa intención permite sustituir la conducta por otra más apropiada.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>La intención positiva puede ser preservarnos de algo o mantener una ganancia secundaria.</li>
+    <li>El comportamiento fue percibido como apropiado en su contexto.</li>
+    <li>Ninguna conducta es significativa fuera del contexto en el que ocurre.</li>
+    <li>Las personas toman las mejores opciones disponibles según su modelo del mundo.</li>
+    <li>Si se ofrece una opción más apropiada dentro de su modelo, la adoptará inmediatamente.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta presuposición se relaciona con el rapport y la comunicación (entrar en el modelo del mundo de la otra persona), con el metamodelo y con las técnicas de cambio de creencias.</p>
+
+<h3 id="presup-5">5. El individuo con más alternativas tiene control</h3>
+<p><strong>Concepto clave:</strong> En un sistema, el elemento con mayor flexibilidad ejerce el control sobre la situación. Cuantas más capacidades tenga una persona en todos los aspectos de la comunicación, con más facilidad obtiene los resultados deseados. La PNL ofrece herramientas para aumentar la adaptabilidad y creatividad.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Se basa en una ley cibernética: en un sistema, el elemento con mayor flexibilidad controla.</li>
+    <li>Aumentar la adaptabilidad, flexibilidad y creatividad son demandas constantes.</li>
+    <li>La PNL cuenta con herramientas para acelerar estos procesos.</li>
+    <li>Podemos situarnos en diferentes posiciones perceptivas para observar el mundo y los otros mapas.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta presuposición conecta con el rapport, con la comunicación (flexibilidad del comunicador) y con la curva del aprendizaje (superar la fase de crisis).</p>
+
+<h3 id="presup-6">6. No hay errores en la comunicación, sólo resultados</h3>
+<p><strong>Concepto clave:</strong> En PNL no existen los fracasos. Cada resultado es considerado como un enriquecimiento de la experiencia en el camino hacia el cambio deseado. Si algo no funciona, se prueba otra cosa. Se debe desarrollar una "caja de herramientas" de comunicación amplia.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>No hay fracasos, solo resultados que enriquecen la experiencia.</li>
+    <li>Si algo no funciona, se prueba otra cosa.</li>
+    <li>Se debe desarrollar una creciente facilidad para hablar, gesticular y percibir.</li>
+    <li>Si el comportamiento no alcanza el objetivo, hay que variarlo y ensayar nuevas conductas.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta presuposición se relaciona con la anterior (flexibilidad), con la presuposición 2 (sistemas en transformación) y con la comunicación como elemento central del modelo.</p>
+
+<h3 id="presup-7">7. Los individuos tienen varios niveles de comunicación</h3>
+<p><strong>Concepto clave:</strong> La comunicación opera en diferentes niveles: consciente (control lógico), subconsciente (procesamiento analógico y estructuras profundas) y otros niveles más profundos (esencia, self, espíritu, etc.).</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Consciente: aquello que podemos controlar lógicamente.</li>
+    <li>Subconsciente: controla niveles analógicos de procesamiento y estructuras profundas de la experiencia.</li>
+    <li>Otros niveles: es cuestión de culturas y contextos.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta presuposición conecta con las reglas de la mente (especialmente la 1, 5 y 8), con las premisas teóricas (a, b, c, aa sobre consciente/subconsciente) y con el esquema general del modelo.</p>
+
+<h3 id="presup-8">8. Contacto (Rapport)</h3>
+<p><strong>Concepto clave:</strong> El rapport es la clave esencial de la PNL. Se define como la penetración y adaptación de nuestro mapa al mapa de otra persona. No se limita a la sincronización, sino que implica un acoplamiento físico y psicológico que permite al operador dirigir a la otra persona hacia el estado deseado.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>El rapport predispone a las personas de tal forma que puede ser por sí solo la terapia necesaria.</li>
+    <li>Consiste en la penetración y adaptación del mapa propio al mapa de otra persona.</li>
+    <li>Va más allá de la sincronización: implica un acoplamiento físico y psicológico.</li>
+    <li>Permite dirigir a la otra persona hacia el estado deseado.</li>
+</ul>
+<p><strong>Conexiones:</strong> El rapport conecta con la presuposición 1 (mapa-territorio), con la presuposición 4 (intención positiva), con la comunicación y con el esquema general del modelo como elemento central del proceso.</p>
+
+<hr>
+
+<!-- ===== PREMISAS TEÓRICAS ===== -->
+<h2 id="premisas">📚 Premisas teóricas complementarias</h2>
+<p><strong>Concepto clave:</strong> Conjunto de proposiciones teóricas, provenientes de otros modelos psicológicos, que la PNL asume para su desarrollo. No son presuposiciones propiamente dichas, sino bases conceptuales que complementan el modelo y ayudan a comprender sus planteamientos.</p>
+<p><strong>Argumentos del autor (resumen):</strong></p>
+<ul>
+    <li>Solo algunas partes del proceso comunicativo acceden a la consciencia.</li>
+    <li>El subconsciente no es un depósito de reserva.</li>
+    <li>Podemos tomar consciencia de aquello que optamos por hacer consciente.</li>
+    <li>En toda conducta humana podemos incrementar recursos atendiendo a lo verbal y no verbal.</li>
+    <li>Podemos dividir bloques de comunicación grandes en partes más manejables.</li>
+    <li>No suscribimos el determinismo psíquico en su totalidad.</li>
+    <li>Al prestar atención activa encontramos variables no observadas que afectan al sistema.</li>
+    <li>Asumimos la teoría de la decisión (variables del entorno y de decisión).</li>
+    <li>Los mensajes verbales y no verbales se elaboran mediante procesos subconscientes.</li>
+    <li>Admitimos los conceptos de transferencia y proyección.</li>
+    <li>En ciertos procesos aceptamos la identificación.</li>
+    <li>Siempre ocurre algo: el silencio también es comunicación.</li>
+    <li>Consideramos la importancia de la relación continente-contenido, mensaje-medio, figura-fondo, acto-contexto.</li>
+    <li>Existe comunicación verbal ligada a sentimientos y desprovista de ellos.</li>
+    <li>Podemos dividir procesos en modelos de menor tamaño para facilitar cambios.</li>
+    <li>En toda percepción existe una jerarquía de valores según intereses y necesidades.</li>
+    <li>La percepción es más que la suma de sus elementos; el ser humano los organiza según necesidades.</li>
+    <li>Un mensaje puede ser interpretado simultáneamente en diferentes niveles del ser humano.</li>
+    <li>Nos ayudamos de la cinestesia para completar mensajes.</li>
+    <li>El significado de un mensaje es más completo si proviene de la persona que lo emitió.</li>
+    <li>Mente, cuerpo y conducta son aspectos de un mismo sistema.</li>
+    <li>Toda persona posee un modelo del mundo que cambia y mejora continuamente.</li>
+    <li>La intuición indica cuándo finalizar una relación.</li>
+    <li>El comportamiento está determinado por el mapa interno y su forma de relacionarse con el mundo.</li>
+    <li>Es posible reprogramar el comportamiento con comunicación y técnicas de PNL.</li>
+    <li>Los procesos de comunicación tienen estructura modelable y aprendible.</li>
+    <li>La comunicación consciente-subconsciente no es unidireccional.</li>
+    <li>La conducta es resultado de un sistema de interacciones.</li>
+    <li>Los programas (patrones repetidos) tienen aspectos relacionales, ejecutivos, estructurales, de reconocimiento y regulación.</li>
+    <li>Los programas interactúan en sistemas más amplios (grupos).</li>
+    <li>Todo programa admite cambios (tradicionales, innovadores, de imitación, metacomunicación).</li>
+</ul>
+<p><strong>Conexiones:</strong> Las premisas complementan las presuposiciones, aportando fundamentos de la psicología de la Gestalt, el psicoanálisis y la teoría de sistemas que sustentan el modelo de PNL.</p>
+
+<hr>
+
+<!-- ===== REGLAS DE LA MENTE ===== -->
+<h2 id="reglas-mente">🧠 Reglas de la mente</h2>
+<p><strong>Concepto clave:</strong> Conjunto de principios aceptados por la hipnoterapia (y por extensión por la PNL, por su origen en Erickson) que rigen el funcionamiento de la mente, especialmente en relación con el subconsciente. Son leyes sobre cómo operan los pensamientos, las emociones y los procesos mentales.</p>
+
+<h3 id="regla-1">1. Todo pensamiento o idea causa una reacción física</h3>
+<p><strong>Concepto clave:</strong> Los pensamientos afectan a todas las funciones del cuerpo. Las ideas con contenido emocional intenso tienen probabilidad de alcanzar el inconsciente y crear patrones de reacción que pueden prolongarse indefinidamente.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>La preocupación afecta al estómago; la ansiedad, el miedo y el estrés afectan a los sistemas circulatorio y respiratorio.</li>
+    <li>Una idea emocionalmente intensa puede alcanzar el inconsciente y producir reacciones físicas repetidas.</li>
+    <li>Estos patrones pueden prolongarse hasta ser neutralizados o tratados específicamente.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta regla conecta con la premisa teórica u (mente-cuerpo-conducta como un mismo sistema) y con las aplicaciones terapéuticas de la PNL.</p>
+
+<h3 id="regla-2">2. Lo que se espera tiende a hacerse realidad</h3>
+<p><strong>Concepto clave:</strong> Las imágenes mentales repetitivas tienden a convertirse en pautas fijas. El inconsciente utiliza todos los medios para realizar el plan que las ideas sugieren. Las expectativas positivas facilitan el éxito y la salud; las negativas predisponen a resultados negativos.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>El cerebro y el sistema nervioso convierten imágenes repetitivas en pautas fijas.</li>
+    <li>El inconsciente utiliza todos los medios para realizar el plan que las ideas sugieren.</li>
+    <li>Las preocupaciones y el catastrofismo predisponen a resultados negativos.</li>
+    <li>Las expectativas positivas facilitan el éxito, la salud y el equilibrio interno.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta regla conecta con la presuposición 1 (mapa-territorio) y con las técnicas de cambio de creencias y visualización.</p>
+
+<h3 id="regla-3">3. La imaginación es más poderosa que el conocimiento</h3>
+<p><strong>Concepto clave:</strong> La imaginación anula fácilmente la razón. Supersticiones, prejuicios y creencias asociadas a emociones fuertes pueden cegarnos. Es importante tener en cuenta esta regla en el empleo de técnicas de PNL para suministrar imágenes que contrarresten o sustituyan estas tendencias.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>La imaginación puede hacernos precipitar hacia actos irracionales.</li>
+    <li>Supersticiones, prejuicios y creencias asociadas a emociones fuertes pueden cegarnos.</li>
+    <li>Estas tendencias son difíciles de erradicar mediante el razonamiento exclusivo.</li>
+    <li>La PNL puede suministrar al inconsciente imágenes que contrarresten o sustituyan estas tendencias.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta regla conecta con las técnicas de cambio de la PNL, especialmente con el uso de imágenes y representaciones sensoriales.</p>
+
+<h3 id="regla-4">4. La mente no puede mantener indefinidamente dos ideas opuestas sin generar conflicto</h3>
+<p><strong>Concepto clave:</strong> La mente consciente no puede mantener indefinidamente ideas opuestas sin generar conflicto, especialmente en relación con los comportamientos que derivan de ellas, creando tensiones sobre el sistema nervioso.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>La contradicción genera tensión ineludible.</li>
+    <li>La contradicción no se genera tanto por el "almacenamiento" como por los comportamientos a que pueden dar lugar.</li>
+    <li>Ejemplo: persona con convicciones éticas arraigadas que transgrede sus propias normas justificándose.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta regla conecta con las técnicas de cambio de creencias y con el modelo de la PNL para resolver conflictos internos.</p>
+
+<h3 id="regla-5">5. Una idea aceptada por el inconsciente permanece hasta que otra la reemplaza</h3>
+<p><strong>Concepto clave:</strong> Las ideas aceptadas por el inconsciente tienden a convertirse en hábitos y creencias. Cuanto más tiempo permanecen, mayor es la resistencia a ser reemplazadas. Pueden modificarse mediante técnicas como la hipnosis, si el inconsciente descubre ventajas en la idea alternativa.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Las ideas aceptadas por el inconsciente se convierten en formas habituales de pensar y pautas de comportamiento.</li>
+    <li>Cuanto más tiempo permanece una idea, mayor es la resistencia a que la reemplace otra.</li>
+    <li>Pueden modificarse mediante hipnosis.</li>
+    <li>Es necesario que el inconsciente descubra las ventajas de la idea alternativa.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta regla conecta con la presuposición 3 (recursos), con las técnicas de cambio de creencias y con el modelo de la PNL para la reprogramación.</p>
+
+<h3 id="regla-6">6. Un síntoma inducido emocionalmente, si persiste, tiende a generar cambios orgánicos</h3>
+<p><strong>Concepto clave:</strong> Más del 60% de las enfermedades tienen origen psicosomático. Los órganos son susceptibles a las disfunciones del sistema nervioso, que reacciona ante la presión de ideas negativas del inconsciente.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Más del 60% de las enfermedades son psicosomáticas.</li>
+    <li>Los órganos son susceptibles a las disfunciones causadas por tensiones del sistema nervioso.</li>
+    <li>Los temores continuos, obsesiones y la forma de hablar del cuerpo inciden en la fisiología hasta causar cambios orgánicos.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta regla conecta con las aplicaciones terapéuticas de la PNL y con la presuposición 2 (sistemas en transformación).</p>
+
+<h3 id="regla-7">7. Cada cambio de idea llevado a la práctica disminuye la resistencia a sucesivos cambios</h3>
+<p><strong>Concepto clave:</strong> El cambio se aprende. Cada vez que el inconsciente acepta cambiar un hábito o creencia, abre camino para nuevos cambios, aumentando la flexibilidad.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>El cambio es un fenómeno que también se aprende.</li>
+    <li>Cada cambio aceptado da un paso a favor de la flexibilidad.</li>
+    <li>Abre camino para nuevos cambios o sugerencias.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta regla conecta con la presuposición 5 (flexibilidad), con la curva del aprendizaje y con el proceso de cambio en la PNL.</p>
+
+<h3 id="regla-8">8. A mayor esfuerzo consciente, menor es la respuesta inconsciente</h3>
+<p><strong>Concepto clave:</strong> Para muchas cosas no sirve la fuerza de voluntad o el esfuerzo consciente (vencer el insomnio, excitarse sexualmente, relajarse). La relación con el inconsciente requiere calma y confianza. La intuición y el "dejarse fluir" dependen de esa confianza.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Hay muchas cosas para las que no sirve la fuerza de voluntad o el esfuerzo.</li>
+    <li>La relación con el inconsciente requiere calma.</li>
+    <li>Es deseable desarrollar expectativas mentales positivas y confianza en el inconsciente.</li>
+    <li>La intuición y el "dejarse fluir" dependen de esa confianza.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta regla conecta con la presuposición 7 (niveles de comunicación), con el rapport y con el trance.</p>
+
+<hr>
+
+<!-- ===== CURVA DEL APRENDIZAJE ===== -->
+<h2 id="curva">📈 La curva del aprendizaje (Curva de Vandura)</h2>
+<p><strong>Concepto clave:</strong> Todo proceso de aprendizaje pasa por cuatro estadios: Incompetencia Inconsciente (no sé que no sé), Incompetencia Consciente (sé que no sé), Competencia Consciente (sé que sé, con esfuerzo), y Competencia Inconsciente (no sé que sé, actuación automática). La fase crítica es la Competencia Consciente, donde se producen abandonos y fracasos. Virginia Satir denominó a esta fase "paradigma del cambio".</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Incompetencia Inconsciente:</strong> no existe aprendizaje, se desconoce aquello que se quiere aprender.</li>
+    <li><strong>Incompetencia Consciente:</strong> comienza el aprendizaje, se toma conciencia de lo que no se sabe.</li>
+    <li><strong>Competencia Consciente:</strong> proceso de aprendizaje propiamente dicho, con esfuerzo y atención. Se producen abandonos y fracasos en el punto de crisis.</li>
+    <li><strong>Competencia Inconsciente:</strong> se afianza lo aprendido, se opera de forma automática.</li>
+</ul>
+<p><strong>Conexiones:</strong> La curva conecta con la presuposición 2 (sistemas en transformación), con la presuposición 5 (flexibilidad), con la regla de la mente 7 (cambio) y con el esquema general del modelo de PNL.</p>
+
+<hr>
+
+<!-- ===== ESQUEMA GENERAL ===== -->
+<h2 id="esquema">🗺️ Esquema general del modelo de PNL</h2>
+<p><strong>Concepto clave:</strong> El modelo de PNL se presenta como un proceso estructurado que parte del marco de referencia (presuposiciones, reglas de la mente y premisas), identifica el estado presente y, mediante la comunicación mejorada (agudeza sensorial, rapport, trance, metamodelo), identifica sistemas representacionales y estrategias para modificarlas y llegar al estado deseado.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>El marco de referencia (presuposiciones, reglas de la mente y premisas) es la base.</li>
+    <li>Se parte del Estado Presente y se avanza hacia el Estado Deseado mediante la comunicación.</li>
+    <li>La comunicación se mejora a través de agudeza sensorial, rapport, trance y metamodelo.</li>
+    <li>Esto permite identificar sistemas representacionales, categorías de V. Satir y establecer anclas.</li>
+    <li>Con esta información se identifican las estrategias que usa el sujeto.</li>
+    <li>Las estrategias se modifican con técnicas específicas, cambios en sistemas representacionales, anclas y modificación del modelo lingüístico.</li>
+    <li>Los cambios generan nuevas conductas, transformación de metaprogramas y eliminación de creencias limitantes.</li>
+    <li>Se llega así al Estado Deseado.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este esquema integra todos los elementos anteriores: presuposiciones, premisas, reglas, comunicación, sistemas representacionales, anclas, estrategias, metaprogramas y cambio de creencias.</p>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- ===== PREGUNTAS TIPO TEST ===== -->
+<h2 id="test">🧪 Preguntas tipo test</h2>
+
+<!-- PREGUNTA 1 -->
+<div class="pregunta">
+    <div class="enunciado">1. Según la PNL, ¿qué significa la presuposición "El mapa no es el territorio"?</div>
+    <ul class="opciones">
+        <li>A) La realidad es una construcción social que no tiene base material.</li>
+        <li>B) Las personas operan sobre representaciones internas de la realidad, no sobre la realidad misma.</li>
+        <li>C) Los mapas geográficos son siempre incorrectos.</li>
+        <li>D) La realidad es subjetiva y no se puede conocer.</li>
+    </ul>
+    <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+    <div class="respuesta-oculta">
+        <p><strong>✅ Respuesta correcta: B</strong></p>
+        <p class="trampa"><strong>🔍 Trampa:</strong> La opción A confunde con el constructivismo social radical; la C es una interpretación literal; la D es un relativismo extremo que la PNL no sostiene. La PNL afirma que operamos sobre mapas internos, pero la realidad existe (territorio).</p>
+    </div>
+</div>
+
+<!-- PREGUNTA 2 -->
+<div class="pregunta">
+    <div class="enunciado">2. ¿Cuál de los siguientes NO es un nivel de comunicación según la PNL?</div>
+    <ul class="opciones">
+        <li>A) Consciente</li>
+        <li>B) Subconsciente</li>
+        <li>C) Inconsciente colectivo</li>
+        <li>D) Otros niveles más profundos (esencia, self, espíritu)</li>
+    </ul>
+    <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+    <div class="respuesta-oculta">
+        <p><strong>✅ Respuesta correcta: C</strong></p>
+        <p class="trampa"><strong>🔍 Trampa:</strong> "Inconsciente colectivo" es un concepto de Jung, no de la PNL. La PNL menciona consciente, subconsciente y otros niveles (esencia, self, espíritu).</p>
+    </div>
+</div>
+
+<!-- PREGUNTA 3 -->
+<div class="pregunta">
+    <div class="enunciado">3. ¿Qué afirma la presuposición "Toda conducta tiene una intención positiva"?</div>
+    <ul class="opciones">
+        <li>A) Todas las conductas son moralmente buenas.</li>
+        <li>B) Todo comportamiento tiene (o tuvo) una intención positiva desde la perspectiva de quien lo realiza.</li>
+        <li>C) Las conductas negativas deben ser castigadas.</li>
+        <li>D) La intención positiva justifica cualquier acción.</li>
+    </ul>
+    <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+    <div class="respuesta-oculta">
+        <p><strong>✅ Respuesta correcta: B</strong></p>
+        <p class="trampa"><strong>🔍 Trampa:</strong> La opción A confunde intención positiva con justificación moral; la C es una postura punitiva; la D es una justificación de cualquier acción. La PNL distingue entre intención y conducta, y no juzga moralmente.</p>
+    </div>
+</div>
+
+<!-- PREGUNTA 4 -->
+<div class="pregunta">
+    <div class="enunciado">4. ¿Qué es el rapport según la PNL?</div>
+    <ul class="opciones">
+        <li>A) Una técnica de hipnosis profunda.</li>
+        <li>B) La adaptación del mapa propio al mapa de otra persona, con acoplamiento físico y psicológico.</li>
+        <li>C) Una estrategia de persuasión agresiva.</li>
+        <li>D) Un estado de trance inducido por el terapeuta.</li>
+    </ul>
+    <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+    <div class="respuesta-oculta">
+        <p><strong>✅ Respuesta correcta: B</strong></p>
+        <p class="trampa"><strong>🔍 Trampa:</strong> La opción A y D confunden rapport con hipnosis o trance; la C lo confunde con persuasión agresiva. El rapport es una adaptación respetuosa al mapa del otro, no una técnica de dominio.</p>
+    </div>
+</div>
+
+<!-- PREGUNTA 5 -->
+<div class="pregunta">
+    <div class="enunciado">5. Según la curva del aprendizaje de Vandura, ¿en qué fase se producen la mayoría de los abandonos y fracasos?</div>
+    <ul class="opciones">
+        <li>A) Incompetencia Inconsciente</li>
+        <li>B) Incompetencia Consciente</li>
+        <li>C) Competencia Consciente</li>
+        <li>D) Competencia Inconsciente</li>
+    </ul>
+    <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+    <div class="respuesta-oculta">
+        <p><strong>✅ Respuesta correcta: C</strong></p>
+        <p class="trampa"><strong>🔍 Trampa:</strong> La fase de crisis y abandonos ocurre en Competencia Consciente, donde el esfuerzo es mayor. La Incompetencia Inconsciente no implica aprendizaje, la Incompetencia Consciente es el inicio, y la Competencia Inconsciente es la automatización.</p>
+    </div>
+</div>
+
+<!-- PREGUNTA 6 -->
+<div class="pregunta">
+    <div class="enunciado">6. ¿Qué regla de la mente afirma que "las imágenes mentales repetitivas tienden a convertirse en pautas fijas"?</div>
+    <ul class="opciones">
+        <li>A) Todo pensamiento causa una reacción física.</li>
+        <li>B) Lo que se espera tiende a hacerse realidad.</li>
+        <li>C) La imaginación es más poderosa que el conocimiento.</li>
+        <li>D) Una idea aceptada por el inconsciente permanece hasta que otra la reemplaza.</li>
+    </ul>
+    <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+    <div class="respuesta-oculta">
+        <p><strong>✅ Respuesta correcta: B</strong></p>
+        <p class="trampa"><strong>🔍 Trampa:</strong> La opción D habla de la permanencia de ideas, pero no específicamente de imágenes repetitivas convirtiéndose en pautas. La regla 2 ("Lo que se espera tiende a hacerse realidad") se refiere precisamente a ese proceso de imágenes mentales repetitivas.</p>
+    </div>
+</div>
+
+<!-- PREGUNTA 7 -->
+<div class="pregunta">
+    <div class="enunciado">7. ¿Quiénes fueron los terapeutas estudiados por Bandler y Grinder para crear la PNL?</div>
+    <ul class="opciones">
+        <li>A) Freud, Jung y Adler</li>
+        <li>B) Perls, Satir y Erickson</li>
+        <li>C) Rogers, Maslow y Beck</li>
+        <li>D) Skinner, Pavlov y Watson</li>
+    </ul>
+    <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+    <div class="respuesta-oculta">
+        <p><strong>✅ Respuesta correcta: B</strong></p>
+        <p class="trampa"><strong>🔍 Trampa:</strong> Las otras opciones agrupan a terapeutas de diferentes escuelas (psicoanálisis, humanista, conductista) que no fueron los modelos originales de la PNL. Perls (Gestalt), Satir (terapia familiar) y Erickson (hipnoterapia) son los tres estudiados.</p>
+    </div>
+</div>
+
+<!-- PREGUNTA 8 -->
+<div class="pregunta">
+    <div class="enunciado">8. ¿Qué afirma la presuposición "El individuo con más alternativas tiene control"?</div>
+    <ul class="opciones">
+        <li>A) Quien tiene más poder económico controla la situación.</li>
+        <li>B) En un sistema, el elemento con mayor flexibilidad ejerce el control.</li>
+        <li>C) El control se obtiene mediante la fuerza.</li>
+        <li>D) Las alternativas generan confusión y pérdida de control.</li>
+    </ul>
+    <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+    <div class="respuesta-oculta">
+        <p><strong>✅ Respuesta correcta: B</strong></p>
+        <p class="trampa"><strong>🔍 Trampa:</strong> La opción A confunde control con poder económico; la C con fuerza; la D es contraria a la presuposición. La PNL se basa en una ley cibernética: la flexibilidad da control.</p>
+    </div>
+</div>
+
+<!-- PREGUNTA 9 -->
+<div class="pregunta">
+    <div class="enunciado">9. ¿Qué porcentaje aproximado de enfermedades tienen origen psicosomático según la regla 6 de la mente?</div>
+    <ul class="opciones">
+        <li>A) 30%</li>
+        <li>B) 50%</li>
+        <li>C) Más del 60%</li>
+        <li>D) 80%</li>
+    </ul>
+    <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+    <div class="respuesta-oculta">
+        <p><strong>✅ Respuesta correcta: C</strong></p>
+        <p class="trampa"><strong>🔍 Trampa:</strong> Las otras opciones son porcentajes inferiores. El texto indica explícitamente "más del 60% de las enfermedades padecidas por el hombre tienen origen psicosomático".</p>
+    </div>
+</div>
+
+<!-- PREGUNTA 10 -->
+<div class="pregunta">
+    <div class="enunciado">10. ¿Cuál es el objetivo principal del modelado en PNL?</div>
+    <ul class="opciones">
+        <li>A) Copiar exactamente la conducta de otra persona.</li>
+        <li>B) Identificar y sistematizar los patrones que subyacen a la excelencia para poder enseñarlos.</li>
+        <li>C) Crear una teoría psicológica general.</li>
+        <li>D) Demostrar que todas las conductas son iguales.</li>
+    </ul>
+    <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+    <div class="respuesta-oculta">
+        <p><strong>✅ Respuesta correcta: B</strong></p>
+        <p class="trampa"><strong>🔍 Trampa:</strong> La opción A es una simplificación (copiar no es modelar); la C es demasiado ambiciosa; la D es falsa. El modelado busca identificar la estructura de la excelencia para transferirla.</p>
+    </div>
+</div>
+
+<!-- PREGUNTA 11 -->
+<div class="pregunta">
+    <div class="enunciado">11. ¿Qué significa que "no hay errores en la comunicación, sólo resultados"?</div>
+    <ul class="opciones">
+        <li>A) Nunca se cometen errores al comunicarse.</li>
+        <li>B) Cada resultado enriquece la experiencia y permite probar otra cosa.</li>
+        <li>C) Los errores son inevitables y no se pueden corregir.</li>
+        <li>D) La comunicación es siempre perfecta.</li>
+    </ul>
+    <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+    <div class="respuesta-oculta">
+        <p><strong>✅ Respuesta correcta: B</strong></p>
+        <p class="trampa"><strong>🔍 Trampa:</strong> La opción A y D son negaciones absurdas; la C es derrotista. La PNL propone una actitud de aprendizaje continuo: cada resultado es información para ajustar la comunicación.</p>
+    </div>
+</div>
+
+<!-- PREGUNTA 12 -->
+<div class="pregunta">
+    <div class="enunciado">12. ¿Qué papel juegan las premisas teóricas complementarias en la PNL?</div>
+    <ul class="opciones">
+        <li>A) Son los postulados principales que fundamentan todo el modelo.</li>
+        <li>B) Son proposiciones de otros modelos psicológicos que la PNL asume para complementar su desarrollo.</li>
+        <li>C) Son reglas de la mente que rigen el funcionamiento del subconsciente.</li>
+        <li>D) Son técnicas prácticas de cambio.</li>
+    </ul>
+    <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+    <div class="respuesta-oculta">
+        <p><strong>✅ Respuesta correcta: B</strong></p>
+        <p class="trampa"><strong>🔍 Trampa:</strong> La opción A confunde premisas con presuposiciones; la C con reglas de la mente; la D con técnicas. Las premisas son bases conceptuales complementarias, no postulados principales ni reglas ni técnicas.</p>
+    </div>
+</div>
+
+<!-- PREGUNTA 13 -->
+<div class="pregunta">
+    <div class="enunciado">13. ¿Qué relación establece la PNL entre mente, cuerpo y conducta?</div>
+    <ul class="opciones">
+        <li>A) Son aspectos separados e independientes.</li>
+        <li>B) La mente controla al cuerpo, y la conducta es secundaria.</li>
+        <li>C) Son aspectos de un mismo sistema.</li>
+        <li>D) El cuerpo es más importante que la mente.</li>
+    </ul>
+    <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+    <div class="respuesta-oculta">
+        <p><strong>✅ Respuesta correcta: C</strong></p>
+        <p class="trampa"><strong>🔍 Trampa:</strong> Las opciones A, B y D reflejan dualismos o jerarquías que la PNL no sostiene. La premisa u establece que "la mente, el cuerpo y la conducta son aspectos de un mismo sistema".</p>
+    </div>
+</div>
+
+<!-- PREGUNTA 14 -->
+<div class="pregunta">
+    <div class="enunciado">14. ¿Qué significa que "a mayor esfuerzo consciente, menor es la respuesta inconsciente"?</div>
+    <ul class="opciones">
+        <li>A) Hay que esforzarse más para conseguir respuestas inconscientes.</li>
+        <li>B) Para acceder al inconsciente, es mejor relajarse y confiar en el proceso.</li>
+        <li>C) El inconsciente no responde a ningún estímulo.</li>
+        <li>D) La fuerza de voluntad es la clave del cambio.</li>
+    </ul>
+    <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+    <div class="respuesta-oculta">
+        <p><strong>✅ Respuesta correcta: B</strong></p>
+        <p class="trampa"><strong>🔍 Trampa:</strong> La opción A es lo opuesto; la C es falsa; la D es contraria a la regla. La regla 8 indica que el esfuerzo consciente bloquea la respuesta inconsciente, por lo que se requiere calma y confianza.</p>
+    </div>
+</div>
+
+<!-- PREGUNTA 15 -->
+<div class="pregunta">
+    <div class="enunciado">15. ¿Cuál es la fase más crítica en la curva del aprendizaje de Vandura?</div>
+    <ul class="opciones">
+        <li>A) Incompetencia Inconsciente</li>
+        <li>B) Incompetencia Consciente</li>
+        <li>C) Competencia Consciente</li>
+        <li>D) Competencia Inconsciente</li>
+    </ul>
+    <button class="btn-respuesta" onclick="toggleRespuesta(this)">Mostrar respuesta</button>
+    <div class="respuesta-oculta">
+        <p><strong>✅ Respuesta correcta: C</strong></p>
+        <p class="trampa"><strong>🔍 Trampa:</strong> La opción A no implica aprendizaje; la B es el inicio; la D es la automatización. La Competencia Consciente es la fase de esfuerzo y crisis donde se producen abandonos.</p>
+    </div>
+</div>
+
+<hr>
+
+<!-- ============================================================ -->
+<!-- ===== PREGUNTAS DE DESARROLLO ===== -->
+<h2 id="desarrollo">📝 Preguntas de desarrollo</h2>
+
+<!-- DESARROLLO 1 -->
+<div class="pregunta-desarrollo">
+    <div class="enunciado">1. Explique la presuposición "El mapa no es el territorio" y relacione su importancia con el rapport, la comunicación y la posibilidad de cambio en la PNL.</div>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definición de la presuposición: las personas operan sobre representaciones internas (mapas) de la realidad, no sobre la realidad misma.</li>
+            <li>Proceso de construcción del mapa: información sensorial recibida, organizada y transmitida a través de sistemas neuronales.</li>
+            <li>Implicaciones: ningún mapa es más "real"; unos son más efectivos que otros; las personas responden a sus percepciones.</li>
+            <li>Relación con el rapport: el rapport consiste en la adaptación del mapa propio al mapa de otra persona, penetrando en su modelo del mundo.</li>
+            <li>Relación con la comunicación: para comunicarse eficazmente hay que comprender y respetar el mapa del otro.</li>
+            <li>Relación con el cambio: el cambio se logra enriqueciendo el mapa del mundo de la persona con recursos apropiados.</li>
+            <li>Conexión con la PNL como "ciencia del cambio de mapas".</li>
+        </ol>
+        <p class="conceptos"><strong>Conceptos clave:</strong> Mapa, territorio, representación interna, sistemas representacionales, rapport, comunicación, cambio, recursos.</p>
+    </div>
+</div>
+
+<!-- DESARROLLO 2 -->
+<div class="pregunta-desarrollo">
+    <div class="enunciado">2. Describa el origen histórico de la PNL, explique su metodología de modelado y relaciónelo con la presuposición "Las personas tienen todos los recursos necesarios para realizar los cambios deseados".</div>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Origen: Bandler y Grinder en la Universidad de Santa Cruz (años 70) estudiando a Perls, Satir y Erickson.</li>
+            <li>Objetivo inicial: no crear un nuevo método, sino sistematizar los patrones comunes de los terapeutas exitosos.</li>
+            <li>Desarrollo: identificación, simplificación y transcripción de los patrones lingüísticos utilizados por estos terapeutas.</li>
+            <li>Publicaciones: "La estructura de la Magia" (1975) y "Patterns of the Hypnotic of Milton H. Erickson" (1975).</li>
+            <li>Aparición del término N.L.P. (1977) con Robert Dilts.</li>
+            <li>Expansión: rápida proliferación en EE.UU. y luego en el mundo; llegada a España en los años 80.</li>
+            <li>Relación con la presuposición 3: el modelado demuestra que la conducta aprendida por una persona puede ser modelada por otra, y que los recursos son transferibles.</li>
+        </ol>
+        <p class="conceptos"><strong>Conceptos clave:</strong> Bandler, Grinder, Perls, Satir, Erickson, modelado, patrones, sistematización, recursos, transferencia.</p>
+    </div>
+</div>
+
+<!-- DESARROLLO 3 -->
+<div class="pregunta-desarrollo">
+    <div class="enunciado">3. Analice la presuposición "Toda conducta tiene una intención positiva" y explique cómo se relaciona con el rapport, la comunicación y la posibilidad de generar cambios en la PNL.</div>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definición de la presuposición: todo comportamiento tiene (o tuvo) una intención positiva desde la perspectiva de quien lo realiza.</li>
+            <li>Fundamentos: el comportamiento fue percibido como apropiado en su contexto; la persona tomó la mejor opción disponible según su modelo del mundo.</li>
+            <li>Implicación metodológica: es más productivo responder a la intención que a la conducta problemática.</li>
+            <li>Relación con el rapport: para entender la intención positiva hay que penetrar en el mapa del mundo de la otra persona.</li>
+            <li>Relación con la comunicación: la comunicación efectiva requiere buscar la intención detrás del comportamiento.</li>
+            <li>Posibilidad de cambio: si se ofrece una opción más apropiada dentro del modelo del mundo, la persona la adoptará.</li>
+            <li>Aplicación práctica: sustitución o adición de conductas más apropiadas.</li>
+        </ol>
+        <p class="conceptos"><strong>Conceptos clave:</strong> Intención positiva, conducta, contexto, modelo del mundo, rapport, comunicación, cambio, opciones.</p>
+    </div>
+</div>
+
+<!-- DESARROLLO 4 -->
+<div class="pregunta-desarrollo">
+    <div class="enunciado">4. Compare y relacione las presuposiciones "El individuo con más alternativas tiene control" y "No hay errores en la comunicación, sólo resultados". ¿Cómo se aplican ambas en el proceso de aprendizaje según la curva de Vandura?</div>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Presuposición "El individuo con más alternativas tiene control": flexibilidad y generación de alternativas dan control en un sistema.</li>
+            <li>Presuposición "No hay errores, sólo resultados": cada resultado enriquece la experiencia y permite probar otra cosa.</li>
+            <li>Relación entre ambas: la flexibilidad se nutre de la capacidad de aprender de los resultados y generar nuevas opciones.</li>
+            <li>Aplicación en la curva del aprendizaje: en la fase de Competencia Consciente (donde se produce la crisis) hay que ser flexible y no ver los errores como fracasos.</li>
+            <li>Superar la crisis: si algo no funciona en el aprendizaje, se prueba otra cosa, generando más alternativas.</li>
+            <li>Llegar a la Competencia Inconsciente: la flexibilidad y la capacidad de aprender de los resultados permiten alcanzar la actuación automática.</li>
+            <li>Conclusión: ambas presuposiciones refuerzan la idea de que el aprendizaje es un proceso de prueba y ajuste continuo.</li>
+        </ol>
+        <p class="conceptos"><strong>Conceptos clave:</strong> Flexibilidad, control, alternativas, resultados, errores, curva del aprendizaje, Competencia Consciente, Competencia Inconsciente, crisis.</p>
+    </div>
+</div>
+
+<!-- DESARROLLO 5 -->
+<div class="pregunta-desarrollo">
+    <div class="enunciado">5. Explique qué es el rapport en la PNL, cómo se relaciona con la presuposición "El mapa no es el territorio" y por qué se considera una de las claves esenciales del modelo.</div>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definición de rapport: adaptación del mapa propio al mapa de otra persona, con acoplamiento físico y psicológico.</li>
+            <li>Relación con "El mapa no es el territorio": cada persona opera sobre su mapa interno; para comunicarse hay que penetrar en ese mapa.</li>
+            <li>Características del rapport: no es mera sincronización, implica acoplamiento físico y psicológico.</li>
+            <li>Función: predispone a las personas de tal forma que puede ser por sí solo la terapia necesaria.</li>
+            <li>Utilidad: permite al operador dirigir a la otra persona hacia el estado deseado.</li>
+            <li>Base de otras técnicas: el rapport es necesario para la calibración, el trance y la aplicación del metamodelo.</li>
+            <li>Importancia en el esquema general: el rapport es uno de los elementos que mejoran la comunicación para pasar del estado presente al estado deseado.</li>
+        </ol>
+        <p class="conceptos"><strong>Conceptos clave:</strong> Rapport, mapa, territorio, adaptación, acoplamiento, comunicación, calibración, estado deseado.</p>
+    </div>
+</div>
+
+<!-- DESARROLLO 6 -->
+<div class="pregunta-desarrollo">
+    <div class="enunciado">6. Describa las cuatro reglas de la mente relacionadas con la persistencia y el cambio de las ideas (reglas 1, 5, 6 y 7) y explique su aplicación en el proceso de cambio de la PNL.</div>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Regla 1 - Todo pensamiento causa reacción física: las ideas generan respuestas físicas que pueden crear patrones duraderos.</li>
+            <li>Regla 5 - Una idea aceptada por el inconsciente permanece hasta que otra la reemplaza: las ideas se convierten en hábitos y creencias; cuanto más tiempo, más resistencia al cambio.</li>
+            <li>Regla 6 - Un síntoma emocional persistente genera cambios orgánicos: las ideas negativas pueden causar enfermedades psicosomáticas y cambios físicos.</li>
+            <li>Regla 7 - Cada cambio llevado a la práctica disminuye la resistencia a sucesivos cambios: el cambio se aprende y la flexibilidad aumenta.</li>
+            <li>Aplicación en la PNL: las técnicas de cambio de creencias y anclaje permiten reemplazar ideas limitantes por potenciadoras.</li>
+            <li>Relación con la curva del aprendizaje: la superación de la fase de crisis genera mayor flexibilidad para futuros cambios.</li>
+            <li>Conclusión: la PNL trabaja sobre la base de que las ideas pueden ser modificadas si el inconsciente descubre ventajas en la alternativa.</li>
+        </ol>
+        <p class="conceptos"><strong>Conceptos clave:</strong> Reacción física, persistencia, reemplazo, psicosomática, resistencia, cambio, flexibilidad, creencias.</p>
+    </div>
+</div>
+
+<!-- DESARROLLO 7 -->
+<div class="pregunta-desarrollo">
+    <div class="enunciado">7. Relacione el esquema general del modelo de PNL con la curva del aprendizaje y las presuposiciones. ¿Cómo se articulan estos elementos para lograr el cambio desde el estado presente al estado deseado?</div>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Esquema general: marco de referencia → estado presente → comunicación mejorada → identificación de sistemas representacionales y estrategias → modificación → nuevas conductas → estado deseado.</li>
+            <li>Curva del aprendizaje: el Practitioner que aplica el modelo pasa por las cuatro fases en su formación.</li>
+            <li>Incompetencia Inconsciente: el marco de referencia (presuposiciones, reglas, premisas) es desconocido inicialmente.</li>
+            <li>Incompetencia Consciente: se toma conciencia del modelo, del estado presente y del estado deseado.</li>
+            <li>Competencia Consciente: aplicación con esfuerzo de técnicas (rapport, metamodelo, anclas, etc.); fase de crisis donde se producen abandonos.</li>
+            <li>Relación con las presuposiciones: la presuposición de flexibilidad (5) y de resultados (6) ayudan a superar la crisis.</li>
+            <li>Competencia Inconsciente: el Practitioner integra el modelo y opera automáticamente, facilitando el cambio del cliente desde su estado presente al deseado.</li>
+        </ol>
+        <p class="conceptos"><strong>Conceptos clave:</strong> Esquema general, marco de referencia, estado presente, estado deseado, comunicación, estrategias, curva del aprendizaje, crisis, Competencia Inconsciente, cambio.</p>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- ===== PREGUNTAS DE RESERVA (MUY DIFÍCILES) ===== -->
+<h2 id="reserva">⭐ Preguntas de reserva (muy difíciles)</h2>
+
+<div class="pregunta-desarrollo">
+    <div class="enunciado">1. (Muy difícil) Analice la relación entre las presuposiciones de la PNL, las premisas teóricas complementarias y las reglas de la mente. ¿Cómo se integran estos tres conjuntos de principios para fundamentar epistemológica y metodológicamente el modelo de la PNL, y qué papel juegan en el esquema general como "marco de referencia"?</div>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Identificación de los tres conjuntos: presuposiciones (8 postulados básicos), premisas teóricas (30+ proposiciones de otros modelos) y reglas de la mente (8 principios de la hipnoterapia).</li>
+            <li>Función de cada conjunto: presuposiciones como fundamentos operativos, premisas como bases conceptuales complementarias, reglas como principios del funcionamiento mental.</li>
+            <li>Coherencia interna: ejemplos de conexión entre presuposiciones y reglas (p.ej., presuposición 7 con regla 8; presuposición 1 con regla 2).</li>
+            <li>Coherencia con premisas: ejemplos de conexión (p.ej., premisa u con regla 1; premisa x con presuposición 1).</li>
+            <li>Papel en el marco de referencia: constituyen la base del modelo, el "puzzle guía" que orienta todo el proceso.</li>
+            <li>Aplicación metodológica: proporcionan criterios para la comunicación, la identificación de estrategias y la aplicación de técnicas.</li>
+            <li>Conclusión: son la fundamentación epistemológica que hace posible el paso del estado presente al estado deseado.</li>
+        </ol>
+        <p class="conceptos"><strong>Conceptos clave:</strong> Presuposiciones, premisas teóricas, reglas de la mente, marco de referencia, fundamentación, metodología, epistemología, esquema general.</p>
+    </div>
+</div>
+
+<div class="pregunta-desarrollo">
+    <div class="enunciado">2. (Muy difícil) Explique cómo la presuposición "El mapa no es el territorio" y la curva del aprendizaje se articulan con el esquema general del modelo de PNL para explicar el proceso de cambio, y relacione esto con la posibilidad de modelar conductas de personas exitosas según los orígenes históricos de la PNL.</div>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>"El mapa no es el territorio" como base epistemológica: las personas operan sobre representaciones internas, no sobre la realidad.</li>
+            <li>Implicación: el cambio es posible modificando el mapa, no la realidad.</li>
+            <li>Esquema general: parte del estado presente (mapa actual) y avanza al estado deseado (mapa enriquecido) mediante técnicas.</li>
+            <li>Curva del aprendizaje: describe cómo el Practitioner aprende a modificar mapas (I.I. → I.C. → C.C. → C.I.).</li>
+            <li>Modelado de personas exitosas (origen histórico): Bandler y Grinder modelaron los mapas de Perls, Satir y Erickson.</li>
+            <li>Articulación: el modelado permite identificar la estructura de los mapas de personas exitosas y transferirlos.</li>
+            <li>Proceso completo: el Practitioner (en C.I.) puede identificar mapas de clientes, enriquecerlos con recursos modelados, y facilitar el cambio hacia el estado deseado.</li>
+        </ol>
+        <p class="conceptos"><strong>Conceptos clave:</strong> Mapa, territorio, curva del aprendizaje, esquema general, modelado, estado presente, estado deseado, recursos, transferencia.</p>
+    </div>
+</div>
+
+<div class="pregunta-desarrollo">
+    <div class="enunciado">3. (Muy difícil) Analice cómo las presuposiciones "Los individuos tienen varios niveles de comunicación" y "Contacto (Rapport) es el encuentro con un individuo y con su modelo del mundo", junto con la regla de la mente "A mayor esfuerzo consciente menor es la respuesta inconsciente", fundamentan las técnicas de comunicación y cambio en la PNL, y relacione esto con la premisa teórica de que "la comunicación entre consciente y subconsciente no es unidireccional".</div>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Presuposición de niveles de comunicación: consciente, subconsciente y otros niveles.</li>
+            <li>Presuposición del rapport: adaptación al mapa del otro, que implica comunicación en todos los niveles.</li>
+            <li>Regla 8: el esfuerzo consciente excesivo bloquea la respuesta inconsciente, por lo que la comunicación debe ser sutil y no forzada.</li>
+            <li>Premisa aa: la comunicación consciente-subconsciente es un continuo intercambio de información, no unidireccional.</li>
+            <li>Aplicación en técnicas de comunicación: el rapport se establece a través de canales conscientes y subconscientes (verbales y no verbales).</li>
+            <li>Aplicación en técnicas de cambio: el trance, las anclas y el metamodelo trabajan con procesos subconscientes sin esfuerzo consciente excesivo.</li>
+            <li>Implicación práctica: el Practitioner debe confiar en los procesos subconscientes, ser flexible y evitar forzar el cambio conscientemente.</li>
+        </ol>
+        <p class="conceptos"><strong>Conceptos clave:</strong> Niveles de comunicación, consciente, subconsciente, rapport, esfuerzo consciente, respuesta inconsciente, intercambio de información, técnicas de cambio, trance, anclas, metamodelo.</p>
+    </div>
+</div>
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+    // Alternar modo claro/oscuro
+    document.getElementById('modoBtn').addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        this.textContent = document.body.classList.contains('dark-mode') ? '☀️ Modo claro' : '🌙 Modo oscuro';
+    });
+
+    // Alternar respuesta en preguntas tipo test
+    function toggleRespuesta(btn) {
+        const parent = btn.closest('.pregunta');
+        const hiddenDiv = parent.querySelector('.respuesta-oculta');
+        if (hiddenDiv.classList.contains('visible')) {
+            hiddenDiv.classList.remove('visible');
+            btn.textContent = 'Mostrar respuesta';
+        } else {
+            hiddenDiv.classList.add('visible');
+            btn.textContent = 'Ocultar respuesta';
+        }
+    }
+
+    // Alternar esquema en preguntas de desarrollo
+    function toggleEsquema(btn) {
+        const parent = btn.closest('.pregunta-desarrollo');
+        const hiddenDiv = parent.querySelector('.esquema-oculto');
+        if (hiddenDiv.classList.contains('visible')) {
+            hiddenDiv.classList.remove('visible');
+            btn.textContent = 'Mostrar esquema';
+        } else {
+            hiddenDiv.classList.add('visible');
+            btn.textContent = 'Ocultar esquema';
+        }
+    }
+</script>
+
+</body>
+</html>

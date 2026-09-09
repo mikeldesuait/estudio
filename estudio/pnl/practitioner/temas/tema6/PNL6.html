@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Tema 6: Sistemas Representacionales y Submodalidades · Resumen UNED</title>
+    <style>
+        /* ===== ESTILO ÚNICO PARA RESÚMENES UNED ===== */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            max-width: 950px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #f5f7fa;
+            color: #1a1a2e;
+            line-height: 1.8;
+            font-size: 17px;
+        }
+        h1 {
+            font-size: 30px;
+            color: #0a1628;
+            border-bottom: 4px solid #1a3d66;
+            padding-bottom: 14px;
+        }
+        h2 {
+            font-size: 23px;
+            color: #1a3d66;
+            margin-top: 32px;
+            border-left: 4px solid #1a3d66;
+            padding-left: 16px;
+        }
+        h3 {
+            font-size: 20px;
+            color: #2a4a7a;
+            margin-top: 26px;
+        }
+        h4 {
+            font-size: 18px;
+            color: #3a5a8a;
+            margin-top: 20px;
+        }
+        strong {
+            color: #0a2a4a;
+        }
+        ul {
+            padding-left: 24px;
+        }
+        li {
+            margin-bottom: 6px;
+        }
+        blockquote {
+            background: #e8edf4;
+            padding: 12px 20px;
+            border-left: 4px solid #1a3d66;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        hr {
+            border: none;
+            border-top: 2px solid #d0d8e4;
+            margin: 28px 0;
+        }
+        .indice {
+            background: #e8edf4;
+            padding: 16px 24px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .indice ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .indice li {
+            padding: 3px 0;
+        }
+        .indice li.h1 {
+            font-weight: 600;
+        }
+        .indice li.h2 {
+            padding-left: 20px;
+            font-weight: 400;
+        }
+        .indice a {
+            color: #1a3d66;
+            text-decoration: none;
+        }
+        .indice a:hover {
+            text-decoration: underline;
+        }
+        .idea-central {
+            background: #e0e8f4;
+            padding: 18px 24px;
+            border-radius: 12px;
+            margin: 20px 0 30px 0;
+            border-left: 5px solid #1a3d66;
+        }
+        .idea-central h2 {
+            margin-top: 0;
+            border-left: none;
+            padding-left: 0;
+        }
+        .modo-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            padding: 8px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #1a3d66;
+            color: #fff;
+            font-size: 14px;
+            z-index: 999;
+        }
+        .modo-btn:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode {
+            background: #0d1a2b;
+            color: #d6e2f5;
+        }
+        .dark-mode h1 {
+            color: #b0c8e8;
+            border-bottom-color: #2a5a8a;
+        }
+        .dark-mode h2 {
+            color: #8ab0e0;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode h3 {
+            color: #6a9ac0;
+        }
+        .dark-mode h4 {
+            color: #5a8aaa;
+        }
+        .dark-mode strong {
+            color: #c8ddf0;
+        }
+        .dark-mode blockquote {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode .indice {
+            background: #142a44;
+        }
+        .dark-mode .indice a {
+            color: #8ab0e0;
+        }
+        .dark-mode .idea-central {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode hr {
+            border-top-color: #2a4a6a;
+        }
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+                padding: 14px;
+            }
+            h1 {
+                font-size: 25px;
+            }
+            h2 {
+                font-size: 21px;
+            }
+        }
+
+        /* ===== ESTILOS PARA PREGUNTAS INTERACTIVAS ===== */
+        .pregunta {
+            background: #f0f4fa;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            border: 1px solid #d0d8e4;
+        }
+        .dark-mode .pregunta {
+            background: #142a44;
+            border-color: #2a4a6a;
+        }
+        .pregunta .enunciado {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .pregunta .opciones {
+            list-style: none;
+            padding-left: 8px;
+        }
+        .pregunta .opciones li {
+            margin-bottom: 4px;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .pregunta .opciones li.correcta {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .dark-mode .pregunta .opciones li.correcta {
+            background: #1a4a3a;
+            color: #8fdfb0;
+            border-left-color: #2ecc71;
+        }
+        .pregunta .respuesta-oculta {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta .respuesta-oculta {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta .respuesta-oculta.visible {
+            display: block;
+        }
+        .pregunta .btn-respuesta {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #1a3d66;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta .btn-respuesta:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta:hover {
+            background: #3a7aaa;
+        }
+        .pregunta .trampa {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #6a4a2a;
+            font-style: italic;
+        }
+        .dark-mode .pregunta .trampa {
+            color: #c8a878;
+        }
+        .pregunta-desarrollo .esquema-oculto {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta-desarrollo .esquema-oculto {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta-desarrollo .esquema-oculto.visible {
+            display: block;
+        }
+        .pregunta-desarrollo .btn-esquema {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #1a3d66;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta-desarrollo .btn-esquema:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta-desarrollo .btn-esquema {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta-desarrollo .btn-esquema:hover {
+            background: #3a7aaa;
+        }
+    </style>
+</head>
+<body>
+
+<button class="modo-btn" id="modoBtn" aria-label="Cambiar modo claro/oscuro">🌓 Modo</button>
+
+<h1>Tema 6: Sistemas Representacionales y Submodalidades</h1>
+
+<!-- ===== ÍNDICE ===== -->
+<div class="indice">
+    <h2 style="margin-top:0; border-left:none; padding-left:0;">📑 Índice</h2>
+    <ul>
+        <li class="h1"><a href="#idea-central">1. Idea Central (5 minutos)</a></li>
+        <li class="h1"><a href="#resumen-epigrafes">2. Resumen por Epígrafes</a></li>
+        <li class="h2"><a href="#introduccion">Introducción</a></li>
+        <li class="h2"><a href="#sistemas-representacionales">Los Sistemas Representacionales (V.A.K.O.G.)</a></li>
+        <li class="h2"><a href="#componentes">Los Sistemas Representacionales: Componentes</a></li>
+        <li class="h2"><a href="#movimientos-oculares">Claves de Acceso: Movimientos Oculares</a></li>
+        <li class="h2"><a href="#ejercicio-accesos-oculares">Ejercicio de Accesos Oculares</a></li>
+        <li class="h2"><a href="#claves-gestuales">Claves de Acceso Gestuales</a></li>
+        <li class="h2"><a href="#predicados-verbales">Predicados Verbales</a></li>
+        <li class="h2"><a href="#ejercicio-television">Ejercicio con Televisión</a></li>
+        <li class="h2"><a href="#submodalidades">Submodalidades</a></li>
+        <li class="h2"><a href="#submodalidades-visuales">Submodalidades Visuales</a></li>
+        <li class="h2"><a href="#submodalidades-auditivas">Submodalidades Auditivas</a></li>
+        <li class="h2"><a href="#submodalidades-kinestesicas">Submodalidades Kinestésicas</a></li>
+        <li class="h2"><a href="#submodalidades-olfativas">Submodalidades Olfativas/Gustativas</a></li>
+        <li class="h2"><a href="#cambio-submodalidades">Ejercicio de Cambio de Submodalidades</a></li>
+        <li class="h2"><a href="#ejemplo-duda-certeza">Ejemplo: Duda → Certeza</a></li>
+        <li class="h2"><a href="#ejercicio-confusion">Ejercicio: Confusión, Duda y Comprensión</a></li>
+        <li class="h2"><a href="#test-vias">Test de Vías</a></li>
+        <li class="h1"><a href="#mini-resumen">3. Mini-resumen por Epígrafe</a></li>
+        <li class="h1"><a href="#preguntas-desarrollo">4. Preguntas de Desarrollo</a></li>
+        <li class="h1"><a href="#preguntas-reserva">5. Preguntas de Reserva</a></li>
+    </ul>
+</div>
+
+<!-- ===== 1. IDEA CENTRAL ===== -->
+<div id="idea-central" class="idea-central">
+    <h2>💡 Idea Central (5 minutos)</h2>
+    <p>El Sistema Representacional (SR) es el conjunto de modalidades sensoriales (Visual, Auditivo, Kinestésico, Olfativo/Gustativo) a través de las cuales los seres humanos percibimos, procesamos y representamos internamente nuestra experiencia del mundo. Estas modalidades constituyen la base de nuestras representaciones internas, que combinadas con la fisiología generan nuestros estados internos y, en última instancia, nuestras conductas. Cada modalidad se manifiesta externamente a través de claves de acceso observables: movimientos oculares (que indican qué sistema está utilizando la persona), gestos, postura, respiración y predicados verbales (el lenguaje específico que usamos según nuestra modalidad dominante). Dentro de cada modalidad existen submodalidades, que son las cualidades específicas de las representaciones internas (como color, brillo, tamaño, distancia en lo visual; tono, volumen, ritmo en lo auditivo; intensidad, localización, cualidad en lo kinestésico). La identificación y modificación de las submodalidades críticas permite cambiar el estado emocional asociado a una experiencia, ya que al modificar una cualidad interna se transforma toda la representación.</p>
+</div>
+
+<!-- ===== 2. RESUMEN POR EPÍGRAFES ===== -->
+<h2 id="resumen-epigrafes">📘 Resumen por Epígrafes</h2>
+
+<!-- Introducción -->
+<h3 id="introduccion">Introducción</h3>
+<p><strong>Concepto clave:</strong> El Sistema Representacional (SR o 4-Tuple) es un código simplificado que representa gráficamente el complejo proceso de transformación sensorial que realiza el cerebro. Los seres humanos no operamos directamente sobre la realidad, sino a través de transformaciones sensoriales; por tanto, la verdad es una metáfora subjetiva, no una realidad absoluta. La PNL es también una metáfora orientada a generar opciones útiles de comportamiento.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>El SR (Visual-V, Auditivo-A, Cinestésico-K, Olfativo/Gustativo-O/G) permite seguir de forma simple cualquier proceso mental.</li>
+    <li>No operamos directamente sobre el mundo, sino sobre sus transformaciones sensoriales.</li>
+    <li>La PNL es una metáfora orientada al usuario para generar opciones útiles.</li>
+    <li>Toda experiencia implica al menos una de las modalidades del SR.</li>
+    <li>Cualquier conducta deficiente, una vez codificada, es susceptible de cambio.</li>
+    <li>El comportamiento en PNL comprende: a) Entrada de información, b) Representación y procesamiento, c) Expresión.</li>
+    <li>Los elementos del SR organizados en secuencia se llaman <strong>Estrategias</strong>.</li>
+    <li>Las conexiones entre representaciones se denominan <strong>Anclajes</strong>.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta con el Tema 2 (representaciones internas, estados internos, fisiología) y con el Tema 5 (lenguaje como representación). Introduce el concepto de estrategias que será fundamental para el trabajo posterior.</p>
+<hr>
+
+<!-- Los Sistemas Representacionales (V.A.K.O.G.) -->
+<h3 id="sistemas-representacionales">Los Sistemas Representacionales (V.A.K.O.G.)</h3>
+<p><strong>Concepto clave:</strong> Las modalidades del sistema representacional son cuatro: <strong>Visual</strong> (imágenes), <strong>Auditivo</strong> (sonidos), <strong>Kinestésico</strong> (sensaciones corporales) y <strong>Olfativo/Gustativo</strong> (olores y sabores).</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Visual (V):</strong> Representación correspondiente a imágenes (externas o internas, recordadas o construidas).</li>
+    <li><strong>Auditivo (A):</strong> Representación correspondiente a sonidos (externos o internos, recordados o construidos).</li>
+    <li><strong>Kinestésico (K):</strong> Representación correspondiente a sensaciones corporales (temperatura, presión, movimiento, emociones).</li>
+    <li><strong>Olfativo/Gustativo (O/G):</strong> Representación correspondiente a olores y sabores.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe establece la base del SR que se desarrollará en los siguientes epígrafes (componentes, claves de acceso, predicados, submodalidades).</p>
+<hr>
+
+<!-- Componentes -->
+<h3 id="componentes">Los Sistemas Representacionales: Componentes</h3>
+<p><strong>Concepto clave:</strong> Dentro de cada modalidad se distingue entre externo/interno y recordado/construido. Además, existe una variante auditiva especial: el <strong>Diálogo Interno o Digital (D.I.)</strong>, correspondiente al razonamiento lógico hablado internamente.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Visual:</strong> Externo (Ve), Interno (Vi), Recordado (Vr), Construido (Vc).</li>
+    <li><strong>Auditivo:</strong> Externo (Ae), Interno (Ai), Recordado (Ar), Construido (Ac).</li>
+    <li><strong>Kinestésico:</strong> Externo (Ke), Interno (Ki).</li>
+    <li><strong>Olfativo/Gustativo (O/G).</strong></li>
+    <li><strong>Diálogo Interno o Digital (D.I.):</strong> Procesos mentales de razonamiento lógico hablado internamente.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta distinción entre recordado/construido se conecta con el Tema 2 (asociado/disociado) y con el Tema 4 (hipnosis, acceso a recursos). El D.I. se relaciona con el lenguaje interno y el Metamodelo (Tema 5).</p>
+<hr>
+
+<!-- Movimientos Oculares -->
+<h3 id="movimientos-oculares">Claves de Acceso: Movimientos Oculares</h3>
+<p><strong>Concepto clave:</strong> Los movimientos oculares indican qué sistema representacional está utilizando la persona. Estos datos son referidos al rostro del interlocutor y deben invertirse en zurdos.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Arriba izquierda (Vr):</strong> Visual recordado (imágenes del pasado).</li>
+    <li><strong>Arriba derecha (Vc):</strong> Visual construido (imágenes creadas/imaginadas).</li>
+    <li><strong>Izquierda (Ar):</strong> Auditivo recordado (sonidos del pasado).</li>
+    <li><strong>Derecha (Ac):</strong> Auditivo construido (sonidos imaginados).</li>
+    <li><strong>Abajo izquierda (D.I.):</strong> Diálogo interno (digital).</li>
+    <li><strong>Abajo derecha (K):</strong> Kinestésico (sensaciones/emociones).</li>
+    <li><strong>Ojos arriba al centro (desenfocados):</strong> Procesamiento de imágenes (recordadas o creadas) o espera.</li>
+    <li><strong>Postura del "teléfono":</strong> Cabeza inclinada hacia la derecha apoyada en la mano, mirando a la izquierda.</li>
+    <li>En zurdos, los accesos visuales y auditivos suelen estar cambiados.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta es la herramienta práctica de "calibración" (Tema 3) aplicada a la identificación de sistemas representacionales. Se conecta con la observación de la comunicación no verbal (Tema 2).</p>
+<hr>
+
+<!-- Ejercicio de Accesos Oculares -->
+<h3 id="ejercicio-accesos-oculares">Ejercicio de Identificación de Accesos Oculares</h3>
+<p><strong>Concepto clave:</strong> Ejercicio práctico para identificar movimientos oculares mediante preguntas específicas que activan cada sistema representacional.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Participantes: Sujeto, Practitioner, Observador.</li>
+    <li>El practitioner lee la frase, la dice al sujeto y observa sus movimientos oculares.</li>
+    <li>Preguntas para activar:
+        <ul>
+            <li><strong>Visual:</strong> "Imagínate con el pelo verde", "¿De qué color te gustaría tu próximo coche?".</li>
+            <li><strong>Auditivo:</strong> "Recuerda la última excusa que empleaste", "¿Cuál de tus zapatos hace más ruido?".</li>
+            <li><strong>Kinestésico:</strong> "Cuando estás sintiendo 'azul', ¿qué te alegra?", "Recuerda la última vez que estuviste completamente empapado".</li>
+            <li><strong>Digital:</strong> "¿Cuánto es 537 más 26?".</li>
+        </ul>
+    </li>
+</ul>
+<p><strong>Conexiones:</strong> Este ejercicio es una aplicación práctica de la calibración (Tema 3) y conecta con el Tema 2 (observación de la comunicación).</p>
+<hr>
+
+<!-- Claves de Acceso Gestuales -->
+<h3 id="claves-gestuales">Claves de Acceso Gestuales</h3>
+<p><strong>Concepto clave:</strong> Además de los movimientos oculares, existen otras claves de acceso gestuales, posturales, respiratorias y verbales que indican la modalidad dominante.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>VISUAL:</strong> Hombros altos, parpadeo rápido, respiración alta y superficial. Piel pálida, cabeza inclinada hacia adelante. Se señalan los ojos, hablan rápido, usan predicados visuales. Manos móviles señalando hacia arriba.</li>
+    <li><strong>AUDITIVO:</strong> Hombros balanceados, cabeza hacia atrás, tórax desarrollado. Respiración regular y torácica, piel uniforme. Se señalan el oído y se tocan los labios. Usan predicados auditivos.</li>
+    <li><strong>KINESTÉSICO:</strong> Hombros bajos y caídos, cabeza apoyada en hombros. Movimientos lentos y seguros, gestos fuertes. Respiración baja y abdominal, piel sonrosa. Se toca a sí mismo y a los demás, usa predicados kinestésicos. Habla despacio y más grave.</li>
+    <li><strong>DIGITAL (Diálogo Interno):</strong> Apoya la mano en la frente, rígido, calculador. Utiliza palabras precisas y abstractas.</li>
+</ul>
+<p><strong>Conexiones:</strong> Estas claves se conectan con la fisiología (Tema 2) y la calibración (Tema 3). Son herramientas prácticas para identificar la modalidad dominante de una persona.</p>
+<hr>
+
+<!-- Predicados Verbales -->
+<h3 id="predicados-verbales">Predicados Verbales</h3>
+<p><strong>Concepto clave:</strong> Los predicados verbales son las palabras que una persona utiliza para expresar su experiencia a través de un sistema representacional determinado.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Visuales:</strong> Ver, mirar, observar, contemplar, imaginar, visualizar, brillante, claro, oscuro, colorido, perspectiva, punto de vista.</li>
+    <li><strong>Auditivos:</strong> Oír, escuchar, decir, hablar, comentar, preguntar, sonar, resonar, tono, volumen, ritmo, melodía, silencio.</li>
+    <li><strong>Kinestésicos:</strong> Sentir, tocar, palpar, agarrar, pesado, ligero, cálido, frío, tenso, relajado, suave, áspero, presión.</li>
+    <li><strong>Olfativos/Gustativos:</strong> Oler, saborear, aroma, perfume, dulce, amargo, ácido, salado.</li>
+</ul>
+<p><strong>Conexiones:</strong> Los predicados verbales conectan el SR con el Metamodelo del Lenguaje (Tema 5). Son una clave de acceso auditiva/verbal que complementa las claves gestuales.</p>
+<hr>
+
+<!-- Ejercicio con Televisión -->
+<h3 id="ejercicio-television">Ejercicio de Práctica con Televisión</h3>
+<p><strong>Concepto clave:</strong> Ejercicio práctico para familiarizarse con la identificación de claves de acceso observando programas de televisión sin sonido y luego con sonido.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Conectar televisor en programa de entrevistas.</li>
+    <li>Eliminar sonido; observar movimientos oculares, gestos, postura, respiración.</li>
+    <li>Anotar modalidad dominante de cada participante.</li>
+    <li>Poner sonido y fijar atención en la voz, tono, predicados.</li>
+    <li>Comparar todas las observaciones.</li>
+    <li>Repetir hasta dominar la técnica.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este ejercicio integra todas las claves de acceso (oculares, gestuales, verbales) en un contexto práctico, conectando con la calibración (Tema 3).</p>
+<hr>
+
+<!-- Submodalidades -->
+<h3 id="submodalidades">Submodalidades</h3>
+<p><strong>Concepto clave:</strong> Las submodalidades son las cualidades o aspectos específicos de cada modalidad (Visual, Auditiva, Kinestésica). Son como las "variables técnicas" de una representación interna. Existen <strong>submodalidades críticas</strong> que tienen un impacto mayor en el estado interno al ser modificadas.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Definición: aspectos o calidades de cada paquete de información sensorial.</li>
+    <li>Ejemplo visual: color/blanco y negro, brillo, enfoque, tamaño, distancia, movimiento, asociado/disociado.</li>
+    <li>Ejemplo auditivo: tono, volumen, ritmo, localización, duración.</li>
+    <li>Ejemplo kinestésico: cualidad, intensidad, localización, movimiento.</li>
+    <li><strong>Submodalidades críticas:</strong> aquellas que al modificarlas producen un efecto intenso en el estado interno.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta con el Tema 2 (estados internos, representaciones internas) y con el cambio de estados a través de la modificación de submodalidades.</p>
+<hr>
+
+<!-- Submodalidades Visuales -->
+<h3 id="submodalidades-visuales">Submodalidades Visuales</h3>
+<p><strong>Concepto clave:</strong> Lista exhaustiva de submodalidades visuales que permiten identificar y modificar las cualidades de una imagen interna.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Color, blanco y negro.</li>
+    <li>Brillo.</li>
+    <li>Contraste.</li>
+    <li>Enfoque.</li>
+    <li>Textura.</li>
+    <li>Detalle.</li>
+    <li>Talla o tamaño de la imagen total.</li>
+    <li>Distancia.</li>
+    <li>Forma.</li>
+    <li>Cerco o Marco.</li>
+    <li>Localización.</li>
+    <li>Movimiento en la imagen.</li>
+    <li>Movimiento fuera de la imagen.</li>
+    <li>Orientación.</li>
+    <li>Asociado / Disociado.</li>
+    <li>Perspectiva.</li>
+    <li>Proporción.</li>
+    <li>Dimensión.</li>
+    <li>Singular - plural.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta lista es la herramienta práctica para el ejercicio de cambio de submodalidades. Se conecta con el Tema 2 (asociado/disociado) y con el cambio de estados internos.</p>
+<hr>
+
+<!-- Submodalidades Auditivas -->
+<h3 id="submodalidades-auditivas">Submodalidades Auditivas</h3>
+<p><strong>Concepto clave:</strong> Lista de submodalidades auditivas para identificar y modificar las cualidades de los sonidos internos.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Localización (interior/exterior).</li>
+    <li>Tono (alto/bajo).</li>
+    <li>Tonalidad (nasal, gutural, fina, etc.).</li>
+    <li>Melodía (monótono/melódico).</li>
+    <li>Inflexión (partes acentuadas).</li>
+    <li>Volumen (intensidad).</li>
+    <li>Tempo (rápido/lento).</li>
+    <li>Ritmo (cadencia).</li>
+    <li>Duración (continuo/intermitente).</li>
+    <li>Mono - Estéreo.</li>
+    <li>Distancia.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta lista complementa las submodalidades visuales y se conecta con el Tema 2 (diálogo interno) y el cambio de estados.</p>
+<hr>
+
+<!-- Submodalidades Kinestésicas -->
+<h3 id="submodalidades-kinestesicas">Submodalidades Kinestésicas</h3>
+<p><strong>Concepto clave:</strong> Lista de submodalidades kinestésicas para identificar y modificar las cualidades de las sensaciones corporales.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Cualidad (temblor, cálida, fría, tensa, etc.).</li>
+    <li>Intensidad (fuerza).</li>
+    <li>Localización (parte del cuerpo).</li>
+    <li>Movimiento (continuo, oleadas, pulsaciones).</li>
+    <li>Dirección (desde dónde hasta dónde).</li>
+    <li>Velocidad (pausada/rápida).</li>
+    <li>Duración (continua/intermitente).</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta lista se conecta directamente con la fisiología (Tema 2) y el cambio de estados internos a través de la modificación de sensaciones.</p>
+<hr>
+
+<!-- Submodalidades Olfativas/Gustativas -->
+<h3 id="submodalidades-olfativas">Submodalidades Olfativas/Gustativas</h3>
+<p><strong>Concepto clave:</strong> Los olores y sabores son limitados pero pueden ser útiles en trabajos terapéuticos cuando existe sinestesia (conexión entre sentidos).</p>
+<p><strong>Argumentos del autor:</strong> No se suelen presentar salvo en raras ocasiones; es conveniente preguntar al sujeto si existe algún olor o sabor que acompañe la experiencia.</p>
+<p><strong>Conexiones:</strong> Estas submodalidades se conectan con experiencias muy específicas y con la sinestesia, que se relaciona con el Tema 2 (representaciones internas).</p>
+<hr>
+
+<!-- Ejercicio de Cambio de Submodalidades -->
+<h3 id="cambio-submodalidades">Ejercicio de Identificación y Cambio de Submodalidades</h3>
+<p><strong>Concepto clave:</strong> Ejercicio práctico para identificar submodalidades críticas y experimentar cómo su modificación altera el estado emocional.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Participantes: Practitioner y Sujeto.</li>
+    <li>Sujeto recuerda experiencia no demasiado desagradable y se asocia.</li>
+    <li>Practitioner pregunta por submodalidades (ubicación, asociado/disociado, color, brillo, enfoque, movimiento, tamaño, etc.).</li>
+    <li>Practitioner pide cambiar submodalidades una por una, observando el efecto.</li>
+    <li>Es importante volver a dejar la imagen como estaba antes de cada cambio.</li>
+    <li>Repetir con experiencia agradable.</li>
+    <li>Cambiar roles.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este ejercicio es la aplicación práctica del cambio de submodalidades, conectando con el Tema 2 (estados internos, asociado/disociado) y con el cambio de estados.</p>
+<hr>
+
+<!-- Ejemplo Duda → Certeza -->
+<h3 id="ejemplo-duda-certeza">Ejemplo Práctico de Cambio de Submodalidades (DUDA → CERTEZA)</h3>
+<p><strong>Concepto clave:</strong> Ejemplo de un proceso terapéutico donde se identifican submodalidades de una emoción (duda) y se transforman en certeza mediante la modificación de las cualidades de la representación interna.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Diálogo entre practitioner y sujeto (Susi) sobre dependencia y miedo al abandono.</li>
+    <li>Observaciones del practitioner: cabeza inquieta, ojos arriba-derecha-izquierda y abajo-derecha, cuerpo encogido, voz agitada, respiración entrecortada.</li>
+    <li>El ejemplo muestra cómo la identificación de las claves de acceso y submodalidades permite comprender el estado interno.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este ejemplo integra todos los conceptos del tema: claves de acceso (movimientos oculares, gestos), submodalidades y su relación con los estados internos (Tema 2).</p>
+<hr>
+
+<!-- Ejercicio Confusión, Duda y Comprensión -->
+<h3 id="ejercicio-confusion">Ejercicio: Confusión, Duda y Comprensión</h3>
+<p><strong>Concepto clave:</strong> Ejercicio estructurado para transformar la confusión o la duda en comprensión o certeza, identificando las diferencias en submodalidades entre ambos estados.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Definir: confusión = información desordenada; no comprender = falta de información; dudar = opciones sin saber cuál tomar.</li>
+    <li>Pasos:
+        <ul>
+            <li>a) Pensar en algo que cause confusión (o duda).</li>
+            <li>b) Pensar en algo similar que se comprenda (o se tenga certeza).</li>
+            <li>c) Listar submodalidades de la confusión (visuales, auditivas, kinestésicas).</li>
+            <li>d) Listar submodalidades de la comprensión.</li>
+            <li>e) Comparar y encontrar diferencias sustanciales.</li>
+            <li>f) Modificar las submodalidades de la confusión para convertirlas en las de la comprensión.</li>
+        </ul>
+    </li>
+    <li>Importante: alterar el proceso, no el contenido.</li>
+    <li>Si hay dificultades, el practitioner puede sugerir modificaciones.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este ejercicio aplica el cambio de submodalidades (Tema 6) al cambio de estados emocionales, conectando con los objetivos del Metamodelo (Tema 5) y los estados internos (Tema 2).</p>
+<hr>
+
+<!-- Test de Vías -->
+<h3 id="test-vias">Ejercicio Práctico del Test de Vías</h3>
+<p><strong>Concepto clave:</strong> Test de autoevaluación para identificar la/s modalidad/es dominante/s del sistema representacional de una persona.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>El test consta de 5 afirmaciones con 4 opciones (V, A, K, D.I.).</li>
+    <li>Puntuación: 4 a la mejor, 3 a la siguiente, 2 a la siguiente, 1 a la peor.</li>
+    <li>Sumar puntuaciones por modalidad para obtener la jerarquía de preferencias.</li>
+</ul>
+<p><strong>Conexiones:</strong> El test es una herramienta práctica para autoconocimiento y para identificar la modalidad dominante del interlocutor, conectando con todas las claves de acceso del tema.</p>
+<hr>
+
+<!-- ===== 3. MINI-RESÚMEN ===== -->
+<h2 id="mini-resumen">📌 Mini-resumen por Epígrafe (Repaso rápido)</h2>
+<ul>
+    <li><strong>Introducción:</strong> El SR (V-A-K-O/G) es un código que simplifica el procesamiento sensorial. No operamos directamente sobre la realidad, sino sobre transformaciones sensoriales. La PNL es una metáfora orientada a generar opciones. La conducta implica entrada, procesamiento y expresión. Las secuencias del SR son estrategias; las conexiones son anclajes.</li>
+    <li><strong>Los Sistemas Representacionales (V.A.K.O.G.):</strong> Visual (imágenes), Auditivo (sonidos), Kinestésico (sensaciones), Olfativo/Gustativo (olores/sabores).</li>
+    <li><strong>Componentes del SR:</strong> Cada modalidad tiene externo/interno y recordado/construido. El Diálogo Interno (D.I.) es una variante auditiva para razonamiento lógico.</li>
+    <li><strong>Movimientos Oculares:</strong> Arriba izquierda (Vr), arriba derecha (Vc), izquierda (Ar), derecha (Ac), abajo izquierda (D.I.), abajo derecha (K). Ojos desenfocados = procesamiento de imágenes. Postura del "teléfono".</li>
+    <li><strong>Ejercicio de Accesos Oculares:</strong> Práctica con preguntas específicas para activar cada sistema: visual (colores, imágenes), auditivo (sonidos, voces), kinestésico (sensaciones), digital (cálculos).</li>
+    <li><strong>Claves de Acceso Gestuales:</strong> Visual (hombros altos, respiración alta, habla rápida); Auditivo (hombros balanceados, respiración torácica); Kinestésico (hombros bajos, respiración abdominal, habla lenta); Digital (mano en frente, rígido).</li>
+    <li><strong>Predicados Verbales:</strong> Visuales (ver, mirar, brillante); Auditivos (oír, decir, sonar); Kinestésicos (sentir, tocar, cálido); Olfativos/Gustativos (oler, saborear, dulce).</li>
+    <li><strong>Ejercicio con Televisión:</strong> Observar sin sonido (movimientos oculares, gestos), luego con sonido (voz, predicados), comparar y repetir.</li>
+    <li><strong>Submodalidades:</strong> Cualidades específicas de cada modalidad (color, brillo, tamaño en visual; tono, volumen en auditivo; intensidad, localización en kinestésico). Las submodalidades críticas tienen mayor impacto en el estado.</li>
+    <li><strong>Submodalidades Visuales:</strong> Color, brillo, contraste, enfoque, textura, detalle, tamaño, distancia, forma, marco, localización, movimiento, orientación, asociado/disociado, perspectiva, proporción, dimensión, singular/plural.</li>
+    <li><strong>Submodalidades Auditivas:</strong> Localización, tono, tonalidad, melodía, inflexión, volumen, tempo, ritmo, duración, mono/estéreo, distancia.</li>
+    <li><strong>Submodalidades Kinestésicas:</strong> Cualidad, intensidad, localización, movimiento, dirección, velocidad, duración.</li>
+    <li><strong>Submodalidades Olfativas/Gustativas:</strong> Limitadas, útiles en sinestesia.</li>
+    <li><strong>Ejercicio de Cambio de Submodalidades:</strong> Identificar submodalidades de una experiencia, cambiar una por una, observar efectos, volver al estado original. Identificar submodalidades críticas.</li>
+    <li><strong>Ejemplo Duda → Certeza:</strong> Proceso terapéutico donde se identifican submodalidades de la duda (visuales, auditivas, kinestésicas) y se transforman en certeza.</li>
+    <li><strong>Ejercicio Confusión/Duda y Comprensión:</strong> Definir confusión (información desordenada), no comprender (falta de información), dudar (opciones). Comparar submodalidades de ambos estados y transformar la confusión en comprensión.</li>
+    <li><strong>Test de Vías:</strong> Autoevaluación de 5 preguntas con 4 opciones (V, A, K, D.I.) para identificar la modalidad dominante.</li>
+</ul>
+
+<!-- ===== 4. PREGUNTAS DE DESARROLLO ===== -->
+<h2 id="preguntas-desarrollo">✍️ Preguntas de Desarrollo</h2>
+
+<!-- Pregunta 1 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 1:</strong> Explique el concepto de Sistema Representacional en PNL, sus modalidades (V, A, K, O/G) y la distinción entre sus componentes (externo/interno, recordado/construido). ¿Qué es el Diálogo Interno y cómo se diferencia de las otras modalidades?</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir SR: código simplificado que representa el procesamiento sensorial de la experiencia; los seres humanos no operamos sobre la realidad sino sobre sus transformaciones sensoriales.</li>
+            <li>Enumerar las cuatro modalidades:
+                <ul>
+                    <li><strong>Visual (V):</strong> imágenes.</li>
+                    <li><strong>Auditivo (A):</strong> sonidos.</li>
+                    <li><strong>Kinestésico (K):</strong> sensaciones corporales.</li>
+                    <li><strong>Olfativo/Gustativo (O/G):</strong> olores y sabores.</li>
+                </ul>
+            </li>
+            <li>Explicar componentes:
+                <ul>
+                    <li><strong>Externo (Ve, Ae, Ke):</strong> percepción del mundo exterior.</li>
+                    <li><strong>Interno (Vi, Ai, Ki):</strong> representación interna.</li>
+                    <li><strong>Recordado (Vr, Ar):</strong> acceso a experiencias pasadas.</li>
+                    <li><strong>Construido (Vc, Ac):</strong> creación/imaginación de nuevas experiencias.</li>
+                </ul>
+            </li>
+            <li>Definir <strong>Diálogo Interno (D.I.):</strong> modalidad auditiva específica para el razonamiento lógico hablado internamente; se distingue por ser un proceso de "habla interna" más que de sonidos.</li>
+            <li>Concluir que el SR es la base de todas las representaciones internas y, por tanto, de los estados internos y conductas.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Sistema Representacional, Visual, Auditivo, Kinestésico, Olfativo/Gustativo, Externo/Interno, Recordado/Construido, Diálogo Interno.</p>
+    </div>
+</div>
+
+<!-- Pregunta 2 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 2:</strong> Describa las claves de acceso para identificar el sistema representacional de una persona: movimientos oculares, gestos, postura, respiración y predicados verbales. Explique cómo se relacionan entre sí y cómo se utilizan en la calibración.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li><strong>Movimientos oculares:</strong>
+                <ul>
+                    <li>Arriba izquierda (Vr), arriba derecha (Vc), izquierda (Ar), derecha (Ac), abajo izquierda (D.I.), abajo derecha (K).</li>
+                    <li>Ojos desenfocados (procesamiento de imágenes).</li>
+                    <li>Postura del "teléfono".</li>
+                </ul>
+            </li>
+            <li><strong>Claves gestuales, posturales y respiratorias:</strong>
+                <ul>
+                    <li><strong>Visual:</strong> hombros altos, parpadeo rápido, respiración alta y superficial, se señala los ojos.</li>
+                    <li><strong>Auditivo:</strong> hombros balanceados, respiración torácica, se señala el oído.</li>
+                    <li><strong>Kinestésico:</strong> hombros bajos, respiración abdominal, se toca a sí mismo, habla lenta.</li>
+                    <li><strong>Digital:</strong> mano en la frente, rígido.</li>
+                </ul>
+            </li>
+            <li><strong>Predicados verbales:</strong>
+                <ul>
+                    <li>Visuales: "ver", "mirar", "brillante".</li>
+                    <li>Auditivos: "oír", "decir", "sonar".</li>
+                    <li>Kinestésicos: "sentir", "tocar", "cálido".</li>
+                </ul>
+            </li>
+            <li>Relacionar: todas estas claves son manifestaciones externas del mismo sistema interno; la calibración (Tema 3) consiste en observarlas simultáneamente para identificar la modalidad dominante.</li>
+            <li>Concluir que la identificación de claves de acceso es fundamental para establecer rapport y comprender el modelo del mundo del interlocutor.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Claves de acceso, movimientos oculares, gestos, postura, respiración, predicados verbales, calibración, rapport.</p>
+    </div>
+</div>
+
+<!-- Pregunta 3 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 3:</strong> Defina las submodalidades y explique su importancia en el cambio de estados internos. Describa las principales submodalidades visuales, auditivas y kinestésicas, y explique qué son las submodalidades críticas.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir submodalidades: cualidades o aspectos específicos de cada modalidad (como las "variables técnicas" de una representación interna).</li>
+            <li>Explicar su importancia: al modificar una submodalidad, se altera toda la representación y, por tanto, el estado interno asociado.</li>
+            <li>Principales submodalidades:
+                <ul>
+                    <li><strong>Visuales:</strong> color, brillo, contraste, enfoque, tamaño, distancia, forma, movimiento, asociado/disociado, perspectiva.</li>
+                    <li><strong>Auditivas:</strong> tono, volumen, ritmo, localización, duración, mono/estéreo.</li>
+                    <li><strong>Kinestésicas:</strong> cualidad (cálido/frío/tenso), intensidad, localización, movimiento, dirección.</li>
+                </ul>
+            </li>
+            <li>Definir <strong>submodalidades críticas:</strong> aquellas que al ser modificadas producen un impacto mayor en el estado interno; varían según la persona.</li>
+            <li>Concluir que el cambio de submodalidades críticas es una herramienta poderosa para la transformación personal.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Submodalidades, submodalidades críticas, cambio de estados internos, representaciones internas, visuales, auditivas, kinestésicas.</p>
+    </div>
+</div>
+
+<!-- Pregunta 4 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 4:</strong> Describa el ejercicio de identificación y cambio de submodalidades paso a paso. ¿Cómo se identifican las submodalidades críticas? ¿Por qué es importante volver a la imagen original después de cada cambio?</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li><strong>Participantes:</strong> Practitioner y Sujeto.</li>
+            <li><strong>Paso 1:</strong> Sujeto recuerda una experiencia (no demasiado desagradable) y se asocia.</li>
+            <li><strong>Paso 2:</strong> Practitioner pregunta por submodalidades (ubicación, asociado/disociado, color, brillo, enfoque, tamaño, movimiento, etc.).</li>
+            <li><strong>Paso 3:</strong> Practitioner pide cambiar cada submodalidad una por una.</li>
+            <li><strong>Paso 4:</strong> Observar el efecto de cada cambio en el estado del sujeto.</li>
+            <li><strong>Paso 5:</strong> Volver a la imagen original después de cada cambio.</li>
+            <li><strong>Identificación de submodalidades críticas:</strong> se detectan por el gran cambio que producen en el estado al ser modificadas.</li>
+            <li><strong>Importancia de volver a la imagen original:</strong> permite aislar el efecto de cada submodalidad; si no se vuelve, los cambios se acumulan y no se sabe cuál fue la causa del efecto.</li>
+            <li>Repetir con experiencia agradable y cambiar roles.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Ejercicio de cambio de submodalidades, submodalidades críticas, estado interno, asociado/disociado.</p>
+    </div>
+</div>
+
+<!-- Pregunta 5 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 5:</strong> Compare los conceptos de "Sistema Representacional" y "Submodalidades" con los conceptos de "Mapa del Mundo" y "Territorio" (Tema 2). Explique cómo el cambio de submodalidades permite enriquecer el mapa y modificar el estado interno.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir <strong>Mapa del Mundo:</strong> representación interna de la realidad (Tema 2).</li>
+            <li>Definir <strong>Territorio:</strong> la realidad en sí misma (Tema 2).</li>
+            <li>Definir <strong>Sistema Representacional:</strong> los canales sensoriales (V, A, K, O/G) a través de los cuales construimos el mapa.</li>
+            <li>Definir <strong>Submodalidades:</strong> las cualidades específicas de las representaciones dentro de cada canal (color, tamaño, tono, etc.).</li>
+            <li>Explicar que el mapa es una construcción subjetiva a partir de las modalidades y submodalidades.</li>
+            <li>El cambio de submodalidades modifica el mapa (la representación), no el territorio.</li>
+            <li>Al modificar el mapa, cambia el estado interno asociado a esa representación.</li>
+            <li>Concluir que el cambio de submodalidades es una herramienta para enriquecer el mapa y hacerlo más funcional.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Sistema Representacional, submodalidades, Mapa del Mundo, Territorio, estado interno, cambio de representaciones.</p>
+    </div>
+</div>
+
+<!-- Pregunta 6 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 6:</strong> Explique el ejercicio "Confusión, Duda y Comprensión" como aplicación del cambio de submodalidades. Describa los pasos, las definiciones de cada estado y cómo se transforma la confusión en comprensión.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir los tres estados:
+                <ul>
+                    <li><strong>Confusión:</strong> se tiene toda la información pero desordenada.</li>
+                    <li><strong>No comprender:</strong> falta información imprescindible.</li>
+                    <li><strong>Dudar:</strong> se tienen opciones sin saber cuál tomar.</li>
+                </ul>
+            </li>
+            <li><strong>Paso 1:</strong> Sujeto piensa en algo que le cause confusión (o duda).</li>
+            <li><strong>Paso 2:</strong> Sujeto piensa en algo similar que comprenda (o tenga certeza).</li>
+            <li><strong>Paso 3:</strong> Listar submodalidades de la confusión (visuales, auditivas, kinestésicas).</li>
+            <li><strong>Paso 4:</strong> Listar submodalidades de la comprensión.</li>
+            <li><strong>Paso 5:</strong> Comparar y encontrar diferencias sustanciales entre ambas.</li>
+            <li><strong>Paso 6:</strong> Modificar las submodalidades de la confusión para que coincidan con las de la comprensión.</li>
+            <li>Importante: alterar el proceso (la estructura), no el contenido.</li>
+            <li>Si hay dificultades, el practitioner puede sugerir modificaciones.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Ejercicio Confusión/Duda/Comprensión, submodalidades, cambio de estado, estructura vs. contenido.</p>
+    </div>
+</div>
+
+<!-- Pregunta 7 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 7:</strong> ¿Qué es el Test de Vías y para qué sirve? Describa su estructura, cómo se aplica y cómo se interpretan los resultados. Relacione el test con las claves de acceso y los predicados verbales.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir el Test de Vías: herramienta de autoevaluación para identificar la/s modalidad/es dominante/s del SR.</li>
+            <li>Estructura: 5 afirmaciones con 4 opciones (V, A, K, D.I.).</li>
+            <li>Aplicación: puntuar 4 a la mejor opción, 3 a la siguiente, 2 a la siguiente, 1 a la peor.</li>
+            <li>Interpretación: sumar puntuaciones por modalidad; la puntuación más alta indica la modalidad dominante, seguida por la segunda, etc.</li>
+            <li>Relacionar con claves de acceso: la modalidad dominante en el test debe coincidir con las claves gestuales y los movimientos oculares de la persona.</li>
+            <li>Relacionar con predicados verbales: la modalidad dominante se refleja en el lenguaje (predicados visuales, auditivos, kinestésicos).</li>
+            <li>Concluir que el test es un complemento de la observación directa para identificar el sistema representacional dominante.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Test de Vías, modalidad dominante, sistema representacional, claves de acceso, predicados verbales, jerarquía de preferencias.</p>
+    </div>
+</div>
+
+<!-- ===== 5. PREGUNTAS DE RESERVA ===== -->
+<h2 id="preguntas-reserva">⭐ Preguntas de Reserva</h2>
+
+<!-- Reserva 1 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 1:</strong> Realice un análisis integrador que conecte el Sistema Representacional (Tema 6) con los conceptos de "Estados Internos", "Representaciones Internas" y "Fisiología" (Tema 2), y con el "Rapport" y la "Calibración" (Tema 3). Explique cómo la identificación de la modalidad dominante de una persona permite establecer mejor rapport y cómo la modificación de submodalidades puede generar cambios en los estados internos.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Recordar del Tema 2: los estados internos (emociones-capacidades) se generan por R.I. + Fisiología.</li>
+            <li>Recordar que las R.I. son construcciones a través de los sistemas representacionales (V, A, K, O/G) y sus submodalidades.</li>
+            <li>Recordar del Tema 3: el rapport se establece acoplando la conducta del otro; la calibración observa cambios fisiológicos.</li>
+            <li>Explicar que la identificación de la modalidad dominante (claves de acceso, predicados) permite acoplar el lenguaje y la conducta (rapport).</li>
+            <li>Explicar que la modificación de submodalidades cambia las R.I. y, por tanto, los estados internos.</li>
+            <li>La calibración observa los cambios fisiológicos (respiración, tono muscular, coloración) que acompañan al cambio de submodalidades.</li>
+            <li>Concluir que el SR y las submodalidades son herramientas para la calibración y el cambio en el contexto del rapport.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Sistema Representacional, submodalidades, estados internos, Representaciones Internas, fisiología, rapport, calibración.</p>
+    </div>
+</div>
+
+<!-- Reserva 2 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 2:</strong> Compare el Sistema Representacional (Visual, Auditivo, Kinestésico) con el Metamodelo del Lenguaje (Tema 5). ¿Cómo se complementan estas dos herramientas en la práctica terapéutica? Utilice ejemplos de predicados verbales y claves de acceso para ilustrar su respuesta.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir el <strong>Sistema Representacional:</strong> canales sensoriales (V, A, K) a través de los cuales se construyen las representaciones internas; se identifica mediante claves de acceso (oculares, gestuales) y predicados verbales.</li>
+            <li>Definir el <strong>Metamodelo del Lenguaje:</strong> herramienta para identificar y desafiar violaciones lingüísticas (generalizaciones, eliminaciones, distorsiones) que limitan el mapa.</li>
+            <li>Explicar la complementariedad:
+                <ul>
+                    <li>El Metamodelo trabaja con el contenido verbal (lo que se dice); el SR trabaja con la forma (cómo se representa internamente).</li>
+                    <li>Los predicados verbales son el punto de conexión: son claves de acceso al SR y también son el material que el Metamodelo desafía.</li>
+                </ul>
+            </li>
+            <li>Ejemplo: Un cliente dice "Veo todo oscuro" (predicado visual). El Metamodelo podría preguntar "¿Qué ves exactamente?"; el SR observaría movimientos oculares arriba izquierda/derecha y modificaría submodalidades.</li>
+            <li>En terapia, se usa el Metamodelo para clarificar creencias limitantes y el SR para cambiar la representación interna de esas creencias.</li>
+            <li>Concluir que son herramientas complementarias: el Metamodelo clarifica, el SR transforma.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Sistema Representacional, Metamodelo, predicados verbales, claves de acceso, complementariedad, cambio terapéutico.</p>
+    </div>
+</div>
+
+<!-- Reserva 3 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 3:</strong> Analice en profundidad el ejercicio "Duda → Certeza" (ejemplo práctico) como un proceso integrador de claves de acceso y submodalidades. Identifique en el diálogo qué claves de acceso se observan y cómo se relacionan con las submodalidades de la duda y su transformación en certeza.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Presentar el ejemplo como un proceso terapéutico real.</li>
+            <li><strong>Identificar claves de acceso en el diálogo:</strong>
+                <ul>
+                    <li>Ojos arriba a derecha e izquierda (Vc, Vr) y abajo a la derecha (K): procesamiento de imágenes y sensaciones.</li>
+                    <li>Cuerpo encogido (K), brazos cruzados (K).</li>
+                    <li>Voz agitada que pasa a casi inaudible (A).</li>
+                    <li>Respiración alta y entrecortada (V/A) que pasa a baja (K).</li>
+                </ul>
+            </li>
+            <li><strong>Identificar submodalidades de la duda:</strong>
+                <ul>
+                    <li>Visual: imágenes de abandono, soledad.</li>
+                    <li>Auditivo: tono de voz agitado, luego casi inaudible.</li>
+                    <li>Kinestésico: cuerpo encogido, compresión de labios, autoabrazos.</li>
+                </ul>
+            </li>
+            <li>Explicar que la transformación consiste en modificar estas submodalidades (aunque el ejemplo no lo muestra explícitamente, se sugiere el cambio en la próxima sesión).</li>
+            <li>Relacionar las claves de acceso observadas con las submodalidades que representan.</li>
+            <li>Concluir que el ejemplo demuestra cómo la observación de claves de acceso permite identificar las submodalidades subyacentes y planificar el cambio.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Ejemplo Duda → Certeza, claves de acceso, submodalidades, movimientos oculares, gestos, respiración, cambio de estado.</p>
+    </div>
+</div>
+
+<script>
+    // Alternar modo claro/oscuro
+    document.getElementById('modoBtn').addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        this.textContent = document.body.classList.contains('dark-mode') ? '☀️ Modo' : '🌓 Modo';
+    });
+
+    // Toggle para esquemas de desarrollo
+    function toggleEsquema(btn) {
+        const container = btn.parentElement;
+        const esquema = container.querySelector('.esquema-oculto');
+        if (esquema) {
+            esquema.classList.toggle('visible');
+            btn.textContent = esquema.classList.contains('visible') ? '📖 Ocultar esquema' : '📖 Mostrar esquema';
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Tema 7: Estrategias · Resumen UNED</title>
+    <style>
+        /* ===== ESTILO ÚNICO PARA RESÚMENES UNED ===== */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            max-width: 950px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #f5f7fa;
+            color: #1a1a2e;
+            line-height: 1.8;
+            font-size: 17px;
+        }
+        h1 {
+            font-size: 30px;
+            color: #0a1628;
+            border-bottom: 4px solid #1a3d66;
+            padding-bottom: 14px;
+        }
+        h2 {
+            font-size: 23px;
+            color: #1a3d66;
+            margin-top: 32px;
+            border-left: 4px solid #1a3d66;
+            padding-left: 16px;
+        }
+        h3 {
+            font-size: 20px;
+            color: #2a4a7a;
+            margin-top: 26px;
+        }
+        h4 {
+            font-size: 18px;
+            color: #3a5a8a;
+            margin-top: 20px;
+        }
+        strong {
+            color: #0a2a4a;
+        }
+        ul {
+            padding-left: 24px;
+        }
+        li {
+            margin-bottom: 6px;
+        }
+        blockquote {
+            background: #e8edf4;
+            padding: 12px 20px;
+            border-left: 4px solid #1a3d66;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        hr {
+            border: none;
+            border-top: 2px solid #d0d8e4;
+            margin: 28px 0;
+        }
+        .indice {
+            background: #e8edf4;
+            padding: 16px 24px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .indice ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .indice li {
+            padding: 3px 0;
+        }
+        .indice li.h1 {
+            font-weight: 600;
+        }
+        .indice li.h2 {
+            padding-left: 20px;
+            font-weight: 400;
+        }
+        .indice a {
+            color: #1a3d66;
+            text-decoration: none;
+        }
+        .indice a:hover {
+            text-decoration: underline;
+        }
+        .idea-central {
+            background: #e0e8f4;
+            padding: 18px 24px;
+            border-radius: 12px;
+            margin: 20px 0 30px 0;
+            border-left: 5px solid #1a3d66;
+        }
+        .idea-central h2 {
+            margin-top: 0;
+            border-left: none;
+            padding-left: 0;
+        }
+        .modo-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            padding: 8px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #1a3d66;
+            color: #fff;
+            font-size: 14px;
+            z-index: 999;
+        }
+        .modo-btn:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode {
+            background: #0d1a2b;
+            color: #d6e2f5;
+        }
+        .dark-mode h1 {
+            color: #b0c8e8;
+            border-bottom-color: #2a5a8a;
+        }
+        .dark-mode h2 {
+            color: #8ab0e0;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode h3 {
+            color: #6a9ac0;
+        }
+        .dark-mode h4 {
+            color: #5a8aaa;
+        }
+        .dark-mode strong {
+            color: #c8ddf0;
+        }
+        .dark-mode blockquote {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode .indice {
+            background: #142a44;
+        }
+        .dark-mode .indice a {
+            color: #8ab0e0;
+        }
+        .dark-mode .idea-central {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode hr {
+            border-top-color: #2a4a6a;
+        }
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+                padding: 14px;
+            }
+            h1 {
+                font-size: 25px;
+            }
+            h2 {
+                font-size: 21px;
+            }
+        }
+
+        /* ===== ESTILOS PARA PREGUNTAS INTERACTIVAS ===== */
+        .pregunta {
+            background: #f0f4fa;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            border: 1px solid #d0d8e4;
+        }
+        .dark-mode .pregunta {
+            background: #142a44;
+            border-color: #2a4a6a;
+        }
+        .pregunta .enunciado {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .pregunta .opciones {
+            list-style: none;
+            padding-left: 8px;
+        }
+        .pregunta .opciones li {
+            margin-bottom: 4px;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .pregunta .opciones li.correcta {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .dark-mode .pregunta .opciones li.correcta {
+            background: #1a4a3a;
+            color: #8fdfb0;
+            border-left-color: #2ecc71;
+        }
+        .pregunta .respuesta-oculta {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta .respuesta-oculta {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta .respuesta-oculta.visible {
+            display: block;
+        }
+        .pregunta .btn-respuesta {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #1a3d66;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta .btn-respuesta:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta:hover {
+            background: #3a7aaa;
+        }
+        .pregunta .trampa {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #6a4a2a;
+            font-style: italic;
+        }
+        .dark-mode .pregunta .trampa {
+            color: #c8a878;
+        }
+        .pregunta-desarrollo .esquema-oculto {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta-desarrollo .esquema-oculto {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta-desarrollo .esquema-oculto.visible {
+            display: block;
+        }
+        .pregunta-desarrollo .btn-esquema {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #1a3d66;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta-desarrollo .btn-esquema:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta-desarrollo .btn-esquema {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta-desarrollo .btn-esquema:hover {
+            background: #3a7aaa;
+        }
+    </style>
+</head>
+<body>
+
+<button class="modo-btn" id="modoBtn" aria-label="Cambiar modo claro/oscuro">🌓 Modo</button>
+
+<h1>Tema 7: Estrategias</h1>
+
+<!-- ===== ÍNDICE ===== -->
+<div class="indice">
+    <h2 style="margin-top:0; border-left:none; padding-left:0;">📑 Índice</h2>
+    <ul>
+        <li class="h1"><a href="#idea-central">1. Idea Central (5 minutos)</a></li>
+        <li class="h1"><a href="#resumen-epigrafes">2. Resumen por Epígrafes</a></li>
+        <li class="h2"><a href="#definicion">Definición de Estrategia</a></li>
+        <li class="h2"><a href="#pops">El Modelo POPS (TOTE)</a></li>
+        <li class="h2"><a href="#representacion">Representación de Estrategias</a></li>
+        <li class="h2"><a href="#puntos-decision">Puntos de Decisión</a></li>
+        <li class="h2"><a href="#postulados">Postulados sobre Estrategias y Consciencia</a></li>
+        <li class="h2"><a href="#obtencion">Procesos de Obtención</a></li>
+        <li class="h2"><a href="#comprobacion">Comprobación de la Estrategia</a></li>
+        <li class="h2"><a href="#desempaquetamiento">Desempaquetando la Estrategia</a></li>
+        <li class="h2"><a href="#ejercicio-desempaquetamiento">Ejercicio de Desempaquetamiento</a></li>
+        <li class="h2"><a href="#ejercicio-motivacion">Ejercicio de Instalación de Motivación</a></li>
+        <li class="h2"><a href="#diseno">Diseño de Estrategias</a></li>
+        <li class="h2"><a href="#regla-oro">Regla de Oro del Diseño</a></li>
+        <li class="h2"><a href="#instalacion">Instalación de Estrategias</a></li>
+        <li class="h2"><a href="#instalacion-anclajes">Instalación por Anclajes</a></li>
+        <li class="h2"><a href="#instalacion-ensayo">Instalación por Ensayo</a></li>
+        <li class="h1"><a href="#mini-resumen">3. Mini-resumen por Epígrafe</a></li>
+        <li class="h1"><a href="#preguntas-desarrollo">4. Preguntas de Desarrollo</a></li>
+        <li class="h1"><a href="#preguntas-reserva">5. Preguntas de Reserva</a></li>
+    </ul>
+</div>
+
+<!-- ===== 1. IDEA CENTRAL ===== -->
+<div id="idea-central" class="idea-central">
+    <h2>💡 Idea Central (5 minutos)</h2>
+    <p>Las estrategias son secuencias ordenadas de modalidades del Sistema Representacional (V, A, K, O/G) que constituyen los procesos mentales que subyacen a toda conducta humana. Cada persona posee grupos de estrategias específicas para diferentes actividades (comunicación, motivación, toma de decisiones, etc.), y el éxito o fracaso en una tarea depende del uso de la estrategia más adecuada. El modelo POPS (Prueba-Operación-Prueba-Salida), derivado del TOTE, proporciona la estructura básica para analizar cualquier comportamiento: se prueba si el estado presente coincide con el deseado; si no, se opera para reducir la diferencia; se vuelve a probar; y se sale cuando se alcanza el objetivo. Las estrategias pueden representarse como secuencias lineales de modalidades (ej. Ve → Vc → Ke → Ve → SALIDA), con puntos de decisión donde la estrategia puede bifurcarse, finalizar o cambiar. La obtención de estrategias se realiza mediante preguntas (Metalenguaje) o observación directa de la conducta, utilizando claves de acceso (movimientos oculares, gestos, predicados verbales). Una vez identificadas, las estrategias pueden comprobarse, desempaquetarse y, si es necesario, rediseñarse e instalarse mediante anclajes o ensayo, siguiendo principios como la elegancia (mínimo número de pasos) y la inclusión de los tres sistemas primarios (V, A, K).</p>
+</div>
+
+<!-- ===== 2. RESUMEN POR EPÍGRAFES ===== -->
+<h2 id="resumen-epigrafes">📘 Resumen por Epígrafes</h2>
+
+<!-- Definición de Estrategia -->
+<h3 id="definicion">Definición de Estrategia</h3>
+<p><strong>Concepto clave:</strong> Una estrategia es un proceso mental que lleva a una respuesta, representado como una secuencia de modalidades del Sistema Representacional (4-R). En PNL, se considera que una estrategia pone en funcionamiento el sistema neurológico (sinergia) y su éxito depende del uso de la estrategia más adecuada.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Todo comportamiento abierto está controlado por estrategias internas (secuencias del SR).</li>
+    <li>Cada persona tiene grupos de estrategias específicas para diferentes actividades (comunicación, relajación, motivación, etc.).</li>
+    <li>El éxito no es casualidad; la PNL encontró que consiste en el uso de la estrategia más adecuada.</li>
+    <li>Una estrategia se representa por una secuencia lineal de modalidades del SR, que comienza y finaliza con una salida (feedback sensorial).</li>
+    <li>Ejemplo: un director de redacción que decide si publicar un artículo: lee (Ve), siente que falta algo (Ki), se pregunta (D.I.), imagina (Vc), y finalmente no sabe qué responder (salida).</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta directamente con el Tema 6 (Sistemas Representacionales y Submodalidades), estableciendo que las estrategias son secuencias de esas modalidades. También se relaciona con el Tema 2 (estados internos) y el Tema 5 (Metamodelo del Lenguaje, para la obtención verbal).</p>
+<hr>
+
+<!-- El Modelo POPS (TOTE) -->
+<h3 id="pops">El Modelo POPS (TOTE)</h3>
+<p><strong>Concepto clave:</strong> El POPS (TOTE en inglés) es un modelo básico de conducta que analiza las unidades de comportamiento mediante un ciclo de Prueba-Operación-Prueba-Salida, añadiendo feedback y resultado al tradicional estímulo-respuesta.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Creado por K. Pribram, G. Miller y E. Galanter (1960) para analizar unidades de comportamiento.</li>
+    <li>Siglas: <strong>P</strong> = Prueba (Test), <strong>O</strong> = Operación (Operation), <strong>P</strong> = Prueba (Test), <strong>S</strong> = Salida (Exit).</li>
+    <li><strong>Prueba:</strong> objetivo fijo y evidencia para el éxito (comparación estado presente/estado deseado).</li>
+    <li><strong>Operación:</strong> conjunto de variables y medios para alcanzar el objetivo, ejecutados mientras persista la incongruencia.</li>
+    <li><strong>Prueba (2ª):</strong> se repite para comprobar si la diferencia ha desaparecido.</li>
+    <li><strong>Salida:</strong> se produce cuando la prueba es exitosa.</li>
+    <li>Ejemplo práctico: aprender a montar en bicicleta (Prueba: ¿estoy manteniendo el equilibrio?; Operación: pedalear y ajustar centro de gravedad; Salida: seguir pedaleando y disfrutando).</li>
+</ul>
+<p><strong>Conexiones:</strong> El POPS es el modelo estructural que organiza las estrategias. Se conecta con los objetivos de la PNL (estado presente → estado deseado, Tema 2) y con el concepto de feedback (Tema 3).</p>
+<hr>
+
+<!-- Representación de Estrategias -->
+<h3 id="representacion">Representación de Estrategias</h3>
+<p><strong>Concepto clave:</strong> Una estrategia se representa por una secuencia lineal de modalidades del SR (V, A, K, O/G), indicando la modalidad en que se codifica la información y la relación secuencial entre modalidades.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Ejemplo: estrategia para clavar un clavo: <strong>Ve,i → Ke → Ve,i → Ke → Ve,i → SALIDA</strong>.</li>
+    <li>Dos aspectos significativos:
+        <ul>
+            <li>La <strong>modalidad</strong> dentro del SR en la cual está codificada la información (R-operator).</li>
+            <li>La <strong>relación secuencial</strong> que siguen las modalidades.</li>
+        </ul>
+    </li>
+</ul>
+<p><strong>Conexiones:</strong> Esta representación es la aplicación directa de las modalidades del SR (Tema 6) al análisis de conductas concretas. Conecta con la calibración (Tema 3) para identificar las modalidades en acción.</p>
+<hr>
+
+<!-- Puntos de Decisión -->
+<h3 id="puntos-decision">Puntos de Decisión dentro de una Estrategia</h3>
+<p><strong>Concepto clave:</strong> Los puntos de decisión son pasos dentro de una estrategia donde una modalidad del 4-R determina la dirección siguiente, pudiendo llevar a: a) salida y finalización, b) cambio de contenido operacional, c) paso al siguiente eslabón, d) cambio de estrategia.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Un punto de decisión es una secuencia de modalidad donde el valor que adquiere para el sujeto determina la dirección.</li>
+    <li>Puede haber uno o varios puntos de decisión en una misma estrategia.</li>
+    <li>Los puntos de decisión pueden ser de cualquier modalidad del 4-R.</li>
+    <li>Ejemplo: <strong>Ve → Vc → Ki → D.I. → Ki</strong> donde el punto de decisión (Ki) puede llevar a D.I. → Vc (si positivo) o a Ve → Vc → Ki... (si negativo).</li>
+    <li>El dominio en identificar y desempaquetar puntos de decisión es crucial para el éxito en la utilización posterior de la estrategia.</li>
+</ul>
+<p><strong>Conexiones:</strong> Los puntos de decisión se conectan con la toma de decisiones (Tema 2) y con la flexibilidad en el rapport (Tema 3). También se relacionan con las submodalidades críticas (Tema 6).</p>
+<hr>
+
+<!-- Postulados sobre Estrategias y Consciencia -->
+<h3 id="postulados">Postulados sobre Estrategias y Consciencia</h3>
+<p><strong>Concepto clave:</strong> Los postulados de Grinder, Bandler y Dilts establecen que: a) las estrategias no necesitan ser conscientes; b) la consciencia es el resultado de la intensidad de la actividad en el SR; c) la consciencia es una propiedad emergente, no un indicador; d) una representación es consciente cuando alcanza cierto nivel de intensidad; e) las estrategias bajo el nivel de consciencia constituyen la "mente inconsciente".</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Las estrategias pueden ser operativas sin ser conscientes.</li>
+    <li>La consciencia = intensidad relativa de la actividad dentro del SR.</li>
+    <li>La consciencia es una propiedad emergente de la actividad neural.</li>
+    <li>Una representación es consciente al alcanzar un nivel de intensidad.</li>
+    <li>Las estrategias bajo el nivel de consciencia constituyen la mente inconsciente.</li>
+    <li><strong>Importante:</strong> las estrategias son estructuras secuenciales vacías de contenido; identifican solo la forma de construir y secuenciar una experiencia.</li>
+</ul>
+<p><strong>Conexiones:</strong> Estos postulados conectan con el Tema 2 (estados internos, mente consciente/inconsciente) y con el Tema 4 (hipnosis, acceso al subconsciente). La idea de "estructuras vacías de contenido" se relaciona con la distinción entre estructura y contenido en PNL.</p>
+<hr>
+
+<!-- Procesos de Obtención -->
+<h3 id="obtencion">Procesos de Obtención de Estrategias</h3>
+<p><strong>Concepto clave:</strong> La obtención es el proceso de reunir información para hacer explícita la secuencia ordenada del SR que constituye una estrategia. Se realiza de dos formas: verbal (preguntas del Metalenguaje) o conductual (observando al sujeto realizar la tarea).</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Primer paso: identificar la unidad simple de la estrategia a modelar.</li>
+    <li><strong>Forma A (verbal):</strong> mediante preguntas del Metalenguaje o atendiendo a la comunicación verbal espontánea ("la gente hace lo que dice").
+        <ul>
+            <li>Preguntas: ¿Puedes contarme algo sobre el tiempo en que eras capaz de X? ¿Cómo se hace X? ¿Qué haces en primer lugar? ¿Qué haces a continuación? (varias veces). ¿Cómo sabes que has terminado?</li>
+        </ul>
+    </li>
+    <li><strong>Forma B (conductual):</strong> pedir al sujeto que lleve a cabo la tarea que requiere la estrategia.</li>
+    <li>Herramientas principales:
+        <ul>
+            <li>Vocabulario (notación 4R: A, V, K, O, G).</li>
+            <li>Indicadores con base sensorial (externo/interno, creado/recordado: e, i, c, r).</li>
+        </ul>
+    </li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta con el Metamodelo del Lenguaje (Tema 5) para la obtención verbal, y con la calibración y claves de acceso (Temas 3 y 6) para la observación conductual.</p>
+<hr>
+
+<!-- Comprobación de la Estrategia -->
+<h3 id="comprobacion">Comprobación de la Estrategia</h3>
+<p><strong>Concepto clave:</strong> Una vez obtenida la estrategia, es necesario comprobarla para asegurar que el modelo es adecuado, mediante cinco métodos: observación espontánea, colocación en contexto, reproducción parcial del contexto, exageración de una porción, o preguntas directas.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>La gente hace lo que dice:</strong> las estrategias aparecen espontáneamente en la conversación.</li>
+    <li><strong>Colocar físicamente a la persona en el contexto</strong> donde la estrategia ocurre naturalmente.</li>
+    <li><strong>Presentar, imitar o reproducir una porción del contexto</strong>.</li>
+    <li><strong>Exagerar una pequeña porción de la estrategia</strong> e iniciar una búsqueda transderivacional.</li>
+    <li><strong>Preguntas directas</strong> sobre la estrategia o comportamiento.</li>
+</ul>
+<p><strong>Conexiones:</strong> Estos métodos conectan con la calibración (Tema 3) y con la observación de claves de acceso (Tema 6). La "búsqueda transderivacional" se relaciona con los patrones del Modelo Milton (Tema 4).</p>
+<hr>
+
+<!-- Desempaquetando la Estrategia -->
+<h3 id="desempaquetamiento">Desempaquetando la Estrategia</h3>
+<p><strong>Concepto clave:</strong> El desempaquetamiento requiere dos cualidades: habilidad para observar cambios rápidos y capacidad para ralentizar los procesos, utilizando canales sensoriales limpios, predicados verbales y claves de acceso.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Cualidades necesarias:
+        <ul>
+            <li>Habilidad para observar cambios rápidos.</li>
+            <li>Capacidad para ralentizar procesos.</li>
+        </ul>
+    </li>
+    <li>Uso de predicados verbales: las personas dicen literalmente, a través de su lenguaje, qué modalidad del SR están empleando.</li>
+    <li>Claves de acceso:
+        <ul>
+            <li>Movimientos de los ojos.</li>
+            <li>Claves de acceso gestuales.</li>
+            <li>Cambios en la respiración.</li>
+            <li>Cambios en postura y tono muscular.</li>
+            <li>Cambios de tonalidad y tiempo en el habla.</li>
+        </ul>
+    </li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe integra todos los temas anteriores: claves de acceso (Tema 6), calibración (Tema 3), lenguaje (Tema 5) y fisiología (Tema 2).</p>
+<hr>
+
+<!-- Ejercicio de Desempaquetamiento -->
+<h3 id="ejercicio-desempaquetamiento">Ejercicio de Desempaquetamiento de Estrategias</h3>
+<p><strong>Concepto clave:</strong> Ejercicio práctico donde el practitioner obtiene verbalmente la estrategia de un problema del sujeto, la describe en voz alta, identifica puntos de decisión y alternativas, y puede pedir repetición más lenta.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Participantes: A (Sujeto), B (Practitioner).</li>
+    <li>Pasos:
+        <ul>
+            <li>B pregunta a A sobre un problema actual para que verbalice la estructura de pensamiento.</li>
+            <li>B atiende a indicadores verbales y no verbales.</li>
+            <li>B describe la secuencia identificada en voz alta.</li>
+            <li>B identifica punto de decisión y alternativas.</li>
+            <li>Si hay duda, B pide repetir más lentamente.</li>
+        </ul>
+    </li>
+    <li>Rotar papeles.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este ejercicio aplica todos los conceptos del tema: obtención verbal, claves de acceso, puntos de decisión y desempaquetamiento.</p>
+<hr>
+
+<!-- Ejercicio de Instalación de Motivación -->
+<h3 id="ejercicio-motivacion">Ejercicio de Instalación de Estrategia de Motivación</h3>
+<p><strong>Concepto clave:</strong> Ejercicio para instalar una estrategia de motivación en un sujeto: primero se desempaqueta su estrategia de motivación, luego se identifica una conducta no motivante, y finalmente se aplica la estrategia de motivación para que el sujeto realice la conducta.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Participantes: A (Sujeto), B (Practitioner).</li>
+    <li><strong>Paso 1:</strong> B desempaqueta la estrategia de motivación de A.</li>
+    <li><strong>Paso 2:</strong> B identifica una conducta simple que A no está motivado para hacer.</li>
+    <li><strong>Paso 3:</strong> B hace que A reconsidere la conducta no motivante siguiendo los pasos de la estrategia de motivación.</li>
+    <li>Si las secuencias son correctas, A se sentirá motivado.</li>
+    <li>El éxito depende de la precisión en la obtención y aplicación; si todos los pasos son precisos, el resultado es inevitable.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este ejercicio aplica la instalación de estrategias (anclajes implícitos) y se conecta con el cambio de estados internos (Tema 2).</p>
+<hr>
+
+<!-- Diseño de Estrategias -->
+<h3 id="diseno">Diseño de Estrategias</h3>
+<p><strong>Concepto clave:</strong> Conjunto de cinco reglas para diseñar estrategias: 1) representación explícita del resultado deseado, 2) inclusión de V, A, K, 3) al menos un modificador externo, 4) sin bucles, 5) resultado alternativo (proyección de ganancias secundarias).</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Regla 1:</strong> Representación explícita del <strong>resultado deseado</strong> (comparación estado presente/estado deseado). Elegir el SR correcto es crucial.</li>
+    <li><strong>Regla 2:</strong> Los tres sistemas primarios <strong>V, A, K</strong> deben estar implicados.</li>
+    <li><strong>Regla 3:</strong> Después de N pasos, asegurar un modificador <strong>externo</strong>.</li>
+    <li><strong>Regla 4:</strong> No debe haber <strong>bucles</strong>.</li>
+    <li><strong>Regla 5:</strong> <strong>Resultado alternativo:</strong> considerar qué haría el sujeto si ya no tuviera el problema (abre posibilidades y descubre ganancias secundarias).</li>
+    <li>Además, atender a las modalidades dominantes del sujeto y a los recursos presentes en otras estrategias eficientes.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta con el Tema 2 (estado deseado, estados internos) y con el Tema 6 (SR dominante). La regla de "sin bucles" se relaciona con la eficiencia del POPS.</p>
+<hr>
+
+<!-- Regla de Oro del Diseño -->
+<h3 id="regla-oro">Regla de Oro del Diseño de Estrategias</h3>
+<p><strong>Concepto clave:</strong> Tres principios: 1) elegancia (mínimo número de pasos), 2) el elemento con mayor número de alternativas es quien decide, 3) motivaciones positivas (los anclajes positivos se refuerzan a sí mismos).</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Elegancia:</strong> No complicar; elegir la estrategia con el menor número de pasos.</li>
+    <li><strong>Alternativas:</strong> El elemento con mayor número de alternativas es quien tiene la decisión. Tener elección es mejor que no tener ninguna.</li>
+    <li><strong>Motivaciones positivas:</strong> Los anclajes positivos se refuerzan a sí mismos.</li>
+</ul>
+<p><strong>Conexiones:</strong> Estos principios conectan con la eficiencia en la comunicación (Tema 2) y con la flexibilidad en el rapport (Tema 3). La "elección" se relaciona con los objetivos de la PNL de ampliar opciones.</p>
+<hr>
+
+<!-- Instalación de Estrategias -->
+<h3 id="instalacion">Instalación de Estrategias</h3>
+<p><strong>Concepto clave:</strong> Tres sistemas para instalar estrategias: a) por anclajes, b) por ensayo (autoanclaje), c) mixto (ensayo + anclaje). Condiciones fundamentales: que esté completa y disponible, y conectada al contexto apropiado.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Tres sistemas:
+        <ul>
+            <li><strong>Anclajes:</strong> anclar secuencias selectivas de modalidades.</li>
+            <li><strong>Ensayo:</strong> el sujeto practica conscientemente cada paso (condicionamiento).</li>
+            <li><strong>Mixto:</strong> ensayo + activación de ancla establecida.</li>
+        </ul>
+    </li>
+    <li>Condiciones fundamentales:
+        <ul>
+            <li>Estrategia <strong>completa y disponible</strong> para el sujeto.</li>
+            <li><strong>Conectada al contexto apropiado</strong> (anclada a estímulo externo).</li>
+        </ul>
+    </li>
+    <li>Necesario <strong>romper la estrategia antigua</strong> en el punto adecuado para insertar la nueva.</li>
+    <li>Instalar una estrategia inapropiada produce interferencias o rechazos.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta con el Tema 4 (anclajes, hipnosis) y con el Tema 2 (cambio de estados internos). La idea de "romper la estrategia antigua" se relaciona con los puntos de decisión.</p>
+<hr>
+
+<!-- Instalación por Anclajes -->
+<h3 id="instalacion-anclajes">Instalación por Medio de Anclajes</h3>
+<p><strong>Concepto clave:</strong> Instalación por anclajes implica anclar secuencias selectivas de modalidades del 4-R. En "utilización" se ancla el contenido; en "instalación" se anclan los pasos de la estrategia. Para instalar una nueva estrategia, se puede usar modelos existentes, modelar a alguien que la posea, o diseñarla específicamente.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Anclaje de secuencias selectivas de modalidades del 4-R.</li>
+    <li>Diferencia:
+        <ul>
+            <li><strong>Utilización:</strong> anclar para controlar el contenido.</li>
+            <li><strong>Instalación:</strong> anclar los propios pasos de la estrategia.</li>
+        </ul>
+    </li>
+    <li>Para instalar en alguien sin estrategia:
+        <ul>
+            <li>Utilizar modelos existentes.</li>
+            <li>Modelar a alguien que la posea.</li>
+            <li>Diseñarla específicamente para el cliente.</li>
+        </ul>
+    </li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta directamente con el Tema 4 (anclajes) y con el modelaje en PNL.</p>
+<hr>
+
+<!-- Instalación por Ensayo -->
+<h3 id="instalacion-ensayo">Instalación por Ensayo</h3>
+<p><strong>Concepto clave:</strong> El ensayo es similar al condicionamiento: el sujeto practica conscientemente cada paso de la nueva estrategia, generando anclas autoestablecidas. El mecanismo más eficaz es que el sujeto siga instrucciones del programador y repita el proceso rápidamente hasta que las transiciones sean suaves.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Similar al condicionamiento o conductismo.</li>
+    <li>El sujeto practica conscientemente cada paso.</li>
+    <li>Genera anclas autoestablecidas para cada secuencia.</li>
+    <li>Mecanismo eficaz: el sujeto sigue instrucciones y repite rápidamente hasta que las transiciones sean suaves y cómodas.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta con el aprendizaje y la repetición (Tema 2) y con los anclajes autoestablecidos (Tema 4).</p>
+<hr>
+
+<!-- ===== 3. MINI-RESÚMEN ===== -->
+<h2 id="mini-resumen">📌 Mini-resumen por Epígrafe (Repaso rápido)</h2>
+<ul>
+    <li><strong>Definición de Estrategia:</strong> Proceso mental secuencial de modalidades del SR que produce una respuesta. El éxito depende de usar la estrategia adecuada. Representación: secuencia lineal de V, A, K, O/G.</li>
+    <li><strong>Modelo POPS (TOTE):</strong> Prueba (¿estado presente = estado deseado?) → Operación (acción para reducir diferencia) → Prueba (verificar) → Salida (éxito). Modelo básico de conducta con feedback.</li>
+    <li><strong>Representación de Estrategias:</strong> Secuencia lineal de modalidades con notación (V, A, K, O/G) e indicadores (e, i, c, r). Dos aspectos: modalidad y relación secuencial.</li>
+    <li><strong>Puntos de Decisión:</strong> Pasos donde una modalidad determina la dirección (salida, cambio de contenido, siguiente paso, cambio de estrategia). Pueden ser de cualquier modalidad del 4-R.</li>
+    <li><strong>Postulados sobre Estrategias y Consciencia:</strong> Las estrategias no necesitan ser conscientes. Consciencia = intensidad de actividad en el SR. Es una propiedad emergente. Representaciones conscientes al alcanzar cierto nivel de intensidad. Estrategias bajo el nivel de consciencia = mente inconsciente.</li>
+    <li><strong>Procesos de Obtención:</strong> Verbal (preguntas del Metalenguaje, "la gente hace lo que dice") o conductual (observar al sujeto realizar la tarea). Herramientas: notación 4R e indicadores sensoriales.</li>
+    <li><strong>Comprobación de la Estrategia:</strong> Cinco métodos: observación espontánea, colocación en contexto, reproducción parcial del contexto, exageración de porción, preguntas directas.</li>
+    <li><strong>Desempaquetando la Estrategia:</strong> Observar cambios rápidos y ralentizar procesos. Usar predicados verbales y claves de acceso (movimientos oculares, gestos, respiración, postura, tono).</li>
+    <li><strong>Ejercicio de Desempaquetamiento:</strong> Practitioner pregunta sobre un problema, describe la secuencia en voz alta, identifica puntos de decisión. Rotar papeles.</li>
+    <li><strong>Ejercicio de Instalación de Motivación:</strong> Desempaquetar estrategia de motivación → identificar conducta no motivante → aplicar estrategia de motivación para que el sujeto la realice.</li>
+    <li><strong>Diseño de Estrategias:</strong> 5 reglas: 1) resultado deseado explícito, 2) incluir V, A, K, 3) modificador externo, 4) sin bucles, 5) resultado alternativo. Atender a modalidades dominantes.</li>
+    <li><strong>Regla de Oro:</strong> Elegancia (mínimo de pasos), alternativas (quien tiene más opciones decide), motivaciones positivas (anclajes positivos se refuerzan).</li>
+    <li><strong>Instalación de Estrategias:</strong> Tres sistemas: anclajes, ensayo, mixto. Condiciones: completa y disponible, conectada al contexto apropiado. Romper estrategia antigua en el punto adecuado.</li>
+    <li><strong>Instalación por Anclajes:</strong> Anclar secuencias selectivas de modalidades. Diferencia: utilización (contenido) vs. instalación (pasos). Fuentes: modelos existentes, modelaje, diseño específico.</li>
+    <li><strong>Instalación por Ensayo:</strong> Sujeto practica conscientemente cada paso, generando anclas autoestablecidas. Repetir rápidamente hasta que las transiciones sean suaves.</li>
+</ul>
+
+<!-- ===== 4. PREGUNTAS DE DESARROLLO ===== -->
+<h2 id="preguntas-desarrollo">✍️ Preguntas de Desarrollo</h2>
+
+<!-- Pregunta 1 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 1:</strong> Explique el concepto de estrategia en PNL y el modelo POPS (TOTE). Describa la estructura del POPS (Prueba, Operación, Prueba, Salida) y proporcione un ejemplo práctico de su aplicación.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir estrategia: proceso mental secuencial de modalidades del SR que lleva a una respuesta.</li>
+            <li>Las estrategias son secuencias de V, A, K, O/G que controlan todo comportamiento.</li>
+            <li>El éxito depende de usar la estrategia adecuada.</li>
+            <li>Definir el POPS (TOTE): modelo de conducta creado por Pribram, Miller y Galanter.</li>
+            <li>Explicar los cuatro componentes:
+                <ul>
+                    <li><strong>Prueba:</strong> comparación estado presente/estado deseado (objetivo fijo).</li>
+                    <li><strong>Operación:</strong> acciones para reducir la diferencia.</li>
+                    <li><strong>Prueba (2ª):</strong> verificar si la diferencia ha desaparecido.</li>
+                    <li><strong>Salida:</strong> cuando la prueba es exitosa.</li>
+                </ul>
+            </li>
+            <li>Ejemplo: aprender a montar en bicicleta (Prueba: ¿estoy manteniendo el equilibrio?; Operación: pedalear y ajustar centro de gravedad; Salida: seguir pedaleando).</li>
+            <li>Concluir que el POPS es la estructura básica de toda conducta.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Estrategia, POPS, TOTE, Prueba, Operación, Salida, feedback, estado presente/estado deseado.</p>
+    </div>
+</div>
+
+<!-- Pregunta 2 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 2:</strong> Describa los procesos de obtención y comprobación de estrategias. Explique los métodos verbal y conductual para obtener estrategias, y los cinco métodos para comprobarlas.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir obtención: proceso de reunir información para hacer explícita la secuencia del SR.</li>
+            <li>Primer paso: identificar la unidad simple de la estrategia.</li>
+            <li><strong>Obtención verbal:</strong> mediante preguntas del Metalenguaje ("¿Cómo se hace X?", "¿Qué haces primero?", etc.) o atendiendo a la comunicación espontánea ("la gente hace lo que dice").</li>
+            <li><strong>Obtención conductual:</strong> pedir al sujeto que realice la tarea que requiere la estrategia.</li>
+            <li>Herramientas: notación 4R e indicadores sensoriales (e, i, c, r).</li>
+            <li>Definir comprobación: verificar que el modelo obtenido es adecuado.</li>
+            <li>Cinco métodos de comprobación:
+                <ul>
+                    <li>Observación espontánea ("la gente hace lo que dice").</li>
+                    <li>Colocar físicamente a la persona en el contexto.</li>
+                    <li>Reproducir una porción del contexto.</li>
+                    <li>Exagerar una pequeña porción de la estrategia.</li>
+                    <li>Preguntas directas.</li>
+                </ul>
+            </li>
+            <li>Concluir que la obtención y comprobación son pasos esenciales para trabajar con estrategias.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Obtención, comprobación, Metalenguaje, "la gente hace lo que dice", contexto, búsqueda transderivacional.</p>
+    </div>
+</div>
+
+<!-- Pregunta 3 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 3:</strong> Explique los puntos de decisión dentro de una estrategia. ¿Qué son, qué modalidades pueden implicar, y qué opciones determinan? Proporcione un ejemplo de una estrategia con un punto de decisión.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir punto de decisión: paso dentro de una estrategia donde una modalidad del SR determina la dirección siguiente.</li>
+            <li>Puede implicar cualquier modalidad del 4-R (V, A, K, O/G).</li>
+            <li>Opciones que determina:
+                <ul>
+                    <li>a) Salir de la estrategia y finalizar.</li>
+                    <li>b) Cambiar el contenido operacional.</li>
+                    <li>c) Pasar al siguiente eslabón.</li>
+                    <li>d) Modificar o cambiar de estrategia.</li>
+                </ul>
+            </li>
+            <li>Puede haber uno o varios puntos de decisión en una misma estrategia.</li>
+            <li>Ejemplo: <strong>Ve → Vc → Ki → D.I. → Ki</strong> donde el punto de decisión (Ki) puede llevar a D.I. → Vc (positivo) o a Ve → Vc → Ki... (negativo).</li>
+            <li>El dominio en identificar y desempaquetar puntos de decisión es crucial para el éxito en la utilización posterior.</li>
+            <li>Concluir que los puntos de decisión son la clave para entender la flexibilidad de las estrategias.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Punto de decisión, modalidades del 4-R, salida, cambio de contenido, cambio de estrategia.</p>
+    </div>
+</div>
+
+<!-- Pregunta 4 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 4:</strong> Describa los postulados de Grinder, Bandler y Dilts sobre estrategias y consciencia. Explique qué implica que las estrategias sean "estructuras secuenciales de modalidades completamente vacías de contenido".</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Enumerar los cinco postulados:
+                <ul>
+                    <li>a) Las secuencias de una estrategia no necesitan ser conscientes.</li>
+                    <li>b) La consciencia es el resultado de la intensidad de la actividad en el SR.</li>
+                    <li>c) La consciencia es una propiedad emergente de la actividad neural.</li>
+                    <li>d) Una representación es consciente al alcanzar cierto nivel de intensidad.</li>
+                    <li>e) Las estrategias bajo el nivel de consciencia constituyen la mente inconsciente.</li>
+                </ul>
+            </li>
+            <li>Explicar la implicación: las estrategias pueden operar sin que seamos conscientes de ellas.</li>
+            <li>Explicar "estructuras vacías de contenido": una estrategia identifica solo la forma de construir y secuenciar una experiencia, no el contenido específico.</li>
+            <li>Esto permite que una misma estrategia pueda utilizarse para diferentes contenidos.</li>
+            <li>Concluir que la distinción entre estructura y contenido es fundamental en PNL.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Postulados, consciencia, mente inconsciente, intensidad, estructura vacía, contenido.</p>
+    </div>
+</div>
+
+<!-- Pregunta 5 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 5:</strong> Describa el ejercicio de instalación de una estrategia de motivación paso a paso. Explique qué condiciones son necesarias para que la instalación sea exitosa y por qué la precisión en los pasos es crucial.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Participantes: A (Sujeto), B (Practitioner).</li>
+            <li><strong>Paso 1:</strong> B desempaqueta la estrategia de motivación de A (usando preguntas y claves de acceso).</li>
+            <li><strong>Paso 2:</strong> B identifica una conducta simple que A no está motivado para hacer (ej. saltar a la pata coja, recitar una poesía).</li>
+            <li><strong>Paso 3:</strong> B hace que A reconsidere la conducta no motivante siguiendo los pasos y secuencias de la estrategia de motivación.</li>
+            <li>Si las secuencias son correctas, A se sentirá motivado inevitablemente.</li>
+            <li>Condiciones para el éxito:
+                <ul>
+                    <li>Estrategia completa y disponible.</li>
+                    <li>Conectada al contexto apropiado.</li>
+                    <li>Romper la estrategia antigua en el punto adecuado.</li>
+                </ul>
+            </li>
+            <li>La precisión es crucial: si falta un paso o se confunde una modalidad, el resultado no se alcanza.</li>
+            <li>Si todos los pasos son precisos, el resultado es inevitable porque ningún ser humano puede no responder a sus propios procesos internos.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Instalación de estrategias, motivación, desempaquetamiento, conducta no motivante, precisión, inevitabilidad del resultado.</p>
+    </div>
+</div>
+
+<!-- Pregunta 6 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 6:</strong> Explique las cinco reglas para el diseño de estrategias y la "Regla de Oro" del diseño. ¿Por qué es importante incluir los tres sistemas primarios (V, A, K) y evitar bucles?</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li><strong>Regla 1:</strong> Representación explícita del resultado deseado (comparación estado presente/estado deseado). Elegir el SR correcto es crucial.</li>
+            <li><strong>Regla 2:</strong> Los tres sistemas primarios <strong>V, A, K</strong> deben estar implicados.</li>
+            <li><strong>Regla 3:</strong> Después de N pasos, asegurar un modificador <strong>externo</strong>.</li>
+            <li><strong>Regla 4:</strong> No debe haber <strong>bucles</strong> (evita repeticiones infinitas).</li>
+            <li><strong>Regla 5:</strong> <strong>Resultado alternativo:</strong> considerar qué haría el sujeto si ya no tuviera el problema (descubre ganancias secundarias).</li>
+            <li><strong>Regla de Oro:</strong>
+                <ul>
+                    <li><strong>Elegancia:</strong> mínimo número de pasos.</li>
+                    <li><strong>Alternativas:</strong> quien tiene más opciones decide.</li>
+                    <li><strong>Motivaciones positivas:</strong> anclajes positivos se refuerzan.</li>
+                </ul>
+            </li>
+            <li>Importancia de V, A, K: asegura un procesamiento multisensorial completo.</li>
+            <li>Importancia de evitar bucles: los bucles impiden la salida y el progreso.</li>
+            <li>Concluir que el diseño debe ser eficiente, completo y ecológico.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Diseño de estrategias, V-A-K, modificador externo, bucles, resultado alternativo, elegancia, alternativas, motivaciones positivas.</p>
+    </div>
+</div>
+
+<!-- Pregunta 7 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 7:</strong> Compare los tres sistemas para instalar una estrategia (anclajes, ensayo, mixto). Explique las condiciones fundamentales para una instalación exitosa y la diferencia entre "utilización" e "instalación" de anclajes.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li><strong>Instalación por anclajes:</strong> anclar secuencias selectivas de modalidades del 4-R.</li>
+            <li><strong>Instalación por ensayo:</strong> el sujeto practica conscientemente cada paso (similar al condicionamiento), generando anclas autoestablecidas.</li>
+            <li><strong>Instalación mixta:</strong> ensayo + activación de ancla establecida previamente.</li>
+            <li>Condiciones fundamentales:
+                <ul>
+                    <li>Estrategia <strong>completa y disponible</strong> como unidad.</li>
+                    <li><strong>Conectada al contexto apropiado</strong> (anclada a estímulo externo).</li>
+                    <li><strong>Romper la estrategia antigua</strong> en el punto adecuado.</li>
+                </ul>
+            </li>
+            <li>Diferencia entre utilización e instalación de anclajes:
+                <ul>
+                    <li><strong>Utilización:</strong> anclar para controlar el contenido.</li>
+                    <li><strong>Instalación:</strong> anclar los propios pasos de la estrategia.</li>
+                </ul>
+            </li>
+            <li>Para instalar en alguien sin estrategia: usar modelos existentes, modelar a alguien que la posea, o diseñarla específicamente.</li>
+            <li>Concluir que la elección del método depende del contexto y del sujeto.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Instalación, anclajes, ensayo, mixto, condiciones fundamentales, utilización vs. instalación.</p>
+    </div>
+</div>
+
+<!-- ===== 5. PREGUNTAS DE RESERVA ===== -->
+<h2 id="preguntas-reserva">⭐ Preguntas de Reserva</h2>
+
+<!-- Reserva 1 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 1:</strong> Realice un análisis integrador que conecte el concepto de estrategias (Tema 7) con el Sistema Representacional y las submodalidades (Tema 6), el Metamodelo del Lenguaje (Tema 5) y los anclajes (Tema 4). Explique cómo estas herramientas se combinan para obtener, diseñar e instalar una estrategia eficaz.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Las estrategias son secuencias de modalidades del SR (Tema 6): V, A, K, O/G.</li>
+            <li>Las submodalidades (Tema 6) son las cualidades específicas que pueden modificarse dentro de cada paso de la estrategia.</li>
+            <li>El Metamodelo del Lenguaje (Tema 5) se utiliza para la obtención verbal: preguntas que desafían violaciones para recuperar información sobre la estrategia.</li>
+            <li>Las claves de acceso (Tema 6: movimientos oculares, gestos, predicados) permiten identificar las modalidades en la estrategia.</li>
+            <li>Los anclajes (Tema 4) se utilizan para instalar estrategias: anclando secuencias de modalidades o pasos de la estrategia.</li>
+            <li>El POPS (Tema 7) proporciona la estructura: Prueba → Operación → Prueba → Salida.</li>
+            <li>Los puntos de decisión (Tema 7) determinan la flexibilidad de la estrategia.</li>
+            <li>Concluir que la combinación de estas herramientas permite un trabajo completo: obtener la estrategia (Metamodelo + claves de acceso), analizarla (SR + submodalidades + puntos de decisión), e instalarla (anclajes + ensayo).</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Estrategias, SR, submodalidades, Metamodelo, anclajes, POPS, puntos de decisión, claves de acceso.</p>
+    </div>
+</div>
+
+<!-- Reserva 2 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 2:</strong> Compare el modelo POPS (Prueba-Operación-Prueba-Salida) con el modelo tradicional estímulo-respuesta del behaviorismo. ¿Qué elementos añade el POPS y por qué son importantes para el análisis de la conducta en PNL?</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir modelo E-R (estímulo-respuesta): enfoque lineal sin retroalimentación.</li>
+            <li>Definir el POPS (TOTE): añade feedback y resultado.</li>
+            <li>Explicar los elementos del POPS:
+                <ul>
+                    <li>Prueba: evaluar si el estado presente coincide con el deseado.</li>
+                    <li>Operación: acciones para reducir la diferencia.</li>
+                    <li>Prueba (2ª): verificar si el objetivo se ha alcanzado.</li>
+                    <li>Salida: finalizar cuando la prueba es exitosa.</li>
+                </ul>
+            </li>
+            <li>El POPS es cíclico, no lineal como E-R.</li>
+            <li>Importancia del feedback: permite ajustar la conducta en función del resultado.</li>
+            <li>Importancia del resultado: la conducta tiene un propósito (estado deseado).</li>
+            <li>Concluir que el POPS es más preciso y completo porque incorpora la evaluación continua y la adaptación.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> POPS, TOTE, estímulo-respuesta, feedback, resultado, estado presente/estado deseado.</p>
+    </div>
+</div>
+
+<!-- Reserva 3 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 3:</strong> Analice la "Regla de Oro del diseño de estrategias" (elegancia, alternativas, motivaciones positivas) y explique cómo se relaciona con los objetivos fundamentales de la PNL (ampliar opciones, ecología, cambio). Utilice ejemplos concretos para ilustrar cada punto.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li><strong>Elegancia:</strong> elegir la estrategia con el menor número de pasos posibles.
+                <ul>
+                    <li>Ejemplo: una estrategia de 5 pasos es mejor que una de 10 para el mismo resultado.</li>
+                    <li>Relación con PNL: eficiencia y simplicidad.</li>
+                </ul>
+            </li>
+            <li><strong>Alternativas:</strong> el elemento con mayor número de alternativas es quien decide.
+                <ul>
+                    <li>Ejemplo: en una negociación, quien tiene más opciones controla la situación.</li>
+                    <li>Relación con PNL: ampliar opciones es un objetivo fundamental (más flexibilidad).</li>
+                </ul>
+            </li>
+            <li><strong>Motivaciones positivas:</strong> los anclajes positivos se refuerzan a sí mismos.
+                <ul>
+                    <li>Ejemplo: una estrategia que asocia el estudio con una sensación de logro se refuerza.</li>
+                    <li>Relación con PNL: ecología y sostenibilidad del cambio.</li>
+                </ul>
+            </li>
+            <li>Concluir que la Regla de Oro integra los principios de eficiencia, flexibilidad y sostenibilidad, alineándose con los valores de la PNL.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Regla de Oro, elegancia, alternativas, motivaciones positivas, ampliar opciones, ecología, cambio.</p>
+    </div>
+</div>
+
+<script>
+    // Alternar modo claro/oscuro
+    document.getElementById('modoBtn').addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        this.textContent = document.body.classList.contains('dark-mode') ? '☀️ Modo' : '🌓 Modo';
+    });
+
+    // Toggle para esquemas de desarrollo
+    function toggleEsquema(btn) {
+        const container = btn.parentElement;
+        const esquema = container.querySelector('.esquema-oculto');
+        if (esquema) {
+            esquema.classList.toggle('visible');
+            btn.textContent = esquema.classList.contains('visible') ? '📖 Ocultar esquema' : '📖 Mostrar esquema';
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,19 @@
+{
+  "id": "practitioner",
+  "nombre": "Practitioner",
+  "codigo": "PNL-PRAC",
+  "creditos": 40,
+  "icon": "🧠",
+  "temas": [
+    { "id": "tema1", "titulo": "Tema 1: Introducción y Fundamentos de la PNL" },
+    { "id": "tema2", "titulo": "Tema 2: La Comunicación" },
+    { "id": "tema3", "titulo": "Tema 3: Contacto (Rapport) y Calibración" },
+    { "id": "tema4", "titulo": "Tema 4: El Trance y la Hipnosis" },
+    { "id": "tema5", "titulo": "Tema 5: El Metamodelo del Lenguaje" },
+    { "id": "tema6", "titulo": "Tema 6: Sistemas Representacionales y Submodalidades" },
+    { "id": "tema7", "titulo": "Tema 7: Estrategias" },
+    { "id": "tema8", "titulo": "Tema 8: Anclajes" },
+    { "id": "tema9", "titulo": "Tema 9: Niveles Lógicos y Neurológicos" },
+    { "id": "tema10", "titulo": "Tema 10: Ejercicios Prácticos" }
+  ]
+}

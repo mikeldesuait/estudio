@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Tema 4: El Trance y la Hipnosis · Resumen UNED</title>
+    <style>
+        /* ===== ESTILO ÚNICO PARA RESÚMENES UNED ===== */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            max-width: 950px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #f5f7fa;
+            color: #1a1a2e;
+            line-height: 1.8;
+            font-size: 17px;
+        }
+        h1 {
+            font-size: 30px;
+            color: #0a1628;
+            border-bottom: 4px solid #1a3d66;
+            padding-bottom: 14px;
+        }
+        h2 {
+            font-size: 23px;
+            color: #1a3d66;
+            margin-top: 32px;
+            border-left: 4px solid #1a3d66;
+            padding-left: 16px;
+        }
+        h3 {
+            font-size: 20px;
+            color: #2a4a7a;
+            margin-top: 26px;
+        }
+        h4 {
+            font-size: 18px;
+            color: #3a5a8a;
+            margin-top: 20px;
+        }
+        strong {
+            color: #0a2a4a;
+        }
+        ul {
+            padding-left: 24px;
+        }
+        li {
+            margin-bottom: 6px;
+        }
+        blockquote {
+            background: #e8edf4;
+            padding: 12px 20px;
+            border-left: 4px solid #1a3d66;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        hr {
+            border: none;
+            border-top: 2px solid #d0d8e4;
+            margin: 28px 0;
+        }
+        .indice {
+            background: #e8edf4;
+            padding: 16px 24px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .indice ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .indice li {
+            padding: 3px 0;
+        }
+        .indice li.h1 {
+            font-weight: 600;
+        }
+        .indice li.h2 {
+            padding-left: 20px;
+            font-weight: 400;
+        }
+        .indice a {
+            color: #1a3d66;
+            text-decoration: none;
+        }
+        .indice a:hover {
+            text-decoration: underline;
+        }
+        .idea-central {
+            background: #e0e8f4;
+            padding: 18px 24px;
+            border-radius: 12px;
+            margin: 20px 0 30px 0;
+            border-left: 5px solid #1a3d66;
+        }
+        .idea-central h2 {
+            margin-top: 0;
+            border-left: none;
+            padding-left: 0;
+        }
+        .modo-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            padding: 8px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #1a3d66;
+            color: #fff;
+            font-size: 14px;
+            z-index: 999;
+        }
+        .modo-btn:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode {
+            background: #0d1a2b;
+            color: #d6e2f5;
+        }
+        .dark-mode h1 {
+            color: #b0c8e8;
+            border-bottom-color: #2a5a8a;
+        }
+        .dark-mode h2 {
+            color: #8ab0e0;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode h3 {
+            color: #6a9ac0;
+        }
+        .dark-mode h4 {
+            color: #5a8aaa;
+        }
+        .dark-mode strong {
+            color: #c8ddf0;
+        }
+        .dark-mode blockquote {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode .indice {
+            background: #142a44;
+        }
+        .dark-mode .indice a {
+            color: #8ab0e0;
+        }
+        .dark-mode .idea-central {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode hr {
+            border-top-color: #2a4a6a;
+        }
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+                padding: 14px;
+            }
+            h1 {
+                font-size: 25px;
+            }
+            h2 {
+                font-size: 21px;
+            }
+        }
+
+        /* ===== ESTILOS PARA PREGUNTAS INTERACTIVAS ===== */
+        .pregunta {
+            background: #f0f4fa;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            border: 1px solid #d0d8e4;
+        }
+        .dark-mode .pregunta {
+            background: #142a44;
+            border-color: #2a4a6a;
+        }
+        .pregunta .enunciado {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .pregunta .opciones {
+            list-style: none;
+            padding-left: 8px;
+        }
+        .pregunta .opciones li {
+            margin-bottom: 4px;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .pregunta .opciones li.correcta {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .dark-mode .pregunta .opciones li.correcta {
+            background: #1a4a3a;
+            color: #8fdfb0;
+            border-left-color: #2ecc71;
+        }
+        .pregunta .respuesta-oculta {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta .respuesta-oculta {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta .respuesta-oculta.visible {
+            display: block;
+        }
+        .pregunta .btn-respuesta {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #1a3d66;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta .btn-respuesta:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta:hover {
+            background: #3a7aaa;
+        }
+        .pregunta .trampa {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #6a4a2a;
+            font-style: italic;
+        }
+        .dark-mode .pregunta .trampa {
+            color: #c8a878;
+        }
+        .pregunta-desarrollo .esquema-oculto {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta-desarrollo .esquema-oculto {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta-desarrollo .esquema-oculto.visible {
+            display: block;
+        }
+        .pregunta-desarrollo .btn-esquema {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #1a3d66;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta-desarrollo .btn-esquema:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta-desarrollo .btn-esquema {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta-desarrollo .btn-esquema:hover {
+            background: #3a7aaa;
+        }
+    </style>
+</head>
+<body>
+
+<button class="modo-btn" id="modoBtn" aria-label="Cambiar modo claro/oscuro">🌓 Modo</button>
+
+<h1>Tema 4: El Trance y la Hipnosis</h1>
+
+<!-- ===== ÍNDICE ===== -->
+<div class="indice">
+    <h2 style="margin-top:0; border-left:none; padding-left:0;">📑 Índice</h2>
+    <ul>
+        <li class="h1"><a href="#idea-central">1. Idea Central (5 minutos)</a></li>
+        <li class="h1"><a href="#resumen-epigrafes">2. Resumen por Epígrafes</a></li>
+        <li class="h2"><a href="#que-es-trance">¿Qué es el Trance?</a></li>
+        <li class="h2"><a href="#como-funciona">¿Cómo funciona el Trance?</a></li>
+        <li class="h2"><a href="#ondas-cerebrales">Niveles de Ondas Cerebrales</a></li>
+        <li class="h2"><a href="#fenomenos">Fenómenos en la Hipnosis</a></li>
+        <li class="h2"><a href="#modelo-milton">El Modelo Milton</a></li>
+        <li class="h2"><a href="#patrones-milton">Patrones del Modelo Milton</a></li>
+        <li class="h2"><a href="#secuencia">Secuencia para el Trabajo Hipnótico</a></li>
+        <li class="h2"><a href="#principios-erickson">Principios de Erickson</a></li>
+        <li class="h2"><a href="#pautas-mensajes">Pautas para Mensajes de Trance</a></li>
+        <li class="h2"><a href="#herramientas">Otras Herramientas</a></li>
+        <li class="h2"><a href="#reglas-mente">Reglas de la Mente</a></li>
+        <li class="h2"><a href="#metodos-induccion">Métodos de Inducción</a></li>
+        <li class="h2"><a href="#reglas-sugerencias">Reglas para Sugerencias</a></li>
+        <li class="h2"><a href="#modelos-practicos">Modelos Prácticos de Sugerencias</a></li>
+        <li class="h2"><a href="#frases-utiles">Frases Útiles</a></li>
+        <li class="h2"><a href="#tratamiento-obesidad">Tratamiento de Obesidad</a></li>
+        <li class="h2"><a href="#finalizar">Para Finalizar</a></li>
+        <li class="h1"><a href="#mini-resumen">3. Mini-resumen por Epígrafe</a></li>
+        <li class="h1"><a href="#preguntas-desarrollo">4. Preguntas de Desarrollo</a></li>
+        <li class="h1"><a href="#preguntas-reserva">5. Preguntas de Reserva</a></li>
+    </ul>
+</div>
+
+<!-- ===== 1. IDEA CENTRAL ===== -->
+<div id="idea-central" class="idea-central">
+    <h2>💡 Idea Central (5 minutos)</h2>
+    <p>El trance es un estado natural que todos experimentamos cotidianamente (soñar despiertos, abstraernos, extasiarnos), y la hipnosis clínica no es más que la utilización intencionada y controlada de ese estado para lograr cambios terapéuticos o de mejora personal. La hipnosis funciona accediendo al subconsciente (que ocupa el 88% del cerebro) a través de la reducción de las ondas cerebrales del nivel BETA (vigilia) a ALFA (trance ligero) o ZETA (trance profundo). Durante el trance se producen fenómenos fisiológicos observables (cambios en la respiración, tono muscular, coloración de la piel, movimiento ocular rápido, etc.) que nos sirven para calibrar la profundidad del estado. El Modelo Milton, desarrollado por Grinder y Bandler a partir del trabajo de Erickson, proporciona patrones lingüísticos específicos (lenguaje transderivacional, causales, ambigüedades, sutilezas incluidas) para inducir el trance a través del lenguaje. La hipnosis sigue el principio fundamental de que toda hipnosis es autohipnosis (nadie puede ser hipnotizado contra su voluntad), y sus beneficios son múltiples: desde el tratamiento de fobias, adicciones y trastornos psicosomáticos hasta su uso como anestesia en hospitales.</p>
+</div>
+
+<!-- ===== 2. RESUMEN POR EPÍGRAFES ===== -->
+<h2 id="resumen-epigrafes">📘 Resumen por Epígrafes</h2>
+
+<!-- ¿Qué es el Trance? -->
+<h3 id="que-es-trance">¿Qué es el Trance?</h3>
+<p><strong>Concepto clave:</strong> El trance es un estado natural de conciencia alterada que todos experimentamos espontáneamente (soñar despiertos, abstraerse, extasiarse). La hipnosis clínica es la utilización intencionada y controlada de ese estado con un objetivo terapéutico o de mejora personal definido.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>La PNL se basa en el trabajo de Milton Erickson sobre hipnosis, recogido en "Patterns of the Hypnotic of Milton H. Erickson, M.D." (1975).</li>
+    <li>Los estados de trance natural (soñar despierto, viajar sin darse cuenta, extasiarse) son iguales a la hipnosis clínica, pero en el primer caso ocurren espontáneamente sin control consciente, mientras que en el segundo se utilizan con una intención clara y controlada.</li>
+    <li><strong>Toda hipnosis es autohipnosis:</strong> nadie puede ser inducido en contra de su voluntad.</li>
+    <li>La mente tiene un sistema de defensa que impide aceptar sugestiones que choquen con el sistema de valores y creencias.</li>
+    <li>Diferencia entre hipnosis clínica/terapéutica (científica, con resultados probados: alergias, fobias, enfermedades psicosomáticas, adicciones, anestesia en hospitales) e hipnotismo de espectáculo (amañado, sujetos seleccionados).</li>
+    <li>La hipnosis proporciona mayor autocontrol, atención y capacidades.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta con el Tema 3 (rapport) como base para la inducción, y con el Tema 2 (estados internos) al trabajar con el subconsciente. La idea de "toda hipnosis es autohipnosis" se relaciona con la participación activa del sujeto.</p>
+<hr>
+
+<!-- ¿Cómo funciona el Trance? -->
+<h3 id="como-funciona">¿Cómo funciona el Trance?</h3>
+<p><strong>Concepto clave:</strong> La mente se divide operativamente en consciente (12% del cerebro, controla acciones voluntarias y sistema nervioso central) y subconsciente (88%, controla funciones involuntarias y sistema nervioso autónomo). La hipnosis actúa accediendo al subconsciente.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Mente consciente:</strong> 12% del volumen cerebral, controla sistema nervioso central y acciones voluntarias.</li>
+    <li><strong>Mente subconsciente:</strong> 88% del volumen cerebral, controla sistema nervioso autónomo (funciones involuntarias del organismo).</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe establece la base neurofisiológica que explica por qué la hipnosis funciona. Se conecta con la teoría de los estados internos del Tema 2 y con los niveles de ondas cerebrales del siguiente epígrafe.</p>
+<hr>
+
+<!-- Niveles de Ondas Cerebrales -->
+<h3 id="ondas-cerebrales">Niveles de Ondas Cerebrales</h3>
+<p><strong>Concepto clave:</strong> El cerebro funciona en cuatro niveles de ondas cerebrales: BETA (vigilia consciente, 20+ ciclos/segundo), ALFA (trance ligero, 8-12 ciclos/segundo, relajación con comunicación posible), ZETA/THETA (trance profundo, 4-8 ciclos/segundo, sin conexión consciente con el exterior, donde se producen los cambios terapéuticos más profundos), y DELTA (sueño profundo, menos de 4 ciclos/segundo, sin comunicación verbal posible).</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>BETA:</strong> 20+ ciclos/segundo. Nivel de vigilia consciente.</li>
+    <li><strong>ALFA:</strong> 8-12 ciclos/segundo. Trance ligero. Todavía se puede escuchar, dialogar y ser consciente. Mente relajada con comunicación exterior posible.</li>
+    <li><strong>ZETA (THETA):</strong> 4-8 ciclos/segundo. Trance profundo. Sin conexión consciente con el exterior. Nivel donde se producen fenómenos de mayor calado terapéutico (regresiones, cambios profundos).</li>
+    <li><strong>DELTA:</strong> Menos de 4 ciclos/segundo. Sueño profundo. Sin comunicación verbal posible.</li>
+    <li>En los trabajos de hipnosis clínica se trabaja principalmente en nivel ALFA, excepcionalmente en ZETA.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe proporciona la base fisiológica para entender los "fenómenos que se producen en la hipnosis" (siguiente epígrafe). Se conecta con la distinción consciente/subconsciente del epígrafe anterior.</p>
+<hr>
+
+<!-- Fenómenos en la Hipnosis -->
+<h3 id="fenomenos">Fenómenos que se Producen en la Hipnosis</h3>
+<p><strong>Concepto clave:</strong> Durante la entrada en trance se producen cambios fisiológicos observables que permiten calibrar la profundidad del estado y verificar que la inducción está funcionando.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Cambios en la respiración:</strong> Se vuelve más calmada y tiende a centrarse en la zona abdominal (respiración del sueño).</li>
+    <li><strong>Cambios en el tono muscular:</strong> Distensión y relajación; en casos de estrés crónico pueden aparecer movimientos espasmódicos (liberación brusca de tensión).</li>
+    <li><strong>Cambios en el color y temperatura de la piel:</strong> Sonrosamiento por mejor circulación sanguínea (enrojecimiento de orejas y mejillas).</li>
+    <li><strong>Movimiento rápido de las pupilas (R.E.M.):</strong> Señal cierta de acceso al nivel ALFA (no confundir con excitación nerviosa).</li>
+    <li><strong>Enrojecimiento del globo ocular:</strong> Detectable en personas con ojos abiertos.</li>
+    <li><strong>Aumento de tamaño del labio inferior:</strong> Identificable en la mayoría de las personas.</li>
+    <li><strong>Tragar saliva:</strong> Mayor actividad glandular; puede provocar babeo si se pierde el control.</li>
+    <li><strong>Ladeos de la cabeza:</strong> Relajación de los músculos cervicales; la persona adopta posturas de comodidad (aunque parezcan incómodas).</li>
+    <li><strong>Cambios en el tono y ritmo de la voz:</strong> Voz más profunda y ritmo más lento.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta lista se conecta directamente con los "aspectos fisiológicos a observar" del Tema 3 (calibración). También se relaciona con la capacidad de observación necesaria tanto para el hipnotizador como para el autohipnotizado.</p>
+<hr>
+
+<!-- El Modelo Milton -->
+<h3 id="modelo-milton">El Modelo Milton</h3>
+<p><strong>Concepto clave:</strong> El Modelo Milton es la sistematización lingüística que Grinder y Bandler realizaron del lenguaje hipnótico de Erickson. Se define como la inversión del Metamodelo, diseñado para inducir trance a través del lenguaje.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Grinder y Bandler sistematizaron la hipnosis de Erickson en "Patterns of the Hypnotic Milton H. Erickson, M.D." (1975).</li>
+    <li>El Modelo Milton es la inversión del Metamodelo (que sirve para desarmar estructuras erróneas del mapa).</li>
+    <li>El elemento principal del Modelo Milton es el <strong>RAPPORT</strong> (acompañamiento para luego dirigir).</li>
+    <li>El acompañamiento verbal consiste en describir la conducta observable del sujeto (solo aspectos de base sensorial) para luego describir experiencias que se pretende que el cliente desarrolle.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta el trabajo de Erickson con las herramientas lingüísticas de la PNL. Se relaciona con el Tema 2 (comunicación) y el Tema 3 (rapport). Los patrones que se presentan a continuación son la aplicación práctica.</p>
+<hr>
+
+<!-- Patrones del Modelo Milton -->
+<h3 id="patrones-milton">Patrones del Modelo Milton</h3>
+<p><strong>Concepto clave:</strong> Conjunto de patrones lingüísticos diseñados para inducir trance mediante la "búsqueda transderivacional" (obligar al cliente a encontrar sentido interiormente), el uso de lenguaje causal, ambigüedades, sutilezas incluidas y significados derivados.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>LENGUAJE TRANS DERIVACIONAL:</strong> Requerimientos que obligan a buscar sentido interiormente.
+        <ul>
+            <li><em>Índices referenciales generalizados:</em> Nombres sin referencia concreta (<em>"algunos pensamientos interesantes de alguien de otra época"</em>).</li>
+            <li><em>Restricción selectiva:</em> Sintaxis correcta pero sin realidad comprensiva (<em>"La roca me gritó"</em>).</li>
+            <li><em>Borrradura:</em> Supresión del sujeto u objeto (<em>"...y aprender... y realmente empezar preguntarse..."</em>).</li>
+            <li><em>Nominalización:</em> Verbo usado como nombre (<em>"...los consuelos y el comprender..."</em>).</li>
+        </ul>
+    </li>
+    <li><strong>MODELO CAUSAL LINGÜÍSTICO:</strong> Ligar descripciones sensoriales con requerimientos y sugestiones.
+        <ul>
+            <li><em>Conjunción:</em> Conectivos como "y", "pero", "a causa de".</li>
+            <li><em>Causativos implicados:</em> Conectivos como "cuando", "mientras", "durante", "después".</li>
+            <li><em>Causa/efecto:</em> Predicados que suponen conexión necesaria: "hace que", "por eso", "requiere que", "después de".</li>
+            <li><em>Verbos inespecíficos:</em> Verbo que no especifica la acción (<em>"...y le pido que haga algo"</em>).</li>
+        </ul>
+    </li>
+    <li><strong>AMBIGÜEDADES:</strong> Palabras o frases que inducen a interpretaciones múltiples.
+        <ul>
+            <li><em>Fonológicas:</em> Juegos de palabras y homónimos (<em>"La levitación de la mano puede ser fenómeno transcendente"</em> / trance y transcendente).</li>
+            <li><em>Sintácticas:</em> No está claro el uso de una palabra (<em>"Plantar a un plantado puede ser engañoso"</em>).</li>
+            <li><em>De expresión:</em> No está claro dónde termina la referencia previa.</li>
+            <li><em>De puntuación:</em> No se sabe dónde acaba una oración y empieza la otra.</li>
+        </ul>
+    </li>
+    <li><strong>SUTILEZAS INCLUIDAS O ESTRUCTURAS MENORES:</strong>
+        <ul>
+            <li><em>Preguntas enclavadas:</em> Pregunta sin hacerla explícitamente (<em>"Me pregunto si ya empiezas a experimentar los cambios"</em>).</li>
+            <li><em>Órdenes enclavadas:</em> Indicar algo sin orden directa (<em>"Pienso que sería muy interesante que se relaje y entre en trance"</em>).</li>
+            <li><em>Citas:</em> Repetir lo dicho en otro marco (<em>"Le dije: relájese y entre en trance"</em>).</li>
+            <li><em>Marcación analógica:</em> Énfasis o entonación en ciertas palabras para transmitir un mensaje separado.</li>
+        </ul>
+    </li>
+    <li><strong>SIGNIFICADOS DERIVADOS:</strong> Implícitos en lo que se dice.
+        <ul>
+            <li><em>Presuposiciones:</em> Dar por supuesto algo (<em>"Me pregunto si se da cuenta de lo profundo que es su trance"</em>).</li>
+            <li><em>Postulados conversacionales:</em> Órdenes corteses indirectas (<em>"¿Puedes cerrar la ventana?"</em>).</li>
+        </ul>
+    </li>
+</ul>
+<p><strong>Conexiones:</strong> Estos patrones son la herramienta práctica para la inducción hipnótica. Se conectan con el Tema 2 (lenguaje digital/analógico, comunicación) y con el Tema 3 (rapport). La "marcación analógica" conecta con la comunicación no verbal.</p>
+<hr>
+
+<!-- Secuencia para el Trabajo Hipnótico -->
+<h3 id="secuencia">Secuencia para el Trabajo Hipnótico</h3>
+<p><strong>Concepto clave:</strong> Secuencia de seis pasos diseñada por DeLozier y Dilts para el trabajo hipnótico o de PNL: 1) Contacto y anclaje, 2) Rapport, 3) Disociación, 4) Metáforas terapéuticas/Aplicación de técnica/Metainstrucciones, 5) Creación de experiencia de referencia, 6) Chequeo y prueba.</p>
+<p><strong>Argumentos del autor:</strong> Es la secuencia estándar recomendada para el trabajo hipnótico, aunque el autor señala que no es posible exponer todo el material técnico existente.</p>
+<p><strong>Conexiones:</strong> Esta secuencia integra elementos de temas anteriores: rapport (Tema 3), disociación (Tema 2), y proporciona una estructura metodológica para la aplicación práctica.</p>
+<hr>
+
+<!-- Principios de Erickson -->
+<h3 id="principios-erickson">Principios de la Escuela de Milton Erickson</h3>
+<p><strong>Concepto clave:</strong> Conjunto de recomendaciones para el uso de la hipnosis: usar lenguaje permisivo, alejarse de enfoques autoritarios, y utilizar tipos específicos de lenguaje (atribucionales, predictivos, términos de posibilidad).</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Usar lenguaje permisivo, alejándose de enfoques autoritarios.</li>
+    <li>Tipos de lenguaje:
+        <ul>
+            <li><strong>Atribucionales:</strong> Decir al sujeto lo que experimenta (<em>"Usted está en un trance profundo"</em>).</li>
+            <li><strong>Predictivos:</strong> Decir al sujeto lo que va a experimentar (<em>"Va a relajarse más..."</em>).</li>
+        </ul>
+    </li>
+    <li>Involucrar términos de posibilidad (<em>"Puede sentir..."</em>, <em>"Podría entrar..."</em>).</li>
+    <li>Adaptarse a las resistencias: usarlas como plataforma para la siguiente sugestión (<em>"... si no se eleva, se podría hacer cada vez más pesado..."</em>).</li>
+    <li>Evocar, no sugestionar.</li>
+</ul>
+<p><strong>Conexiones:</strong> Estos principios conectan con la comunicación eficaz (Tema 2) y con el rapport (Tema 3). La adaptación a las resistencias se relaciona con la flexibilidad en el rapport.</p>
+<hr>
+
+<!-- Pautas para Mensajes de Trance -->
+<h3 id="pautas-mensajes">Pautas para Construir Mensajes de Trance</h3>
+<p><strong>Concepto clave:</strong> Pautas para construir mensajes hipnóticos eficaces: usar presuposiciones, indicaciones contextuales, rapport no verbal, rapport verbal (copia del lenguaje y copia descriptiva).</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Presuposiciones:</strong> Lenguaje que da por sentadas ciertas ideas sin enunciarlas directamente (ilusiones alternativas: <em>"Puede entrar en trance de inmediato o poco a poco"</em>).</li>
+    <li><strong>Indicaciones contextuales:</strong> Conductas, lenguaje no verbal, ambientación, iluminación, música que activan anclas de trances anteriores.</li>
+    <li><strong>Rapport no verbal:</strong> Hacer que nuestra conducta haga pareja con la del sujeto ("reflejo cruzado"). Adaptación del ritmo: mientras el sujeto exhala, el inductor habla; cuando inspira, silencio.</li>
+    <li><strong>Rapport verbal:</strong>
+        <ul>
+            <li>Copia del lenguaje del sujeto (facilita comprensión).</li>
+            <li>Copia descriptiva: descripción de la conducta observada (<em>"Sus manos reposan sobre sus muslos..."</em>).</li>
+        </ul>
+    </li>
+</ul>
+<p><strong>Conexiones:</strong> Estas pautas integran elementos del Tema 2 (comunicación, escucha activa) y del Tema 3 (rapport), aplicándolos específicamente a la hipnosis.</p>
+<hr>
+
+<!-- Otras Herramientas -->
+<h3 id="herramientas">Otras Herramientas Útiles para la Hipnosis</h3>
+<p><strong>Concepto clave:</strong> Herramientas complementarias: confusión (eludir creencias limitantes mediante polaridades, conductas fuera de contexto, etc.), separación (distinción consciente/subconsciente), vinculación (asociación de elementos exógenos), incorporación (incluir distracciones como parte del trance), intercalación (énfasis no verbal), y palabras vacías (términos no específicos).</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Confusión:</strong> Eludir creencias limitantes que dificultan el trance.
+        <ul>
+            <li>Polaridades: Conceptos polares mezclados sin significado coherente (consciente/inconsciente, olvido/recuerdo).</li>
+            <li>Conductas fuera de contexto.</li>
+            <li>Conductas u observaciones de múltiples interpretaciones.</li>
+        </ul>
+    </li>
+    <li><strong>Separación:</strong> Atender a la distinción entre comunicación al consciente y comunicación al subconsciente.</li>
+    <li><strong>Vinculación:</strong> Asociación de elementos exógenos (tonos de voz, espacios específicos, experiencias sensoriales) con cada elemento de la separación.</li>
+    <li><strong>Incorporación:</strong> Incluir verbalmente distracciones exteriores o interferencias interiores como parte de la experiencia de trance.</li>
+    <li><strong>Intercalación:</strong> Ciertas palabras o frases con énfasis no verbal de sugestión indirecta.</li>
+    <li><strong>Palabras vacías:</strong> Términos no específicos que obligan al sujeto a buscar sus propios significados.</li>
+</ul>
+<p><strong>Conexiones:</strong> Estas herramientas se conectan con los patrones del Modelo Milton y con la comunicación analógica (Tema 2). La "separación" se relaciona con la distinción consciente/subconsciente.</p>
+<hr>
+
+<!-- Reglas de la Mente -->
+<h3 id="reglas-mente">Reglas de la Mente (Recordatorio)</h3>
+<p><strong>Concepto clave:</strong> Ocho reglas que resumen experimentalmente las respuestas del cerebro en los procesos de trance: 1) todo pensamiento causa reacción física, 2) lo que se espera tiende a hacerse realidad, 3) la imaginación es más poderosa que la información, 4) la mente no puede mantener dos ideas opuestas sin conflicto, 5) una idea aceptada permanece hasta ser reemplazada, 6) un síntoma emocional persistente genera cambios orgánicos, 7) cada cambio disminuye la resistencia a sucesivos cambios, 8) a mayor esfuerzo consciente, menor respuesta del subconsciente.</p>
+<p><strong>Argumentos del autor:</strong> Son reglas experimentales que resumen el funcionamiento mental en los procesos de trance.</p>
+<p><strong>Conexiones:</strong> Estas reglas conectan con el Tema 2 (estados internos, creencias) y proporcionan la base teórica para entender por qué funciona la hipnosis.</p>
+<hr>
+
+<!-- Métodos de Inducción -->
+<h3 id="metodos-induccion">Métodos de Inducción Hipnótica</h3>
+<p><strong>Concepto clave:</strong> Presentación de dos métodos estándar de inducción: el Método de Hipnosis y Autohipnosis (inducción sensorial y motor, utilizable como autohipnosis) y la Técnica de Dave Elman (inducción mental para alcanzar profunda relajación).</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>MÉTODO DE HIPNOSIS Y AUTOHIPNOSIS:</strong>
+        <ul>
+            <li>Instrucciones: lugar tranquilo, leer con voz pausada, seguir indicaciones, pausas en puntos suspensivos (...).</li>
+            <li>Texto de inducción: guía progresiva de relajación desde los pies hasta la cabeza, con sugestiones de abandono y profundización.</li>
+            <li>Salida del trance: conteo de 1 a 5 con sugestiones de despertar progresivo.</li>
+        </ul>
+    </li>
+    <li><strong>TÉCNICA DE INDUCCIÓN MENTAL DE DAVE ELMAN:</strong>
+        <ul>
+            <li>Inducción mediante fijación visual en el dedo, cierre de párpados, prueba de relajación, elevación y caída de la mano, y profundización progresiva.</li>
+            <li>El texto finaliza cuando el sujeto está en trance, momento para iniciar el trabajo terapéutico.</li>
+        </ul>
+    </li>
+</ul>
+<p><strong>Conexiones:</strong> Estos métodos son la aplicación práctica de todos los conceptos teóricos anteriores (Modelo Milton, patrones, principios de Erickson). La técnica de Dave Elman se basa en pruebas de ideomotricidad.</p>
+<hr>
+
+<!-- Reglas para Sugerencias -->
+<h3 id="reglas-sugerencias">Reglas para Formular bien las Sugerencias</h3>
+<p><strong>Concepto clave:</strong> Siete reglas para formular sugestiones eficaces: 1) participación activa (toda hipnosis es autohipnosis), 2) concentración, 3) imaginación, 4) contacto sensible con el cuerpo, 5) ideomotricidad, 6) cultivarse a sí mismo, 7) formulado en positivo (evitar negaciones).</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Participación activa:</strong> Necesaria buena predisposición; el hipnotizador es solo un guía.</li>
+    <li><strong>Concentración:</strong> Desarrollar con la práctica; dirigir con amabilidad las divagaciones.</li>
+    <li><strong>Imaginación:</strong> Recrear imágenes con riqueza de matices; se puede desarrollar con la práctica.</li>
+    <li><strong>Contacto sensible con el cuerpo:</strong> Ser consciente de los cambios musculares, respiración, etc.</li>
+    <li><strong>Ideomotricidad:</strong> Convertir ideas en imágenes móviles e integrarse en ellas.</li>
+    <li><strong>Cultivarse a sí mismo:</strong> Las creencias sobre uno mismo determinan la profundidad alcanzable.</li>
+    <li><strong>Formulado en positivo:</strong> Evitar negaciones porque el subconsciente no procesa el "no".</li>
+</ul>
+<p><strong>Conexiones:</strong> Estas reglas conectan con el Tema 2 (comunicación eficaz, intención) y con el Tema 3 (calibración). La regla 7 se relaciona con los principios de comunicación del Tema 2.</p>
+<hr>
+
+<!-- Modelos Prácticos de Sugerencias -->
+<h3 id="modelos-practicos">Sugerencias para la Inducción: Modelos Prácticos</h3>
+<p><strong>Concepto clave:</strong> Ocho modelos prácticos de sugestiones para construir inducciones personalizadas: final abierto, implicación, perogrulladas, todas las alternativas, encadenamiento de opuestos, vínculo de alternativas, dobles vínculos consciente/inconsciente, dobles vínculos ilógicos.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Final abierto:</strong> <em>"Según escuchas el sonido de mi voz... Recuerda que puedes aprender de muchas formas..."</em></li>
+    <li><strong>Implicación:</strong> <em>"... y me pregunto si te sientes listo para empezar... ahora mismo... o dentro de un momento o dos..."</em></li>
+    <li><strong>Perogrulladas:</strong> <em>"... Como sabes, se pretende que las sillas sean cómodas..."</em></li>
+    <li><strong>Todas las alternativas:</strong> <em>"... puedes, simplemente, acomodarte con los brazos cruzados... las manos sueltas... juntas... o cualquier posición que elijas..."</em></li>
+    <li><strong>Encadenamiento de opuestos:</strong> <em>"... tómate tanto tiempo como quieras para prepararte... y así las soluciones pueden organizarse en mucho menos tiempo..."</em></li>
+    <li><strong>Vínculo de alternativas comparables:</strong> <em>"... y me pregunto si te gustaría que continuase hablando... o te gustaría pensar un poco..."</em></li>
+    <li><strong>Dobles vínculos consciente/inconsciente:</strong> <em>"... podría suceder que tu mente consciente no notase cuándo tu mente inconsciente está aportando recursos..."</em></li>
+    <li><strong>Dobles vínculos ilógicos:</strong> <em>"... así que comencemos ahora mismo o pongámonos a trabajar juntos en algo constructivo..."</em></li>
+</ul>
+<p><strong>Conexiones:</strong> Estos modelos son ejemplos prácticos de los patrones del Modelo Milton. Se conectan con las pautas para construir mensajes de trance.</p>
+<hr>
+
+<!-- Frases Útiles -->
+<h3 id="frases-utiles">Desarrollando el Trance: Frases Útiles</h3>
+<p><strong>Concepto clave:</strong> Serie de frases ya construidas para utilizar como guía en la inducción y desarrollo del trance, clasificadas por su uso específico.</p>
+<p><strong>Argumentos del autor:</strong> Se proporcionan frases como: <em>"... durante la hipnosis, las personas pueden aprender cosas variadas sobre sí mismas..."</em>, <em>"... cada persona entra en trance de una manera distinta y debe descubrir su propio camino..."</em>, <em>"... tu mente consciente ha dicho sí al hecho de entrar en trance... y tu mente inconsciente puede ayudarte a desarrollar un estado deseable..."</em></p>
+<p><strong>Conexiones:</strong> Estas frases son aplicación directa de los patrones del Modelo Milton y de las pautas para construir mensajes.</p>
+<hr>
+
+<!-- Tratamiento de Obesidad -->
+<h3 id="tratamiento-obesidad">Tratamiento de la Obesidad (Ejemplo de Sugerencia Terapéutica)</h3>
+<p><strong>Concepto clave:</strong> Ejemplo completo de sugestión terapéutica para el tratamiento de la obesidad, aplicando los principios y patrones del Modelo Milton.</p>
+<p><strong>Argumentos del autor:</strong> El texto incluye:</p>
+<ul>
+    <li>Sugestiones de acoplamiento con el subconsciente.</li>
+    <li>Visualización del "YO REAL" con figura ideal.</li>
+    <li>Distinción entre hambre real y "apetito loco" (emociones que no son hambre).</li>
+    <li>Técnica de anclaje: respiración profunda + palabras "CALMO y RELAJADO".</li>
+    <li>Visualización frente al espejo del cuerpo deseado.</li>
+    <li>Sugestiones de confianza y bienestar.</li>
+    <li>Finalización con retorno a consciencia total.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este ejemplo integra todos los elementos del tema: patrón Milton, presuposiciones, visualización, anclaje, y la secuencia de trabajo hipnótico.</p>
+<hr>
+
+<!-- Para Finalizar -->
+<h3 id="finalizar">Para Finalizar</h3>
+<p><strong>Concepto clave:</strong> Cada sujeto es único; lo que funciona con uno puede no funcionar con otro. Se recomienda desarrollar la habilidad de detectar el método más adecuado para cada caso.</p>
+<p><strong>Argumentos del autor:</strong> El autor señala que hay muchas más fórmulas de inducción y remite a la bibliografía para profundizar.</p>
+<p><strong>Conexiones:</strong> Esta conclusión conecta con la flexibilidad del rapport (Tema 3) y la calibración para adaptarse a cada sujeto.</p>
+<hr>
+
+<!-- ===== 3. MINI-RESÚMEN ===== -->
+<h2 id="mini-resumen">📌 Mini-resumen por Epígrafe (Repaso rápido)</h2>
+<ul>
+    <li><strong>¿Qué es el Trance?:</strong> El trance es un estado natural de conciencia alterada (soñar despierto, abstraerse) que la hipnosis clínica utiliza intencionadamente con fines terapéuticos. Toda hipnosis es autohipnosis (nadie es hipnotizado contra su voluntad). Diferencia entre hipnosis clínica (científica, resultados probados) y de espectáculo (amañada).</li>
+    <li><strong>¿Cómo funciona el Trance?:</strong> La mente se divide en consciente (12%, acciones voluntarias) y subconsciente (88%, funciones involuntarias). La hipnosis actúa accediendo al subconsciente.</li>
+    <li><strong>Niveles de Ondas Cerebrales:</strong> BETA (vigilia, 20+ ciclos/segundo), ALFA (trance ligero, 8-12, comunicación posible), ZETA (trance profundo, 4-8, cambios terapéuticos profundos), DELTA (sueño profundo, <4, sin comunicación). Se trabaja principalmente en ALFA.</li>
+    <li><strong>Fenómenos en la Hipnosis:</strong> Cambios observables: respiración calmada y abdominal, relajación muscular (posibles espasmos por liberación de tensión), sonrosamiento de la piel, R.E.M. (movimiento rápido de pupilas), enrojecimiento ocular, aumento del labio inferior, salivación, ladeos de cabeza, voz más profunda y lenta.</li>
+    <li><strong>El Modelo Milton:</strong> Sistematización del lenguaje hipnótico de Erickson por Grinder y Bandler. Inversión del Metamodelo. Elemento principal: el rapport. Consiste en describir conducta observable y luego experiencias a desarrollar.</li>
+    <li><strong>Patrones del Modelo Milton:</strong> Lenguaje transderivacional (índices generalizados, restricción selectiva, borradura, nominalización), modelo causal (conjunción, causativos, causa/efecto, verbos inespecíficos), ambigüedades (fonológicas, sintácticas, de expresión, de puntuación), sutilezas incluidas (preguntas/órdenes enclavadas, citas, marcación analógica), significados derivados (presuposiciones, postulados conversacionales).</li>
+    <li><strong>Secuencia para el Trabajo Hipnótico:</strong> 1) Contacto y anclaje, 2) Rapport, 3) Disociación, 4) Metáforas/Técnica/Metainstrucciones, 5) Creación de experiencia de referencia, 6) Chequeo y prueba.</li>
+    <li><strong>Principios de Erickson:</strong> Lenguaje permisivo, evitar autoritarismo, tipos de lenguaje (atribucionales, predictivos), términos de posibilidad, adaptarse a resistencias, evocar no sugestionar.</li>
+    <li><strong>Pautas para Mensajes de Trance:</strong> Presuposiciones, indicaciones contextuales, rapport no verbal (reflejo cruzado, adaptación al ritmo respiratorio), rapport verbal (copia del lenguaje y copia descriptiva).</li>
+    <li><strong>Otras Herramientas:</strong> Confusión (polaridades, conductas fuera de contexto), separación (consciente/subconsciente), vinculación (asociación de elementos), incorporación (incluir distracciones), intercalación (énfasis no verbal), palabras vacías (términos no específicos).</li>
+    <li><strong>Reglas de la Mente:</strong> Ocho reglas experimentales: 1) pensamiento causa reacción física, 2) expectativa tiende a cumplirse, 3) imaginación > información, 4) dos ideas opuestas generan conflicto, 5) creencia permanece hasta ser reemplazada, 6) síntoma emocional persistente genera cambios orgánicos, 7) cada cambio reduce resistencia a cambios sucesivos, 8) mayor esfuerzo consciente = menor respuesta subconsciente.</li>
+    <li><strong>Métodos de Inducción:</strong> Método de hipnosis/autohipnosis (inducción sensorial y motor, utilizable en autohipnosis) y Técnica de Dave Elman (inducción mental mediante fijación visual, pruebas de relajación y elevación/caída de mano).</li>
+    <li><strong>Reglas para Sugerencias:</strong> Participación activa, concentración, imaginación, contacto sensible con el cuerpo, ideomotricidad, cultivarse a sí mismo, formulado en positivo (evitar negaciones).</li>
+    <li><strong>Modelos Prácticos de Sugerencias:</strong> Final abierto, implicación, perogrulladas, todas las alternativas, encadenamiento de opuestos, vínculo de alternativas, dobles vínculos consciente/inconsciente, dobles vínculos ilógicos.</li>
+    <li><strong>Frases Útiles:</strong> Frases construidas para inducción y desarrollo del trance, aplicando los patrones del Modelo Milton.</li>
+    <li><strong>Tratamiento de Obesidad:</strong> Ejemplo completo de sugestión terapéutica con visualización, distinción hambre real/apetito loco, anclaje y sugestiones de cambio.</li>
+    <li><strong>Para Finalizar:</strong> Cada sujeto es único, hay que adaptar el método a cada caso y profundizar con bibliografía especializada.</li>
+</ul>
+
+<!-- ===== 4. PREGUNTAS DE DESARROLLO ===== -->
+<h2 id="preguntas-desarrollo">✍️ Preguntas de Desarrollo</h2>
+
+<!-- Pregunta 1 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 1:</strong> Explique en qué consiste el trance y la hipnosis, diferenciando entre estados naturales y uso terapéutico. Analice por qué se afirma que "toda hipnosis es autohipnosis" y cuál es la diferencia fundamental entre hipnosis clínica e hipnotismo de espectáculo.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir trance como estado natural de conciencia alterada (soñar despierto, abstraerse, extasiarse).</li>
+            <li>Explicar que la hipnosis clínica es el uso intencionado y controlado de ese estado con un objetivo terapéutico definido.</li>
+            <li>Diferenciar: en el trance natural ocurre espontáneamente sin control consciente; en la hipnosis se utiliza con intención clara.</li>
+            <li>Explicar "toda hipnosis es autohipnosis": nadie puede ser inducido contra su voluntad; la mente tiene un sistema de defensa que impide aceptar sugestiones que choquen con valores y creencias.</li>
+            <li>Diferenciar hipnosis clínica (científica, resultados probados en alergias, fobias, enfermedades psicosomáticas, adicciones, anestesia en hospitales) de hipnotismo de espectáculo (amañado, sujetos seleccionados, no representa la hipnosis real).</li>
+            <li>Concluir que la hipnosis proporciona mayor autocontrol, atención y capacidades, y sus límites los pone el propio sujeto.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Trance, hipnosis clínica, autohipnosis, sistema de defensa mental, hipnotismo de espectáculo.</p>
+    </div>
+</div>
+
+<!-- Pregunta 2 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 2:</strong> Describa los niveles de ondas cerebrales (BETA, ALFA, ZETA, DELTA) y explique su relación con los estados de trance. ¿En qué nivel se trabaja principalmente en hipnosis clínica y por qué? Relacione estos niveles con los fenómenos fisiológicos observables durante la hipnosis.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir los cuatro niveles:
+                <ul>
+                    <li><strong>BETA:</strong> 20+ ciclos/segundo. Vigilia consciente.</li>
+                    <li><strong>ALFA:</strong> 8-12 ciclos/segundo. Trance ligero. Todavía hay comunicación consciente con el exterior. Mente relajada.</li>
+                    <li><strong>ZETA (THETA):</strong> 4-8 ciclos/segundo. Trance profundo. Sin conexión consciente con el exterior. Nivel de cambios terapéuticos profundos (regresiones, etc.).</li>
+                    <li><strong>DELTA:</strong> Menos de 4 ciclos/segundo. Sueño profundo. Sin comunicación verbal.</li>
+                </ul>
+            </li>
+            <li>Explicar que en hipnosis clínica se trabaja principalmente en ALFA (trance ligero), excepcionalmente en ZETA.</li>
+            <li>Relacionar con fenómenos observables: al descender a ALFA se producen cambios en respiración (abdominal, calmada), tono muscular (relajación, posibles espasmos), coloración de la piel (sonrosamiento), R.E.M., aumento de labio inferior, etc.</li>
+            <li>Concluir que estos cambios fisiológicos son indicadores objetivos de la profundidad del trance.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Ondas cerebrales (BETA, ALFA, ZETA, DELTA), ciclos por segundo, trance ligero/profundo, fenómenos fisiológicos.</p>
+    </div>
+</div>
+
+<!-- Pregunta 3 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 3:</strong> Analice el Modelo Milton como herramienta lingüística para la inducción hipnótica. Explique sus principales patrones (lenguaje transderivacional, modelo causal, ambigüedades, sutilezas incluidas y significados derivados) y cómo cada uno contribuye a inducir el trance.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir el Modelo Milton: sistematización del lenguaje hipnótico de Erickson por Grinder y Bandler; inversión del Metamodelo. Elemento principal: el rapport.</li>
+            <li>Explicar <strong>Lenguaje transderivacional:</strong> obliga al cliente a buscar sentido interiormente.
+                <ul>
+                    <li>Índices generalizados: nombres sin referencia concreta.</li>
+                    <li>Restricción selectiva: sintaxis correcta sin realidad comprensiva.</li>
+                    <li>Borrradura: supresión de sujeto/objeto.</li>
+                    <li>Nominalización: verbo usado como nombre.</li>
+                </ul>
+            </li>
+            <li>Explicar <strong>Modelo causal:</strong> ligar descripciones sensoriales con sugestiones.
+                <ul>
+                    <li>Conjunción: "y", "pero".</li>
+                    <li>Causativos implicados: "cuando", "mientras".</li>
+                    <li>Causa/efecto: "hace que", "por eso".</li>
+                    <li>Verbos inespecíficos: no especifican la acción.</li>
+                </ul>
+            </li>
+            <li>Explicar <strong>Ambigüedades:</strong> inducen a interpretaciones múltiples (fonológicas, sintácticas, de expresión, de puntuación).</li>
+            <li>Explicar <strong>Sutilezas incluidas:</strong> preguntas/órdenes enclavadas, citas, marcación analógica.</li>
+            <li>Explicar <strong>Significados derivados:</strong> presuposiciones y postulados conversacionales.</li>
+            <li>Concluir que el Modelo Milton utiliza el lenguaje para guiar al sujeto hacia el trance de manera indirecta y permisiva.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Modelo Milton, lenguaje transderivacional, modelo causal, ambigüedades, sutilezas incluidas, presuposiciones, marcación analógica.</p>
+    </div>
+</div>
+
+<!-- Pregunta 4 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 4:</strong> Describa los fenómenos fisiológicos que se producen durante la hipnosis y explique su utilidad para el hipnotizador. Relacione estos fenómenos con la capacidad de calibración (Tema 3) y con los cambios en los niveles de ondas cerebrales.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Enumerar y describir los fenómenos fisiológicos:
+                <ul>
+                    <li>Cambios en respiración: más calmada, abdominal.</li>
+                    <li>Cambios en tono muscular: distensión; espasmos por liberación de tensión en personas estresadas.</li>
+                    <li>Cambios en color/temperatura de piel: sonrosamiento por mejor circulación.</li>
+                    <li>Movimiento rápido de pupilas (R.E.M.): señal de acceso a ALFA.</li>
+                    <li>Enrojecimiento del globo ocular.</li>
+                    <li>Aumento de tamaño del labio inferior.</li>
+                    <li>Tragar saliva (mayor actividad glandular).</li>
+                    <li>Ladeos de cabeza (relajación cervical).</li>
+                    <li>Cambios en tono y ritmo de la voz: más profunda y lenta.</li>
+                </ul>
+            </li>
+            <li>Explicar su utilidad para el hipnotizador: permiten calibrar la profundidad del trance y verificar que la inducción funciona.</li>
+            <li>Relacionar con la calibración (Tema 3): estos cambios son los "aspectos fisiológicos a observar" que se entrenan en los ejercicios de calibración.</li>
+            <li>Relacionar con los niveles de ondas cerebrales: los cambios se producen al descender de BETA a ALFA/ZETA.</li>
+            <li>Concluir que la observación de estos fenómenos es esencial para el éxito en hipnosis.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Fenómenos fisiológicos, R.E.M., calibración, observación, niveles de ondas cerebrales.</p>
+    </div>
+</div>
+
+<!-- Pregunta 5 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 5:</strong> Explique la secuencia para el trabajo hipnótico propuesta por DeLozier y Dilts (Contacto y anclaje, Rapport, Disociación, Metáforas terapéuticas, Creación de experiencia de referencia, Chequeo y prueba). Relacione cada paso con conceptos de temas anteriores.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li><strong>Contacto y anclaje:</strong> Establecer primer contacto y anclar experiencias (conecta con Tema 3, rapport).</li>
+            <li><strong>Rapport:</strong> Establecer sintonía con el sujeto (Tema 3, fundamental para la hipnosis).</li>
+            <li><strong>Disociación:</strong> Ayudar al sujeto a distanciarse de su estado presente (Tema 2, asociado/disociado).</li>
+            <li><strong>Metáforas terapéuticas/Aplicación de técnica/Metainstrucciones:</strong> Intervención central para el cambio (aplica patrones del Modelo Milton, sugestiones terapéuticas).</li>
+            <li><strong>Creación de experiencia de referencia:</strong> Generar una nueva experiencia positiva como referencia (anclaje).</li>
+            <li><strong>Chequeo y prueba:</strong> Verificar la eficacia del trabajo (Tema 3, calibración; Tema 2, feedback).</li>
+            <li>Concluir que la secuencia integra elementos de todos los temas anteriores en un protocolo estructurado.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Secuencia de trabajo hipnótico, contacto, rapport, disociación, metáforas terapéuticas, anclaje, chequeo.</p>
+    </div>
+</div>
+
+<!-- Pregunta 6 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 6:</strong> Compare los dos métodos de inducción presentados (Método de Hipnosis/Autohipnosis y Técnica de Dave Elman). ¿Qué elementos del Modelo Milton y de los principios de Erickson se pueden identificar en cada uno?</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li><strong>Método de Hipnosis/Autohipnosis:</strong>
+                <ul>
+                    <li>Inducción sensorial y motor (guía progresiva desde pies a cabeza).</li>
+                    <li>Utilizable como autohipnosis.</li>
+                    <li>Lenguaje: descriptivo, permisivo, sugestivo.</li>
+                    <li>Salida: conteo de 1 a 5 con sugestiones de despertar progresivo.</li>
+                </ul>
+            </li>
+            <li><strong>Técnica de Dave Elman:</strong>
+                <ul>
+                    <li>Inducción mental (fijación visual, cierre de párpados).</li>
+                    <li>Pruebas de ideomotricidad: relajación de párpados (prueba de no funcionamiento), elevación y caída de mano (prueba de pesadez).</li>
+                    <li>Profundización progresiva.</li>
+                </ul>
+            </li>
+            <li>Identificar elementos del Modelo Milton en ambos:
+                <ul>
+                    <li>Lenguaje permisivo (principios de Erickson).</li>
+                    <li>Presuposiciones ("cuando sepas que los has relajado...").</li>
+                    <li>Verbos inespecíficos ("profundiza más y más").</li>
+                    <li>Descripción sensorial (copia descriptiva).</li>
+                </ul>
+            </li>
+            <li>Diferencias clave:
+                <ul>
+                    <li>El primero es más gradual y general; el segundo incluye pruebas específicas.</li>
+                    <li>El primero es más autodirigido; el segundo requiere un hipnotizador.</li>
+                </ul>
+            </li>
+            <li>Concluir que ambos métodos aplican los principios de Erickson (lenguaje permisivo, evocar no sugestionar) y patrones del Modelo Milton.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Método de hipnosis/autohipnosis, técnica de Dave Elman, inducción sensorial/motor, pruebas de ideomotricidad, Modelo Milton, principios de Erickson.</p>
+    </div>
+</div>
+
+<!-- Pregunta 7 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 7:</strong> Explique las "Reglas de la Mente" y su aplicación en el contexto de la hipnosis. Relacione cada regla con algún aspecto práctico de la inducción o la formulación de sugestiones.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Enumerar las 8 reglas:
+                <ol>
+                    <li>Todo pensamiento causa reacción física.</li>
+                    <li>Lo que se espera tiende a hacerse realidad.</li>
+                    <li>La imaginación es más poderosa que la información.</li>
+                    <li>La mente no puede mantener dos ideas opuestas sin conflicto.</li>
+                    <li>Una idea aceptada permanece hasta ser reemplazada.</li>
+                    <li>Un síntoma emocional persistente genera cambios orgánicos.</li>
+                    <li> Cada cambio disminuye la resistencia a sucesivos cambios.</li>
+                    <li>A mayor esfuerzo consciente, menor respuesta del subconsciente.</li>
+                </ol>
+            </li>
+            <li>Relacionar cada regla con la hipnosis:
+                <ul>
+                    <li>Regla 1 → Fenómenos fisiológicos (respiración, tono muscular).</li>
+                    <li>Regla 2 → Sugestiones predictivas ("va a relajarse...").</li>
+                    <li>Regla 3 → Visualización y metáforas terapéuticas.</li>
+                    <li>Regla 4 → Dobles vínculos ilógicos.</li>
+                    <li>Regla 5 → Sustitución de creencias limitantes.</li>
+                    <li>Regla 6 → Beneficios terapéuticos de la hipnosis.</li>
+                    <li>Regla 7 → Práctica progresiva.</li>
+                    <li>Regla 8 → Principio "dejar hacer" en hipnosis.</li>
+                </ul>
+            </li>
+            <li>Concluir que las reglas explican por qué funciona la hipnosis y guían su aplicación práctica.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Reglas de la Mente, pensamiento-reacción física, expectativa, imaginación, dobles vínculos, creencias, resistencia al cambio, esfuerzo consciente.</p>
+    </div>
+</div>
+
+<!-- ===== 5. PREGUNTAS DE RESERVA ===== -->
+<h2 id="preguntas-reserva">⭐ Preguntas de Reserva</h2>
+
+<!-- Reserva 1 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 1:</strong> Realice un análisis integrador que conecte los conceptos de "estados internos" y "fisiología" (Tema 2) con el "rapport" (Tema 3) y la "hipnosis" (Tema 4). Explique cómo la hipnosis permite modificar estados internos a través de la fisiología, utilizando el rapport como base y los fenómenos fisiológicos como indicadores de cambio.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Recordar del Tema 2: estados internos (emociones-capacidades) = R.I. + Fisiología; la fisiología incluye postura, respiración, etc.</li>
+            <li>Recordar del Tema 3: el rapport permite conectar con el otro acoplando fisiología (gestos, respiración, postura), y luego dirigir.</li>
+            <li>Explicar que la hipnosis lleva este proceso al subconsciente: el hipnotizador utiliza rapport y patrones lingüísticos (Modelo Milton) para guiar al sujeto hacia un estado de ondas ALFA/ZETA.</li>
+            <li>Explicar que al cambiar el nivel de ondas cerebrales (fisiología cerebral), cambia el estado interno del sujeto (relajación, apertura al cambio).</li>
+            <li>Utilizar los fenómenos fisiológicos (respiración abdominal, relajación muscular, R.E.M.) como indicadores de que el estado interno está cambiando (calibración, Tema 3).</li>
+            <li>Explicar que la sugestión terapéutica actúa modificando las R.I. (visualización, metáforas) mientras el sujeto está en trance.</li>
+            <li>Concluir que hipnosis = rapport + cambio de fisiología (ondas cerebrales) + modificación de R.I. (sugestiones) = cambio de estado interno.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Estados internos, R.I. + Fisiología, rapport, hipnosis, ondas cerebrales, fenómenos fisiológicos, sugestión terapéutica.</p>
+    </div>
+</div>
+
+<!-- Reserva 2 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 2:</strong> Compare y contraste el Modelo Milton con el Metamodelo de la PNL (mencionado en el texto). ¿Cómo se relacionan como inversiones el uno del otro? ¿En qué contextos se utiliza cada uno y con qué propósito?</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir el <strong>Metamodelo:</strong> herramienta lingüística para "desarmar" estructuras erróneas del mapa del cliente, clarificar generalizaciones, borraduras y distorsiones; utilizado en terapia para obtener información precisa.</li>
+            <li>Definir el <strong>Modelo Milton:</strong> inversión del Metamodelo; utiliza los mismos patrones pero en dirección opuesta; en lugar de clarificar, induce ambigüedad y confusión para acceder al subconsciente.</li>
+            <li>Explicar la <strong>inversión:</strong>
+                <ul>
+                    <li>Metamodelo: específico, claro, pregunta.</li>
+                    <li>Modelo Milton: vago, ambiguo, sugiere.</li>
+                    <li>Metamodelo: consciente, analítico.</li>
+                    <li>Modelo Milton: subconsciente, evoca.</li>
+                </ul>
+            </li>
+            <li>Contextos de uso:
+                <ul>
+                    <li>Metamodelo: terapia de cambio, cuando el cliente está en estado consciente y resistente.</li>
+                    <li>Modelo Milton: inducción hipnótica, cuando se busca acceso al subconsciente.</li>
+                </ul>
+            </li>
+            <li>Explicar que el rapport es común a ambos: base para cualquier comunicación terapéutica.</li>
+            <li>Concluir que son herramientas complementarias, no opuestas: el Metamodelo clarifica, el Modelo Milton induce; ambos son necesarios en el proceso terapéutico.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Metamodelo, Modelo Milton, inversión, clarificación vs. inducción, consciente vs. subconsciente, rapport.</p>
+    </div>
+</div>
+
+<!-- Reserva 3 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 3:</strong> Analice en profundidad el ejemplo de "Tratamiento de la Obesidad" como sugestión terapéutica. Identifique en él los patrones del Modelo Milton, los principios de Erickson, las reglas para formular sugestiones, y los elementos de la secuencia de trabajo hipnótico. Explique por qué es un modelo eficaz.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Identificar <strong>patrones del Modelo Milton:</strong>
+                <ul>
+                    <li>Lenguaje transderivacional: "parte más profunda de tu mente subconsciente", "nuevos patrones de conducta".</li>
+                    <li>Presuposiciones: "Has elegido la hipnosis como un medio", "Has tomado la decisión".</li>
+                    <li>Verbos inespecíficos: "van a producir un efecto importante".</li>
+                    <li>Ambigüedades: "tu YO REAL".</li>
+                </ul>
+            </li>
+            <li>Identificar <strong>principios de Erickson:</strong>
+                <ul>
+                    <li>Lenguaje permisivo: "pueden", "vas a descubrir".</li>
+                    <li>Atribucionales: "estás visualizando".</li>
+                    <li>Predictivos: "te darás cuenta".</li>
+                    <li>Evocar no sugestionar: "visualiza", "imagina".</li>
+                </ul>
+            </li>
+            <li>Identificar <strong>reglas para formular sugestiones:</strong>
+                <ul>
+                    <li>Formulado en positivo (evita negaciones).</li>
+                    <li>Participación activa ("tú has elegido").</li>
+                    <li>Imaginación: visualización del "YO REAL" y el espejo.</li>
+                    <li>Contacto con el cuerpo: respiración, sensaciones.</li>
+                    <li>Ideomotricidad: convertir idea en imagen móvil.</li>
+                </ul>
+            </li>
+            <li>Identificar <strong>elementos de la secuencia:</strong>
+                <ul>
+                    <li>Rapport implícito.</li>
+                    <li>Disociación: distanciamiento del "apetito loco".</li>
+                    <li>Metáforas: "habitación secreta", "espejo".</li>
+                    <li>Anclaje: respiración + palabras "CALMO y RELAJADO".</li>
+                    <li>Chequeo implícito: sensación de bienestar.</li>
+                </ul>
+            </li>
+            <li>Explicar por qué es eficaz:
+                <ul>
+                    <li>Trabaja con el subconsciente directamente.</li>
+                    <li>Sustituye creencias limitantes (apetito loco = emociones) por creencias potenciadoras (hambre real = necesidad fisiológica).</li>
+                    <li>Proporciona herramientas prácticas (anclaje).</li>
+                    <li>Refuerza la autoestima y la identidad ("YO REAL").</li>
+                </ul>
+            </li>
+            <li>Concluir que integra todos los elementos del tema en un modelo terapéutico completo y coherente.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Tratamiento de obesidad, Modelo Milton, principios de Erickson, reglas para sugestiones, secuencia de trabajo hipnótico, YO REAL, anclaje.</p>
+    </div>
+</div>
+
+<script>
+    // Alternar modo claro/oscuro
+    document.getElementById('modoBtn').addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        this.textContent = document.body.classList.contains('dark-mode') ? '☀️ Modo' : '🌓 Modo';
+    });
+
+    // Toggle para esquemas de desarrollo
+    function toggleEsquema(btn) {
+        const container = btn.parentElement;
+        const esquema = container.querySelector('.esquema-oculto');
+        if (esquema) {
+            esquema.classList.toggle('visible');
+            btn.textContent = esquema.classList.contains('visible') ? '📖 Ocultar esquema' : '📖 Mostrar esquema';
+        }
+    }
+</script>
+
+</body>
+</html>

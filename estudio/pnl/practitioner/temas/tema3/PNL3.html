@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Tema 3: Contacto (Rapport) y Calibración · Resumen UNED</title>
+    <style>
+        /* ===== ESTILO ÚNICO PARA RESÚMENES UNED ===== */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            max-width: 950px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #f5f7fa;
+            color: #1a1a2e;
+            line-height: 1.8;
+            font-size: 17px;
+        }
+        h1 {
+            font-size: 30px;
+            color: #0a1628;
+            border-bottom: 4px solid #1a3d66;
+            padding-bottom: 14px;
+        }
+        h2 {
+            font-size: 23px;
+            color: #1a3d66;
+            margin-top: 32px;
+            border-left: 4px solid #1a3d66;
+            padding-left: 16px;
+        }
+        h3 {
+            font-size: 20px;
+            color: #2a4a7a;
+            margin-top: 26px;
+        }
+        h4 {
+            font-size: 18px;
+            color: #3a5a8a;
+            margin-top: 20px;
+        }
+        strong {
+            color: #0a2a4a;
+        }
+        ul {
+            padding-left: 24px;
+        }
+        li {
+            margin-bottom: 6px;
+        }
+        blockquote {
+            background: #e8edf4;
+            padding: 12px 20px;
+            border-left: 4px solid #1a3d66;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        hr {
+            border: none;
+            border-top: 2px solid #d0d8e4;
+            margin: 28px 0;
+        }
+        .indice {
+            background: #e8edf4;
+            padding: 16px 24px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .indice ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .indice li {
+            padding: 3px 0;
+        }
+        .indice li.h1 {
+            font-weight: 600;
+        }
+        .indice li.h2 {
+            padding-left: 20px;
+            font-weight: 400;
+        }
+        .indice a {
+            color: #1a3d66;
+            text-decoration: none;
+        }
+        .indice a:hover {
+            text-decoration: underline;
+        }
+        .idea-central {
+            background: #e0e8f4;
+            padding: 18px 24px;
+            border-radius: 12px;
+            margin: 20px 0 30px 0;
+            border-left: 5px solid #1a3d66;
+        }
+        .idea-central h2 {
+            margin-top: 0;
+            border-left: none;
+            padding-left: 0;
+        }
+        .modo-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            padding: 8px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #1a3d66;
+            color: #fff;
+            font-size: 14px;
+            z-index: 999;
+        }
+        .modo-btn:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode {
+            background: #0d1a2b;
+            color: #d6e2f5;
+        }
+        .dark-mode h1 {
+            color: #b0c8e8;
+            border-bottom-color: #2a5a8a;
+        }
+        .dark-mode h2 {
+            color: #8ab0e0;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode h3 {
+            color: #6a9ac0;
+        }
+        .dark-mode h4 {
+            color: #5a8aaa;
+        }
+        .dark-mode strong {
+            color: #c8ddf0;
+        }
+        .dark-mode blockquote {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode .indice {
+            background: #142a44;
+        }
+        .dark-mode .indice a {
+            color: #8ab0e0;
+        }
+        .dark-mode .idea-central {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode hr {
+            border-top-color: #2a4a6a;
+        }
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+                padding: 14px;
+            }
+            h1 {
+                font-size: 25px;
+            }
+            h2 {
+                font-size: 21px;
+            }
+        }
+
+        /* ===== ESTILOS PARA PREGUNTAS INTERACTIVAS ===== */
+        .pregunta {
+            background: #f0f4fa;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            border: 1px solid #d0d8e4;
+        }
+        .dark-mode .pregunta {
+            background: #142a44;
+            border-color: #2a4a6a;
+        }
+        .pregunta .enunciado {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .pregunta .opciones {
+            list-style: none;
+            padding-left: 8px;
+        }
+        .pregunta .opciones li {
+            margin-bottom: 4px;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .pregunta .opciones li.correcta {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .dark-mode .pregunta .opciones li.correcta {
+            background: #1a4a3a;
+            color: #8fdfb0;
+            border-left-color: #2ecc71;
+        }
+        .pregunta .respuesta-oculta {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta .respuesta-oculta {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta .respuesta-oculta.visible {
+            display: block;
+        }
+        .pregunta .btn-respuesta {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #1a3d66;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta .btn-respuesta:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta:hover {
+            background: #3a7aaa;
+        }
+        .pregunta .trampa {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #6a4a2a;
+            font-style: italic;
+        }
+        .dark-mode .pregunta .trampa {
+            color: #c8a878;
+        }
+        .pregunta-desarrollo .esquema-oculto {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta-desarrollo .esquema-oculto {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta-desarrollo .esquema-oculto.visible {
+            display: block;
+        }
+        .pregunta-desarrollo .btn-esquema {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #1a3d66;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta-desarrollo .btn-esquema:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta-desarrollo .btn-esquema {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta-desarrollo .btn-esquema:hover {
+            background: #3a7aaa;
+        }
+    </style>
+</head>
+<body>
+
+<button class="modo-btn" id="modoBtn" aria-label="Cambiar modo claro/oscuro">🌓 Modo</button>
+
+<h1>Tema 3: Contacto (Rapport) y Calibración</h1>
+
+<!-- ===== ÍNDICE ===== -->
+<div class="indice">
+    <h2 style="margin-top:0; border-left:none; padding-left:0;">📑 Índice</h2>
+    <ul>
+        <li class="h1"><a href="#idea-central">1. Idea Central (5 minutos)</a></li>
+        <li class="h1"><a href="#resumen-epigrafes">2. Resumen por Epígrafes</a></li>
+        <li class="h2"><a href="#que-es-rapport">¿Qué es el Rapport?</a></li>
+        <li class="h2"><a href="#acoplar-dirigir">Nuestra Actitud: Acoplar y Dirigir</a></li>
+        <li class="h2"><a href="#aspectos-calibrar">Aspectos a Calibrar y Reflejar en el Rapport</a></li>
+        <li class="h2"><a href="#tecnicas-direccion">Técnicas de Dirección</a></li>
+        <li class="h2"><a href="#calibracion">Calibración</a></li>
+        <li class="h2"><a href="#aspectos-fisiologicos">Aspectos Fisiológicos a Observar</a></li>
+        <li class="h2"><a href="#ejercicios">Ejercicios de Prácticas</a></li>
+        <li class="h1"><a href="#mini-resumen">3. Mini-resumen por Epígrafe</a></li>
+        <li class="h1"><a href="#preguntas-desarrollo">4. Preguntas de Desarrollo</a></li>
+        <li class="h1"><a href="#preguntas-reserva">5. Preguntas de Reserva</a></li>
+    </ul>
+</div>
+
+<!-- ===== 1. IDEA CENTRAL ===== -->
+<div id="idea-central" class="idea-central">
+    <h2>💡 Idea Central (5 minutos)</h2>
+    <p>El rapport es el ingrediente fundamental de toda comunicación eficaz en PNL, definido como el encuentro con el modelo del mundo de otro individuo a través de la armonía y la sintonía. Para establecerlo, debemos acoplar nuestros comportamientos externos (gestos, respiración, tono, postura) a los de nuestro interlocutor con sutileza y respeto, creando un ambiente de familiaridad y confianza. Una vez logrado el acoplamiento, podemos dirigir a la persona hacia un estado deseado modificando gradualmente nuestros propios patrones (respiración, gestos, ritmo vocal) y esperando que nos siga. La calibración, por su parte, es la capacidad de detectar los cambios fisiológicos mínimos en el otro (movimientos oculares, respiración, coloración de la piel, etc.), lo que nos proporciona datos objetivos sobre si nos acercamos o alejamos de nuestro objetivo. Ambas habilidades —rapport y calibración— requieren atención, flexibilidad y el dominio de los elementos básicos de la comunicación, y se perfeccionan mediante ejercicios prácticos que desarrollan la agudeza sensorial.</p>
+</div>
+
+<!-- ===== 2. RESUMEN POR EPÍGRAFES ===== -->
+<h2 id="resumen-epigrafes">📘 Resumen por Epígrafes</h2>
+
+<!-- ¿Qué es el Rapport? -->
+<h3 id="que-es-rapport">¿Qué es el Rapport?</h3>
+<p><strong>Concepto clave:</strong> El rapport es el principal ingrediente de toda comunicación y cambio en PNL, definido como el encuentro con el modelo del mundo de un individuo. Es una relación marcada por la armonía, conformidad, acuerdo o afinidad, que busca que el interlocutor se sienta cómodo, familiarizado y comprendido.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>La parte más visible del mapa de un individuo son sus manifestaciones externas (gestos, movimientos, tono de voz, ritmo, respiración).</li>
+    <li>Para aproximarnos a él, lo más fácil es hacerlo a través de lo más evidente y objetivo: sus comportamientos exteriorizados.</li>
+    <li>El método consiste en "copiar" lo que el otro hace, pero con sutileza y respeto, buscando armonía, nunca enfrentamiento.</li>
+    <li>El rapport requiere delicadeza, respeto y no debe confundirse con una burda imitación.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe establece la base conceptual que se desarrollará en los siguientes. La idea de "modelo del mundo" se conecta con el Tema 2 (representaciones internas). La necesidad de "copiar" comportamientos se relaciona directamente con los "Aspectos a calibrar y reflejar" y con las "Técnicas de dirección".</p>
+<hr>
+
+<!-- Nuestra actitud: Acoplar y Dirigir -->
+<h3 id="acoplar-dirigir">Nuestra Actitud: Acoplar y Dirigir</h3>
+<p><strong>Concepto clave:</strong> La actitud fundamental en el rapport es primero <strong>acoplar</strong> (igualar, reflejar) todos los aspectos de la comunicación del otro, y una vez establecida la conexión, <strong>dirigir</strong> hacia el estado deseado. Esto requiere atención, observación y especialmente flexibilidad.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Para acoplar, debemos atender todos los aspectos de la comunicación del individuo, verbales y no verbales.</li>
+    <li>El rapport es un fenómeno natural que ocurre espontáneamente cuando nos sentimos a gusto con alguien (ejemplo de enamorados o conversaciones fluidas).</li>
+    <li>El objetivo es ser capaces de establecer esa conexión con cualquier persona.</li>
+    <li>Se requiere alta dosis de atención, observación y especialmente flexibilidad.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe introduce el principio fundamental de "acoplar y dirigir" que estructura todo el tema. Se conecta con los "Aspectos a calibrar y reflejar" (qué acoplar) y con las "Técnicas de dirección" (cómo dirigir). También se relaciona con la "calibración" como herramienta para saber cuándo estamos acoplados.</p>
+<hr>
+
+<!-- Aspectos a calibrar y reflejar -->
+<h3 id="aspectos-calibrar">Aspectos a Calibrar y Reflejar en el Rapport</h3>
+<p><strong>Concepto clave:</strong> Para establecer rapport, debemos calibrar y reflejar específicamente seis aspectos del lenguaje corporal del interlocutor: ritmo respiratorio, localización respiratoria, postura corporal, ritmo y velocidad del habla, tono de voz y gestos (expresiones faciales y ademanes).</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>La información obtenida de estos aspectos se usa para acoplar con nuestro cuerpo.</li>
+    <li>Se debe acoplar durante el tiempo que sea necesario antes de centrarse en dirigir.</li>
+    <li>Es fundamental saber hacia dónde queremos dirigir a la persona.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe es el puente entre la teoría del rapport y su práctica. Los seis aspectos listados son los que se desarrollan en las "Técnicas de dirección". También se conecta con la "Calibración" (observar estos aspectos) y con la lista de "Aspectos fisiológicos a observar" (que es una ampliación de esta lista).</p>
+<hr>
+
+<!-- Técnicas de dirección -->
+<h3 id="tecnicas-direccion">Técnicas de Dirección</h3>
+<p><strong>Concepto clave:</strong> Una vez establecido el acoplamiento, podemos dirigir al interlocutor modificando gradualmente nuestros propios patrones en cuatro áreas: respiración, aspectos vocales, gestos y postura corporal, esperando que el otro nos siga.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Respiración:</strong> Tras igualar el ritmo respiratorio, lo aumentamos o disminuimos; si el acoplamiento es bueno, nos seguirá. Se puede igualar el ritmo respiratorio con movimientos de cabeza, brazo o cuerpo.</li>
+    <li><strong>Aspectos vocales:</strong> Acoplamos ritmo, volumen y tono; luego los cambiamos gradualmente y esperamos que el cliente nos siga.</li>
+    <li><strong>Gestos:</strong> Podemos seguir movimientos rápidos y luego ralentizarlos para relajar, o acelerar movimientos lentos para animar. También podemos dirigir el movimiento ocular o los gestos faciales.</li>
+    <li><strong>Postura corporal:</strong> Se aplica el mismo principio.</li>
+    <li>Las únicas limitaciones son las nuestras; el valor terapéutico es que una vez acoplados, podemos llevar a la persona hacia el estado deseado.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe es la aplicación práctica del principio "acoplar y dirigir". Se conecta directamente con los "Aspectos a calibrar y reflejar" (de dónde partimos) y con la "Calibración" (para saber si el otro nos sigue). También se relaciona con el Tema 2 (estados internos) al buscar llevar a la persona a un "estado deseado".</p>
+<hr>
+
+<!-- Calibración -->
+<h3 id="calibracion">Calibración</h3>
+<p><strong>Concepto clave:</strong> La calibración es la capacidad de detectar los cambios fisiológicos, verbales y no verbales más sutiles en la interacción humana. Estos cambios son los únicos datos objetivos y fiables para saber si nos acercamos o alejamos del estado deseado del interlocutor.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Es fundamental atender y calibrar con precisión el lenguaje no verbal desde el principio.</li>
+    <li>La calibración detecta cambios mínimos: respiración, gestos, postura, tonalidad, dilatación de pupilas, movimientos oculares, etc.</li>
+    <li>Para calibrar correctamente, debemos aplicar las bases de la comunicación eficaz: motivación, evitar interferencias (atención relajadamente alerta), contexto, medios, feedback, intención y escucha activa.</li>
+    <li>Sin estos elementos es casi imposible dominar el arte de la calibración.</li>
+    <li>Tanto en calibración (detectar cambios) como en rapport (acoplar), hay que prestar atención a los aspectos fisiológicos.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe es el núcleo práctico junto con el rapport. Se conecta con el Tema 2 (elementos básicos de la comunicación), con los "Aspectos fisiológicos a observar" (qué calibrar) y con los ejercicios prácticos (cómo entrenar la calibración).</p>
+<hr>
+
+<!-- Aspectos fisiológicos a observar -->
+<h3 id="aspectos-fisiologicos">Aspectos Fisiológicos a Observar</h3>
+<p><strong>Concepto clave:</strong> Lista de 13 aspectos fisiológicos que debemos observar tanto para calibrar (detectar cambios) como para acoplar (establecer rapport): movimientos oculares, respiración, coloración de la piel, labio inferior y pupilas, músculos faciales, postura, expresiones faciales, cabeza, hombros, manos y dedos, humedad y temperatura de la piel, cualidades vocales y predicados verbales.</p>
+<p><strong>Argumentos del autor:</strong> La lista es exhaustiva y abarca desde lo más evidente (postura, gestos) hasta lo más sutil (coloración de la piel, dilatación pupilar, humedad).</p>
+<p><strong>Conexiones:</strong> Esta lista es la guía práctica que conecta la "Calibración" y el "Rapport" con los ejercicios. Proporciona el "qué" observar que se aplica en todos los ejercicios (especialmente el A, B y C).</p>
+<hr>
+
+<!-- Ejercicios de prácticas -->
+<h3 id="ejercicios">Ejercicios de Prácticas</h3>
+<p><strong>Concepto clave:</strong> Conjunto de siete ejercicios progresivos (A-G) para desarrollar habilidades de calibración y rapport, desde niveles básicos hasta avanzados, diseñados para ser practicados en pareja o grupo.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>EJERCICIO A (Calibración de estados):</strong> El sujeto revive asociadamente experiencias desagradables y agradables. El programador observa y anota los cambios fisiológicos (respiración, coloración, pupilas, labio, postura, etc.). Se alternan estados 3-4 veces hasta identificar las diferencias. Prueba final: el sujeto accede a un estado sin decir cuál y el programador debe identificarlo por los cambios fisiológicos. <em>Objetivo: Apertura de canales sensoriales y práctica de calibración.</em></li>
+    <li><strong>EJERCICIO B (Aumentando los canales sensoriales):</strong> El programador hace 10 preguntas con respuesta SÍ conocida y observa los signos sensoriales (4-5 "llaves"). Hace 10 preguntas con respuesta NO conocida y observa las llaves para el NO. Luego hace preguntas de respuesta desconocida (donde el sujeto puede mentir) y debe detectar si es SÍ o NO por las llaves. <em>Objetivo: Práctica de calibración y agudeza sensorial; aprender a detectar mentiras.</em></li>
+    <li><strong>EJERCICIO C (Representación fisiológica de diversos estados):</strong> Un "actor" representa estados emocionales (envidia, timidez, indiferencia, júbilo, éxtasis) sin lenguaje ni teatralidad, solo asociándose y dejando que el rostro muestre el estado naturalmente. Los observadores deben descifrar el estado. <em>Objetivo: Práctica avanzada de calibración; comprobar que somos dueños de nuestros estados y podemos reproducirlos.</em></li>
+    <li><strong>EJERCICIO D (Rapport básico):</strong> Dos personas sentadas frente a frente. Uno improvisa gestos y el otro debe seguirle y copiar todos los elementos posibles. Los movimientos se vuelven cada vez más sutiles. Duración: 10-15 minutos por persona. Luego se intercambian los roles. <em>Objetivo: Prácticas iniciales de rapport.</em></li>
+    <li><strong>EJERCICIO E (Calibración y Rapport):</strong> El programador cierra los ojos. El sujeto cambia su posición inicial (ej. descruza piernas) y luego pide al programador que abra los ojos. El programador identifica los cambios, adopta la misma posición y comunica los cambios observados. Los cambios se vuelven cada vez más sutiles. Duración: 10-15 minutos cada uno. <em>Objetivo: Desarrollo de la calibración y establecimiento del rapport una vez calibrado.</em></li>
+    <li><strong>EJERCICIO F (Liderar el rapport):</strong> Dos personas conversan sentadas frente a frente. Primero (5 min) se acoplan mutuamente (establecen buen rapport). Luego, sin aviso, ambos intentan dirigir al otro con movimientos, manteniendo el rapport y sin provocar grandes resistencias. Duración: 15-20 minutos. <em>Objetivo: Aprender a vencer resistencias y ser capaces de acoplarse y dirigir en cualquier circunstancia.</em></li>
+    <li><strong>EJERCICIO G (Prácticas avanzadas de rapport):</strong> En cualquier lugar con gente (trabajo, cafetería, reunión). Observar, calibrar y luego acercarse a establecer rapport con la persona, sutílmente, acoplándose a gestos, movimientos, tono, volumen y ritmo de voz. <em>Objetivo: Acostumbrarse al rapport hasta que sea una competencia inconsciente.</em></li>
+</ul>
+<p><strong>Conexiones:</strong> Los ejercicios son la aplicación práctica de todos los conceptos del tema. El A y B se centran en calibración; el C es calibración avanzada; el D es rapport básico; el E combina calibración y rapport; el F es rapport con dirección; el G es la aplicación en contextos reales. Todos se basan en los "Aspectos fisiológicos a observar".</p>
+<hr>
+
+<!-- ===== 3. MINI-RESÚMEN ===== -->
+<h2 id="mini-resumen">📌 Mini-resumen por Epígrafe (Repaso rápido)</h2>
+<ul>
+    <li><strong>¿Qué es el Rapport?:</strong> El rapport es el encuentro con el modelo del mundo de otro, logrado mediante la armonía y la sintonía. Consiste en "copiar" con sutileza y respeto los comportamientos exteriorizados del interlocutor (gestos, movimientos, tono, respiración) para que se sienta cómodo y comprendido.</li>
+    <li><strong>Nuestra actitud: Acoplar y Dirigir:</strong> La estrategia fundamental es primero acoplar (igualar, reflejar) todos los aspectos de la comunicación del otro y, una vez establecida la conexión, dirigir hacia el estado deseado. Requiere atención, observación y flexibilidad.</li>
+    <li><strong>Aspectos a calibrar y reflejar en el Rapport:</strong> Debemos calibrar y reflejar específicamente: ritmo y localización respiratoria, postura corporal, ritmo/velocidad del habla, tono de voz, y gestos (expresiones faciales y ademanes).</li>
+    <li><strong>Técnicas de Dirección:</strong> Tras el acoplamiento, se puede dirigir modificando la respiración (ritmo), los aspectos vocales (ritmo, volumen, tono), los gestos (velocidad, dirección) y la postura corporal, esperando que el otro nos siga. El valor terapéutico es llevar a la persona al estado deseado.</li>
+    <li><strong>Calibración:</strong> Es la capacidad de detectar los cambios fisiológicos, verbales y no verbales más sutiles en el otro. Estos cambios son los únicos datos objetivos para saber si nos acercamos o alejamos del objetivo. Requiere aplicar las bases de la comunicación eficaz (motivación, evitar interferencias, contexto, feedback, etc.).</li>
+    <li><strong>Aspectos fisiológicos a observar:</strong> Lista de 13 aspectos: movimientos oculares, respiración, coloración de la piel, labio inferior y pupilas, músculos faciales, postura, expresiones faciales, cabeza, hombros, manos, humedad/temperatura, cualidades vocales y predicados verbales.</li>
+    <li><strong>Ejercicios de Prácticas:</strong> Siete ejercicios progresivos (A-G) para desarrollar calibración y rapport: A (calibración de estados), B (canales sensoriales/detectar mentiras), C (representación de estados), D (rapport básico), E (calibración y rapport), F (liderar el rapport), G (prácticas avanzadas en contextos reales).</li>
+</ul>
+
+<!-- ===== 4. PREGUNTAS DE DESARROLLO ===== -->
+<h2 id="preguntas-desarrollo">✍️ Preguntas de Desarrollo</h2>
+
+<!-- Pregunta 1 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 1:</strong> Explique en qué consiste el rapport, por qué se considera el ingrediente principal de la comunicación en PNL y cuál es la actitud fundamental para establecerlo. Describa los aspectos concretos que debemos calibrar y reflejar para lograrlo.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir rapport: encuentro con el modelo del mundo del otro, relación de armonía, afinidad y concordia.</li>
+            <li>Explicar por qué es el ingrediente principal: sin rapport no hay comunicación ni cambio real; permite que el otro se sienta cómodo, comprendido y familiarizado.</li>
+            <li>Describir la actitud fundamental: acoplar y dirigir (primero igualar, luego guiar).</li>
+            <li>Explicar el método: aproximarse a través de los comportamientos exteriorizados (lo más visible del mapa), "copiando" con sutileza y respeto, buscando armonía, nunca enfrentamiento.</li>
+            <li>Listar los aspectos a calibrar y reflejar: ritmo respiratorio, localización respiratoria, postura corporal, ritmo y velocidad del habla, tono de voz, y gestos (expresiones faciales y ademanes).</li>
+            <li>Concluir que el rapport requiere atención, observación y especialmente flexibilidad.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Rapport, modelo del mundo, acoplar y dirigir, comportamientos exteriorizados, aspectos a calibrar (respiración, postura, voz, gestos), flexibilidad.</p>
+    </div>
+</div>
+
+<!-- Pregunta 2 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 2:</strong> Desarrolle el concepto de "acoplar y dirigir" como estrategia fundamental en el rapport. Explique cómo se aplica esta estrategia en las técnicas de dirección (respiración, aspectos vocales, gestos y postura) y cuál es su valor terapéutico o de cambio.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir la estrategia "acoplar y dirigir": primero igualar/reflejar todos los aspectos del otro, luego guiar hacia el estado deseado.</li>
+            <li>Explicar el acoplamiento: atender todos los aspectos verbales y no verbales, usar nuestro cuerpo para igualar.</li>
+            <li>Explicar la dirección: una vez creada la atmósfera de rapport, modificar nuestros patrones para que el otro nos siga.</li>
+            <li>Describir las técnicas de dirección:
+                <ul>
+                    <li><strong>Respiración:</strong> igualar ritmo, luego cambiar (aumentar/disminuir) y esperar que nos siga.</li>
+                    <li><strong>Aspectos vocales:</strong> igualar ritmo, volumen y tono, luego cambiar gradualmente.</li>
+                    <li><strong>Gestos:</strong> seguir movimientos y luego ralentizar (para relajar) o acelerar (para animar); dirigir movimiento ocular o gestos faciales.</li>
+                    <li><strong>Postura corporal:</strong> aplicar el mismo principio.</li>
+                </ul>
+            </li>
+            <li>Explicar el valor terapéutico: una vez acoplados, podemos llevar a la persona hacia el estado deseado modificando la dirección de movimientos y conductas corporales.</li>
+            <li>Concluir que las únicas limitaciones son las nuestras y que si el rapport inicial es bueno, el interlocutor nos seguirá.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Acoplar, dirigir, técnicas de dirección (respiración, voz, gestos, postura), valor terapéutico, estado deseado.</p>
+    </div>
+</div>
+
+<!-- Pregunta 3 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 3:</strong> Defina la calibración y explique su importancia en la comunicación y el rapport. Relacione la calibración con los elementos básicos de la comunicación (vistos en el Tema 2) y enumere los principales aspectos fisiológicos que debemos observar.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir calibración: capacidad de detectar los cambios fisiológicos, verbales y no verbales más sutiles en la interacción humana.</li>
+            <li>Explicar su importancia: son los únicos datos objetivos y fiables para saber si nos acercamos o alejamos del estado deseado del interlocutor.</li>
+            <li>Relacionar con los elementos básicos del Tema 2: motivación, evitar interferencias (atención relajadamente alerta), contexto, medios, feedback, intención y escucha activa. Sin estos, es casi imposible dominar la calibración.</li>
+            <li>Enumerar los aspectos fisiológicos principales (13 puntos):
+                <ul>
+                    <li>Movimientos oculares</li>
+                    <li>Respiración (velocidad y localización)</li>
+                    <li>Coloración de la piel</li>
+                    <li>Tamaño del labio inferior y dilatación pupilar</li>
+                    <li>Tono y movimiento de músculos faciales</li>
+                    <li>Postura corporal</li>
+                    <li>Expresiones faciales</li>
+                    <li>Inclinaciones y movimientos de cabeza</li>
+                    <li>Ángulo de los hombros</li>
+                    <li>Movimientos de manos y dedos</li>
+                    <li>Humedad y temperatura de la piel</li>
+                    <li>Cualidades vocales (tono, ritmo, volumen, timbre)</li>
+                    <li>Predicados verbales</li>
+                </ul>
+            </li>
+            <li>Concluir que la calibración es fundamental tanto para detectar cambios (en calibración) como para buscar el acoplamiento (en rapport).</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Calibración, cambios fisiológicos, datos objetivos, elementos básicos de la comunicación, aspectos fisiológicos (lista), agudeza sensorial.</p>
+    </div>
+</div>
+
+<!-- Pregunta 4 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 4:</strong> Compare los conceptos de rapport y calibración, explicando sus diferencias y su relación complementaria. ¿Cómo se utilizan ambos en el proceso de "acoplar y dirigir"?</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir rapport: establecer armonía y sintonía, acoplarse al modelo del mundo del otro mediante la igualación de comportamientos.</li>
+            <li>Definir calibración: detectar cambios sutiles en la fisiología del otro para obtener información objetiva sobre su estado.</li>
+            <li>Señalar diferencias:
+                <ul>
+                    <li>Rapport es una acción (establecer conexión); calibración es una percepción (observar y detectar).</li>
+                    <li>Rapport busca la armonía; calibración busca la precisión en la observación.</li>
+                    <li>Rapport implica "hacer" (acoplar, dirigir); calibración implica "observar" (detectar cambios).</li>
+                </ul>
+            </li>
+            <li>Señalar relación complementaria:
+                <ul>
+                    <li>La calibración es necesaria para saber si el rapport se ha establecido (¿el otro nos sigue?).</li>
+                    <li>La calibración proporciona la información sobre qué acoplar (aspectos fisiológicos).</li>
+                    <li>El rapport es el contexto donde la calibración cobra sentido (observamos para conectar).</li>
+                </ul>
+            </li>
+            <li>Explicar su uso en "acoplar y dirigir":
+                <ul>
+                    <li>Calibramos para saber qué acoplar y para verificar que el acoplamiento funciona.</li>
+                    <li>Una vez acoplados, seguimos calibrando para saber si el otro nos sigue cuando dirigimos.</li>
+                </ul>
+            </li>
+            <li>Concluir que son dos caras de la misma moneda: la calibración alimenta al rapport, y el rapport da sentido a la calibración.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Rapport, calibración, acoplar y dirigir, complementariedad, observación vs. acción.</p>
+    </div>
+</div>
+
+<!-- Pregunta 5 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 5:</strong> Describa los ejercicios A (Calibración de estados) y B (Aumentando los canales sensoriales). Explique qué habilidades desarrollan, cómo se realizan paso a paso y qué objetivos persiguen.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li><strong>Ejercicio A (Calibración de estados):</strong>
+                <ul>
+                    <li>Participantes: Sujeto y Programador.</li>
+                    <li>Pasos:
+                        <ul>
+                            <li>a) Sujeto piensa en experiencia desagradable y la revive asociadamente.</li>
+                            <li>b) Programador observa y anota cambios fisiológicos (respiración, coloración, pupilas, labio, postura, etc.).</li>
+                            <li>c) Programador crea estado neutro (ej. pensar en una flor).</li>
+                            <li>d) Sujeto piensa en experiencia agradable y potenciadora; programador observa y anota cambios.</li>
+                            <li>e) Alternar estados 3-4 veces hasta identificar las diferencias.</li>
+                            <li>f) Prueba final: sujeto accede a un estado sin decir cuál; programador debe identificarlo por los cambios fisiológicos.</li>
+                        </ul>
+                    </li>
+                    <li>Objetivo: Apertura de canales sensoriales y práctica de calibración.</li>
+                </ul>
+            </li>
+            <li><strong>Ejercicio B (Aumentando los canales sensoriales):</strong>
+                <ul>
+                    <li>Participantes: Sujeto y Programador.</li>
+                    <li>Pasos:
+                        <ul>
+                            <li>a) Programador hace 10 preguntas con respuesta SÍ conocida y observa signos sensoriales (4-5 "llaves").</li>
+                            <li>b) Programador hace 10 preguntas con respuesta NO conocida y observa llaves para el NO.</li>
+                            <li>c) Programador hace preguntas de respuesta desconocida (donde el sujeto puede mentir).</li>
+                            <li>d) Programador debe detectar si es SÍ o NO por las llaves observadas.</li>
+                        </ul>
+                    </li>
+                    <li>Objetivo: Práctica de calibración, agudeza sensorial, aprender a detectar mentiras.</li>
+                </ul>
+            </li>
+            <li>Concluir que ambos ejercicios desarrollan la capacidad de observar cambios fisiológicos sutiles, pero el B añade la dimensión de detectar engaños.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Ejercicio A, Ejercicio B, calibración de estados, canales sensoriales, llaves de acceso, detección de mentiras, agudeza sensorial.</p>
+    </div>
+</div>
+
+<!-- Pregunta 6 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 6:</strong> Explique los ejercicios D (Rapport básico) y F (Liderar el rapport). Compare sus objetivos y describa cómo se pasa de un nivel básico a uno avanzado en el desarrollo de la capacidad de rapport.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li><strong>Ejercicio D (Rapport básico):</strong>
+                <ul>
+                    <li>Dos personas sentadas frente a frente.</li>
+                    <li>Uno improvisa gestos; el otro debe seguirle y copiar todos los elementos posibles.</li>
+                    <li>Los movimientos se vuelven cada vez más sutiles.</li>
+                    <li>Duración: 10-15 minutos por persona. Luego intercambio de roles.</li>
+                    <li>Objetivo: Prácticas iniciales de rapport.</li>
+                </ul>
+            </li>
+            <li><strong>Ejercicio F (Liderar el rapport):</strong>
+                <ul>
+                    <li>Dos personas conversan sentadas frente a frente.</li>
+                    <li>Primero (5 min) se acoplan mutuamente (establecen buen rapport).</li>
+                    <li>Luego, sin aviso, ambos intentan dirigir al otro con movimientos, manteniendo el rapport y sin provocar grandes resistencias.</li>
+                    <li>Duración: 15-20 minutos.</li>
+                    <li>Objetivo: Aprender a vencer resistencias y ser capaces de acoplarse y dirigir en cualquier circunstancia.</li>
+                </ul>
+            </li>
+            <li><strong>Comparación:</strong>
+                <ul>
+                    <li>Ejercicio D es solo acoplamiento (seguir pasivamente).</li>
+                    <li>Ejercicio F es acoplamiento + dirección (liderar activamente).</li>
+                    <li>El D trabaja la observación y la imitación; el F trabaja la influencia y la gestión de resistencias.</li>
+                </ul>
+            </li>
+            <li><strong>Progresión:</strong>
+                <ul>
+                    <li>Nivel básico (D): copiar movimientos obvios.</li>
+                    <li>Nivel intermedio (E): combinar calibración y rapport.</li>
+                    <li>Nivel avanzado (F): dirigir mientras se mantiene el rapport.</li>
+                    <li>Nivel experto (G): aplicar en contextos reales (trabajo, cafetería) hasta que sea una competencia inconsciente.</li>
+                </ul>
+            </li>
+            <li>Concluir que la habilidad de rapport se desarrolla progresivamente desde la simple imitación hasta la dirección sutil en situaciones reales.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Ejercicio D, Ejercicio F, rapport básico, liderar el rapport, acoplamiento, dirección, gestión de resistencias, competencia inconsciente.</p>
+    </div>
+</div>
+
+<!-- Pregunta 7 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 7:</strong> Analice la relación entre la calibración, el rapport y los elementos básicos de la comunicación (motivación, interferencias, contexto, feedback, etc.) explicando cómo estos elementos son necesarios para dominar ambas habilidades.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Identificar la conexión: el autor afirma que para calibrar correctamente debemos aplicar las bases de la comunicación eficaz del Tema 2.</li>
+            <li>Explicar cada elemento en relación con calibración y rapport:
+                <ul>
+                    <li><strong>Motivación:</strong> necesaria para mantener la atención; sin ella no observamos los cambios sutiles.</li>
+                    <li><strong>Interferencias:</strong> debemos evitarlas, mantener atención "relajadamente alerta" (como un felino preparado para la caza); las distracciones nos impiden calibrar.</li>
+                    <li><strong>Contexto:</strong> influye en el estado del interlocutor y en nuestra capacidad de observación.</li>
+                    <li><strong>Medios:</strong> elegir el canal adecuado para la interacción.</li>
+                    <li><strong>Feedback:</strong> es la información que obtenemos al calibrar; nos dice si el rapport funciona.</li>
+                    <li><strong>Intención:</strong> saber hacia dónde queremos dirigir al otro (fundamental para dirigir).</li>
+                    <li><strong>Escucha activa:</strong> esencial para captar tanto el contenido como la relación (congruencia), y para percibir los cambios sutiles.</li>
+                </ul>
+            </li>
+            <li>Concluir que sin estos elementos es casi imposible dominar el arte de la calibración, y por extensión, el rapport. Son la base sobre la que se construyen ambas habilidades.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Calibración, rapport, elementos básicos de la comunicación (motivación, interferencias, contexto, medios, feedback, intención, escucha activa), atención relajadamente alerta.</p>
+    </div>
+</div>
+
+<!-- ===== 5. PREGUNTAS DE RESERVA ===== -->
+<h2 id="preguntas-reserva">⭐ Preguntas de Reserva</h2>
+
+<!-- Reserva 1 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 1:</strong> Realice un análisis integrador que conecte el concepto de "estados internos" (Tema 2) con las técnicas de rapport y calibración (Tema 3). Explique cómo el acoplamiento y la dirección pueden utilizarse para modificar los estados internos de un interlocutor, y cómo la calibración de cambios fisiológicos permite verificar ese cambio. Utilice los ejercicios A y C como ejemplos.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Recordar del Tema 2: los estados internos (emociones-capacidades) se generan por R.I. + Fisiología, y son el motor de la conducta.</li>
+            <li>Explicar que el rapport permite "conectar" con el estado del otro acoplando su fisiología (gestos, respiración, postura), lo que genera sintonía.</li>
+            <li>Explicar la dirección: al modificar nuestra propia fisiología (respiración, gestos, voz), el otro nos sigue, lo que cambia su fisiología y, por tanto, su estado interno.</li>
+            <li>Relacionar con la calibración: los cambios fisiológicos observados (los 13 aspectos) son la manifestación externa del cambio en el estado interno.</li>
+            <li>Usar el Ejercicio A como ejemplo: el sujeto cambia de estado (desagradable → neutro → agradable) y el programador calibra los cambios fisiológicos; se demuestra que el estado interno se refleja en la fisiología.</li>
+            <li>Usar el Ejercicio C como ejemplo: el actor representa estados emocionales solo con cambios fisiológicos (sin palabras ni teatro), demostrando que el estado interno se puede "mostrar" y "leer" a través del cuerpo.</li>
+            <li>Concluir que rapport y calibración son herramientas para "leer" y "modificar" los estados internos a través de la fisiología, aplicando el modelo del Tema 2.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Estados internos, R.I. + Fisiología, acoplamiento, dirección, calibración de cambios fisiológicos, Ejercicio A, Ejercicio C.</p>
+    </div>
+</div>
+
+<!-- Reserva 2 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 2:</strong> Compare el enfoque de la calibración como "detección de cambios" con el enfoque de la escucha activa (Tema 2). ¿Cómo se complementan para lograr una comunicación eficaz? Utilice los conceptos de "congruencia", "feedback" y los ejercicios de calibración para argumentar su respuesta.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir escucha activa (Tema 2): atención dinámica que requiere apreciar congruencia entre mensaje verbal y no verbal, y pedir más información si no hay claridad.</li>
+            <li>Definir calibración (Tema 3): capacidad de detectar cambios fisiológicos sutiles (los 13 aspectos) para obtener datos objetivos.</li>
+            <li>Señalar diferencias:
+                <ul>
+                    <li>Escucha activa se centra en el contenido y la relación (qué se dice y cómo se dice).</li>
+                    <li>Calibración se centra en la fisiología (cambios corporales).</li>
+                </ul>
+            </li>
+            <li>Señalar complementariedades:
+                <ul>
+                    <li>La calibración alimenta la escucha activa: detectar incongruencias (ej. palabras que dicen "estoy bien" pero fisiología que muestra tensión) requiere calibración.</li>
+                    <li>La escucha activa da sentido a la calibración: los cambios fisiológicos se interpretan en el contexto de la conversación.</li>
+                    <li>El feedback (Tema 2) es el resultado de la calibración: la información que obtenemos al observar los cambios.</li>
+                </ul>
+            </li>
+            <li>Relacionar con los ejercicios: el Ejercicio B (detectar mentiras) es un ejemplo de cómo la calibración permite una escucha activa más profunda (detectar incongruencias).</li>
+            <li>Concluir que calibración y escucha activa son dos caras de la misma moneda: la calibración proporciona los datos, la escucha activa los interpreta en el contexto de la relación, y ambas son necesarias para la comunicación eficaz.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Escucha activa, calibración, congruencia, feedback, Ejercicio B, detección de incongruencias.</p>
+    </div>
+</div>
+
+<!-- Reserva 3 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 3:</strong> Explique el concepto de "dirección" en el rapport y cómo se aplica a través de las técnicas de respiración, aspectos vocales, gestos y postura. Relacione estas técnicas con el principio de "acoplar y dirigir" y con el objetivo de llevar al interlocutor a un "estado deseado". Utilice ejemplos concretos (como el caso del depresivo o el del nervioso) para ilustrar su respuesta.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir "dirección": después de establecer el acoplamiento, modificar gradualmente nuestros patrones para que el otro nos siga hacia un estado deseado.</li>
+            <li>Explicar el principio "acoplar y dirigir": primero igualamos, luego guiamos.</li>
+            <li>Describir las técnicas de dirección:
+                <ul>
+                    <li><strong>Respiración:</strong> igualar ritmo, luego aumentar (para activar) o disminuir (para relajar). Se puede usar movimientos de cabeza/brazo para igualar el ritmo respiratorio.</li>
+                    <li><strong>Aspectos vocales:</strong> igualar ritmo, volumen y tono; luego cambiar gradualmente.</li>
+                    <li><strong>Gestos:</strong> seguir movimientos rápidos y luego ralentizar (relajar al nervioso); o acelerar movimientos lentos (animar al depresivo). También dirigir movimiento ocular o gestos faciales.</li>
+                    <li><strong>Postura corporal:</strong> aplicar el mismo principio.</li>
+                </ul>
+            </li>
+            <li>Usar ejemplos concretos del texto:
+                <ul>
+                    <li><strong>Nervioso en primera entrevista:</strong> movimientos rápidos y agitados → seguirle y luego ralentizar para relajar.</li>
+                    <li><strong>Depresivo:</strong> hombros caídos, cabeza baja, movimientos lentos → acelerar expresiones para aumentar presencia de ánimo.</li>
+                </ul>
+            </li>
+            <li>Relacionar con el "estado deseado": el objetivo de la dirección es llevar al interlocutor de su estado presente a un estado más funcional (relajado, animado, etc.).</li>
+            <li>Concluir que la dirección es el paso final del rapport, donde se ejerce influencia para facilitar el cambio, siempre manteniendo la armonía y la sutileza.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Dirección, acoplar y dirigir, técnicas de dirección (respiración, voz, gestos, postura), estado deseado, ejemplos (nervioso, depresivo), influencia, cambio.</p>
+    </div>
+</div>
+
+<script>
+    // Alternar modo claro/oscuro
+    document.getElementById('modoBtn').addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        this.textContent = document.body.classList.contains('dark-mode') ? '☀️ Modo' : '🌓 Modo';
+    });
+
+    // Toggle para esquemas de desarrollo
+    function toggleEsquema(btn) {
+        const container = btn.parentElement;
+        const esquema = container.querySelector('.esquema-oculto');
+        if (esquema) {
+            esquema.classList.toggle('visible');
+            btn.textContent = esquema.classList.contains('visible') ? '📖 Ocultar esquema' : '📖 Mostrar esquema';
+        }
+    }
+</script>
+
+</body>
+</html>

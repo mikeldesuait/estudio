@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Ejercicios Prácticos · Practitioner PNL</title>
+    <style>
+        /* ===== ESTILO ÚNICO PARA RESÚMENES UNED ===== */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            max-width: 950px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #f5f7fa;
+            color: #1a1a2e;
+            line-height: 1.8;
+            font-size: 17px;
+        }
+        h1 {
+            font-size: 30px;
+            color: #0a1628;
+            border-bottom: 4px solid #1a3d66;
+            padding-bottom: 14px;
+        }
+        h2 {
+            font-size: 23px;
+            color: #1a3d66;
+            margin-top: 32px;
+            border-left: 4px solid #1a3d66;
+            padding-left: 16px;
+        }
+        h3 {
+            font-size: 20px;
+            color: #2a4a7a;
+            margin-top: 26px;
+        }
+        h4 {
+            font-size: 18px;
+            color: #3a5a8a;
+            margin-top: 20px;
+        }
+        strong {
+            color: #0a2a4a;
+        }
+        ul {
+            padding-left: 24px;
+        }
+        li {
+            margin-bottom: 6px;
+        }
+        blockquote {
+            background: #e8edf4;
+            padding: 12px 20px;
+            border-left: 4px solid #1a3d66;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        hr {
+            border: none;
+            border-top: 2px solid #d0d8e4;
+            margin: 28px 0;
+        }
+        .indice {
+            background: #e8edf4;
+            padding: 16px 24px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .indice ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .indice li {
+            padding: 3px 0;
+        }
+        .indice li.h1 {
+            font-weight: 600;
+        }
+        .indice li.h2 {
+            padding-left: 20px;
+            font-weight: 400;
+        }
+        .indice a {
+            color: #1a3d66;
+            text-decoration: none;
+        }
+        .indice a:hover {
+            text-decoration: underline;
+        }
+        .idea-central {
+            background: #e0e8f4;
+            padding: 18px 24px;
+            border-radius: 12px;
+            margin: 20px 0 30px 0;
+            border-left: 5px solid #1a3d66;
+        }
+        .idea-central h2 {
+            margin-top: 0;
+            border-left: none;
+            padding-left: 0;
+        }
+        .modo-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            padding: 8px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #1a3d66;
+            color: #fff;
+            font-size: 14px;
+            z-index: 999;
+        }
+        .modo-btn:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode {
+            background: #0d1a2b;
+            color: #d6e2f5;
+        }
+        .dark-mode h1 {
+            color: #b0c8e8;
+            border-bottom-color: #2a5a8a;
+        }
+        .dark-mode h2 {
+            color: #8ab0e0;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode h3 {
+            color: #6a9ac0;
+        }
+        .dark-mode h4 {
+            color: #5a8aaa;
+        }
+        .dark-mode strong {
+            color: #c8ddf0;
+        }
+        .dark-mode blockquote {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode .indice {
+            background: #142a44;
+        }
+        .dark-mode .indice a {
+            color: #8ab0e0;
+        }
+        .dark-mode .idea-central {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode hr {
+            border-top-color: #2a4a6a;
+        }
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+                padding: 14px;
+            }
+            h1 {
+                font-size: 25px;
+            }
+            h2 {
+                font-size: 21px;
+            }
+        }
+
+        /* ===== ESTILOS PARA PREGUNTAS INTERACTIVAS ===== */
+        .pregunta {
+            background: #f0f4fa;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            border: 1px solid #d0d8e4;
+        }
+        .dark-mode .pregunta {
+            background: #142a44;
+            border-color: #2a4a6a;
+        }
+        .pregunta .enunciado {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .pregunta .opciones {
+            list-style: none;
+            padding-left: 8px;
+        }
+        .pregunta .opciones li {
+            margin-bottom: 4px;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .pregunta .opciones li.correcta {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .dark-mode .pregunta .opciones li.correcta {
+            background: #1a4a3a;
+            color: #8fdfb0;
+            border-left-color: #2ecc71;
+        }
+        .pregunta .respuesta-oculta {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta .respuesta-oculta {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta .respuesta-oculta.visible {
+            display: block;
+        }
+        .pregunta .btn-respuesta {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #1a3d66;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta .btn-respuesta:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta:hover {
+            background: #3a7aaa;
+        }
+        .pregunta .trampa {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #6a4a2a;
+            font-style: italic;
+        }
+        .dark-mode .pregunta .trampa {
+            color: #c8a878;
+        }
+        .pregunta-desarrollo .esquema-oculto {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta-desarrollo .esquema-oculto {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta-desarrollo .esquema-oculto.visible {
+            display: block;
+        }
+        .pregunta-desarrollo .btn-esquema {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #1a3d66;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta-desarrollo .btn-esquema:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta-desarrollo .btn-esquema {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta-desarrollo .btn-esquema:hover {
+            background: #3a7aaa;
+        }
+
+        /* Estilo extra para ejercicios */
+        .ejercicio {
+            background: #f0f4fa;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            border: 1px solid #d0d8e4;
+        }
+        .dark-mode .ejercicio {
+            background: #142a44;
+            border-color: #2a4a6a;
+        }
+        .ejercicio .titulo-ejercicio {
+            font-weight: 600;
+            font-size: 1.1em;
+            color: #1a3d66;
+            margin-bottom: 6px;
+        }
+        .dark-mode .ejercicio .titulo-ejercicio {
+            color: #8ab0e0;
+        }
+        .ejercicio .meta {
+            font-weight: 600;
+            color: #2a4a7a;
+            margin-top: 6px;
+        }
+        .dark-mode .ejercicio .meta {
+            color: #6a9ac0;
+        }
+        .ejercicio .participantes {
+            font-weight: 600;
+            color: #3a5a8a;
+        }
+        .dark-mode .ejercicio .participantes {
+            color: #5a8aaa;
+        }
+        .ejercicio .pautas {
+            margin-top: 6px;
+        }
+    </style>
+</head>
+<body>
+
+<button class="modo-btn" id="modoBtn" aria-label="Cambiar modo claro/oscuro">🌓 Modo</button>
+
+<h1>📋 Ejercicios Prácticos · Practitioner PNL</h1>
+
+<!-- ===== ÍNDICE ===== -->
+<div class="indice">
+    <h2 style="margin-top:0; border-left:none; padding-left:0;">📑 Índice</h2>
+    <ul>
+        <li class="h1"><a href="#tema2">Tema 2: Comunicación</a></li>
+        <li class="h2"><a href="#t2-e1">Ej. 1: Asociado/Disociado (Positiva)</a></li>
+        <li class="h2"><a href="#t2-e2">Ej. 2: Asociado/Disociado (Desagradable)</a></li>
+        <li class="h2"><a href="#t2-e3">Ej. 3: Asociado/Disociado (Agradable)</a></li>
+        <li class="h1"><a href="#tema3">Tema 3: Rapport y Calibración</a></li>
+        <li class="h2"><a href="#t3-a">Ej. A: Calibración de Estados</a></li>
+        <li class="h2"><a href="#t3-b">Ej. B: Canales Sensoriales</a></li>
+        <li class="h2"><a href="#t3-c">Ej. C: Representación Fisiológica</a></li>
+        <li class="h2"><a href="#t3-d">Ej. D: Rapport Básico</a></li>
+        <li class="h2"><a href="#t3-e">Ej. E: Calibración y Rapport</a></li>
+        <li class="h2"><a href="#t3-f">Ej. F: Liderar el Rapport</a></li>
+        <li class="h2"><a href="#t3-g">Ej. G: Rapport Avanzado</a></li>
+        <li class="h1"><a href="#tema4">Tema 4: Trance e Hipnosis</a></li>
+        <li class="h2"><a href="#t4-e1">Ej. 1: Método de Hipnosis/Autohipnosis</a></li>
+        <li class="h2"><a href="#t4-e2">Ej. 2: Técnica de Dave Elman</a></li>
+        <li class="h1"><a href="#tema5">Tema 5: Metamodelo del Lenguaje</a></li>
+        <li class="h2"><a href="#t5-e1">Ej. 1: Violaciones y Desafíos</a></li>
+        <li class="h2"><a href="#t5-e2">Ej. 2: Sensorial vs. Imaginativo</a></li>
+        <li class="h2"><a href="#t5-e3">Ej. 3: Buena Formulación</a></li>
+        <li class="h2"><a href="#t5-e4">Ej. 4: "¿Lo tienes claro?"</a></li>
+        <li class="h1"><a href="#tema6">Tema 6: S.R. y Submodalidades</a></li>
+        <li class="h2"><a href="#t6-e1">Ej. 1: Accesos Oculares</a></li>
+        <li class="h2"><a href="#t6-e2">Ej. 2: Práctica con Televisión</a></li>
+        <li class="h2"><a href="#t6-e3">Ej. 3: Cambio de Submodalidades</a></li>
+        <li class="h2"><a href="#t6-e4">Ej. 4: Duda → Certeza</a></li>
+        <li class="h2"><a href="#t6-e5">Ej. 5: Test de Vías</a></li>
+        <li class="h1"><a href="#tema7">Tema 7: Estrategias</a></li>
+        <li class="h2"><a href="#t7-e1">Ej. 1: Desempaquetamiento</a></li>
+        <li class="h2"><a href="#t7-e2">Ej. 2: Instalación de Motivación</a></li>
+        <li class="h1"><a href="#tema8">Tema 8: Anclajes</a></li>
+        <li class="h2"><a href="#t8-e1">Ej. 1: Colapsamiento (Kinestésico)</a></li>
+        <li class="h2"><a href="#t8-e2">Ej. 2: Colapsamiento (Visual)</a></li>
+        <li class="h2"><a href="#t8-e3">Ej. 3: Autoanclaje (Entorno)</a></li>
+        <li class="h2"><a href="#t8-e4">Ej. 4: Autoanclaje (Interior)</a></li>
+        <li class="h2"><a href="#t8-e5">Ej. 5: Apilamiento+Colapsamiento</a></li>
+        <li class="h1"><a href="#tema9">Tema 9: Niveles Lógicos y Avanzados</a></li>
+        <li class="h2"><a href="#t9-e1">Ej. 1: Anclaje para el Estrés</a></li>
+        <li class="h2"><a href="#t9-e2">Ej. 2: Frustración vs. Decepción</a></li>
+        <li class="h2"><a href="#t9-e3">Ej. 3: Cambio de Emoción</a></li>
+        <li class="h2"><a href="#t9-e4">Ej. 4: Prevenir Emociones No Deseadas</a></li>
+        <li class="h2"><a href="#t9-e5">Ej. 5: Cura de Fobias (Cine)</a></li>
+        <li class="h2"><a href="#t9-e6">Ej. 6: Identificar Meta-Programas</a></li>
+        <li class="h2"><a href="#t9-e7">Ej. 7: Test de Creencias</a></li>
+        <li class="h2"><a href="#t9-e8">Ej. 8: Fusión Visual</a></li>
+        <li class="h2"><a href="#t9-e9">Ej. 9: Cambio de Creencias (Paso a Paso)</a></li>
+        <li class="h2"><a href="#t9-e10">Ej. 10: Corte de Co-dependencia</a></li>
+        <li class="h2"><a href="#t9-e11">Ej. 11: Técnica de Autosalud</a></li>
+        <li class="h1"><a href="#practica-diaria">Práctica Diaria</a></li>
+    </ul>
+</div>
+
+<!-- ===== TEMA 2 ===== -->
+<h2 id="tema2">🧠 Tema 2: Comunicación</h2>
+
+<div id="t2-e1" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 1: Asociado/Disociado (Experiencia Positiva)</div>
+    <div class="participantes">👥 Participantes: A (Sujeto), B (Programador)</div>
+    <div class="meta">🎯 Objetivo: Experimentar las diferencias entre estar asociado o disociado a una experiencia.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>B pide a A que piense en una experiencia positiva.</li>
+            <li>A la visualiza y B pregunta si está asociado o disociado.</li>
+            <li>B pide a A que cambie de posición (si está asociado, que se disocie y viceversa).</li>
+            <li>B indaga los cambios que experimenta A y cómo se siente mejor.</li>
+            <li>Volver la representación a su estado original.</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t2-e2" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 2: Asociado/Disociado (Experiencia Desagradable)</div>
+    <div class="participantes">👤 Participantes: Individual</div>
+    <div class="meta">🎯 Objetivo: Comprobar cómo el cambio de asociado a disociado modifica la intensidad emocional.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>Recordar una situación desagradable (asociado) y observar los cambios fisiológicos (tensión, respiración, etc.).</li>
+            <li>Recordar la misma situación pero disociado (viéndose a uno mismo en la escena).</li>
+            <li>Comparar las sensaciones y los cambios fisiológicos en ambos estados.</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t2-e3" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 3: Asociado/Disociado (Experiencia Agradable)</div>
+    <div class="participantes">👥 Participantes: A (Sujeto), B (Programador)</div>
+    <div class="meta">🎯 Objetivo: Practicar el cambio de posición perceptual y observar sus efectos.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong> Mismo procedimiento que el Ejercicio 1, pero con una experiencia agradable.</div>
+</div>
+
+<hr>
+
+<!-- ===== TEMA 3 ===== -->
+<h2 id="tema3">🔍 Tema 3: Rapport y Calibración</h2>
+
+<div id="t3-a" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio A: Calibración de Estados</div>
+    <div class="participantes">👥 Participantes: A (Sujeto), B (Programador)</div>
+    <div class="meta">🎯 Objetivo: Apertura de los canales sensoriales y prácticas de calibración.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>A piensa en una experiencia <strong>no agradable</strong> y se asocia a ella. B observa y anota los cambios fisiológicos (respiración, coloración de piel, pupilas, labio inferior, postura, etc.).</li>
+            <li>B crea un estado neutro (ej. pedir a A que piense en una flor).</li>
+            <li>A piensa en una experiencia <strong>agradable</strong> y se asocia. B observa y anota los cambios.</li>
+            <li>Alternar los estados 3-4 veces.</li>
+            <li>A accede a cualquiera de los estados sin decirle a B cuál es. B debe identificar por los cambios fisiológicos qué estado está reproduciendo A.</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t3-b" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio B: Aumentando los Canales Sensoriales</div>
+    <div class="participantes">👥 Participantes: A (Sujeto), B (Programador)</div>
+    <div class="meta">🎯 Objetivo: Práctica de calibración y detección de mentiras.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>B pregunta a A 10 cosas con respuesta <strong>SÍ</strong> (ej. "¿Eres hombre?"). B identifica las señales sensoriales del SÍ (movimiento de cabeza, parpadeo, sonrisa, etc.). Localizar 4-5 signos.</li>
+            <li>B pregunta a A 10 cosas con respuesta <strong>NO</strong> (ej. "¿Tienes tres brazos?"). B identifica las señales sensoriales del NO.</li>
+            <li>B hace preguntas cuya respuesta desconoce (pueden ser SÍ o NO) y A puede mentir. B debe adivinar si la respuesta es SÍ o NO, basándose en las señales calibradas.</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t3-c" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio C: Representación Fisiológica de Diversos Estados</div>
+    <div class="participantes">👥 Participantes: 2 o más (Actor y Observador/es)</div>
+    <div class="meta">🎯 Objetivo: Práctica avanzada de calibración y comprobación del dominio de los propios estados.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>Confeccionar una lista de estados emocionales (envidia, timidez, júbilo, éxtasis, etc.).</li>
+            <li>El actor, sin usar lenguaje ni representaciones teatrales, y asociándose al estado, permite que su rostro muestre naturalmente cada estado.</li>
+            <li>Los observadores deben descifrar de qué estado se trata.</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t3-d" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio D: Rapport Básico</div>
+    <div class="participantes">👥 Participantes: 2 personas</div>
+    <div class="meta">🎯 Objetivo: Prácticas iniciales de rapport.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>Sentados frente a frente, uno improvisa gestos y movimientos sencillos.</li>
+            <li>El otro debe seguirle y copiar todos los elementos de esa conducta que le sea posible.</li>
+            <li>Poco a poco, los movimientos se vuelven más sutiles.</li>
+            <li>Duración: 10-15 minutos por persona. Luego cambiar los roles.</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t3-e" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio E: Calibración y Rapport</div>
+    <div class="participantes">👥 Participantes: A (Sujeto), B (Programador)</div>
+    <div class="meta">🎯 Objetivo: Desarrollo de la calibración y establecimiento del rapport.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>B cierra los ojos. A ejecuta cambios en su posición inicial (ej. descruzar las piernas).</li>
+            <li>A pide a B que abra los ojos. B identifica los cambios, adopta la misma posición y comunica a A los cambios observados.</li>
+            <li>A ejecuta cambios cada vez más sutiles.</li>
+            <li>Duración: 10-15 minutos cada uno.</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t3-f" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio F: Liderar el Rapport</div>
+    <div class="participantes">👥 Participantes: 2 personas en pareja</div>
+    <div class="meta">🎯 Objetivo: Aprender a vencer resistencias y dirigir en el rapport.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>Ambos se sientan frente a frente y conversan.</li>
+            <li>Durante 5 minutos, se acoplan (establecen rapport) con su compañero.</li>
+            <li>Sin aviso previo, ambos intentan ejecutar movimientos para que el otro los siga (dirigir), manteniendo la armonía.</li>
+            <li>Duración: 15-20 minutos.</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t3-g" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio G: Prácticas Avanzadas de Rapport</div>
+    <div class="participantes">👤 Participantes: Individual (con otras personas presentes)</div>
+    <div class="meta">🎯 Objetivo: Acostumbrarse al rapport hasta que pase a ser competencia inconsciente.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>En cualquier lugar con gente (trabajo, cafetería, reunión), observar a una persona, calibrar su conducta.</li>
+            <li>Acercarse y comenzar a establecer rapport de forma sutil, acoplándose a sus gestos, movimientos, tono, ritmo de voz.</li>
+            <li>Repetir con diferentes personas y lugares.</li>
+        </ol>
+    </div>
+</div>
+
+<hr>
+
+<!-- ===== TEMA 4 ===== -->
+<h2 id="tema4">💤 Tema 4: Trance e Hipnosis</h2>
+
+<div id="t4-e1" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 1: Método de Hipnosis y Autohipnosis</div>
+    <div class="participantes">👤 Participantes: Individual (autohipnosis) o con otra persona</div>
+    <div class="meta">🎯 Objetivo: Inducir un estado de trance profundo y relajación.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong> Seguir el texto guía con voz pausada y profunda, haciendo pausas en los puntos suspensivos. La persona se sienta cómodamente y sigue las instrucciones de relajación progresiva (desde los pies hasta la cabeza). Al finalizar, se sale del trance contando de 1 a 5.</div>
+</div>
+
+<div id="t4-e2" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 2: Técnica de Dave Elman</div>
+    <div class="participantes">👥 Participantes: Practitioner y Sujeto</div>
+    <div class="meta">🎯 Objetivo: Inducción rápida de trance profundo.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>Sujeto con brazos sobre los muslos, mirando el dedo del practitioner.</li>
+            <li>Practitioner baja la mano lentamente y sugiere el cierre de párpados.</li>
+            <li>Sugerir que los párpados están tan relajados que no pueden abrirse (prueba de sugestión).</li>
+            <li>Levantar la mano del sujeto como un "trapo" y dejarla caer, sugiriendo una ola de relajación.</li>
+            <li>Levantar el brazo lentamente, sugiriendo pesadez, y soltarlo para que caiga.</li>
+            <li>El trance se profundiza con la respiración.</li>
+        </ol>
+    </div>
+</div>
+
+<hr>
+
+<!-- ===== TEMA 5 ===== -->
+<h2 id="tema5">🗣️ Tema 5: Metamodelo del Lenguaje</h2>
+
+<div id="t5-e1" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 1: Identificación de Violaciones y Desafíos</div>
+    <div class="participantes">👤 Participantes: Individual o en grupo</div>
+    <div class="meta">🎯 Objetivo: Identificar las violaciones del metamodelo y formular desafíos adecuados.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong> Para cada frase, identificar el tipo de violación y escribir un desafío apropiado.
+        <ul>
+            <li><em>"Tengo una duda."</em> → Violación: Omisión simple. Desafío: ¿Qué es lo que te genera duda específicamente?</li>
+            <li><em>"Las personas, sencillamente no aprenden."</em> → Violación: Cuantificador universal. Desafío: ¿Todas las personas? ¿Alguna excepción?</li>
+            <li><em>"Él siempre lo hace así."</em> → Violación: Cuantificador universal. Desafío: ¿Siempre? ¿Puedes recordar alguna ocasión en que no fue así?</li>
+            <li><em>"Soy incapaz de hacerlo."</em> → Violación: Operador modal. Desafío: ¿Qué te impide hacerlo?</li>
+            <li><em>"Ya sé que no me valoran."</em> → Violación: Lectura mental. Desafío: ¿Cómo lo sabes?</li>
+            <li><em>"Mis pensamientos me deprimen."</em> → Violación: Modelo causal y nominalización. Desafío: ¿Qué es lo que piensas? ¿Cómo específicamente te deprimen?</li>
+            <li><em>"Todo el mundo piensa que soy un bicho raro."</em> → Violación: Cuantificador universal y lectura mental. Desafío: ¿Todo el mundo? ¿Cómo lo sabes?</li>
+            <li><em>"Los hombres no deben mostrar sus sentimientos."</em> → Violación: Operador modal y generalización. Desafío: ¿Qué pasaría si los mostraran? ¿Según quién?</li>
+        </ul>
+    </div>
+</div>
+
+<div id="t5-e2" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 2: Lo Sensorial vs. Lo No Específico</div>
+    <div class="participantes">👥 Participantes: 4 (A y B interlocutores; C y D observadores)</div>
+    <div class="meta">🎯 Objetivo: Identificar si las descripciones están basadas en lo sensorial (S) o en lo imaginativo (I).</div>
+    <div class="pautas"><strong>📋 Pautas:</strong> A y B conversan. C va diciendo a D lo que observa en el plano sensorial. También identificar en frases dadas si son S o I.
+        <ul>
+            <li><em>"Ella respiró profundamente y parpadeó."</em> → S</li>
+            <li><em>"Ella se sintió aliviada."</em> → I</li>
+            <li><em>"Se aceleró el ritmo de su habla."</em> → S</li>
+            <li><em>"Él estaba ansioso."</em> → I</li>
+            <li><em>"Bajó el volumen de su voz."</em> → S</li>
+            <li><em>"Sus manos estaban pegajosas."</em> → S</li>
+            <li><em>"Su voz se hizo grave."</em> → S</li>
+            <li><em>"Había una expresión triste en su rostro."</em> → I</li>
+        </ul>
+    </div>
+</div>
+
+<div id="t5-e3" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 3: Condiciones de Buena Formulación</div>
+    <div class="participantes">👤 Participantes: Individual</div>
+    <div class="meta">🎯 Objetivo: Practicar la formulación de objetivos siguiendo las pautas del metamodelo.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong> Responder a las preguntas de la "Buena Formulación":
+        <ul>
+            <li>¿Qué es lo que quieres específicamente?</li>
+            <li>¿Cómo sabrás que has logrado tu objetivo? ¿Qué verás, oirás, sentirás?</li>
+            <li>¿Cuándo, dónde, cómo y con quién lo deseas?</li>
+            <li>¿Es ecológico? ¿Supone algún riesgo para ti o para otros?</li>
+            <li>¿Qué pasaría si lo lograras?</li>
+        </ul>
+    </div>
+</div>
+
+<div id="t5-e4" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 4: "¿Lo tienes claro?" (Fijación de Objetivos)</div>
+    <div class="participantes">👤 Participantes: Individual</div>
+    <div class="meta">🎯 Objetivo: Definir y planificar objetivos claros y alcanzables.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong> Realizar las 9 partes del ejercicio por escrito, dedicando 2-3 horas.
+        <ol>
+            <li>Inventario de todo lo que quieres conseguir, hacer, ser, tener.</li>
+            <li>Calcular plazos (3 meses, 6 meses, 1 año, etc.).</li>
+            <li>Seleccionar 3-4 objetivos para 1 año.</li>
+            <li>Describir la evidencia sensorial del logro (¿qué verás, oirás, sentirás?).</li>
+            <li>Listar recursos disponibles.</li>
+            <li>Recordar épocas de uso exitoso de esos recursos.</li>
+            <li>Describir qué más necesitas (estudios, creencias, comportamientos, etc.).</li>
+            <li>Escribir qué te impide ahora alcanzar esos objetivos.</li>
+            <li>Elaborar un plan de acción paso a paso con plazos.</li>
+        </ol>
+    </div>
+</div>
+
+<hr>
+
+<!-- ===== TEMA 6 ===== -->
+<h2 id="tema6">👁️ Tema 6: S.R. y Submodalidades</h2>
+
+<div id="t6-e1" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 1: Identificación de Accesos Oculares</div>
+    <div class="participantes">👥 Participantes: En parejas o grupos de 3 (A: Sujeto, B: Practitioner, C: Observador)</div>
+    <div class="meta">🎯 Objetivo: Identificar los movimientos oculares y asociarlos al sistema representacional correspondiente.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong> B lee las preguntas a A y observa sus movimientos oculares.
+        <ul>
+            <li>Imagínate con el pelo de color verde. (Vc)</li>
+            <li>En tu familia, ¿quién tiene los ojos más oscuros? (Vr)</li>
+            <li>De qué color te gustaría que fuese tu próximo coche? (Vc)</li>
+            <li>Recuerda la última excusa que empleaste. (Ar)</li>
+            <li>¿Cuando caminas, cuál de tus dos zapatos hace más ruido? (Ae)</li>
+            <li>Describe cómo te verías vestido de payaso. (Vc)</li>
+            <li>Imagina cómo te ves sentado aquí, pero tú observándote desde un metro detrás de ti. (Vc/Disociado)</li>
+            <li>Escucha el sonido de la voz de tu madre. (Ar)</li>
+            <li>¿Cuánto es 537 más 26? (D.I.)</li>
+            <li>¿Cuál es uno de tus recuerdos más felices? (Vr, Ar, Ki)</li>
+        </ul>
+    </div>
+</div>
+
+<div id="t6-e2" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 2: Práctica con Televisión</div>
+    <div class="participantes">👤 Participantes: Individual</div>
+    <div class="meta">🎯 Objetivo: Familiarizarse con la identificación de claves de acceso en situaciones reales.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>Conectar un programa de entrevistas.</li>
+            <li>Eliminar el sonido y observar los movimientos oculares y las claves de acceso (hombros, respiración, postura, gestos) de los participantes.</li>
+            <li>Anotar la modalidad dominante de cada uno.</li>
+            <li>Poner el sonido y fijarse en las cualidades de la voz y los predicados verbales.</li>
+            <li>Comparar los resultados para ver si todas las claves coinciden.</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t6-e3" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 3: Identificación y Cambio de Submodalidades</div>
+    <div class="participantes">👥 Participantes: A (Practitioner), B (Sujeto)</div>
+    <div class="meta">🎯 Objetivo: Identificar las submodalidades críticas y experimentar cómo su cambio altera el estado emocional.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>B recuerda una experiencia (no demasiado agradable) y se asocia.</li>
+            <li>A pregunta por las submodalidades de la imagen (color, tamaño, distancia, asociado/disociado, brillo, enfoque, movimiento, etc.).</li>
+            <li>A pide a B que cambie una submodalidad a la vez (ej. "pon la imagen en color", "acércala", "hazla más grande") y observa el efecto.</li>
+            <li>Pide a B que vuelva a poner cada submodalidad en su estado original.</li>
+            <li>Repetir con una experiencia agradable. Luego cambiar los roles.</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t6-e4" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 4: Duda → Certeza (Cambio de Submodalidades)</div>
+    <div class="participantes">👥 Participantes: A (Practitioner), B (Sujeto)</div>
+    <div class="meta">🎯 Objetivo: Transformar un estado de duda o confusión en certeza, cambiando submodalidades.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>B piensa en algo que le genere duda (o confusión).</li>
+            <li>B piensa en algo que comprenda o de lo que tenga certeza (contraejemplo similar).</li>
+            <li>A pregunta las submodalidades de la duda y de la certeza.</li>
+            <li>Comparar las submodalidades y detectar las diferencias significativas.</li>
+            <li>A pide a B que tome la imagen de la duda y le aplique las submodalidades de la certeza (color, tamaño, distancia, nitidez, asociación/disociación, etc.).</li>
+            <li>Comprobar que la duda se ha transformado en certeza.</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t6-e5" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 5: Test de Vías (Identificación del S.R. Dominante)</div>
+    <div class="participantes">👤 Participantes: Individual</div>
+    <div class="meta">🎯 Objetivo: Identificar la jerarquía de sistemas representacionales (Visual, Auditivo, Kinestésico, Digital).</div>
+    <div class="pautas"><strong>📋 Pautas:</strong> Responder a las 5 preguntas del test puntuando con 4, 3, 2, 1 según la preferencia. Sumar los puntos por cada modalidad para obtener la jerarquía.</div>
+</div>
+
+<hr>
+
+<!-- ===== TEMA 7 ===== -->
+<h2 id="tema7">🧩 Tema 7: Estrategias</h2>
+
+<div id="t7-e1" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 1: Desempaquetamiento de Estrategias</div>
+    <div class="participantes">👥 Participantes: En parejas o grupos (A: Sujeto, B: Practitioner)</div>
+    <div class="meta">🎯 Objetivo: Aprender a obtener y describir la estrategia de otra persona.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>B pregunta a A sobre un problema que tenga en ese momento.</li>
+            <li>B observa los indicadores verbales (predicados) y no verbales (movimientos oculares, respiración, etc.) para identificar la secuencia de modalidades.</li>
+            <li>B describe en voz alta la estrategia (la secuencia de modalidades) a modo de confirmación.</li>
+            <li>B identifica el punto de decisión y las alternativas.</li>
+            <li>Si hay duda, B pide a A que repita el proceso más lentamente.</li>
+            <li>Rotar los papeles.</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t7-e2" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 2: Instalación de Estrategia de Motivación</div>
+    <div class="participantes">👥 Participantes: A (Sujeto), B (Practitioner)</div>
+    <div class="meta">🎯 Objetivo: Practicar la instalación de una estrategia en otra persona.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>B obtiene y desempaqueta la estrategia de motivación de A.</li>
+            <li>B identifica una conducta simple que A no desea hacer (ej. saltar a la pata coja, recitar una poesía, etc.).</li>
+            <li>B hace que A reconsidere esa conducta no deseada, pero ahora siguiendo los pasos y secuencias de su propia estrategia de motivación.</li>
+            <li>Si se ha seguido correctamente la estrategia, A se sentirá motivado a realizar la conducta que no deseaba hacer.</li>
+            <li>Rotar los papeles.</li>
+        </ol>
+    </div>
+</div>
+
+<hr>
+
+<!-- ===== TEMA 8 ===== -->
+<h2 id="tema8">⚓ Tema 8: Anclajes</h2>
+
+<div id="t8-e1" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 1: Colapsamiento de Anclas (Kinestésico)</div>
+    <div class="participantes">👥 Participantes: A (Cliente), B (Consultor), C (Observador)</div>
+    <div class="meta">🎯 Objetivo: Integrar un estado limitante con un estado potenciador para generar un nuevo recurso.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>B establece rapport con A.</li>
+            <li>B pide a A que piense en un estado limitante y lo ancla (ej. presionando la rodilla derecha).</li>
+            <li>B rompe el estado (pensamiento neutro).</li>
+            <li>B pide a A que piense en un estado potenciador y lo ancla (ej. presionando la rodilla izquierda).</li>
+            <li>B verifica ambos anclajes por separado.</li>
+            <li>B activa ambas anclas simultáneamente.</li>
+            <li>Cuando se genera "confusión", B retira el ancla del estado limitante y mantiene la potenciadora.</li>
+            <li>B pide a A que piense en la situación futura y verifica que el nuevo recurso está presente.</li>
+            <li>Rotar los papeles.</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t8-e2" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 2: Colapsamiento de Anclas (Visual)</div>
+    <div class="participantes">👥 Participantes: A (Consultor), B (Cliente), C (Observador)</div>
+    <div class="meta">🎯 Objetivo: Integrar un estado limitante con un estado potenciador usando anclas visuales.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>A pide a B que recuerde un estado de recurso (creatividad, confianza) y ancla con una cartulina <strong>ROJA</strong>.</li>
+            <li>A refuerza el anclaje y retira la cartulina.</li>
+            <li>A pide a B que hable de una situación de bloqueo (ineficiencia) y ancla con una cartulina <strong>AMARILLA</strong>.</li>
+            <li>A muestra ambas cartulinas simultáneamente.</li>
+            <li>Cuando se genera "confusión", A retira la cartulina amarilla y mantiene la roja.</li>
+            <li>A comprueba el resultado pidiendo a B que se proyecte a una situación futura.</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t8-e3" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 3: Autoanclaje de Apilamiento (Entorno)</div>
+    <div class="participantes">👤 Participantes: Individual</div>
+    <div class="meta">🎯 Objetivo: Crear un ancla para sintonizar con el entorno y anclar la calma.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>Sentarse o pasear en un lugar agradable.</li>
+            <li>Sintonizar con el entorno a través de todos los sentidos (ver, oír, sentir, oler).</li>
+            <li>Conforme se accede a cada sistema, presionar la muñeca izquierda (ancla).</li>
+            <li>Sintonizar todos los sistemas simultáneamente y apretar de nuevo.</li>
+            <li>Repetir hasta que el mero hecho de apretar la muñeca enfoque la atención hacia el entorno sin esfuerzo.</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t8-e4" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 4: Autoanclaje de Apilamiento (Interior)</div>
+    <div class="participantes">👤 Participantes: Individual</div>
+    <div class="meta">🎯 Objetivo: Crear un ancla para sintonizar con el mundo interior.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>Sentarse cómodamente y concentrarse hacia el interior.</li>
+            <li>Acceder a cada sistema representacional internamente (oír diálogos, ver imágenes, sentir emociones, oler y saborear en la imaginación).</li>
+            <li>En los momentos de máxima intensidad, juntar y apretar las manos (ancla).</li>
+            <li>Acceder a todos los sistemas al mismo tiempo y apretar las manos.</li>
+            <li>Repetir hasta que el mero hecho de juntar las manos enfoque la atención hacia el interior.</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t8-e5" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 5: Apilamiento y Colapsamiento Combinados</div>
+    <div class="participantes">👥 Participantes: A (Consultor), B (Cliente), C (Observador)</div>
+    <div class="meta">🎯 Objetivo: Emparejar representaciones externas con respuestas internas agradables.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>A pide a B que describa una situación en la que no logra conectar confortablemente. A ancla kinestésicamente (ej. rodilla izquierda) solo cuando describe aspectos <strong>externos</strong>.</li>
+            <li>A pide a B que describa algo con lo que disfruta y ancla solo las representaciones <strong>internas</strong> (ej. rodilla derecha).</li>
+            <li>A activa ambas anclas simultáneamente para que las experiencias externas provoquen respuestas internas agradables.</li>
+            <li>A pide a B que imagine la primera situación siendo capaz de disfrutar y activa las anclas.</li>
+            <li>A invita a B a proyectarse al futuro y describir cómo cambia su experiencia.</li>
+        </ol>
+    </div>
+</div>
+
+<hr>
+
+<!-- ===== TEMA 9 ===== -->
+<h2 id="tema9">🧬 Tema 9: Niveles Lógicos y Avanzados</h2>
+
+<div id="t9-e1" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 1: Anclaje para el Estrés</div>
+    <div class="participantes">👤 Participantes: Individual</div>
+    <div class="meta">🎯 Objetivo: Crear un ancla de serenidad para utilizar en situaciones de estrés.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>Buscar un lugar tranquilo y recordar un lugar o situación de serenidad.</li>
+            <li>Revivir la experiencia asociado (con todos los detalles visuales, auditivos, kinestésicos y olfativos).</li>
+            <li>En el pico de la experiencia, anclarse (ej. juntando el pulgar y el índice).</li>
+            <li>Mantener el ancla unos segundos.</li>
+            <li>Salir del estado.</li>
+            <li>Posteriormente, en situaciones de estrés, activar el ancla para recuperar la serenidad.</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t9-e2" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 2: Diferencias entre Frustración y Decepción</div>
+    <div class="participantes">👤 Participantes: Individual</div>
+    <div class="meta">🎯 Objetivo: Comparar las modalidades y submodalidades de emociones similares.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong> Buscar las diferencias entre frustración y decepción. Visualizar cada una y analizar las modalidades y submodalidades (color, tamaño, localización, intensidad, etc.) comparándolas.</div>
+</div>
+
+<div id="t9-e3" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 3: Cambio de Emoción en una Situación</div>
+    <div class="participantes">👤 Participantes: Individual</div>
+    <div class="meta">🎯 Objetivo: Identificar la emoción necesaria para un comportamiento deseado y ensayar su aplicación.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>Identificar una experiencia con la que se esté descontento (¿qué pasó? ¿qué quise hacer?).</li>
+            <li>Determinar cómo se hubiese querido actuar.</li>
+            <li>Averiguar qué emociones se hubiesen necesitado para generar ese comportamiento deseado.</li>
+            <li>Imaginar la misma situación en el futuro con esa nueva emoción y observar cómo cambia la experiencia y el comportamiento.</li>
+            <li>Asegurarse de que se tiene acceso a esa nueva emoción.</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t9-e4" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 4: Método para Prevenir Emociones No Deseadas</div>
+    <div class="participantes">👤 Participantes: Individual</div>
+    <div class="meta">🎯 Objetivo: Evitar que una emoción no deseada vuelva a aparecer en situaciones futuras.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong> Seguir los 10 pasos del método:
+        <ol>
+            <li>Identificar la emoción no deseada.</li>
+            <li>Proyectar la situación provocadora como película (disociado).</li>
+            <li>Pasar de nuevo la película identificando causas externas, circunstancias y conductas de otros.</li>
+            <li>Buscar recursos necesarios y anclarlos (apilamiento).</li>
+            <li>Recordar otra época de uso exitoso de esos recursos y anclarlos de nuevo.</li>
+            <li>Preguntarse por el compromiso de cambio.</li>
+            <li>Imaginar el futuro actuando adecuadamente y activar las anclas.</li>
+            <li>Recordar la situación original, pero un momento antes de que surgiera la emoción, y activar las anclas.</li>
+            <li>Pasar la película de nuevo y observar la nueva manifestación.</li>
+            <li>Hacer puente al futuro y verificar que la emoción no deseada ya no aparece.</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t9-e5" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 5: Cura Rápida de Fobias y Traumas (Modelo del Cine)</div>
+    <div class="participantes">👥 Participantes: A (Sujeto), B (Practitioner), C (Observador)</div>
+    <div class="meta">🎯 Objetivo: Neutralizar una experiencia traumática o fóbica.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong> B da las instrucciones a A estando en trance:
+        <ol>
+            <li>Imaginar una sala de cine, sentado en la butaca.</li>
+            <li>En la pantalla, en blanco y negro, verse haciendo algo neutro.</li>
+            <li>Salir del cuerpo y flotar hasta la cabina de proyección, viéndose sentado allá abajo.</li>
+            <li>Desde la cabina, proyectar en la pantalla la experiencia traumática en blanco y negro, empezando un momento antes del trauma y terminando después.</li>
+            <li>Al finalizar, congelar la imagen.</li>
+            <li>Saltar a la pantalla, darla color y sonido, y proyectar la película <strong>hacia atrás en cámara rápida</strong> hasta el principio.</li>
+            <li>Observar desde la butaca una nueva proyección de la experiencia para comprobar que ha sido neutralizada.</li>
+            <li>Si persisten síntomas, repetir el proceso manteniendo la disociación.</li>
+            <li>Hacer puente al futuro.</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t9-e6" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 6: Identificación de Meta-Programas</div>
+    <div class="participantes">👥 Participantes: A (Sujeto), B (Practitioner), C (Observador)</div>
+    <div class="meta">🎯 Objetivo: Familiarizarse con la detección de meta-programas (filtros profundos de la personalidad).</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>Cada uno confecciona una lista de preguntas personales para identificar meta-programas.</li>
+            <li>Por turnos, B pregunta a A.</li>
+            <li>B y C anotan las respuestas.</li>
+            <li>B y C comentan las respuestas y definen los meta-programas de A.</li>
+            <li>Rotar los roles (todos pasan por los tres papeles).</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t9-e7" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 7: Test de Creencias</div>
+    <div class="participantes">👤 Participantes: Individual</div>
+    <div class="meta">🎯 Objetivo: Identificar el sistema de creencias básicas (10 áreas: Valía, Seguridad, Comportamiento, Control, Amor, Autonomía, Justicia, Integración, Los Otros, Normas).</div>
+    <div class="pautas"><strong>📋 Pautas:</strong> Responder a las 100 afirmaciones con V (Verdad) o N (No estoy de acuerdo). Puntuar según las indicaciones para obtener la puntuación en cada área. Trabajar las creencias por debajo de 6 puntos.</div>
+</div>
+
+<div id="t9-e8" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 8: Fusión Visual (Resolución de Conflictos de Creencias)</div>
+    <div class="participantes">👥 Participantes: A (Sujeto), B (Practitioner), C (Observador)</div>
+    <div class="meta">🎯 Objetivo: Resolver conflictos entre creencias polares fusionándolas en una nueva.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>Identificar los dos aspectos o creencias en conflicto.</li>
+            <li>Llevar al sujeto a un estado de trance.</li>
+            <li>Pedir al sujeto que visualice en su mano izquierda la creencia A y en la mano derecha la creencia B.</li>
+            <li>Pedir que lentamente junte ambas manos, observando cómo las dos imágenes se fusionan.</li>
+            <li>Cuando las manos estén juntas, llevar la nueva imagen al pecho para integrarla.</li>
+            <li>Chequear y hacer puente al futuro.</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t9-e9" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 9: Cambio de Creencias (Proceso Paso a Paso)</div>
+    <div class="participantes">👥 Participantes: A (Sujeto), B (Practitioner), C (Observador)</div>
+    <div class="meta">🎯 Objetivo: Cambiar una creencia limitante por una potenciadora.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong> Seguir los 14 pasos del proceso (espacios marcados en el suelo: DUDA, PUEDO CREER, CREÍA, CREENCIA, CERTEZA; y anclajes en 5 puntos diferentes).</div>
+</div>
+
+<div id="t9-e10" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 10: Corte de Co-dependencia</div>
+    <div class="participantes">👥 Participantes: A (Sujeto), B (Practitioner), C (Observador)</div>
+    <div class="meta">🎯 Objetivo: Cortar la dependencia emocional excesiva de una figura significativa.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong> Estando en trance:
+        <ol>
+            <li>Identificar a la otra persona y visualizarla frente a sí.</li>
+            <li>Materializar la conexión (cuerda, luz, raíz) entre ambos.</li>
+            <li>Identificar valores y creencias positivas que se cree que la otra persona aporta.</li>
+            <li>Crear una imagen de uno mismo sin esa persona, con todos los recursos y capacidades.</li>
+            <li>Fundirse con esa imagen y cortar el lazo, devolviendo a la otra persona lo suyo y tomando para uno lo propio.</li>
+            <li>Chequear y hacer puente al futuro.</li>
+        </ol>
+    </div>
+</div>
+
+<div id="t9-e11" class="ejercicio">
+    <div class="titulo-ejercicio">Ejercicio 11: Técnica de Autosalud</div>
+    <div class="participantes">👥 Participantes: A (Sujeto), B (Practitioner), C (Observador)</div>
+    <div class="meta">🎯 Objetivo: Enseñar al cerebro a "codificar" la curación de una lesión.</div>
+    <div class="pautas"><strong>📋 Pautas:</strong>
+        <ol>
+            <li>Identificar la enfermedad o lesión.</li>
+            <li>Establecer las evidencias sensoriales de que la salud se ha restablecido.</li>
+            <li>Encontrar una experiencia de autosanación de referencia (sin ayuda externa).</li>
+            <li>Asociarse a la experiencia de autosalud.</li>
+            <li>Localizar las submodalidades de la enfermedad y de la autosalud.</li>
+            <li>Identificar las submodalidades críticas (la "submodalidad de cura": color, brillo, calor, etc.).</li>
+            <li>Proyectar esas cualidades sobre la imagen de la enfermedad.</li>
+            <li>Repetir el proceso hasta que la imagen de la enfermedad se transforme en salud.</li>
+            <li>Hacer puente al futuro.</li>
+        </ol>
+    </div>
+</div>
+
+<hr>
+
+<!-- ===== PRÁCTICA DIARIA ===== -->
+<h2 id="practica-diaria">📅 Práctica Diaria Recomendada</h2>
+
+<div class="ejercicio">
+    <div class="titulo-ejercicio">Resumen de Ejercicios para la Práctica Diaria</div>
+    <div class="pautas">
+        <p>Para consolidar las habilidades, el autor recomienda realizar estos ejercicios de forma regular:</p>
+        <ol>
+            <li><strong>Observación diaria de personas</strong> (calibración y claves de acceso).</li>
+            <li><strong>Práctica de rapport</strong> en situaciones cotidianas (con conocidos y desconocidos).</li>
+            <li><strong>Autoanclaje de estados de recurso</strong> (calma, confianza, creatividad).</li>
+            <li><strong>Identificación de violaciones del metamodelo</strong> en conversaciones cotidianas.</li>
+            <li><strong>Desempaquetamiento de estrategias</strong> propias y ajenas.</li>
+            <li><strong>Práctica de los modelos terapéuticos</strong> (Cambio de Creencias, Cura de Fobias, Autosalud, etc.) con compañeros de práctica antes de usarlos con clientes.</li>
+        </ol>
+    </div>
+</div>
+
+<script>
+    // Alternar modo claro/oscuro
+    document.getElementById('modoBtn').addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        this.textContent = document.body.classList.contains('dark-mode') ? '☀️ Modo' : '🌓 Modo';
+    });
+</script>
+
+</body>
+</html>

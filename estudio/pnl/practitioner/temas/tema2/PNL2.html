@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Tema 2: La Comunicación · Resumen UNED</title>
+    <style>
+        /* ===== ESTILO ÚNICO PARA RESÚMENES UNED ===== */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            max-width: 950px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #f5f7fa;
+            color: #1a1a2e;
+            line-height: 1.8;
+            font-size: 17px;
+        }
+        h1 {
+            font-size: 30px;
+            color: #0a1628;
+            border-bottom: 4px solid #1a3d66;
+            padding-bottom: 14px;
+        }
+        h2 {
+            font-size: 23px;
+            color: #1a3d66;
+            margin-top: 32px;
+            border-left: 4px solid #1a3d66;
+            padding-left: 16px;
+        }
+        h3 {
+            font-size: 20px;
+            color: #2a4a7a;
+            margin-top: 26px;
+        }
+        h4 {
+            font-size: 18px;
+            color: #3a5a8a;
+            margin-top: 20px;
+        }
+        strong {
+            color: #0a2a4a;
+        }
+        ul {
+            padding-left: 24px;
+        }
+        li {
+            margin-bottom: 6px;
+        }
+        blockquote {
+            background: #e8edf4;
+            padding: 12px 20px;
+            border-left: 4px solid #1a3d66;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        hr {
+            border: none;
+            border-top: 2px solid #d0d8e4;
+            margin: 28px 0;
+        }
+        .indice {
+            background: #e8edf4;
+            padding: 16px 24px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .indice ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .indice li {
+            padding: 3px 0;
+        }
+        .indice li.h1 {
+            font-weight: 600;
+        }
+        .indice li.h2 {
+            padding-left: 20px;
+            font-weight: 400;
+        }
+        .indice a {
+            color: #1a3d66;
+            text-decoration: none;
+        }
+        .indice a:hover {
+            text-decoration: underline;
+        }
+        .idea-central {
+            background: #e0e8f4;
+            padding: 18px 24px;
+            border-radius: 12px;
+            margin: 20px 0 30px 0;
+            border-left: 5px solid #1a3d66;
+        }
+        .idea-central h2 {
+            margin-top: 0;
+            border-left: none;
+            padding-left: 0;
+        }
+        .modo-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            padding: 8px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #1a3d66;
+            color: #fff;
+            font-size: 14px;
+            z-index: 999;
+        }
+        .modo-btn:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode {
+            background: #0d1a2b;
+            color: #d6e2f5;
+        }
+        .dark-mode h1 {
+            color: #b0c8e8;
+            border-bottom-color: #2a5a8a;
+        }
+        .dark-mode h2 {
+            color: #8ab0e0;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode h3 {
+            color: #6a9ac0;
+        }
+        .dark-mode h4 {
+            color: #5a8aaa;
+        }
+        .dark-mode strong {
+            color: #c8ddf0;
+        }
+        .dark-mode blockquote {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode .indice {
+            background: #142a44;
+        }
+        .dark-mode .indice a {
+            color: #8ab0e0;
+        }
+        .dark-mode .idea-central {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode hr {
+            border-top-color: #2a4a6a;
+        }
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+                padding: 14px;
+            }
+            h1 {
+                font-size: 25px;
+            }
+            h2 {
+                font-size: 21px;
+            }
+        }
+
+        /* ===== ESTILOS PARA PREGUNTAS INTERACTIVAS ===== */
+        .pregunta {
+            background: #f0f4fa;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            border: 1px solid #d0d8e4;
+        }
+        .dark-mode .pregunta {
+            background: #142a44;
+            border-color: #2a4a6a;
+        }
+        .pregunta .enunciado {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .pregunta .opciones {
+            list-style: none;
+            padding-left: 8px;
+        }
+        .pregunta .opciones li {
+            margin-bottom: 4px;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .pregunta .opciones li.correcta {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .dark-mode .pregunta .opciones li.correcta {
+            background: #1a4a3a;
+            color: #8fdfb0;
+            border-left-color: #2ecc71;
+        }
+        .pregunta .respuesta-oculta {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta .respuesta-oculta {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta .respuesta-oculta.visible {
+            display: block;
+        }
+        .pregunta .btn-respuesta {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #1a3d66;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta .btn-respuesta:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta:hover {
+            background: #3a7aaa;
+        }
+        .pregunta .trampa {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #6a4a2a;
+            font-style: italic;
+        }
+        .dark-mode .pregunta .trampa {
+            color: #c8a878;
+        }
+        .pregunta-desarrollo .esquema-oculto {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta-desarrollo .esquema-oculto {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta-desarrollo .esquema-oculto.visible {
+            display: block;
+        }
+        .pregunta-desarrollo .btn-esquema {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #1a3d66;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta-desarrollo .btn-esquema:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta-desarrollo .btn-esquema {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta-desarrollo .btn-esquema:hover {
+            background: #3a7aaa;
+        }
+    </style>
+</head>
+<body>
+
+<button class="modo-btn" id="modoBtn" aria-label="Cambiar modo claro/oscuro">🌓 Modo</button>
+
+<h1>Tema 2: La Comunicación</h1>
+
+<!-- ===== ÍNDICE ===== -->
+<div class="indice">
+    <h2 style="margin-top:0; border-left:none; padding-left:0;">📑 Índice</h2>
+    <ul>
+        <li class="h1"><a href="#idea-central">1. Idea Central (5 minutos)</a></li>
+        <li class="h1"><a href="#resumen-epigrafes">2. Resumen por Epígrafes</a></li>
+        <li class="h2"><a href="#definicion">Definición de Comunicación</a></li>
+        <li class="h2"><a href="#componentes">Componentes: Digital y Analógico</a></li>
+        <li class="h2"><a href="#principios">Principios de la Comunicación</a></li>
+        <li class="h2"><a href="#elementos">Elementos Básicos de la Comunicación</a></li>
+        <li class="h2"><a href="#estados-internos">Los Estados Internos</a></li>
+        <li class="h2"><a href="#como-creamos">Cómo Creamos Nuestros Estados y Comportamientos</a></li>
+        <li class="h2"><a href="#asociado-disociado">Asociado y Disociado</a></li>
+        <li class="h2"><a href="#ejercicios">Ejercicios: Asociado/Disociado y Práctico</a></li>
+        <li class="h2"><a href="#fisiologia">Fisiología y Estados Internos</a></li>
+        <li class="h2"><a href="#modelo-matematico">Modelo Matemático del Cambio</a></li>
+        <li class="h2"><a href="#resumen-tema">Resumen del Tema 2</a></li>
+        <li class="h1"><a href="#mini-resumen">3. Mini-resumen por Epígrafe (Repaso rápido)</a></li>
+        <li class="h1"><a href="#preguntas-desarrollo">4. Preguntas de Desarrollo</a></li>
+        <li class="h1"><a href="#preguntas-reserva">5. Preguntas de Reserva</a></li>
+    </ul>
+</div>
+
+<!-- ===== 1. IDEA CENTRAL ===== -->
+<div id="idea-central" class="idea-central">
+    <h2>💡 Idea Central (5 minutos)</h2>
+    <p>La comunicación es el mecanismo fundamental que organiza las relaciones sociales, operando a través de un sistema integrado de comportamientos. Este proceso se divide en un componente digital (el contenido literal de las palabras) y uno analógico (el lenguaje no verbal, que tiene un impacto mucho mayor en la influencia interpersonal). La comunicación se rige por cinco axiomas que definen su naturaleza: es inevitable, tiene un aspecto de contenido y otro relacional, depende de la puntuación de las secuencias de intercambio, combina lenguajes digital y analógico de forma problemática, y puede ser simétrica o complementaria. Para que sea efectiva, debemos gestionar elementos clave como la motivación, las interferencias, el contexto y la oportunidad, y sobre todo, practicar la escucha activa y la clarificación de la intención. En última instancia, la Programación Neurolingüística (PNL) enseña que la base de toda conducta comunicativa son los estados internos (emociones y capacidades), que se construyen a partir de nuestras representaciones internas (pensamientos) y nuestra fisiología (cuerpo). Modificar estos componentes, por ejemplo, a través de la técnica de asociación/disociación, es la vía para el cambio personal y la mejora de la comunicación.</p>
+</div>
+
+<!-- ===== 2. RESUMEN POR EPÍGRAFES ===== -->
+<h2 id="resumen-epigrafes">📘 Resumen por Epígrafes</h2>
+
+<!-- Definición -->
+<h3 id="definicion">Definición de Comunicación</h3>
+<p><strong>Concepto clave:</strong> La comunicación es el sistema de comportamiento integrado que calibra y hace posibles las relaciones humanas, actuando como el mecanismo de organización social.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>La transmisión de información es el mecanismo del comportamiento comunicativo.</li>
+    <li>La buena transmisión se evidencia cuando el "programa" de interacción se desarrolla sin obstáculos.</li>
+    <li>Cuando no ocurre así, se puede analizar el proceso para localizar fallos (retrasos, advertencias, etc.).</li>
+    <li>Saber si la información fue recibida es complejo, ya que una conducta apropiada puede deberse a la propia inercia del programa del individuo y no a la recepción global del mensaje.</li>
+</ul>
+<p><strong>Conexiones:</strong> La idea de "programa" y "ejecución" se conecta directamente con la teoría de la puntuación de secuencias (Principio 3) y sienta las bases para entender cómo los fallos comunicativos se relacionan con los estados internos y las interferencias.</p>
+<hr>
+
+<!-- Componentes -->
+<h3 id="componentes">Componentes de la Comunicación: Digital y Analógico</h3>
+<p><strong>Concepto clave:</strong> La comunicación se divide en dos componentes: el <strong>digital</strong> (el significado de las palabras, lo que se dice) y el <strong>analógico</strong> (la calidad y forma, cómo se dice, incluyendo el tono de voz y el lenguaje corporal).</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>La investigación de Mehrabian y Birdwhistell demuestra que el componente analógico (tono 38% + corporal 55%) tiene un 93% de influencia, frente al 7% del lenguaje verbal.</li>
+    <li>La PNL se basa en la importancia de la comunicación (interna y externa) para acercarse a los mapas mentales de otros y resolver conflictos.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe es la base para entender el <strong>Principio 4</strong>, que profundiza en las características, ventajas y carencias de ambos lenguajes. También se relaciona con la <strong>Escucha Activa</strong> y la detección de la <strong>Congruencia</strong>.</p>
+<hr>
+
+<!-- Principios -->
+<h3 id="principios">Principios de la Comunicación</h3>
+<p><strong>Concepto clave:</strong> Son cinco axiomas que describen las leyes fundamentales de la comunicación humana.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Principio 1 (Imposibilidad de no comunicar):</strong> Toda conducta, incluso la inactividad o el silencio, tiene valor de mensaje e influye en los demás.</li>
+    <li><strong>Principio 2 (Contenido y Relación):</strong> Toda comunicación tiene un aspecto de <strong>contenido</strong> (información, datos) y uno <strong>relacional</strong> (instrucción sobre cómo entender el mensaje). Este segundo clarifica al primero y es una <strong>metacomunicación</strong>.</li>
+    <li><strong>Principio 3 (Puntuación de secuencias):</strong> La naturaleza de una relación depende de cómo los participantes organizan (puntúan) la secuencia ininterrumpida de intercambios, cayendo a menudo en el error de creer que tiene un comienzo definido (ej: "te regaño porque te retraes" / "me retraigo porque me regañas").</li>
+    <li><strong>Principio 4 (Lenguaje digital vs. analógico):</strong> El lenguaje <strong>digital</strong> tiene una sintaxis compleja pero carece de semántica en la relación. El <strong>analógico</strong> tiene semántica (significado) pero carece de sintaxis para definir relaciones de forma inequívoca. Traducir del analógico al digital implica una pérdida de información.</li>
+    <li><strong>Principio 5 (Intercambios simétricos y complementarios):</strong> Los intercambios son <strong>simétricos</strong> (basados en la igualdad) o <strong>complementarios</strong> (basados en la diferencia, con una posición superior y otra inferior). Existe la <strong>metacomplementariedad</strong>, donde el superior obliga al inferior a ser simétrico.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe es el núcleo teórico del tema. El Principio 2 se relaciona con el Feedback y la Clarificación de la Intención. El Principio 4 es el desarrollo teórico de los Componentes. El Principio 3 conecta con la definición de comunicación como secuencia de programas.</p>
+<hr>
+
+<!-- Elementos básicos -->
+<h3 id="elementos">Elementos Básicos de la Comunicación</h3>
+<p><strong>Concepto clave:</strong> Son factores prácticos que debemos gestionar conscientemente para mejorar la calidad de nuestra comunicación.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Motivación:</strong> No es generalizable, pero es necesaria. Su exceso (voracidad) o defecto es disfuncional. La necesidad es la motivación más efectiva (Pirámide de Maslow: fisiológicas, seguridad, afiliación, reconocimiento, autorrealización). No confundir necesidad (permanente) con deseo (temporal).</li>
+    <li><strong>Interferencias:</strong> Pueden incidir en el emisor, receptor, mensaje, medio o contexto. Controlar las variables posibles es clave para maximizar la efectividad.</li>
+    <li><strong>Contexto:</strong> Tiene una importancia determinante. Un mismo mensaje en diferente contexto es un mensaje diferente.</li>
+    <li><strong>Oportunidad:</strong> Es el momento, las circunstancias y las personas adecuadas para comunicar.</li>
+    <li><strong>Medios:</strong> Elegir el canal más adecuado (voz, imagen, escritura, etc.) para cada situación.</li>
+    <li><strong>Feedback (Retroalimentación):</strong> Es el intercambio de intenciones, un flujo de sensación-sentimiento. Para detectarlo, hay que preguntarse si el mensaje se capta, si se alcanza el objetivo, y ser sincero sobre la propia intención.</li>
+    <li><strong>Escucha Activa:</strong> Es una atención dinámica que requiere: a) apreciar la <strong>congruencia</strong> entre el mensaje verbal y el no verbal; b) demandar <strong>más información</strong> (preguntar) si el mensaje no es claro.</li>
+    <li><strong>La Intención:</strong> Es crucial definir y clarificar la intención. Para indagar correctamente, debemos: expresarnos de forma positiva, asegurar que la responsabilidad está en nuestras manos, comprobar riesgos y beneficios (ecología), formular preguntas en presente, dividir procesos y atender a la retroalimentación.</li>
+</ul>
+<p><strong>Conexiones:</strong> La <strong>Escucha Activa</strong> se relaciona con el <strong>Principio 2</strong> (captar el contenido y la relación) y el <strong>Principio 4</strong> (buscar congruencia entre lo digital y analógico). El <strong>Feedback</strong> es la herramienta práctica para ajustar la comunicación basada en la <strong>Puntuación (Ppio 3)</strong>.</p>
+<hr>
+
+<!-- Estados internos -->
+<h3 id="estados-internos">Los Estados Internos</h3>
+<p><strong>Concepto clave:</strong> El estado interno (emociones y capacidades) es el desencadenante de toda conducta y se genera a partir de dos componentes: las <strong>Representaciones Internas (R.I.)</strong> y la <strong>Fisiología</strong>.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Las R.I. son todo lo que vemos, imaginamos, oímos y nos decimos mentalmente, y la forma en que lo hacemos.</li>
+    <li>La Fisiología incluye postura, movimiento, reacciones bioquímicas, respiración, ritmo cardiaco, etc.</li>
+    <li>El estudio y calibración de estos dos elementos es la base de la PNL.</li>
+    <li>Un proceso de cambio es la distancia entre el <strong>estado presente</strong> y el <strong>estado deseado</strong>.</li>
+    <li>Comprender cómo los estados internos llevan a resultados no deseados es el primer paso para utilizar los recursos de la PNL y alcanzar la competencia y eficacia.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe es el puente entre la teoría de la comunicación y la práctica del cambio personal. La fórmula R.I. + Fisiología = Estados Internos se conecta con la <strong>Motivación</strong> (que genera cambios fisiológicos) y con las <strong>Interferencias</strong> (que pueden ser estados de ánimo). Conecta directamente con el epígrafe siguiente.</p>
+<hr>
+
+<!-- Cómo creamos -->
+<h3 id="como-creamos">Cómo Creamos Nuestros Estados y Comportamientos</h3>
+<p><strong>Concepto clave:</strong> Se establece una fórmula secuencial: <strong>R.I. + Fisiología = Estados Internos</strong> y <strong>Estados Internos + Filtros Sociales y Culturales = Conductas</strong>.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Se propone un ejercicio experimental para diferenciar entre "esperanzar" y "esperar". La <strong>esperanza</strong> es incierta (genera inseguridad), mientras que la <strong>espera</strong> es segura (orienta a la acción y preparación para el futuro).</li>
+    <li>El ejercicio demuestra cómo emociones parecidas (con estructuras de representación interna diferentes) pueden afectarnos de manera sutil y distinta.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe concreta la teoría del anterior. La distinción entre esperanza/espera es un ejemplo práctico de cómo las R.I. (pensar en un futuro incierto vs. cierto) crean diferentes emociones y predisposiciones a la acción. Se conecta con el <strong>Modelo Matemático del Cambio</strong>.</p>
+<hr>
+
+<!-- Asociado y Disociado -->
+<h3 id="asociado-disociado">Asociado y Disociado</h3>
+<p><strong>Concepto clave:</strong> Son dos formas de revivir un recuerdo. <strong>Asociado</strong> es experimentarlo "como si volviera a suceder" (dentro de la propia piel), lo que genera una alta carga emocional. <strong>Disociado</strong> es verse a uno mismo en el recuerdo como un observador externo (como en una película), lo que amortigua las sensaciones y emociones.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>La publicidad y el cine usan la asociación para "extasiar" al espectador.</li>
+    <li>En estado disociado, las emociones se perciben de forma más débil y amortiguada.</li>
+    <li>Es un fenómeno que se puede usar para cambiar estados y sensaciones.</li>
+    <li>Determinar si un sujeto procesa sus imágenes internas asociado o disociado es crucial para el éxito de las técnicas de PNL.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta técnica es una herramienta fundamental para modificar los <strong>Estados Internos</strong>. Al cambiar de asociado a disociado, se altera la <strong>Fisiología</strong> y la <strong>R.I.</strong>, lo que permite gestionar emociones (como se ve en el <strong>Ejercicio Práctico</strong>) y es un paso práctico para aplicar el <strong>Modelo Matemático del Cambio</strong>.</p>
+<hr>
+
+<!-- Ejercicios -->
+<h3 id="ejercicios">Ejercicio 1: Asociado/Disociado y Ejercicio Práctico</h3>
+<p><strong>Concepto clave:</strong> Son ejercicios para experimentar y calibrar la diferencia entre ambos estados.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>El <strong>Ejercicio 1</strong> es un protocolo formal (sujeto y programador) para inducir el cambio de estado y analizar los cambios experimentados.</li>
+    <li>El <strong>Ejercicio Práctico</strong> guía al lector para recordar una experiencia desagradable primero de forma asociada (sintiendo la tensión y agitación) y luego disociada (como un observador ajeno), comprobando la disminución de la carga emocional y los cambios fisiológicos.</li>
+</ul>
+<p><strong>Conexiones:</strong> Estos ejercicios son la aplicación directa de los conceptos de <strong>Asociado/Disociado</strong> y validan la teoría de que <strong>Fisiología y R.I.</strong> están unidas (una persona asociada a un mal recuerdo modifica su respiración y tensión muscular).</p>
+<hr>
+
+<!-- Fisiología -->
+<h3 id="fisiologia">Fisiología y Estados Internos</h3>
+<p><strong>Concepto clave:</strong> Las representaciones internas y la fisiología van inseparablemente unidas. Cambiar una modifica la otra.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Se contrasta la fisiología de una persona depresiva (cabeza gacha, hombros caídos) con la de una optimista (cabeza erguida, hombros hacia atrás).</li>
+    <li>Se propone un experimento: al cambiar la fisiología de una persona deprimida (levantando la cabeza y echando los hombros hacia atrás), su estado cambia inmediatamente (sonríe).</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe es la demostración práctica de que la fórmula <strong>R.I. + Fisiología = Estado Interno</strong> funciona en ambas direcciones. Se conecta directamente con el <strong>Modelo Matemático del Cambio</strong>, mostrando que modificar la Fisiología (F) es una vía tan efectiva como modificar las R.I. para cambiar el resultado (C).</p>
+<hr>
+
+<!-- Modelo matemático -->
+<h3 id="modelo-matematico">Modelo Matemático del Cambio</h3>
+<p><strong>Concepto clave:</strong> Es una explicación simplificada (pero de sentido común) de cómo se produce el cambio en PNL. La fórmula es <strong>C = (R.I. + F) + S</strong>, donde C es la conducta y S los filtros sociales/culturales (constantes).</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Para modificar una conducta ineficiente (C) a una deseada, debemos reducir el valor de sus componentes.</li>
+    <li>Dado que los filtros sociales (S) y la fisiología (F) pueden ser más difíciles de cambiar o considerarse constantes, la variable más fácil de modificar para lograr el cambio son las <strong>Representaciones Internas (R.I.)</strong>.</li>
+    <li>El objetivo de la PNL es, en parte, recuperar el "sentido común" para el cambio personal.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe sintetiza todo el bloque práctico. Conecta los <strong>Estados Internos</strong>, la <strong>Fisiología</strong>, y los <strong>Filtros Sociales y Culturales</strong> (mencionados en el epígrafe "Cómo creamos...") y los relaciona con la <strong>Conducta</strong>, que es el objetivo final de toda comunicación efectiva.</p>
+<hr>
+
+<!-- Resumen tema -->
+<h3 id="resumen-tema">Resumen del Tema 2</h3>
+<p><strong>Concepto clave:</strong> Es un compendio de las definiciones clave del tema, presentadas de forma esquemática y secuencial.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Define R.I., Fisiología, Estados Internos y Conductas.</li>
+    <li>Establece las relaciones causales: R.I. + F = Estados Internos; Estados Internos = Conductas.</li>
+    <li>Concluye que las modificaciones en las R.I. producen cambios en los estados internos y, por tanto, en las conductas y relaciones con los otros.</li>
+</ul>
+<p><strong>Conexiones:</strong> Sirve como un mapa conceptual de cierre, conectando todos los elementos del tema: desde los componentes de la comunicación hasta la herramienta del cambio personal.</p>
+<hr>
+
+<!-- ===== 3. MINI-RESÚMEN ===== -->
+<h2 id="mini-resumen">📌 Mini-resumen por Epígrafe (Repaso rápido)</h2>
+<ul>
+    <li><strong>Definición de Comunicación:</strong> La comunicación es el sistema que organiza las relaciones sociales. Se considera exitosa cuando el "programa" de interacción se ejecuta sin obstáculos, aunque determinar si el mensaje fue recibido globalmente es complejo.</li>
+    <li><strong>Componentes de la Comunicación:</strong> Se divide en digital (palabras, 7% de influencia) y analógico (tono y lenguaje corporal, 93% de influencia). La PNL se basa en la importancia de este proceso comunicativo.</li>
+    <li><strong>Principios de la Comunicación:</strong> La comunicación es inevitable, tiene contenido y relación, su interpretación depende de la puntuación de secuencias, combina lenguajes digital y analógico con dificultades, y es simétrica o complementaria.</li>
+    <li><strong>Elementos Básicos:</strong> Para comunicar bien hay que gestionar la motivación, minimizar interferencias, considerar el contexto y la oportunidad, elegir los medios adecuados, practicar la escucha activa (buscando congruencia y preguntando) y, sobre todo, clarificar la intención.</li>
+    <li><strong>Los Estados Internos:</strong> Las emociones y capacidades son el motor de la conducta. Se crean a partir de las Representaciones Internas (R.I.) y la Fisiología. Un proceso de cambio es la distancia entre el estado presente y el deseado.</li>
+    <li><strong>Cómo Creamos Nuestros Estados:</strong> La fórmula es R.I. + F = Estados Internos; Estados Internos + Filtros = Conductas. Emociones como la esperanza y la espera, aunque parecidas, tienen estructuras internas diferentes y generan respuestas distintas.</li>
+    <li><strong>Asociado y Disociado:</strong> Asociado es revivir un recuerdo desde dentro (mucha emoción). Disociado es verse a uno mismo como observador (poca emoción). Es crucial identificar qué estado usa una persona para aplicar técnicas de cambio.</li>
+    <li><strong>Ejercicios Prácticos:</strong> Los ejercicios guían para experimentar la diferencia entre asociado y disociado, demostrando cómo cambiar la perspectiva reduce la carga emocional y modifica la fisiología.</li>
+    <li><strong>Fisiología y Estados Internos:</strong> R.I. y Fisiología van unidas. Modificar la fisiología (postura, respiración) puede cambiar inmediatamente un estado emocional.</li>
+    <li><strong>Modelo Matemático del Cambio:</strong> Es una fórmula (C = (R.I. + F) + S) que explica que, para cambiar una conducta (C), la vía más sencilla es modificar las Representaciones Internas (R.I.), ya que los filtros sociales (S) y la fisiología (F) suelen ser más constantes.</li>
+    <li><strong>Resumen del Tema:</strong> Esquematiza las relaciones: R.I. + Fisiología = Estados Internos → Conductas → Relaciones. Modificar R.I. es la clave del cambio.</li>
+</ul>
+
+<!-- ===== 4. PREGUNTAS DE DESARROLLO ===== -->
+<h2 id="preguntas-desarrollo">✍️ Preguntas de Desarrollo</h2>
+
+<!-- Pregunta 1 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 1:</strong> Analice la afirmación de que el lenguaje analógico es más influyente que el digital en la comunicación humana. Explique la naturaleza de ambos lenguajes según los axiomas de la comunicación y cómo su interacción afecta a la percepción de un mensaje. Relacione esta teoría con la práctica de la "Escucha Activa".</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir Comunicación digital y analógica (Componentes).</li>
+            <li>Citar el estudio de Mehrabian: porcentajes de influencia (7%, 38%, 55%).</li>
+            <li>Explicar el Principio 4: el digital tiene sintaxis pero no semántica relacional; el analógico tiene semántica pero no sintaxis.</li>
+            <li>Señalar la "traducción" constante y la pérdida de información al pasar de analógico a digital.</li>
+            <li>Conectar con la Escucha Activa:
+                <ul>
+                    <li>a. La necesidad de apreciar la <strong>congruencia</strong> entre el mensaje verbal (digital) y el no verbal (analógico).</li>
+                    <li>b. La congruencia es la confirmación de que el mensaje se recibe con claridad.</li>
+                </ul>
+            </li>
+            <li>Concluir que la influencia mayor del analógico obliga a desarrollar habilidades de observación para una comunicación eficaz.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Digital, Analógico, Congruencia, Escucha Activa, Principio 4, Mehrabian.</p>
+    </div>
+</div>
+
+<!-- Pregunta 2 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 2:</strong> Exponga los cinco principios de la comunicación de la Escuela de Palo Alto. A continuación, explique cómo los "Elementos Básicos de la Comunicación" (como el Feedback y la Intención) sirven como herramientas prácticas para gestionar las dificultades que surgen de estos principios.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Enumerar y explicar brevemente los 5 principios.</li>
+            <li>Identificar el problema central: la comunicación es compleja y está sujeta a interpretación (Principio 3) y a la combinación de lenguajes (Principio 4).</li>
+            <li>Explicar el <strong>Feedback</strong> como herramienta para verificar la interpretación del mensaje (contrarresta el Principio 3).</li>
+            <li>Explicar la <strong>Clarificación de la Intención</strong> como herramienta para gestionar el aspecto relacional del Principio 2 y garantizar que el contenido se entiende como se desea.</li>
+            <li>Explicar cómo la <strong>Escucha Activa</strong> (congruencia y pedir más información) es la herramienta práctica para aplicar el Principio 4.</li>
+            <li>Concluir que los elementos básicos son la "caja de herramientas" para navegar las leyes universales de la comunicación.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Principios de la Comunicación, Feedback, Intención, Escucha Activa, Metacomunicación.</p>
+    </div>
+</div>
+
+<!-- Pregunta 3 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 3:</strong> Describa el proceso de creación de un estado interno según la PNL. Utilice el modelo matemático del cambio y el concepto de asociado/disociado para explicar cómo se puede modificar una conducta ineficiente, como la ansiedad antes de un examen.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir estado interno como emoción/capacidad.</li>
+            <li>Explicar la fórmula: R.I. + Fisiología = Estado Interno.</li>
+            <li>Presentar el Modelo Matemático: C = (R.I. + F) + S.</li>
+            <li>Aplicarlo al caso: C (ansiedad/conducta ineficiente) es alta. S es constante (presión social, etc.).</li>
+            <li>Proponer la técnica de <strong>Disociación</strong>: pedir al estudiante que se vea a sí mismo en la situación de examen desde fuera (como un observador).</li>
+            <li>Explicar el impacto: Al cambiar la R.I. (de asociado a disociado), la carga emocional (E) disminuye, reduciendo el valor de C y haciendo la conducta más eficiente.</li>
+            <li>Concluir que modificar R.I. es la vía más accesible para el cambio.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Estado Interno, Representaciones Internas (R.I.), Fisiología, Modelo Matemático del Cambio, Asociado, Disociado.</p>
+    </div>
+</div>
+
+<!-- Pregunta 4 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 4:</strong> ¿Qué relación existe entre la "Pirámide de Maslow" y el elemento de la "Motivación" en la comunicación? Argumente cómo una motivación desequilibrada (por exceso o defecto) puede generar interferencias en el proceso comunicativo y cómo los estados internos del emisor y receptor influyen en este aspecto.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Explicar el concepto de Motivación como elemento básico.</li>
+            <li>Señalar que no es generalizable y que la necesidad es su forma más efectiva.</li>
+            <li>Explicar la Pirámide de Maslow (necesidades fisiológicas, seguridad, afiliación, reconocimiento, autorrealización). Relacionarla con la motivación: el comunicante busca satisfacer una necesidad.</li>
+            <li>Analizar el exceso de motivación: genera "voracidad" y bloqueos físicos (ansiedad).</li>
+            <li>Analizar la escasa motivación: hace al individuo sensible a interferencias ajenas.</li>
+            <li>Conectar con los Estados Internos: un estado de necesidad (ej: necesidad de reconocimiento) es un estado interno que modifica la fisiología y las R.I., creando un "filtro" que puede ser una interferencia.</li>
+            <li>Concluir que la gestión de la motivación es la gestión de los estados internos de los participantes.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Motivación, Necesidad, Pirámide de Maslow, Interferencias, Estados Internos.</p>
+    </div>
+</div>
+
+<!-- Pregunta 5 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 5:</strong> Analice el Principio de la "Puntuación de Secuencias" (Principio 3). Relacione este principio con la importancia de la "Oportunidad" y el "Contexto" como elementos básicos para evitar malentendidos, y explique cómo un buen manejo del "Feedback" puede deshacer una puntuación espúrea.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Explicar el Principio 3: la comunicación es una secuencia ininterrumpida que los participantes organizan (puntúan) para darle sentido.</li>
+            <li>Definir la "puntuación espúrea": el error de creer que la secuencia tiene un inicio claro (ej: "yo reacciono a tu acción", sin ver la propia contribución).</li>
+            <li>Explicar <strong>Contexto</strong>: el escenario físico y social donde ocurre la secuencia. Un mismo acto en diferente contexto cambia su significado y, por tanto, su puntuación.</li>
+            <li>Explicar <strong>Oportunidad</strong>: el momento adecuado. Puntuar una secuencia en el momento inadecuado es una fuente de conflicto.</li>
+            <li>Explicar el <strong>Feedback</strong> como herramienta: al compartir la percepción de la secuencia ("para mí esto empezó cuando...") se puede evidenciar la naturaleza circular e interrumpir el ciclo de "acción-reacción", evitando la escalada del conflicto.</li>
+            <li>Concluir que la habilidad para "metacomunicar" sobre la puntuación es clave para relaciones sanas.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Puntuación de Secuencias, Puntuación Espúrea, Contexto, Oportunidad, Feedback.</p>
+    </div>
+</div>
+
+<!-- Pregunta 6 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 6:</strong> Compare y contraste los conceptos de "Representaciones Internas" y "Lenguaje Digital". Explique cómo ambos son sistemas de representación de la realidad pero operan de manera diferente, y cómo el "Filtro Social" actúa sobre ellos para generar una conducta comunicativa específica.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir <strong>Lenguaje Digital</strong>: sistema simbólico arbitrario (palabras) con sintaxis lógica pero semántica limitada en relaciones.</li>
+            <li>Definir <strong>Representaciones Internas (R.I.)</strong>: sistema subjetivo de imágenes, sonidos y diálogos internos que construimos para dar sentido a la experiencia.</li>
+            <li>Señalar la similitud: ambos son "mapas" o representaciones de la realidad, no la realidad en sí.</li>
+            <li>Señalar la diferencia: el Digital es un sistema compartido y externo (sintaxis lógica universal). La R.I. es un sistema privado e interno (basado en la experiencia sensorial personal).</li>
+            <li>Explicar el <strong>Filtro Social y Cultural (S)</strong>: son los patrones aprendidos que moldean tanto el lenguaje digital que usamos como nuestras R.I.</li>
+            <li>En la fórmula C = (R.I. + F) + S, S modula cómo las R.I. (nuestro mapa privado) se traducen en una conducta comunicativa (C) que usa el lenguaje digital y analógico.</li>
+            <li>Concluir que una comunicación eficaz requiere ser consciente de que nuestro lenguaje digital es solo un reflejo de nuestras R.I., que a su vez están filtradas culturalmente.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Lenguaje Digital, Representaciones Internas (R.I.), Filtros Sociales y Culturales, Lenguaje Analógico, Modelo Matemático.</p>
+    </div>
+</div>
+
+<!-- Pregunta 7 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 7:</strong> Defina la "Escucha Activa" y desglose sus dos premisas fundamentales. Explique cómo estas premisas se relacionan directamente con el Principio 2 (Contenido y Relación) y la teoría de los dos componentes (Digital/Analógico) de la comunicación para garantizar la eficacia del mensaje.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir Escucha Activa como una atención dinámica e intencionada.</li>
+            <li>Explicar la <strong>Primera Premisa: Congruencia</strong>. Relacionarlo con los componentes: Comparar el mensaje <strong>digital</strong> (palabras) con el <strong>analógico</strong> (tono, gestos). Si son congruentes, se confirma la claridad del mensaje.</li>
+            <li>Explicar la <strong>Segunda Premisa: Pedir más información</strong>. Es la herramienta para resolver dudas sobre el <strong>contenido</strong> cuando no hay claridad.</li>
+            <li>Relacionar con el Principio 2: el aspecto <strong>relacional</strong> (cómo se dice) clarifica el aspecto de <strong>contenido</strong> (qué se dice). La congruencia es la verificación de que el aspecto relacional apoya al de contenido. Si no, preguntar ayuda a desentrañar la relación.</li>
+            <li>Concluir que la Escucha Activa es la aplicación práctica para "traducir" entre el lenguaje digital y analógico (Principio 4) y para entender correctamente el mensaje en su totalidad.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Escucha Activa, Congruencia, Digital, Analógico, Principio 2 (Contenido/Relación).</p>
+    </div>
+</div>
+
+<!-- ===== 5. PREGUNTAS DE RESERVA ===== -->
+<h2 id="preguntas-reserva">⭐ Preguntas de Reserva</h2>
+
+<!-- Reserva 1 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 1:</strong> Realice un análisis integrador que parta de la definición de Comunicación como un "sistema de comportamiento integrado" y, a través de los conceptos de "Estados Internos", "Fisiología" y el "Modelo Matemático del Cambio", explique cómo una persona puede gestionar su propia comunicación para transformar una relación de tipo complementario (definida por el Principio 5) en una de tipo simétrico, o viceversa, según su intención.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Partir de la definición: la comunicación como un sistema (todo está conectado).</li>
+            <li>Definir relaciones complementarias y simétricas (Principio 5).</li>
+            <li>Plantear el objetivo: cambiar la naturaleza de la relación.</li>
+            <li>Explicar que la conducta (C) que define esa relación es el resultado de los estados internos (E).</li>
+            <li>Aplicar el Modelo: C = (R.I. + F) + S.</li>
+            <li>Argumentar que para cambiar la dinámica (C), la persona debe modificar sus R.I. y F.
+                <ul>
+                    <li>Para pasar a una relación simétrica (igualdad), el individuo debe modificar su R.I. de "inferior" a "igual", cambiar su fisiología (postura erguida, tono firme) y por tanto su estado.</li>
+                    <li>Para pasar a una relación meta-complementaria, la R.I. y F deben reflejar una "superioridad" que incite al otro a tomar la iniciativa.</li>
+                </ul>
+            </li>
+            <li>Concluir que la comunicación es un sistema que se puede auto-regular cambiando la variable más accesible: nuestras propias R.I. y Fisiología.</li>
+        </ol>
+    </div>
+</div>
+
+<!-- Reserva 2 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 2:</strong> Compare el proceso de "asociación" con una comunicación analógica efectiva y el de "disociación" con una comunicación digital fría. Utilice los conceptos de "Escucha Activa", "Feedback" e "Intención" para argumentar cuándo sería más ventajoso para un comunicante estar en un estado más asociado o más disociado durante una interacción crucial.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir Asociado (alta emoción, dentro de la experiencia) y Disociado (baja emoción, observador externo).</li>
+            <li>Relacionar Asociado con Comunicación Analógica (tono, gestos, calidez, impacto emocional del 93%).</li>
+            <li>Relacionar Disociado con Comunicación Digital (precisión, contenido, lógica, pero fría).</li>
+            <li>Analizar ventajas de un estado <strong>asociado</strong>: Permite conectar mejor con el otro, captar el feedback analógico, y mostrar intención genuina. Es ideal para relaciones y metas en las que se busca influencia emocional.</li>
+            <li>Analizar ventajas de un estado <strong>disociado</strong>: Permite mantener la calma, analizar el contenido digital, formular preguntas precisas (Escucha Activa) y gestionar la propia ansiedad. Es ideal para negociaciones complejas, críticas o situaciones de alta tensión.</li>
+            <li>Concluir que la habilidad radica en la "meta-comunicación" y la flexibilidad: saber asociarse para conectar y disociarse para analizar, cambiando de estado según la necesidad del momento y la intención definida.</li>
+        </ol>
+    </div>
+</div>
+
+<!-- Reserva 3 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 3:</strong> Explique en profundidad el Principio de la Metacomunicación (Principio 2). Utilizando todos los elementos básicos de la comunicación (Motivación, Contexto, Oportunidad, Medios, Feedback, Escucha Activa, Intención), diseñe una estrategia para "metacomunicar" eficazmente en una situación de conflicto laboral, donde los participantes están en una relación asimétrica (jefe-empleado) y han caído en una puntuación espúrea (Principio 3).</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir Metacomunicación como "comunicar sobre la comunicación", el aspecto relacional que define cómo entender el mensaje.</li>
+            <li>Identificar el problema: una relación complementaria rígida y un conflicto basado en una puntuación errónea ("tú no me respetas porque no haces X" / "no hago X porque no me respetas").</li>
+            <li>Diseñar la estrategia:
+                <ul>
+                    <li><strong>Intención:</strong> Clarificar que el objetivo es resolver el problema, no ganar la discusión.</li>
+                    <li><strong>Motivación:</strong> Buscar la necesidad de reconocimiento y seguridad de ambas partes (Pirámide de Maslow).</li>
+                    <li><strong>Contexto y Oportunidad:</strong> Elegir un lugar neutral y un momento sin prisas.</li>
+                    <li><strong>Medios:</strong> Usar principalmente lenguaje verbal claro y un tono analógico calmado y abierto.</li>
+                    <li><strong>Escucha Activa:</strong> Demostrar congruencia (serenidad) y pedir más información para entender su perspectiva.</li>
+                    <li><strong>Feedback:</strong> Compartir la sensación-sentimiento ("cuando dices eso, me siento..."). Preguntar cómo se siente él/ella.</li>
+                    <li><strong>El acto metacomunicativo:</strong> Verbalizar la dinámica: "Parece que hemos entrado en un círculo donde yo veo A y tú ves B. Hablemos de cómo estamos comunicando, no solo de lo que estamos comunicando." Esto permite redefinir la relación (pasar de un "tú contra mí" a un "nosotros contra el problema"), saliendo de la puntuación espúrea.</li>
+                </ul>
+            </li>
+            <li>Concluir que la metacomunicación es la herramienta más poderosa para redefinir una relación, requiriendo el dominio de todos los elementos básicos.</li>
+        </ol>
+    </div>
+</div>
+
+<script>
+    // Alternar modo claro/oscuro
+    document.getElementById('modoBtn').addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        this.textContent = document.body.classList.contains('dark-mode') ? '☀️ Modo' : '🌓 Modo';
+    });
+
+    // Toggle para esquemas de desarrollo
+    function toggleEsquema(btn) {
+        const container = btn.parentElement;
+        const esquema = container.querySelector('.esquema-oculto');
+        if (esquema) {
+            esquema.classList.toggle('visible');
+            btn.textContent = esquema.classList.contains('visible') ? '📖 Ocultar esquema' : '📖 Mostrar esquema';
+        }
+    }
+</script>
+
+</body>
+</html>

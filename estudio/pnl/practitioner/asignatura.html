@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Practitioner · PNL</title>
+    <link rel="stylesheet" href="../../../css/styles.css">
+    <link rel="stylesheet" href="../../../css/themes.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 16px 0; }
+        .info-card {
+            background: var(--bg-card); border-radius: 10px; padding: 16px 20px;
+            border: 1px solid var(--border); display: flex; align-items: center; gap: 14px;
+            transition: all 0.3s ease; text-decoration: none; color: var(--text-primary); cursor: pointer;
+        }
+        .info-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); border-color: #9b59b6; }
+        .info-card .icon { font-size: 28px; flex-shrink: 0; }
+        .info-card .info { display: flex; flex-direction: column; }
+        .info-card .info .titulo { font-weight: 600; font-size: 15px; }
+        .info-card .info .subtitulo { font-size: 12px; color: var(--text-secondary); }
+        .badge-pdf { background: #ef4444; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 600; margin-left: 6px; }
+        .tema-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; transition: var(--transition); flex-wrap: wrap; gap: 8px; }
+        .tema-item:hover { background: var(--bg-hover); border-color: #9b59b6; }
+        .tema-info { display: flex; align-items: center; gap: 12px; flex: 1; cursor: pointer; }
+        .tema-numero { background: var(--bg-accent); color: #9b59b6; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
+        .tema-titulo { font-weight: 500; }
+        .tema-progreso { display: flex; align-items: center; gap: 12px; }
+        .temas-list { display: flex; flex-direction: column; gap: 8px; }
+        .btn-volver { background: transparent; border: 1px solid var(--border); color: var(--text-secondary); padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: var(--transition); display: inline-flex; align-items: center; gap: 6px; }
+        .btn-volver:hover { border-color: #9b59b6; color: #9b59b6; }
+        .loading-temas { text-align: center; padding: 30px; color: var(--text-secondary); }
+        .loading-temas i { font-size: 24px; display: block; margin-bottom: 10px; }
+        .progreso-botones { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+        .progreso-botones button {
+            width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border);
+            background: transparent; color: var(--text-secondary); cursor: pointer;
+            font-size: 11px; font-weight: 700; transition: var(--transition);
+        }
+        .progreso-botones button:hover { border-color: #9b59b6; color: #9b59b6; }
+        .progreso-botones button.activo { background: #9b59b6; color: white; border-color: #9b59b6; }
+        .progreso-texto { min-width: 32px; text-align: center; font-weight: 600; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container" style="padding-top:80px; max-width:900px; margin:0 auto;">
+        <div class="area-header">
+            <button class="btn-volver" onclick="window.location.href='../../index.html'">← Volver a PNL</button>
+            <h1>🧠 Practitioner</h1>
+            <p style="color:var(--text-secondary);">Código: PNL-PRAC | 40 ECTS</p>
+        </div>
+
+        <!-- ===== MATERIALES ===== -->
+        <div class="card">
+            <h2>📚 Materiales de la asignatura</h2>
+            <div class="info-grid">
+                <a href="guia/guia.pdf" class="info-card" target="_blank">
+                    <span class="icon">📘</span>
+                    <div class="info">
+                        <span class="titulo">Guía de la asignatura</span>
+                        <span class="subtitulo">PDF <span class="badge-pdf">PDF</span></span>
+                    </div>
+                </a>
+                <a href="programa/programa.pdf" class="info-card" target="_blank">
+                    <span class="icon">📋</span>
+                    <div class="info">
+                        <span class="titulo">Programa de la asignatura</span>
+                        <span class="subtitulo">PDF <span class="badge-pdf">PDF</span></span>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- ===== TEMAS ===== -->
+        <div class="card">
+            <h2>📑 Temas</h2>
+            <div id="temasContainer">
+                <div class="loading-temas">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    Cargando temas...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const ASIGNATURA_KEY = 'pnl-practitioner';
+
+        fetch('config.json')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('temasContainer');
+                const temas = data.temas || [];
+
+                if (temas.length === 0) {
+                    container.innerHTML = '<p style="color:var(--text-secondary);">No hay temas cargados.</p>';
+                    return;
+                }
+
+                let html = '<div class="temas-list">';
+                temas.forEach((t, index) => {
+                    const temaId = t.id || 'tema' + (index + 1);
+                    const numTema = index + 1;
+                    const titulo = t.titulo || 'Tema ' + numTema;
+                    const key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
+                    const progreso = parseInt(localStorage.getItem(key)) || 0;
+
+                    html += `
+                        <div class="tema-item">
+                            <div class="tema-info" onclick="window.location.href='temas/${temaId}/PNL${numTema}.html'">
+                                <span class="tema-numero">${numTema}</span>
+                                <span class="tema-titulo">${titulo}</span>
+                            </div>
+                            <div class="tema-progreso">
+                                <span class="progreso-texto" id="progreso_${temaId}">${progreso}%</span>
+                                <div class="progreso-botones">
+                                    <button onclick="cambiarProgreso('${temaId}', -10)" title="-10%">−</button>
+                                    <button onclick="cambiarProgreso('${temaId}', 10)" title="+10%">+</button>
+                                    <button onclick="cambiarProgreso('${temaId}', 25)" title="+25%">+25</button>
+                                    <button onclick="cambiarProgreso('${temaId}', 50)" title="50%">50</button>
+                                    <button onclick="cambiarProgreso('${temaId}', 100)" title="100%">100</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+            })
+            .catch(error => {
+                document.getElementById('temasContainer').innerHTML = `
+                    <p style="color:var(--text-secondary);">Error al cargar los temas: ${error.message}</p>
+                `;
+                console.error('Error cargando temas:', error);
+            });
+
+        function cambiarProgreso(temaId, cambio) {
+            const key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
+            let actual = parseInt(localStorage.getItem(key)) || 0;
+            let nuevo = Math.max(0, Math.min(100, actual + cambio));
+            localStorage.setItem(key, nuevo.toString());
+            const el = document.getElementById('progreso_' + temaId);
+            if (el) el.textContent = nuevo + '%';
+            mostrarToast('📊 Progreso actualizado: ' + nuevo + '%');
+        }
+
+        function mostrarToast(mensaje) {
+            let toast = document.getElementById('toast-progreso');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'toast-progreso';
+                toast.style.cssText = `
+                    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+                    background: #9b59b6; color: white; padding: 10px 24px;
+                    border-radius: 30px; font-weight: 600; font-size: 14px;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                    opacity: 0; transition: opacity 0.3s ease; z-index: 9999;
+                `;
+                document.body.appendChild(toast);
+            }
+            toast.textContent = mensaje;
+            toast.style.opacity = '1';
+            clearTimeout(toast._timer);
+            toast._timer = setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

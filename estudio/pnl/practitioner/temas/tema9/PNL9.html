@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>Tema 9: Niveles Lógicos y Neurológicos · Resumen UNED</title>
+    <style>
+        /* ===== ESTILO ÚNICO PARA RESÚMENES UNED ===== */
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            max-width: 950px;
+            margin: 30px auto;
+            padding: 20px;
+            background: #f5f7fa;
+            color: #1a1a2e;
+            line-height: 1.8;
+            font-size: 17px;
+        }
+        h1 {
+            font-size: 30px;
+            color: #0a1628;
+            border-bottom: 4px solid #1a3d66;
+            padding-bottom: 14px;
+        }
+        h2 {
+            font-size: 23px;
+            color: #1a3d66;
+            margin-top: 32px;
+            border-left: 4px solid #1a3d66;
+            padding-left: 16px;
+        }
+        h3 {
+            font-size: 20px;
+            color: #2a4a7a;
+            margin-top: 26px;
+        }
+        h4 {
+            font-size: 18px;
+            color: #3a5a8a;
+            margin-top: 20px;
+        }
+        strong {
+            color: #0a2a4a;
+        }
+        ul {
+            padding-left: 24px;
+        }
+        li {
+            margin-bottom: 6px;
+        }
+        blockquote {
+            background: #e8edf4;
+            padding: 12px 20px;
+            border-left: 4px solid #1a3d66;
+            margin: 16px 0;
+            border-radius: 4px;
+        }
+        hr {
+            border: none;
+            border-top: 2px solid #d0d8e4;
+            margin: 28px 0;
+        }
+        .indice {
+            background: #e8edf4;
+            padding: 16px 24px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        .indice ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .indice li {
+            padding: 3px 0;
+        }
+        .indice li.h1 {
+            font-weight: 600;
+        }
+        .indice li.h2 {
+            padding-left: 20px;
+            font-weight: 400;
+        }
+        .indice a {
+            color: #1a3d66;
+            text-decoration: none;
+        }
+        .indice a:hover {
+            text-decoration: underline;
+        }
+        .idea-central {
+            background: #e0e8f4;
+            padding: 18px 24px;
+            border-radius: 12px;
+            margin: 20px 0 30px 0;
+            border-left: 5px solid #1a3d66;
+        }
+        .idea-central h2 {
+            margin-top: 0;
+            border-left: none;
+            padding-left: 0;
+        }
+        .modo-btn {
+            position: fixed;
+            top: 16px;
+            right: 16px;
+            padding: 8px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            background: #1a3d66;
+            color: #fff;
+            font-size: 14px;
+            z-index: 999;
+        }
+        .modo-btn:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode {
+            background: #0d1a2b;
+            color: #d6e2f5;
+        }
+        .dark-mode h1 {
+            color: #b0c8e8;
+            border-bottom-color: #2a5a8a;
+        }
+        .dark-mode h2 {
+            color: #8ab0e0;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode h3 {
+            color: #6a9ac0;
+        }
+        .dark-mode h4 {
+            color: #5a8aaa;
+        }
+        .dark-mode strong {
+            color: #c8ddf0;
+        }
+        .dark-mode blockquote {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode .indice {
+            background: #142a44;
+        }
+        .dark-mode .indice a {
+            color: #8ab0e0;
+        }
+        .dark-mode .idea-central {
+            background: #142a44;
+            border-left-color: #2a5a8a;
+        }
+        .dark-mode hr {
+            border-top-color: #2a4a6a;
+        }
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+                padding: 14px;
+            }
+            h1 {
+                font-size: 25px;
+            }
+            h2 {
+                font-size: 21px;
+            }
+        }
+
+        /* ===== ESTILOS PARA PREGUNTAS INTERACTIVAS ===== */
+        .pregunta {
+            background: #f0f4fa;
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin-bottom: 16px;
+            border: 1px solid #d0d8e4;
+        }
+        .dark-mode .pregunta {
+            background: #142a44;
+            border-color: #2a4a6a;
+        }
+        .pregunta .enunciado {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .pregunta .opciones {
+            list-style: none;
+            padding-left: 8px;
+        }
+        .pregunta .opciones li {
+            margin-bottom: 4px;
+            padding: 4px 8px;
+            border-radius: 6px;
+        }
+        .pregunta .opciones li.correcta {
+            background: #d4edda;
+            color: #155724;
+            border-left: 4px solid #28a745;
+        }
+        .dark-mode .pregunta .opciones li.correcta {
+            background: #1a4a3a;
+            color: #8fdfb0;
+            border-left-color: #2ecc71;
+        }
+        .pregunta .respuesta-oculta {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta .respuesta-oculta {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta .respuesta-oculta.visible {
+            display: block;
+        }
+        .pregunta .btn-respuesta {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #1a3d66;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta .btn-respuesta:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta .btn-respuesta:hover {
+            background: #3a7aaa;
+        }
+        .pregunta .trampa {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #6a4a2a;
+            font-style: italic;
+        }
+        .dark-mode .pregunta .trampa {
+            color: #c8a878;
+        }
+        .pregunta-desarrollo .esquema-oculto {
+            display: none;
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: #e8f0fe;
+            border-radius: 8px;
+            border-left: 4px solid #1a3d66;
+        }
+        .dark-mode .pregunta-desarrollo .esquema-oculto {
+            background: #1a3050;
+            border-left-color: #2a5a8a;
+        }
+        .pregunta-desarrollo .esquema-oculto.visible {
+            display: block;
+        }
+        .pregunta-desarrollo .btn-esquema {
+            margin-top: 10px;
+            padding: 6px 18px;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            background: #1a3d66;
+            color: #fff;
+            transition: 0.2s;
+        }
+        .pregunta-desarrollo .btn-esquema:hover {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta-desarrollo .btn-esquema {
+            background: #2a5a8a;
+        }
+        .dark-mode .pregunta-desarrollo .btn-esquema:hover {
+            background: #3a7aaa;
+        }
+    </style>
+</head>
+<body>
+
+<button class="modo-btn" id="modoBtn" aria-label="Cambiar modo claro/oscuro">🌓 Modo</button>
+
+<h1>Tema 9: Niveles Lógicos y Neurológicos</h1>
+
+<!-- ===== ÍNDICE ===== -->
+<div class="indice">
+    <h2 style="margin-top:0; border-left:none; padding-left:0;">📑 Índice</h2>
+    <ul>
+        <li class="h1"><a href="#idea-central">1. Idea Central (5 minutos)</a></li>
+        <li class="h1"><a href="#resumen-epigrafes">2. Resumen por Epígrafes</a></li>
+        <li class="h2"><a href="#introduccion">Introducción a los Niveles Lógicos</a></li>
+        <li class="h2"><a href="#niveles-dilts">Los Niveles Lógicos de Dilts</a></li>
+        <li class="h2"><a href="#neurologia">Relación entre Niveles Lógicos y Neurología</a></li>
+        <li class="h2"><a href="#tipos-cambios">Tipos de Cambios según Niveles</a></li>
+        <li class="h2"><a href="#aprendizaje-bateson">Niveles de Aprendizaje según Bateson</a></li>
+        <li class="h2"><a href="#respuestas-organicas">Respuestas Orgánicas a Impactos Psicológicos</a></li>
+        <li class="h2"><a href="#cambio-remediativo">Niveles de Cambio Remédiativo: Ambiente y Conducta</a></li>
+        <li class="h2"><a href="#anclaje-estres">Anclaje para el Estrés</a></li>
+        <li class="h2"><a href="#cambio-generativo">Nivel de Cambio Generativo: Capacidades y Creencias</a></li>
+        <li class="h2"><a href="#emociones-salud">Las Emociones y la Salud</a></li>
+        <li class="h2"><a href="#dominio-emocional">Características para el Dominio Emocional</a></li>
+        <li class="h2"><a href="#ejercicios-emociones">Ejercicios Experimentales sobre Emociones</a></li>
+        <li class="h2"><a href="#ejercicios-practicos-emociones">Ejercicios Prácticos sobre Emociones</a></li>
+        <li class="h2"><a href="#prevenir-emociones">Método para Prevenir el Refuerzo de Emociones No Deseadas</a></li>
+        <li class="h2"><a href="#cura-fobias">Modelo de Cura Rápida de Fobias y Traumas (Técnica del Cine)</a></li>
+        <li class="h2"><a href="#metaprogramas">Metaprogramas, Creencias y Valores</a></li>
+        <li class="h2"><a href="#metaprogramas-simples">Metaprogramas Simples</a></li>
+        <li class="h2"><a href="#metaprogramas-complejos">Metaprogramas Complejos</a></li>
+        <li class="h2"><a href="#preguntas-metaprogramas">Preguntas para Identificar Metaprogramas</a></li>
+        <li class="h2"><a href="#ejercicio-metaprogramas">Ejercicio de Identificación de Metaprogramas</a></li>
+        <li class="h2"><a href="#creencias-sistema">Creencias y Sistema de Creencias</a></li>
+        <li class="h2"><a href="#conflictos-creencias">Conflictos de Creencias</a></li>
+        <li class="h2"><a href="#patrones-dilts">Patrones para Alargar la Vida (R. Dilts)</a></li>
+        <li class="h2"><a href="#factores-curacion">Factores de Curación (Siegel y Simonton)</a></li>
+        <li class="h2"><a href="#ejercicio-creencias">Ejercicio de Identificación de Sistemas de Creencias</a></li>
+        <li class="h2"><a href="#fusion-visual">Modelo de Cambio de Creencias (Fusión Visual)</a></li>
+        <li class="h2"><a href="#cambio-creencias-paso">Ejercicio de Cambio de Creencias (Proceso paso a paso)</a></li>
+        <li class="h2"><a href="#preguntas-respuestas-creencias">Preguntas y Respuestas sobre el Cambio de Creencias</a></li>
+        <li class="h2"><a href="#corte-codependencia">Corte de Co-dependencia</a></li>
+        <li class="h2"><a href="#autosalud">Modelo de Autosalud</a></li>
+        <li class="h1"><a href="#mini-resumen">3. Mini-resumen por Epígrafe</a></li>
+        <li class="h1"><a href="#preguntas-desarrollo">4. Preguntas de Desarrollo</a></li>
+        <li class="h1"><a href="#preguntas-reserva">5. Preguntas de Reserva</a></li>
+    </ul>
+</div>
+
+<!-- ===== 1. IDEA CENTRAL ===== -->
+<div id="idea-central" class="idea-central">
+    <h2>💡 Idea Central (5 minutos)</h2>
+    <p>Los niveles lógicos, desarrollados por Robert Dilts a partir de los trabajos de Gregory Bateson, constituyen una jerarquía de clasificación que organiza la experiencia humana en seis niveles: Ambiente, Comportamientos, Capacidades, Creencias/Valores, Identidad y Espiritualidad. Cada nivel organiza la información del nivel inferior, tiene reglas de cambio distintas, y un cambio en un nivel superior afecta a los inferiores, pero no viceversa. Estos niveles tienen una correspondencia neurológica específica: desde el sistema sensorial (Ambiente) hasta el sistema nervioso en su totalidad (Espiritualidad). Los cambios pueden ser evolutivos (identidad), generativos (creencias/capacidades) o remediativos (comportamientos/ambiente). El trabajo con creencias y valores es fundamental para el cambio profundo, ya que las creencias son generalizaciones que actúan como filtros determinantes de nuestra experiencia. Los metaprogramas son filtros inconscientes que configuran nuestra personalidad y pueden identificarse mediante patrones lingüísticos. La resolución de conflictos de creencias y la transformación de creencias limitantes en potenciadoras son herramientas clave para la salud y el bienestar, aplicables en áreas como la cura de fobias, el cambio de emociones y la mejora de enfermedades.</p>
+</div>
+
+<!-- ===== 2. RESUMEN POR EPÍGRAFES ===== -->
+<h2 id="resumen-epigrafes">📘 Resumen por Epígrafes</h2>
+
+<!-- Introducción -->
+<h3 id="introduccion">Introducción a los Niveles Lógicos</h3>
+<p><strong>Concepto clave:</strong> Los niveles lógicos son una jerarquía natural de clasificación de la experiencia humana, desarrollada por Robert Dilts a partir de los trabajos de Gregory Bateson. Cada nivel organiza la información del nivel inferior y tiene reglas de cambio diferentes.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>La función de cada nivel es organizar la información del nivel inmediatamente inferior.</li>
+    <li>Las reglas que rigen los cambios son distintas para cada nivel.</li>
+    <li>Un cambio en un nivel superior afecta a los niveles inferiores.</li>
+    <li>Un cambio en un nivel inferior no necesariamente afecta a los superiores.</li>
+    <li>Un nivel inferior mal estructurado es un soporte insuficiente para el nivel superior.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta con el Tema 2 (mapa del mundo, filtros) y establece la base para entender el cambio en diferentes niveles.</p>
+<hr>
+
+<!-- Niveles Lógicos de Dilts -->
+<h3 id="niveles-dilts">Los Niveles Lógicos de Dilts</h3>
+<p><strong>Concepto clave:</strong> Seis niveles jerárquicos que organizan la experiencia humana: Espiritualidad (¿para qué?), Identidad (¿quién soy?), Creencias/Valores (¿por qué?), Capacidades (¿cómo?), Comportamientos (¿qué hago?) y Ambiente (¿dónde, cuándo, con quién?).</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Espiritualidad:</strong> "¿Para qué? ¿Para quién?" Misión, propósito, conexión con algo más grande.</li>
+    <li><strong>Identidad:</strong> "¿Quién soy yo?" Sentido de uno mismo, autoimagen, rol principal.</li>
+    <li><strong>Creencias y Valores:</strong> "¿Por qué? ¿Por qué es importante?" Convicciones profundas, motivación.</li>
+    <li><strong>Capacidades:</strong> "¿Cómo?" Habilidades, destrezas, estrategias.</li>
+    <li><strong>Comportamientos:</strong> "¿Qué hago?" Acciones y reacciones observables.</li>
+    <li><strong>Ambiente:</strong> "¿Dónde? ¿Cuándo? ¿Con quién?" Contexto externo.</li>
+</ul>
+<p><strong>Conexiones:</strong> Estos niveles se conectan con el Tema 2 (representaciones internas, estados internos), el Tema 7 (estrategias) y el Tema 6 (sistemas representacionales).</p>
+<hr>
+
+<!-- Neurología -->
+<h3 id="neurologia">Relación entre Niveles Lógicos y Neurología</h3>
+<p><strong>Concepto clave:</strong> Cada nivel lógico compromete e integra un mayor número de circuitos neurológicos, estableciendo una correspondencia con sistemas neurológicos específicos.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Espiritualidad:</strong> Sistema nervioso en su totalidad.</li>
+    <li><strong>Identidad:</strong> Sistema inmunológico y sistema endocrino.</li>
+    <li><strong>Creencias/Valores:</strong> Sistema límbico (emociones, memoria a largo plazo).</li>
+    <li><strong>Capacidades:</strong> Neocórtex (pensamiento, procesamiento, estrategias).</li>
+    <li><strong>Comportamientos:</strong> Sistema motor (movimientos, acciones).</li>
+    <li><strong>Ambiente:</strong> Sistema sensorial (recepción de estímulos externos).</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta correspondencia conecta los niveles lógicos con la fisiología (Tema 2) y con la base neurológica de los estados internos.</p>
+<hr>
+
+<!-- Tipos de Cambios -->
+<h3 id="tipos-cambios">Tipos de Cambios según Niveles</h3>
+<p><strong>Concepto clave:</strong> Los cambios se clasifican en tres tipos según el nivel en que se producen: evolutivos (identidad), generativos (creencias y capacidades) y remediativos (comportamientos y ambiente).</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>EVOLUTIVOS:</strong> Cambios a nivel de identidad (misión y propósito).</li>
+    <li><strong>GENERATIVOS:</strong> A nivel de creencias y capacidades (motivación, permiso y dirección).</li>
+    <li><strong>REMEDIATIVOS:</strong> A nivel de comportamientos y ambiente (acciones y reacciones).</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta clasificación conecta con el Tema 2 (cambio de estados) y con el Tema 7 (diseño de estrategias).</p>
+<hr>
+
+<!-- Aprendizaje Bateson -->
+<h3 id="aprendizaje-bateson">Niveles de Aprendizaje según Bateson</h3>
+<p><strong>Concepto clave:</strong> Bateson establece cuatro niveles de aprendizaje: Aprendizaje Cero (respuestas automáticas), Aprendizaje Uno (cambio en la especificidad de la respuesta), Aprendizaje Dos (cambio en la categoría de respuesta) y Aprendizaje Tres (cambio en el proceso de aprendizaje).</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>APRENDIZAJE CERO:</strong> Respuestas automáticas específicas, reflejo condicionado. Sin alternativa ni corrección de error.</li>
+    <li><strong>APRENDIZAJE UNO:</strong> Posibilidad de cambio en la especificidad de la respuesta. Elección y corrección de errores dentro de un conjunto de alternativas.</li>
+    <li><strong>APRENDIZAJE DOS:</strong> Cambio en la categoría de respuesta del nivel uno, aumento de alternativas, nueva forma de puntuar la secuencia.</li>
+    <li><strong>APRENDIZAJE TRES:</strong> Cambio en el proceso de aprendizaje del nivel dos, corrección en el sistema de conjuntos de alternativas, búsqueda de la mejor puntuación.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta con el Tema 7 (estrategias, POPS) y con el Tema 2 (cambio, aprendizaje).</p>
+<hr>
+
+<!-- Respuestas Orgánicas -->
+<h3 id="respuestas-organicas">Respuestas Orgánicas a Impactos Psicológicos</h3>
+<p><strong>Concepto clave:</strong> Fritz L. Rossi expone cómo los impactos psicológicos y emocionales producen respuestas orgánicas específicas. El estrés permanente activa el sistema límbico, altera el sistema inmunológico y endocrino, y lleva a somatización. La relajación y el bienestar producen el efecto contrario.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Estrés permanente:</strong> Sistema límbico → Sistema inmunológico → Sistema endocrino → Somatización (enfermedad).</li>
+    <li><strong>Relajación y bienestar:</strong> Equilibrio del sistema límbico → Fortalecimiento inmunológico → Equilibrio endocrino → Salud y bienestar.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta los niveles lógicos con la fisiología (Tema 2) y la salud, y con el Tema 4 (hipnosis, relajación).</p>
+<hr>
+
+<!-- Cambio Remédiativo -->
+<h3 id="cambio-remediativo">Niveles de Cambio Remédiativo: Ambiente y Conducta</h3>
+<p><strong>Concepto clave:</strong> El ambiente es donde tiene lugar nuestra salud, entendido no solo como lugar físico sino como un sistema de sistemas que se extiende desde las células hasta el universo. La salud depende de la comunicación con el entorno y con uno mismo.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>El ambiente es donde tiene lugar nuestra salud.</li>
+    <li>El ambiente no es solo el lugar donde vivimos; es un sistema de sistemas (células → tejidos → órganos → sistemas → individuo → familia → sociedad → humanidad → planeta → universo).</li>
+    <li>La salud depende de la comunicación que establecemos con el mundo y con nosotros mismos.</li>
+    <li>Los mensajes del ambiente son tamizados por filtros (distorsión, generalización, eliminación, metaprogramas, valores, creencias, recuerdos).</li>
+    <li>Estos filtros transforman los mensajes en representaciones internas, que generan estados emocionales y afectan al cuerpo.</li>
+    <li>Esquema: Ambiente → Filtros → R.I. → Fisiología + R.I. = Estados Internos → Conductas.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe integra el Tema 2 (filtros, representaciones internas, fisiología, estados internos) con los niveles lógicos.</p>
+<hr>
+
+<!-- Anclaje para el Estrés -->
+<h3 id="anclaje-estres">Anclaje para el Estrés (Ejercicio Práctico)</h3>
+<p><strong>Concepto clave:</strong> Método para anclar un estado de serenidad y calma, utilizando una experiencia agradable asociada y presionando la muñeca como ancla.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Buscar un lugar tranquilo.</li>
+    <li>Pensar en un lugar o situación agradable y serena.</li>
+    <li>Revivir la experiencia asociadamente (detalles visuales, auditivos, kinestésicos).</li>
+    <li>En el pico de la experiencia, anclarse (ej. juntar pulgar e índice).</li>
+    <li>Activar el ancla en situaciones estresantes.</li>
+    <li>Cada uso refuerza el ancla.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este ejercicio aplica el anclaje (Tema 8) al nivel del cambio remediativo (ambiente y conducta).</p>
+<hr>
+
+<!-- Cambio Generativo -->
+<h3 id="cambio-generativo">Nivel de Cambio Generativo: Capacidades y Creencias</h3>
+<p><strong>Concepto clave:</strong> El ser humano posee enormes capacidades regenerativas (renovación celular, reparación de DNA, reproducción). Las creencias sobre nuestras capacidades determinan nuestro potencial.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Solo utilizamos aproximadamente el 10% de nuestro potencial humano.</li>
+    <li>El organismo repone diariamente entre 250 y 750 mil millones de células.</li>
+    <li>El páncreas se reemplaza cada 24 horas; el 95% de las proteínas del cerebro cada 28 días.</li>
+    <li>La capacidad reparadora incluye la reparación de cadenas enteras de DNA.</li>
+    <li>La reproducción es una "superreparación" que reemplaza el organismo completo.</li>
+    <li>Citas: "Somos lo que pensamos" (Buddha), "Si crees que puedes, o si crees que no puedes, en ambos casos tienes razón" (H. Ford).</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta el nivel de capacidades y creencias con la biología y la fisiología (Tema 2).</p>
+<hr>
+
+<!-- Emociones y Salud -->
+<h3 id="emociones-salud">Las Emociones y la Salud</h3>
+<p><strong>Concepto clave:</strong> Las emociones son el resultado de las representaciones internas y la fisiología, y guían nuestras acciones. La represión de emociones puede llevar a enfermedades. El control verdadero es el dominio de las opciones emocionales.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Los estados internos generan emociones, que producen impulsos y acciones.</li>
+    <li>Las emociones guían y provocan nuestras acciones.</li>
+    <li>Reprimir emociones bloquea su salida, acumulando energía en el organismo y causando daño.</li>
+    <li>Estudios con pacientes de cáncer muestran que suprimen emociones negativas.</li>
+    <li>Supervivientes de cáncer expresan más ansiedad, hostilidad y alienación.</li>
+    <li>La incongruencia entre lo que expresamos y sentimos desmorona las capacidades orgánicas.</li>
+    <li>El control verdadero es el dominio de las opciones, no la represión rígida.</li>
+    <li>Las emociones son comunicaciones sobre cómo mejorar nuestra vida.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta con el Tema 2 (estados internos, fisiología) y con los niveles de creencias y capacidades.</p>
+<hr>
+
+<!-- Dominio Emocional -->
+<h3 id="dominio-emocional">Características para el Dominio Emocional</h3>
+<p><strong>Concepto clave:</strong> Dos características fundamentales para el dominio emocional: 1) tener una amplia gama de emociones disponibles, y 2) tomar conciencia de que las emociones son comunicaciones significativas, no ataques o premios.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Tener una amplia gama de emociones disponibles y no quedarse en emociones debilitantes.</li>
+    <li>Las emociones son comunicaciones reales y llenas de significado para mejorar nuestra vida.</li>
+    <li>Las emociones no son lo mismo que los juicios que hacemos de ellas ni los comportamientos que generan.</li>
+    <li>La mayoría de la gente tiene pocas experiencias codificadas como emociones.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta con el Tema 6 (submodalidades) y el Tema 2 (estados internos).</p>
+<hr>
+
+<!-- Ejercicios Experimentales sobre Emociones -->
+<h3 id="ejercicios-emociones">Ejercicios Experimentales sobre Emociones</h3>
+<p><strong>Concepto clave:</strong> Ejercicio para diferenciar entre emociones similares (esperanza vs. espera) a través de la identificación de sus submodalidades y su efecto en el estado interno.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>La <strong>esperanza</strong> es incierta (resultado incierto) y genera inseguridad y duda.</li>
+    <li>La <strong>espera</strong> es algo cierto (sabes que va a ocurrir) y orienta a la acción y preparación.</li>
+    <li>Emociones parecidas pueden tener estructuras de representación interna diferentes y efectos distintos.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este ejercicio aplica el Tema 6 (submodalidades) al cambio de emociones.</p>
+<hr>
+
+<!-- Ejercicios Prácticos sobre Emociones -->
+<h3 id="ejercicios-practicos-emociones">Ejercicios Prácticos sobre Emociones</h3>
+<p><strong>Concepto clave:</strong> Dos ejercicios: A) identificar diferencias entre frustración y decepción mediante submodalidades; B) cambiar la emoción en una situación problemática identificando la emoción deseada y proyectándola al futuro.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>PRÁCTICA A:</strong> Buscar diferencias entre frustración y decepción analizando modalidades y submodalidades.</li>
+    <li><strong>PRÁCTICA B (Cambio de emoción):</strong>
+        <ul>
+            <li>Identificar una experiencia descontento.</li>
+            <li>Determinar cómo hubiese gustado actuar.</li>
+            <li>Averiguar qué emociones hubiesen generado ese comportamiento.</li>
+            <li>Imaginar la situación futura con esa emoción.</li>
+            <li>Verificar ecología y efectividad.</li>
+            <li>Asegurar el acceso a la emoción.</li>
+        </ul>
+    </li>
+</ul>
+<p><strong>Conexiones:</strong> Estos ejercicios aplican el Tema 6 (submodalidades) y el Tema 8 (anclajes) al cambio emocional.</p>
+<hr>
+
+<!-- Prevenir Emociones No Deseadas -->
+<h3 id="prevenir-emociones">Método para Prevenir el Refuerzo de Emociones No Deseadas</h3>
+<p><strong>Concepto clave:</strong> Proceso de 10 pasos para prevenir el refuerzo de emociones no deseadas, utilizando disociación, identificación de recursos, anclaje y proyección al futuro.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Identificar la emoción no deseada.</li>
+    <li>Proyectar la situación como película (disociado). Identificar ambiente, duración, conducta.</li>
+    <li>Pasar la película de nuevo.</li>
+    <li>Buscar recursos necesarios; anclar apilando.</li>
+    <li>Recordar otra época donde se usaron esos recursos; anclar y apilar.</li>
+    <li>Preguntar por compromiso y posibles impedimentos.</li>
+    <li>Imaginar el futuro actuando adecuadamente; activar anclas.</li>
+    <li>Recordar la última ocasión con la emoción no deseada, comenzando un momento antes; activar anclas.</li>
+    <li>Pasar la película desde ese momento.</li>
+    <li>Hacer puente al futuro. Si falla, revisar pasos 2-3 (identificación) o 4-5 (recursos), o trabajar creencias.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este método integra anclaje (Tema 8), submodalidades (Tema 6), disociación (Tema 2) y cambio de creencias.</p>
+<hr>
+
+<!-- Cura de Fobias y Traumas -->
+<h3 id="cura-fobias">Modelo de Cura Rápida de Fobias y Traumas (Técnica del Cine)</h3>
+<p><strong>Concepto clave:</strong> Técnica para eliminar traumas y fobias mediante la disociación y la proyección en una pantalla de cine, con proyección hacia atrás (cámara rápida). Incluye un "doble disociador" para casos difíciles.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>El trauma es una experiencia desagradable repentina que deja huellas duraderas.</li>
+    <li>Las fobias y alergias a menudo provienen de pequeños traumas no recodificados.</li>
+    <li><strong>Instrucciones:</strong>
+        <ul>
+            <li>Imaginar estar en una sala de cine.</li>
+            <li>Proyectar en pantalla pequeña y en blanco y negro una escena neutra.</li>
+            <li>Salir del cuerpo y flotar hacia la cabina de proyección.</li>
+            <li>Proyectar la experiencia traumática en blanco y negro, iniciando un momento antes.</li>
+            <li>Congelar la imagen al final.</li>
+            <li>Saltar a la pantalla, dar color y sonido, y proyectar la película hacia atrás a cámara rápida.</li>
+            <li>Comprobar: observar desde la butaca la experiencia.</li>
+        </ul>
+    </li>
+    <li><strong>Doble disociador:</strong> si el sujeto no puede disociarse, pedirle que flote sobre el techo de la sala, viéndose en la cabina, en la butaca y en la pantalla.</li>
+    <li><strong>Gestalt de traumas:</strong> para múltiples traumas, realizar tres curas (más reciente, más intensa, más antigua) y recodificar todas las experiencias.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta técnica integra disociación (Tema 2), anclaje (Tema 8), submodalidades (Tema 6) y los niveles de cambio remediativo.</p>
+<hr>
+
+<!-- Metaprogramas, Creencias y Valores -->
+<h3 id="metaprogramas">Metaprogramas, Creencias y Valores</h3>
+<p><strong>Concepto clave:</strong> Los filtros inconscientes se organizan desde los más conscientes (actitudes) hasta los más inconscientes (metaprogramas). Los metaprogramas son programas internos que distorsionan la realidad y determinan a qué prestar atención.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Jerarquía de filtros: Actitudes (conscientes) → Creencias → Valores → Valores Comunes → Metaprogramas (inconscientes).</li>
+    <li><strong>Metaprogramas:</strong> Programas internos que distorsionan la realidad objetiva.</li>
+    <li><strong>Valores:</strong> Aquello que nos acerca o aleja de algo (satisfacción, seguridad, logro).</li>
+    <li><strong>Valores comunes:</strong> Relacionados con la identidad, aprendidos antes de los 8 años.</li>
+    <li><strong>Creencias:</strong> Generalizaciones sobre acciones, basadas en representaciones internas.</li>
+    <li><strong>Actitudes:</strong> Suma total de creencias y valores sobre una materia.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta con el Tema 2 (filtros, mapa del mundo) y con el Tema 5 (Metamodelo del Lenguaje).</p>
+<hr>
+
+<!-- Metaprogramas Simples -->
+<h3 id="metaprogramas-simples">Metaprogramas Simples</h3>
+<p><strong>Concepto clave:</strong> Cuatro metaprogramas simples basados en Jung-Briggs/Myers: Procesos Internos (Intuidor/Sensor), Estados Internos (Pensador/Experimentador), Conductas Externas (Introvertido/Extravertido), Respuestas Adaptativas (Juzgador/Percibidor).</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>INTUIDOR:</strong> Prefiere posibilidades, relaciones y significado; abstracto, futuro, imaginativo, cambio, autonomía.</li>
+    <li><strong>SENSOR:</strong> Prefiere hechos inmediatos, prácticos y reales; concreto, presente, realista, autoridad, metas definidas.</li>
+    <li><strong>EXPERIMENTADOR:</strong> Opiniones subjetivas, kinestésico, asociado, social, sensible, emocional.</li>
+    <li><strong>PENSADOR:</strong> Decisiones objetivas, visual/digital, disociado, racional, teórico, experimental.</li>
+    <li><strong>INTROVERTIDO:</strong> Interés por el mundo interior, concentración, autosuficiente, pocos amigos profundos.</li>
+    <li><strong>EXTRAVERTIDO:</strong> Interés por el mundo exterior, capacidad de relación, muchos amigos, acción, grupo.</li>
+    <li><strong>JUZGADOR:</strong> Planifica y organiza, conclusiones, resultados, responsabilidad, listas, horarios.</li>
+    <li><strong>PERCIBIDOR:</strong> Vive espontáneamente, adaptación, apertura, flexibilidad, opciones abiertas.</li>
+</ul>
+<p><strong>Conexiones:</strong> Estos metaprogramas conectan con el Tema 6 (SR), el Tema 7 (estrategias) y el Tema 2 (personalidad).</p>
+<hr>
+
+<!-- Metaprogramas Complejos -->
+<h3 id="metaprogramas-complejos">Metaprogramas Complejos</h3>
+<p><strong>Concepto clave:</strong> Patrones de metaprogramas complejos que determinan cómo filtramos la información: Orientación hacia metas y problemas, Estilo de pensamiento, Jerarquía de criterios, Orientación según ordenación de información, Segmentación.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Orientación hacia metas/problemas:</strong>
+        <ul>
+            <li>Dirección: hacia lo positivo (buscar premio) o evitando lo negativo.</li>
+            <li>Organización: semejanzas o diferencias.</li>
+        </ul>
+    </li>
+    <li><strong>Estilo de pensamiento:</strong> Referencia hacia la acción (primero actuar) o actividad mental (primero pensar).</li>
+    <li><strong>Jerarquía de criterios:</strong> Ordenamiento de valores (amor, dinero, salud, respeto).</li>
+    <li><strong>Orientación según ordenación de información:</strong> Persona, Información, Lugar, Tiempo, Actividad.</li>
+    <li><strong>Segmentación:</strong> Grandes segmentos (generalizaciones) o pequeños segmentos (detalles).</li>
+</ul>
+<p><strong>Conexiones:</strong> Estos metaprogramas conectan con el Tema 5 (Metamodelo), el Tema 7 (estrategias) y el Tema 2 (filtros).</p>
+<hr>
+
+<!-- Preguntas para Identificar Metaprogramas -->
+<h3 id="preguntas-metaprogramas">Preguntas para Identificar Metaprogramas</h3>
+<p><strong>Concepto clave:</strong> Preguntas específicas para identificar cada tipo de metaprograma en el interlocutor.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Dirección:</strong> "¿Qué quieres de un trabajo/casa/vida?"</li>
+    <li><strong>Organización:</strong> "¿Comparas con proyectos anteriores buscando puntos comunes o diferencias?"</li>
+    <li><strong>Estilo de Pensamiento:</strong> "Descríbeme cómo proyectas un nuevo trabajo/viaje."</li>
+    <li><strong>Jerarquía de Criterios:</strong> "¿Qué te mueve al emprender una nueva empresa?"</li>
+    <li><strong>Orientación de relaciones:</strong> "¿Qué es tu punto de partida? ¿lo que tú crees, lo que otros plantean, o el conjunto?"</li>
+    <li><strong>Marco de Referencia:</strong> "¿Cómo sabes que has hecho un buen trabajo?" (interno/externo).</li>
+    <li><strong>Orientación según el tiempo:</strong> ¿Pasado, presente o futuro?</li>
+    <li><strong>Asociado/Disociado del tiempo:</strong> ¿El tiempo te envuelve o es una línea horizontal?</li>
+    <li><strong>Segmentación:</strong> "¿Te gusta ser detallista o vas al grano?"</li>
+</ul>
+<p><strong>Conexiones:</strong> Estas preguntas conectan con el Tema 5 (Metamodelo del Lenguaje) y el Tema 3 (rapport, calibración).</p>
+<hr>
+
+<!-- Ejercicio de Identificación de Metaprogramas -->
+<h3 id="ejercicio-metaprogramas">Ejercicio de Identificación de Metaprogramas</h3>
+<p><strong>Concepto clave:</strong> Ejercicio práctico en grupos de tres para identificar metaprogramas mediante preguntas diseñadas por los participantes.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Participantes: Sujeto, Practitioner, Observador.</li>
+    <li>Cada uno confecciona una lista de preguntas (15-20 min).</li>
+    <li>Por turnos, el practitioner pregunta al sujeto.</li>
+    <li>Practitioner y observador anotan y comentan respuestas.</li>
+    <li>Rotar roles.</li>
+    <li>Duración total: 60-75 minutos.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este ejercicio aplica la identificación de metaprogramas (Tema 9) y conecta con la calibración (Tema 3).</p>
+<hr>
+
+<!-- Creencias y Sistema de Creencias -->
+<h3 id="creencias-sistema">Creencias y Sistema de Creencias</h3>
+<p><strong>Concepto clave:</strong> Las creencias son formulaciones lingüísticas sobre la experiencia, generalizaciones sobre causas, significados y límites. Son necesidades biológicas y pueden ser limitantes o potenciadoras.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Una creencia es una formulación lingüística acerca de la experiencia.</li>
+    <li>Las creencias surgen como generalizaciones sobre causas, significados y límites.</li>
+    <li>Las creencias básicas son conceptos esenciales que conforman la identidad.</li>
+    <li>Las creencias son necesidades biológicas; no podríamos vivir sin ellas.</li>
+    <li>Las creencias son dicotómicas: agrupan experiencias en bloques positivos y negativos.</li>
+    <li>Las creencias pueden ser <strong>limitantes</strong> o <strong>potenciadoras</strong>.</li>
+    <li>Si somos conscientes de que las creencias son una opción, podemos elegirlas.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta con el Tema 2 (mapa del mundo, creencias limitantes) y el Tema 5 (Metamodelo del Lenguaje).</p>
+<hr>
+
+<!-- Conflictos de Creencias -->
+<h3 id="conflictos-creencias">Conflictos de Creencias</h3>
+<p><strong>Concepto clave:</strong> Los conflictos internos son conflictos entre creencias. El organismo es monodireccional; cuando una parte no sigue la dirección del conjunto, se produce incongruencia, que se manifiesta como síntomas (dolor, malestar, ansiedad). Si persiste, lleva a somatización.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Los conflictos internos son conflictos entre creencias.</li>
+    <li>El organismo es monodireccional: mente, emociones, cuerpo y espíritu deben seguir la misma dirección.</li>
+    <li>La incongruencia produce síntomas (dolor de cabeza, malestar estomacal, depresión, ansiedad).</li>
+    <li>Si el síntoma persiste, se estabiliza y se produce somatización.</li>
+    <li>Principio: "un síntoma inducido emocionalmente, si persiste, tiende a ocasionar cambios físicos".</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta con el Tema 2 (fisiología, somatización) y con el Tema 5 (Metamodelo, violaciones lingüísticas).</p>
+<hr>
+
+<!-- Patrones para Alargar la Vida (R. Dilts) -->
+<h3 id="patrones-dilts">Patrones para Alargar la Vida y Mejorar Enfermedades (R. Dilts)</h3>
+<p><strong>Concepto clave:</strong> Robert Dilts propone patrones en seis niveles (Fisiología, Estrategias cognitivas, Metaprogramas, Creencias, Identidad, Espiritualidad) para alargar la vida y mejorar enfermedades.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Fisiología:</strong> Simetría, movimiento, cantar.</li>
+    <li><strong>Estrategias cognitivas:</strong> Lado positivo, reencuadre, humor, aprender de modelos.</li>
+    <li><strong>Metaprogramas:</strong> Moverse hacia futuros positivos, referencia interna.</li>
+    <li><strong>Creencias:</strong> Relaciones cercanas importantes, utilidad a los demás, salud como estado natural, edad como beneficio.</li>
+    <li><strong>Identidad:</strong> Estable y congruente con historia personal.</li>
+    <li><strong>Espiritualidad:</strong> Relación continuada con lo espiritual.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este epígrafe conecta todos los niveles lógicos con la salud y el bienestar, integrando los temas anteriores.</p>
+<hr>
+
+<!-- Factores de Curación (Siegel y Simonton) -->
+<h3 id="factores-curacion">Factores de Curación según Siegel y Simonton</h3>
+<p><strong>Concepto clave:</strong> Nueve factores de curación basados en estudios clínicos: creencia en Dios/ Fuerza Superior, confianza, búsqueda de serenidad, visualización de salud, estimulación inmunológica, escuchar al organismo, emociones positivas, meditación, intervención psicológica.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Creencia en Dios o Fuerza Superior.</li>
+    <li>Confianza y esperanza.</li>
+    <li>Búsqueda de serenidad y amor.</li>
+    <li>Visualización en perfecta salud.</li>
+    <li>Estimulación del sistema inmunológico.</li>
+    <li>Escuchar al organismo en la alimentación.</li>
+    <li>Vivir emociones positivas (paz, alegría, amor).</li>
+    <li>Meditación diaria (20 min mañana y tarde).</li>
+    <li>Intervención psicológica para cambiar percepción y estilo de vida.</li>
+</ul>
+<p><strong>Conexiones:</strong> Estos factores integran la PNL (visualización, emociones) con la medicina y la espiritualidad.</p>
+<hr>
+
+<!-- Ejercicio de Identificación de Sistemas de Creencias -->
+<h3 id="ejercicio-creencias">Ejercicio de Identificación de Sistemas de Creencias</h3>
+<p><strong>Concepto clave:</strong> Test de 100 afirmaciones para identificar creencias en 10 áreas: Valía, Seguridad, Comportamiento, Control, Amor, Autonomía, Justicia, Integración, Los Otros, Normas.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>100 afirmaciones con respuesta V (verdad) o N (no estoy de acuerdo).</li>
+    <li>Puntuación: 1 punto por cada V en afirmaciones pares y por cada N en impares.</li>
+    <li>10 áreas de creencias con puntuación de 1 a 10.</li>
+    <li>Áreas con puntuación inferior a 6 requieren trabajo.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este ejercicio aplica el Metamodelo (Tema 5) y la identificación de creencias limitantes/potenciadoras.</p>
+<hr>
+
+<!-- Fusión Visual (Cambio de Creencias) -->
+<h3 id="fusion-visual">Modelo de Cambio de Creencias (Fusión Visual)</h3>
+<p><strong>Concepto clave:</strong> Técnica de "Fusión Visual" para resolver conflictos de creencias polares, integrando dos creencias en una nueva mediante visualización y anclaje.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Identificar las dos creencias en conflicto (positiva y negativa).</li>
+    <li>Inducir estado de trance/relajación.</li>
+    <li>Visualizar la creencia positiva en la mano izquierda y la negativa en la derecha.</li>
+    <li>Juntar lentamente las manos, fusionando las imágenes.</li>
+    <li>Llevar la nueva imagen fusionada al pecho.</li>
+    <li>Chequear en la situación conflictiva original.</li>
+    <li>Repetir si es necesario.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este ejercicio integra visualización (Tema 6), anclaje (Tema 8) y cambio de creencias.</p>
+<hr>
+
+<!-- Ejercicio de Cambio de Creencias (Proceso paso a paso) -->
+<h3 id="cambio-creencias-paso">Ejercicio de Cambio de Creencias (Proceso paso a paso)</h3>
+<p><strong>Concepto clave:</strong> Proceso estructurado de 14 pasos para cambiar una creencia limitante por una potenciadora, utilizando espacios físicos (CREENCIA, DUDA, PUEDO CREER, CREÍA, CERTEZA) y anclajes en cada estado.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li><strong>Paso 1:</strong> Identificar creencia a eliminar (espacio CREENCIA).</li>
+    <li><strong>Paso 2:</strong> Identificar creencia a incorporar (espacio QUIERO CREER).</li>
+    <li><strong>Paso 3:</strong> Anclar estado de DUDA (recordar duda de creencia firme).</li>
+    <li><strong>Paso 4:</strong> Aplicar ancla de duda a la creencia a eliminar.</li>
+    <li><strong>Paso 5:</strong> Anclar estado de PUEDO CREER (recordar posibilidad de creer).</li>
+    <li><strong>Paso 6:</strong> Aplicar ancla de PUEDO CREER a la nueva creencia.</li>
+    <li><strong>Paso 7:</strong> Anclar estado de CREÍA (recordar creencia descartada).</li>
+    <li><strong>Paso 8:</strong> Aplicar ancla de CREÍA a la creencia a eliminar.</li>
+    <li><strong>Paso 9:</strong> Anclar estado de CREENCIA (recordar creencia firme).</li>
+    <li><strong>Paso 10:</strong> Aplicar ancla de CREENCIA a la nueva creencia.</li>
+    <li><strong>Paso 11:</strong> Anclar estado de CERTEZA (recordar certeza absoluta).</li>
+    <li><strong>Paso 12:</strong> Aplicar ancla de CERTEZA a la nueva creencia.</li>
+    <li><strong>Paso 13:</strong> Proyección al futuro.</li>
+    <li><strong>Paso 14:</strong> Destruir la creencia antigua y guardar la nueva.</li>
+</ul>
+<p><strong>Conexiones:</strong> Este ejercicio integra anclaje (Tema 8), submodalidades (Tema 6), espacios físicos (Tema 2) y niveles lógicos.</p>
+<hr>
+
+<!-- Preguntas y Respuestas sobre el Cambio de Creencias -->
+<h3 id="preguntas-respuestas-creencias">Preguntas y Respuestas sobre el Cambio de Creencias</h3>
+<p><strong>Concepto clave:</strong> Aclaraciones sobre el cambio de creencias: los anclajes deben estar en puntos distintos, no se puede eliminar una creencia sin poner una nueva (no hay espacios vacíos), y el cambio debe ser ecológico para que funcione.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Los anclajes deben estar en puntos distintos para evitar confusiones.</li>
+    <li>No se puede eliminar una creencia sin poner una nueva; la antigua volvería.</li>
+    <li>El cambio de creencias puede tener efectos profundos e impredecibles.</li>
+    <li>Todos los procesos deben ser ecológicos; el subconsciente bloquea cambios no ecológicos.</li>
+    <li>Si existe una ganancia secundaria no incluida, el cambio no se producirá.</li>
+</ul>
+<p><strong>Conexiones:</strong> Estas respuestas conectan con el Tema 8 (anclajes), el Tema 2 (ecología, ganancias secundarias) y los niveles lógicos.</p>
+<hr>
+
+<!-- Corte de Co-dependencia -->
+<h3 id="corte-codependencia">Corte de Co-dependencia</h3>
+<p><strong>Concepto clave:</strong> Técnica para liberar la dependencia emocional excesiva de otra persona, visualizando el lazo que une y fusionándose con una imagen de uno mismo autónomo.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Identificar a la persona con la que se es co-dependiente.</li>
+    <li>Materializar la conexión como un lazo (cuerda, luz, raíz).</li>
+    <li>Identificar valores y creencias que la otra persona aporta.</li>
+    <li>Crear una imagen de uno mismo autónomo y con recursos.</li>
+    <li>Fusionarse con esa imagen, reconociendo que ya se poseen esos recursos.</li>
+    <li>Cortar el lazo, devolviendo a la otra persona lo suyo y tomando lo propio.</li>
+    <li>Chequeo y puente al futuro.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta técnica integra visualización (Tema 6), anclaje (Tema 8), identidad y creencias (Tema 9).</p>
+<hr>
+
+<!-- Modelo de Autosalud -->
+<h3 id="autosalud">Modelo de Autosalud</h3>
+<p><strong>Concepto clave:</strong> Técnica para enseñar al cerebro a codificar la curación automática de una lesión o enfermedad, utilizando una experiencia de referencia de autosalud y sus submodalidades críticas.</p>
+<p><strong>Argumentos del autor:</strong></p>
+<ul>
+    <li>Identificar la enfermedad o lesión.</li>
+    <li>Establecer evidencias sensoriales de salud restablecida.</li>
+    <li>Encontrar experiencia de referencia de autosalud (algo sanado sin ayuda externa).</li>
+    <li>Asociarse con la experiencia de autosalud.</li>
+    <li>Localizar submodalidades de ambas imágenes (autosalud y enfermedad).</li>
+    <li>Identificar submodalidades críticas, especialmente la "submodalidad de cura".</li>
+    <li>Proyectar las cualidades de la autosalud sobre la enfermedad.</li>
+    <li>Repetir el proceso y anclar el nuevo estado.</li>
+    <li>Hacer puente al futuro.</li>
+</ul>
+<p><strong>Conexiones:</strong> Esta técnica integra submodalidades (Tema 6), anclaje (Tema 8), niveles de salud y creencias (Tema 9).</p>
+<hr>
+
+<!-- ===== 3. MINI-RESÚMEN ===== -->
+<h2 id="mini-resumen">📌 Mini-resumen por Epígrafe (Repaso rápido)</h2>
+<ul>
+    <li><strong>Introducción a los Niveles Lógicos:</strong> Jerarquía natural de clasificación de la experiencia. Cada nivel organiza la información del nivel inferior; las reglas de cambio son distintas para cada nivel; el cambio en nivel superior afecta a los inferiores, pero no viceversa.</li>
+    <li><strong>Los Niveles Lógicos de Dilts:</strong> 6 niveles: Espiritualidad (¿para qué?), Identidad (¿quién soy?), Creencias/Valores (¿por qué?), Capacidades (¿cómo?), Comportamientos (¿qué hago?), Ambiente (¿dónde, cuándo, con quién?).</li>
+    <li><strong>Relación entre Niveles Lógicos y Neurología:</strong> Espiritualidad (sistema nervioso total), Identidad (sistema inmunológico/endocrino), Creencias (sistema límbico), Capacidades (neocórtex), Comportamientos (sistema motor), Ambiente (sistema sensorial).</li>
+    <li><strong>Tipos de Cambios:</strong> Evolutivos (identidad), Generativos (creencias/capacidades), Remédiativos (comportamientos/ambiente).</li>
+    <li><strong>Niveles de Aprendizaje (Bateson):</strong> Cero (respuestas automáticas), Uno (cambio en respuesta), Dos (cambio en categoría), Tres (cambio en proceso de aprendizaje).</li>
+    <li><strong>Respuestas Orgánicas:</strong> Estrés permanente → sistema límbico → sistema inmunológico → endocrino → somatización. Relajación → efecto inverso → salud.</li>
+    <li><strong>Niveles de Cambio Remédiativo:</strong> Ambiente y conducta. La salud depende de la comunicación con el entorno y con uno mismo. Proceso: Ambiente → Filtros → R.I. → Fisiología → Estados Internos → Conductas.</li>
+    <li><strong>Anclaje para el Estrés:</strong> Asociar experiencia serena, anclar en muñeca, activar en situaciones estresantes.</li>
+    <li><strong>Nivel de Cambio Generativo:</strong> Capacidades y creencias. El cuerpo tiene enorme capacidad regenerativa. Las creencias determinan el potencial.</li>
+    <li><strong>Las Emociones y la Salud:</strong> Las emociones guían acciones. Reprimir emociones causa enfermedad. El control verdadero es el dominio de las opciones emocionales.</li>
+    <li><strong>Características para el Dominio Emocional:</strong> 1) Amplia gama de emociones; 2) Las emociones son comunicaciones significativas.</li>
+    <li><strong>Ejercicios Experimentales sobre Emociones:</strong> Esperanza (incierta) vs. Espera (cierta). Identificar submodalidades.</li>
+    <li><strong>Ejercicios Prácticos sobre Emociones:</strong> A) Diferencias entre frustración y decepción. B) Cambiar emoción en situación problemática.</li>
+    <li><strong>Método para Prevenir Emociones No Deseadas:</strong> 10 pasos: identificar, disociar en película, recursos, anclaje, proyección al futuro, activar anclas.</li>
+    <li><strong>Cura Rápida de Fobias y Traumas (Técnica del Cine):</strong> Sala de cine, pantalla en blanco y negro, cabina de proyección, proyección hacia atrás a cámara rápida. Doble disociador para casos difíciles. Gestalt de traumas.</li>
+    <li><strong>Metaprogramas, Creencias y Valores:</strong> Jerarquía: Actitudes → Creencias → Valores → Valores Comunes → Metaprogramas. Metaprogramas filtran la realidad inconscientemente.</li>
+    <li><strong>Metaprogramas Simples (Jung-Briggs/Myers):</strong> Intuidor/Sensor (procesos), Experimentador/Pensador (estados), Introvertido/Extravertido (conductas), Juzgador/Percibidor (respuestas adaptativas).</li>
+    <li><strong>Metaprogramas Complejos:</strong> Orientación hacia metas/problemas (dirección, organización), estilo de pensamiento, jerarquía de criterios, orientación según ordenación de información, segmentación.</li>
+    <li><strong>Preguntas para Identificar Metaprogramas:</strong> Preguntas específicas para cada metaprograma.</li>
+    <li><strong>Ejercicio de Identificación de Metaprogramas:</strong> Práctica en grupos de tres con preguntas personales.</li>
+    <li><strong>Creencias y Sistema de Creencias:</strong> Las creencias son formulaciones lingüísticas sobre la experiencia. Pueden ser limitantes o potenciadoras. Son necesidades biológicas.</li>
+    <li><strong>Conflictos de Creencias:</strong> Conflictos internos = conflictos entre creencias. El organismo es monodireccional. La incongruencia produce síntomas y somatización.</li>
+    <li><strong>Patrones para Alargar la Vida (R. Dilts):</strong> 6 niveles: fisiología, estrategias cognitivas, metaprogramas, creencias, identidad, espiritualidad.</li>
+    <li><strong>Factores de Curación (Siegel y Simonton):</strong> 9 factores: creencia en Fuerza Superior, confianza, serenidad, visualización, estimulación inmunológica, escuchar al cuerpo, emociones positivas, meditación, intervención psicológica.</li>
+    <li><strong>Ejercicio de Identificación de Creencias:</strong> Test de 100 afirmaciones en 10 áreas (Valía, Seguridad, Comportamiento, Control, Amor, Autonomía, Justicia, Integración, Los Otros, Normas).</li>
+    <li><strong>Fusión Visual (Cambio de Creencias):</strong> Visualizar creencias en manos, juntar y fusionar, llevar al pecho.</li>
+    <li><strong>Cambio de Creencias (Proceso paso a paso):</strong> 14 pasos con espacios (CREENCIA, DUDA, PUEDO CREER, CREÍA, CERTEZA) y anclajes en cada estado.</li>
+    <li><strong>Preguntas y Respuestas sobre Cambio de Creencias:</strong> Anclajes en puntos distintos; no se puede eliminar sin poner nueva; debe ser ecológico.</li>
+    <li><strong>Corte de Co-dependencia:</strong> Visualizar lazo de conexión, fusionarse con imagen autónoma, cortar el lazo.</li>
+    <li><strong>Modelo de Autosalud:</strong> Identificar enfermedad, experiencia de referencia de autosalud, submodalidades críticas, proyectar curación, anclar.</li>
+</ul>
+
+<!-- ===== 4. PREGUNTAS DE DESARROLLO ===== -->
+<h2 id="preguntas-desarrollo">✍️ Preguntas de Desarrollo</h2>
+
+<!-- Pregunta 1 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 1:</strong> Explique los seis niveles lógicos de Dilts, su función jerárquica y su correspondencia con los sistemas neurológicos. Describa cómo un cambio en un nivel superior afecta a los niveles inferiores.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir los niveles lógicos como jerarquía natural de clasificación de la experiencia.</li>
+            <li>Enumerar los seis niveles (de abajo hacia arriba):
+                <ul>
+                    <li><strong>Ambiente:</strong> ¿Dónde, cuándo, con quién? (sistema sensorial)</li>
+                    <li><strong>Comportamientos:</strong> ¿Qué hago? (sistema motor)</li>
+                    <li><strong>Capacidades:</strong> ¿Cómo? (neocórtex)</li>
+                    <li><strong>Creencias/Valores:</strong> ¿Por qué? (sistema límbico)</li>
+                    <li><strong>Identidad:</strong> ¿Quién soy? (sistema inmunológico/endocrino)</li>
+                    <li><strong>Espiritualidad:</strong> ¿Para qué? (sistema nervioso total)</li>
+                </ul>
+            </li>
+            <li>Explicar la función jerárquica: cada nivel organiza la información del nivel inferior.</li>
+            <li>Explicar que las reglas de cambio son distintas para cada nivel.</li>
+            <li>Explicar que un cambio en nivel superior afecta a los inferiores, pero no viceversa.</li>
+            <li>Concluir que los niveles superiores tienen mayor poder de cambio.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Niveles lógicos, Dilts, jerarquía, sistemas neurológicos, cambio evolutivo/generativo/remediativo.</p>
+    </div>
+</div>
+
+<!-- Pregunta 2 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 2:</strong> Explique los tipos de cambios según los niveles lógicos (remediativos, generativos, evolutivos) y los niveles de aprendizaje según Bateson. Relacione ambos modelos.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li><strong>Cambios remediativos:</strong> Nivel de comportamientos y ambiente (acciones y reacciones).</li>
+            <li><strong>Cambios generativos:</strong> Nivel de creencias y capacidades (motivación, permiso, dirección).</li>
+            <li><strong>Cambios evolutivos:</strong> Nivel de identidad (misión y propósito).</li>
+            <li><strong>Niveles de aprendizaje (Bateson):</strong>
+                <ul>
+                    <li><strong>Aprendizaje Cero:</strong> respuestas automáticas, sin corrección.</li>
+                    <li><strong>Aprendizaje Uno:</strong> cambio en respuesta, elección dentro de alternativas.</li>
+                    <li><strong>Aprendizaje Dos:</strong> cambio en categoría de respuesta, nuevas alternativas.</li>
+                    <li><strong>Aprendizaje Tres:</strong> cambio en el proceso de aprendizaje, optimización.</li>
+                </ul>
+            </li>
+            <li>Relacionar: el Aprendizaje Uno corresponde a cambios remediativos; el Aprendizaje Dos a cambios generativos; el Aprendizaje Tres a cambios evolutivos.</li>
+            <li>Concluir que el cambio más profundo requiere trabajar en niveles superiores.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Cambios remediativos/generativos/evolutivos, niveles de aprendizaje Bateson, relación entre niveles.</p>
+    </div>
+</div>
+
+<!-- Pregunta 3 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 3:</strong> Describa la técnica de cura rápida de fobias y traumas (Técnica del Cine). Explique los pasos, el papel de la disociación, el "doble disociador" y el tratamiento de múltiples traumas (Gestalt de traumas).</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir el trauma como experiencia desagradable repentina que deja huellas.</li>
+            <li><strong>Pasos de la Técnica del Cine:</strong>
+                <ul>
+                    <li>Imaginar sala de cine y cabina de proyección.</li>
+                    <li>Proyectar escena neutra en pantalla pequeña y en blanco y negro.</li>
+                    <li>Flotar hacia la cabina de proyección.</li>
+                    <li>Proyectar experiencia traumática iniciando un momento antes.</li>
+                    <li>Congelar la imagen al final.</li>
+                    <li>Saltar a la pantalla, dar color y sonido, proyectar hacia atrás a cámara rápida.</li>
+                    <li>Comprobar desde la butaca.</li>
+                </ul>
+            </li>
+            <li>Importancia de la <strong>disociación:</strong> mantener al sujeto fuera de la pantalla, en la cabina.</li>
+            <li><strong>Doble disociador:</strong> para sujetos que no pueden disociarse: flotar sobre el techo, viéndose en la cabina, en la butaca y en la pantalla.</li>
+            <li><strong>Gestalt de traumas:</strong> para múltiples traumas:
+                <ul>
+                    <li>Realizar tres curas (más reciente, más intensa, más antigua).</li>
+                    <li>Recodificar todas las experiencias.</li>
+                </ul>
+            </li>
+            <li>Concluir que la técnica neutraliza la carga emocional del trauma.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Técnica del Cine, trauma, fobia, disociación, doble disociador, Gestalt de traumas.</p>
+    </div>
+</div>
+
+<!-- Pregunta 4 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 4:</strong> Explique el concepto de metaprogramas, su jerarquía (actitudes, creencias, valores, valores comunes, metaprogramas) y los cuatro metaprogramas simples de Jung-Briggs/Myers. Proporcione preguntas para identificar cada uno.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Definir metaprogramas: programas internos inconscientes que filtran la realidad y determinan a qué prestar atención.</li>
+            <li>Jerarquía de filtros (de más a menos consciente):
+                <ul>
+                    <li>Actitudes</li>
+                    <li>Creencias</li>
+                    <li>Valores</li>
+                    <li>Valores Comunes</li>
+                    <li>Metaprogramas</li>
+                </ul>
+            </li>
+            <li><strong>Metaprogramas simples (Jung-Briggs/Myers):</strong>
+                <ul>
+                    <li><strong>Intuidor/Sensor (procesos internos):</strong> Intuidor (futuro, abstracto, posibilidades); Sensor (presente, concreto, hechos).</li>
+                    <li><strong>Pensador/Experimentador (estados internos):</strong> Pensador (objetivo, lógico, disociado); Experimentador (subjetivo, kinestésico, asociado).</li>
+                    <li><strong>Introvertido/Extravertido (conductas externas):</strong> Introvertido (interior, concentración, pocos amigos); Extravertido (exterior, acción, muchos amigos).</li>
+                    <li><strong>Juzgador/Percibidor (respuestas adaptativas):</strong> Juzgador (planifica, organiza, concluye); Percibidor (espontáneo, flexible, opciones abiertas).</li>
+                </ul>
+            </li>
+            <li>Preguntas para identificar:
+                <ul>
+                    <li>"¿Prefieres los hechos o las posibilidades?" (Sensor/Intuidor)</li>
+                    <li>"¿Cómo tomas decisiones, por lógica o por cómo afecta a los demás?" (Pensador/Experimentador)</li>
+                    <li>"¿Cargas energía estando solo o con gente?" (Introvertido/Extravertido)</li>
+                    <li>"¿Prefieres planificar o fluir?" (Juzgador/Percibidor)</li>
+                </ul>
+            </li>
+            <li>Concluir que los metaprogramas son filtros poderosos que configuran la personalidad.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Metaprogramas, actitudes, creencias, valores, valores comunes, Jung-Briggs/Myers, Intuidor/Sensor, Pensador/Experimentador, Introvertido/Extravertido, Juzgador/Percibidor.</p>
+    </div>
+</div>
+
+<!-- Pregunta 5 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 5:</strong> Describa el proceso paso a paso para el cambio de creencias (espacios y anclajes). Explique por qué no se puede eliminar una creencia sin poner una nueva y la importancia de la ecología en el cambio.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Espacios: CREENCIA, DUDA, QUIERO CREER, PUEDO CREER, CREÍA, CERTEZA.</li>
+            <li><strong>Pasos 1-2:</strong> Identificar creencia a eliminar y creencia a incorporar.</li>
+            <li><strong>Pasos 3-4:</strong> Anclar estado de DUDA y aplicarlo a la creencia a eliminar.</li>
+            <li><strong>Pasos 5-6:</strong> Anclar estado de PUEDO CREER y aplicarlo a la nueva creencia.</li>
+            <li><strong>Pasos 7-8:</strong> Anclar estado de CREÍA y aplicarlo a la creencia a eliminar.</li>
+            <li><strong>Pasos 9-10:</strong> Anclar estado de CREENCIA y aplicarlo a la nueva creencia.</li>
+            <li><strong>Pasos 11-12:</strong> Anclar estado de CERTEZA y aplicarlo a la nueva creencia.</li>
+            <li><strong>Paso 13:</strong> Proyección al futuro.</li>
+            <li><strong>Paso 14:</strong> Destruir creencia antigua y guardar la nueva.</li>
+            <li>Explicar que no se puede eliminar sin poner nueva porque el sistema de creencias no admite espacios vacíos.</li>
+            <li>Importancia de la ecología: el subconsciente bloquea cambios no ecológicos; si existe ganancia secundaria no incluida, el cambio no se produce.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Cambio de creencias, espacios (DUDA, PUEDO CREER, CREÍA, CERTEZA), anclajes, ecología, ganancia secundaria.</p>
+    </div>
+</div>
+
+<!-- Pregunta 6 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 6:</strong> Explique la relación entre las emociones y la salud. ¿Cómo afecta la represión de emociones al organismo? Describa las características para el dominio emocional y el método para prevenir el refuerzo de emociones no deseadas.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Las emociones guían y provocan acciones; son el resultado de R.I. + Fisiología.</li>
+            <li>Reprimir emociones bloquea su salida; la energía se acumula en el organismo.</li>
+            <li>Estudios con pacientes de cáncer muestran que suprimen emociones negativas (hostilidad, depresión, culpa).</li>
+            <li>La incongruencia entre expresión y experiencia interna desmorona las capacidades orgánicas.</li>
+            <li><strong>Características para el dominio emocional:</strong>
+                <ul>
+                    <li>Amplia gama de emociones disponibles.</li>
+                    <li>Tomar conciencia de que las emociones son comunicaciones significativas.</li>
+                    <li>Las emociones no son los juicios ni los comportamientos.</li>
+                </ul>
+            </li>
+            <li><strong>Método para prevenir emociones no deseadas (10 pasos):</strong>
+                <ul>
+                    <li>Identificar la emoción.</li>
+                    <li>Proyectar como película (disociado).</li>
+                    <li>Identificar causas, circunstancias, conductas de otros.</li>
+                    <li>Buscar recursos; anclar apilando.</li>
+                    <li>Recordar otra época con éxito; anclar.</li>
+                    <li>Comprometerse y preguntar por impedimentos.</li>
+                    <li>Imaginar futuro actuando adecuadamente; activar anclas.</li>
+                    <li>Recordar la ocasión anterior un momento antes; activar anclas.</li>
+                    <li>Pasar la película desde ese momento.</li>
+                    <li>Hacer puente al futuro; si falla, revisar identificación o recursos.</li>
+                </ul>
+            </li>
+            <li>Concluir que el control emocional es el dominio de las opciones, no la represión.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Emociones, salud, represión, somatización, dominio emocional, método para prevenir emociones no deseadas.</p>
+    </div>
+</div>
+
+<!-- Pregunta 7 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta 7:</strong> Describa el modelo de Autosalud. Explique los pasos, el concepto de "submodalidad de cura" y cómo se proyecta sobre la enfermedad. Relacione este modelo con los niveles lógicos.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>El cerebro tiene codificados los procesos de sanación; la enfermedad ocurre cuando esos códigos no pueden activarse.</li>
+            <li><strong>Pasos del modelo de Autosalud:</strong>
+                <ul>
+                    <li>Identificar enfermedad o lesión.</li>
+                    <li>Establecer evidencias sensoriales de salud restablecida.</li>
+                    <li>Encontrar experiencia de referencia de autosalud (sanado sin ayuda externa).</li>
+                    <li>Asociarse con la experiencia de autosalud.</li>
+                    <li>Localizar submodalidades de ambas imágenes.</li>
+                    <li>Identificar submodalidades críticas y especialmente la <strong>"submodalidad de cura"</strong> (algo especial que hace que la sanación ocurra).</li>
+                    <li>Proyectar esas cualidades sobre la imagen de la enfermedad.</li>
+                    <li>Repetir hasta transformación completa.</li>
+                    <li>Anclar el nuevo estado.</li>
+                    <li>Hacer puente al futuro.</li>
+                </ul>
+            </li>
+            <li>Relación con niveles lógicos: trabaja en nivel de <strong>capacidades</strong> (cómo sanar) y <strong>creencias</strong> (creer en la autosalud).</li>
+            <li>Concluir que el modelo enseña al cerebro a codificar la curación automática.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Autosalud, experiencia de referencia, submodalidad de cura, submodalidades críticas, anclaje, niveles lógicos.</p>
+    </div>
+</div>
+
+<!-- ===== 5. PREGUNTAS DE RESERVA ===== -->
+<h2 id="preguntas-reserva">⭐ Preguntas de Reserva</h2>
+
+<!-- Reserva 1 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 1:</strong> Realice un análisis integrador que conecte los niveles lógicos (Tema 9) con el Sistema Representacional y las submodalidades (Tema 6), las estrategias (Tema 7) y los anclajes (Tema 8). Explique cómo se utilizan las submodalidades y los anclajes para producir cambios en diferentes niveles lógicos.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li>Recordar los niveles lógicos: Ambiente, Comportamientos, Capacidades, Creencias/Valores, Identidad, Espiritualidad.</li>
+            <li>Recordar el SR (Tema 6): V, A, K, O/G y sus submodalidades (color, tamaño, tono, etc.).</li>
+            <li>Recordar las estrategias (Tema 7): secuencias de modalidades del SR.</li>
+            <li>Recordar los anclajes (Tema 8): representaciones que desencadenan otras.</li>
+            <li>Explicar que las submodalidades pueden modificarse para cambiar un estado en un nivel específico (ej. cambiar el color de una imagen de una experiencia para cambiar el comportamiento).</li>
+            <li>Explicar que los anclajes se utilizan para fijar cambios en los niveles (ej. anclar un estado de confianza para cambiar la capacidad de comunicarse).</li>
+            <li>Concluir que las herramientas de PNL (SR, submodalidades, anclajes) son los "mecanismos" para producir cambios en los niveles lógicos.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Niveles lógicos, SR, submodalidades, estrategias, anclajes, cambio, herramientas de PNL.</p>
+    </div>
+</div>
+
+<!-- Reserva 2 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 2:</strong> Compare los patrones de Robert Dilts para alargar la vida y mejorar enfermedades con los factores de curación de Siegel y Simonton. ¿Qué elementos comunes tienen y cómo se relacionan con los niveles lógicos?</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li><strong>Patrones de Dilts (6 niveles):</strong>
+                <ul>
+                    <li>Fisiología: simetría, movimiento, cantar.</li>
+                    <li>Estrategias cognitivas: lado positivo, reencuadre, humor, aprender de modelos.</li>
+                    <li>Metaprogramas: futuro positivo, referencia interna.</li>
+                    <li>Creencias: relaciones cercanas, utilidad a los demás, salud como estado natural.</li>
+                    <li>Identidad: estable y congruente.</li>
+                    <li>Espiritualidad: relación con lo espiritual.</li>
+                </ul>
+            </li>
+            <li><strong>Factores de Siegel y Simonton (9 factores):</strong>
+                <ul>
+                    <li>Creencia en Fuerza Superior.</li>
+                    <li>Confianza y esperanza.</li>
+                    <li>Búsqueda de serenidad y amor.</li>
+                    <li>Visualización de salud.</li>
+                    <li>Estimulación inmunológica.</li>
+                    <li>Escuchar al organismo (alimentación).</li>
+                    <li>Emociones positivas (paz, alegría, amor).</li>
+                    <li>Meditación diaria.</li>
+                    <li>Intervención psicológica.</li>
+                </ul>
+            </li>
+            <li><strong>Elementos comunes:</strong>
+                <ul>
+                    <li>Ambos enfatizan creencias positivas (en curación, en lo espiritual).</li>
+                    <li>Ambos destacan emociones positivas y visualización.</li>
+                    <li>Ambos recomiendan meditación/estrategias cognitivas.</li>
+                    <li>Ambos se basan en la conexión mente-cuerpo.</li>
+                </ul>
+            </li>
+            <li>Relación con niveles lógicos:
+                <ul>
+                    <li>Dilts cubre todos los niveles (desde fisiología hasta espiritualidad).</li>
+                    <li>Siegel/Simonton cubren principalmente creencias, capacidades y espiritualidad.</li>
+                </ul>
+            </li>
+            <li>Concluir que ambos modelos son complementarios y basados en la evidencia.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Patrones de Dilts, factores de Siegel y Simonton, alargar la vida, curación, niveles lógicos, mente-cuerpo.</p>
+    </div>
+</div>
+
+<!-- Reserva 3 -->
+<div class="pregunta-desarrollo">
+    <p class="enunciado"><strong>Pregunta de Reserva 3:</strong> Analice el ejercicio de cambio de creencias (proceso paso a paso) en profundidad, identificando en cada paso qué fundamentos de PNL se aplican: anclaje, submodalidades, asociación/disociación, espacios, proyección al futuro. Explique por qué se utilizan diferentes espacios físicos y anclajes en cada estado.</p>
+    <button class="btn-esquema" onclick="toggleEsquema(this)">📖 Mostrar esquema</button>
+    <div class="esquema-oculto">
+        <p><strong>Esquema de respuesta:</strong></p>
+        <ol>
+            <li><strong>Espacios:</strong> CREENCIA, DUDA, QUIERO CREER, PUEDO CREER, CREÍA, CERTEZA. Representan diferentes estados de creencia.</li>
+            <li><strong>Anclaje:</strong> se ancla cada estado (DUDA, PUEDO CREER, CREÍA, CREENCIA, CERTEZA) en puntos distintos del cuerpo.</li>
+            <li><strong>Submodalidades:</strong> se identifican y transfieren las submodalidades críticas de cada estado a la creencia correspondiente.</li>
+            <li><strong>Asociación/disociación:</strong> el sujeto se asocia a cada estado al revivirlo.</li>
+            <li><strong>Proyección al futuro:</strong> al final, para verificar y fijar el cambio.</li>
+            <li>Razón de los diferentes espacios: representan diferentes "posiciones" de creencia, ayudando al sujeto a distinguir y acceder a cada estado.</li>
+            <li>Razón de los diferentes anclajes: para evitar confusiones y poder activar selectivamente cada estado.</li>
+            <li>Concluir que el ejercicio es una aplicación integrada de múltiples herramientas de PNL para un cambio profundo y ecológico.</li>
+        </ol>
+        <p><strong>Conceptos clave:</strong> Cambio de creencias, anclaje, submodalidades, asociación/disociación, espacios, proyección al futuro, ecología.</p>
+    </div>
+</div>
+
+<script>
+    // Alternar modo claro/oscuro
+    document.getElementById('modoBtn').addEventListener('click', function() {
+        document.body.classList.toggle('dark-mode');
+        this.textContent = document.body.classList.contains('dark-mode') ? '☀️ Modo' : '🌓 Modo';
+    });
+
+    // Toggle para esquemas de desarrollo
+    function toggleEsquema(btn) {
+        const container = btn.parentElement;
+        const esquema = container.querySelector('.esquema-oculto');
+        if (esquema) {
+            esquema.classList.toggle('visible');
+            btn.textContent = esquema.classList.contains('visible') ? '📖 Ocultar esquema' : '📖 Mostrar esquema';
+        }
+    }
+</script>
+
+</body>
+</html>
