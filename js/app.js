@@ -409,7 +409,7 @@ async function mostrarAsignaturas(main, areaId, cursoId, semestreId) {
             estiloAdicional = 'filter: grayscale(0.6);';
         }
         
-        const url = '/' + area.path + a.path + 'asignatura.html';
+        const url = area.path + a.path + 'asignatura.html';
         
         html += `
             <div class="asignatura-card" style="border-left: 4px solid ${borderColor}; opacity: ${opacidad}; ${estiloAdicional}">
@@ -454,7 +454,7 @@ function mostrarTemas(main, areaId, cursoId, semestreId, asignaturaId) {
         main.innerHTML = '<h2>Asignatura no encontrada</h2>';
         return;
     }
-    const path = '/' + area.path + asignatura.path + 'config.json';
+    const path = area.path + asignatura.path + 'config.json';
     fetch(path)
         .then(res => res.json())
         .then(data => {
@@ -520,7 +520,7 @@ function mostrarTema(main, areaId, cursoId, semestreId, asignaturaId, temaId) {
         main.innerHTML = '<h2>Asignatura no encontrada</h2>';
         return;
     }
-    const path = '/' + area.path + asignatura.path + 'temas/' + temaId + '/tema.html';
+    const path = area.path + asignatura.path + 'temas/' + temaId + '/tema.html';
     fetch(path)
         .then(res => {
             if (!res.ok) throw new Error('Tema no encontrado');
