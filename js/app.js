@@ -145,43 +145,152 @@ function navegar(nivel, areaId, cursoId, semestreId, asignaturaId, temaId) {
 }
 
 // ============================================================
-// DASHBOARD
+// DASHBOARD - NUEVA VERSIÓN CORCHO
 // ============================================================
 
 async function mostrarDashboard(main) {
-    let total = 0, aprobadas = 0, matriculadas = 0;
+    const areasConAsignaturas = [];
+    let totalAsignaturas = 0;
+    let aprobadas = 0;
+    let matriculadas = 0;
+    let ultimaAsignatura = null;
+    let ultimoProgreso = 0;
+    
     for (let area of areas) {
         const asig = await getAsignaturas(area.id);
-        total += asig.length;
-        aprobadas += asig.filter(a => estaAprobada(area.id, a.id)).length;
-        matriculadas += asig.filter(a => esMatriculada(a)).length;
+        const areaData = {
+            id: area.id,
+            nombre: area.nombre,
+            icon: area.icon || '📚',
+            asignaturas: asig,
+            aprobadas: asig.filter(a => estaAprobada(area.id, a.id)).length,
+            matriculadas: asig.filter(a => esMatriculada(a)).length,
+            total: asig.length
+        };
+        areasConAsignaturas.push(areaData);
+        totalAsignaturas += asig.length;
+        aprobadas += areaData.aprobadas;
+        matriculadas += areaData.matriculadas;
+        
+        const ultimaVisita = localStorage.getItem('ultima_visita');
+        if (ultimaVisita) {
+            try {
+                const data = JSON.parse(ultimaVisita);
+                ultimaAsignatura = data;
+                if (data.areaId && data.asignaturaId && data.temaId) {
+                    const key = 'progreso_' + data.asignaturaId + '_' + data.temaId;
+                    ultimoProgreso = parseInt(localStorage.getItem(key)) || 0;
+                }
+            } catch(e) {}
+        }
     }
+    
+    const notas = JSON.parse(localStorage.getItem('tablero_notas') || '[]');
+    const pctTotal = totalAsignaturas > 0 ? Math.round((aprobadas/totalAsignaturas)*100) : 0;
+    
+    const colors = {
+        'grado-derecho': '#3b82f6',
+        'pnl': '#9b59b6',
+        'herramientas': '#8b5cf6',
+        'networking': '#00b4d8'
+    };
+    
     let html = `
-        <h1 class="page-title">📊 Dashboard</h1>
-        <div class="stats-grid">
-            <div class="stat-card"><div class="stat-icon purple"><i class="fas fa-layer-group"></i></div><div class="stat-info"><h3>Áreas</h3><span class="number">${areas.length}</span></div></div>
-            <div class="stat-card"><div class="stat-icon green"><i class="fas fa-book"></i></div><div class="stat-info"><h3>Asignaturas</h3><span class="number">${total}</span></div></div>
-            <div class="stat-card"><div class="stat-icon blue"><i class="fas fa-check-circle"></i></div><div class="stat-info"><h3>Aprobadas</h3><span class="number">${aprobadas}</span></div></div>
-            <div class="stat-card"><div class="stat-icon orange"><i class="fas fa-graduation-cap"></i></div><div class="stat-info"><h3>Matriculadas</h3><span class="number">${matriculadas}</span></div></div>
+        <div class="dashboard-corcho">
+            
+            <div class="menu-lateral">
+                <div class="menu-titulo">📋 Menú</div>
+                ${ultimaAsignatura ? `
+                    <button class="btn-menu continuar" onclick="window.location.href='${ultimaAsignatura.url || '#'}'">
+                        <span class="icono">▶️</span> Continuar
+                        <span class="badge">${ultimoProgreso}%</span>
+                    </button>
+                ` : `
+                    <button class="btn-menu continuar" onclick="cargarVista('estudio')">
+                        <span class="icono">📖</span> Empezar
+                    </button>
+                `}
+                ${areas.map(area => `
+                    <button class="btn-menu" onclick="window.location.href='/estudio/?area=${area.id}'" style="border-left: 3px solid ${colors[area.id] || '#6c757d'};">
+                        <span class="icono">${area.icon || '📚'}</span> ${area.nombre}
+                    </button>
+                `).join('')}
+                <button class="btn-menu" onclick="cargarVista('configuracion')" style="margin-top:auto; border-top:1px solid var(--border); padding-top:10px;">
+                    <span class="icono">⚙️</span> Configuración
+                </button>
+            </div>
+            
+            <div class="contenido-principal">
+                
+                <div class="fila-superior">
+                    <div class="calendario-wrap">
+                        <div class="cal-header">
+                            <h4><i class="fas fa-calendar-alt"></i> <span class="cal-mes" id="calMesLabel"></span></h4>
+                            <span style="font-size:11px; color:var(--text-secondary);" id="calHorasLabel">⏱️ 0h hoy</span>
+                        </div>
+                        <div class="cal-grid" id="calGridDashboard"></div>
+                    </div>
+                    
+                    <div class="continuar-mini">
+                        ${ultimaAsignatura ? `
+                            <span class="c-icono">${ultimaAsignatura.icon || '📚'}</span>
+                            <div class="c-info">
+                                <div class="c-nombre">${ultimaAsignatura.asignaturaNombre || 'Asignatura'}</div>
+                                <div class="c-tema">${ultimaAsignatura.temaNombre || 'Tema'}</div>
+                                <div class="c-progreso">Progreso: ${ultimoProgreso}%</div>
+                            </div>
+                            <button class="c-btn" onclick="window.location.href='${ultimaAsignatura.url || '#'}'">▶ Continuar</button>
+                        ` : `
+                            <span class="c-icono">📖</span>
+                            <div class="c-info">
+                                <div class="c-nombre">Sin actividad</div>
+                                <div class="c-tema">Empieza a estudiar</div>
+                            </div>
+                            <button class="c-btn" onclick="cargarVista('estudio')">Ir</button>
+                        `}
+                    </div>
+                </div>
+                
+                <div class="corcho-wrap">
+                    <div class="corcho-header">
+                        <h4><i class="fas fa-thumbtack"></i> Notas</h4>
+                        <span style="font-size:10px; color:rgba(255,255,255,0.6);">📌 ${notas.length} notas</span>
+                    </div>
+                    <div class="notas-corcho" id="notasCorcho">
+                        ${notas.length === 0 ? `<div class="nota-vacia">📌 Pincha una nota aquí</div>` : ''}
+                    </div>
+                    <div class="nota-input-row">
+                        <input type="text" id="notaInputCorcho" placeholder="Escribe una nota..." maxlength="60" />
+                        <button class="btn-add" onclick="agregarNotaCorcho()">➕ Añadir</button>
+                    </div>
+                    <div class="nota-colores" id="notaColoresCorcho"></div>
+                </div>
+                
+                <div class="progreso-abajo">
+                    <span class="p-label">📊 Progreso</span>
+                    <div class="p-bar">
+                        <div class="p-fill" style="width:${pctTotal}%;"></div>
+                    </div>
+                    <div class="p-stats">
+                        <span>✅ <strong>${aprobadas}</strong> aprob.</span>
+                        <span>📌 <strong>${matriculadas}</strong> mat.</span>
+                        <span>📚 <strong>${totalAsignaturas}</strong> total</span>
+                    </div>
+                    <div class="p-areas">
+                        ${areasConAsignaturas.map(a => `
+                            <span>${a.icon} <span class="ok">${a.aprobadas}</span>/${a.total}</span>
+                        `).join('')}
+                    </div>
+                </div>
+                
+            </div>
         </div>
     `;
-    for (let area of areas) {
-        const asig = await getAsignaturas(area.id);
-        const ap = asig.filter(a => estaAprobada(area.id, a.id)).length;
-        const mat = asig.filter(a => esMatriculada(a)).length;
-        const totalAsig = asig.length;
-        const pct = totalAsig > 0 ? Math.round((ap/totalAsig)*100) : 0;
-        html += `
-            <div class="card">
-                <h2>${area.icon || '📚'} ${area.nombre}</h2>
-                <div class="progress-item">
-                    <div class="progress-header"><span>${ap}/${totalAsig} aprobadas | ${mat} matriculadas</span><span>${pct}%</span></div>
-                    <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
-                </div>
-            </div>
-        `;
-    }
+    
     main.innerHTML = html;
+    
+    inicializarCalendarioCorcho();
+    inicializarNotasCorcho();
 }
 
 // ============================================================
@@ -583,13 +692,11 @@ async function mostrarConfiguracion(main) {
 // ============================================================
 
 function volverAsignaturas() {
-    // Obtener el área de la URL actual
     const params = new URLSearchParams(window.location.search);
     const area = params.get('area') || '';
     const curso = params.get('curso') || '0';
     const semestre = params.get('semestre') || '0';
     
-    // Si no hay área en la URL, intentar detectarla de la ruta
     let areaId = area;
     if (!areaId) {
         const path = window.location.pathname;
@@ -599,13 +706,11 @@ function volverAsignaturas() {
         else if (path.includes('networking')) areaId = 'networking';
     }
     
-    // Si no se detecta área, ir al inicio
     if (!areaId) {
         window.location.href = '../../index.html';
         return;
     }
     
-    // Determinar si el área tiene cursos/semestres
     const areaObj = areas.find(a => a.id === areaId);
     let tieneCursos = false;
     if (areaObj) {
@@ -613,7 +718,6 @@ function volverAsignaturas() {
         tieneCursos = asig.some(a => parseInt(a.curso) > 0 || parseInt(a.semestre) > 0);
     }
     
-    // Construir la URL de vuelta
     let url = '../../?nivel=asignaturas&area=' + areaId;
     
     if (tieneCursos) {
@@ -624,9 +728,135 @@ function volverAsignaturas() {
     
     window.location.href = url;
 }
-
-// Exponer la función globalmente
 window.volverAsignaturas = volverAsignaturas;
+
+// ============================================================
+// FUNCIONES DEL DASHBOARD CORCHO
+// ============================================================
+
+function inicializarCalendarioCorcho() {
+    const grid = document.getElementById('calGridDashboard');
+    if (!grid) return;
+    
+    const hoy = new Date();
+    const año = hoy.getFullYear();
+    const mes = hoy.getMonth();
+    const diasSemana = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+    
+    let html = diasSemana.map(d => `<div class="cal-dia-semana">${d}</div>`).join('');
+    
+    const primerDia = new Date(año, mes, 1).getDay();
+    const diasAntes = primerDia === 0 ? 6 : primerDia - 1;
+    const diasEnMes = new Date(año, mes + 1, 0).getDate();
+    const hoyNum = hoy.getDate();
+    
+    for (let i = 0; i < diasAntes; i++) {
+        html += `<div class="cal-dia vacio"></div>`;
+    }
+    for (let d = 1; d <= diasEnMes; d++) {
+        const esHoy = (d === hoyNum);
+        const key = 'estudio_fecha_' + año + '-' + String(mes+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+        const esEstudio = localStorage.getItem(key);
+        const clase = esHoy ? 'cal-dia hoy' : esEstudio ? 'cal-dia estudio' : 'cal-dia';
+        html += `<div class="${clase}" onclick="marcarDiaCorcho(${d})">${d}</div>`;
+    }
+    grid.innerHTML = html;
+    
+    const mesEl = document.getElementById('calMesLabel');
+    if (mesEl) {
+        const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+        mesEl.textContent = `${meses[mes]} ${año}`;
+    }
+    actualizarHorasCorcho();
+}
+
+function marcarDiaCorcho(dia) {
+    const hoy = new Date();
+    const fecha = hoy.getFullYear() + '-' + String(hoy.getMonth()+1).padStart(2,'0') + '-' + String(dia).padStart(2,'0');
+    const key = 'estudio_fecha_' + fecha;
+    if (localStorage.getItem(key)) {
+        localStorage.removeItem(key);
+    } else {
+        localStorage.setItem(key, 'true');
+    }
+    inicializarCalendarioCorcho();
+    actualizarHorasCorcho();
+}
+
+function actualizarHorasCorcho() {
+    const hoy = new Date();
+    const key = 'estudio_fecha_' + hoy.getFullYear() + '-' + String(hoy.getMonth()+1).padStart(2,'0') + '-' + String(hoy.getDate()).padStart(2,'0');
+    const horas = localStorage.getItem(key) ? 1 : 0;
+    const el = document.getElementById('calHorasLabel');
+    if (el) el.textContent = `⏱️ ${horas}h hoy`;
+}
+
+// ============================================================
+// NOTAS DEL CORCHO
+// ============================================================
+
+let colorNotaCorcho = '#ffd93d';
+
+function inicializarNotasCorcho() {
+    const notas = JSON.parse(localStorage.getItem('tablero_notas') || '[]');
+    const container = document.getElementById('notasCorcho');
+    if (!container) return;
+    
+    const colores = ['#ffd93d', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#dda0dd', '#ff9ff3', '#feca57'];
+    
+    if (notas.length === 0) {
+        container.innerHTML = '<div class="nota-vacia">📌 Pincha una nota aquí</div>';
+    } else {
+        container.innerHTML = notas.map((n, i) => `
+            <div class="nota-corcho" style="background:${n.color || '#ffd93d'}; --rot: ${(Math.random() - 0.5) * 4}deg;">
+                <button class="nota-del" onclick="eliminarNotaCorcho(${i})">✕</button>
+                <div class="nota-texto">${n.texto}</div>
+            </div>
+        `).join('');
+    }
+    
+    const colorContainer = document.getElementById('notaColoresCorcho');
+    if (colorContainer) {
+        colorContainer.innerHTML = colores.map(c => `
+            <button class="c-btn ${c === colorNotaCorcho ? 'sel' : ''}" onclick="seleccionarColorCorcho('${c}')" style="background:${c};"></button>
+        `).join('');
+    }
+}
+
+function seleccionarColorCorcho(color) {
+    colorNotaCorcho = color;
+    document.querySelectorAll('#notaColoresCorcho .c-btn').forEach(b => {
+        b.classList.toggle('sel', b.style.background === color);
+    });
+}
+
+function agregarNotaCorcho() {
+    const input = document.getElementById('notaInputCorcho');
+    const texto = input.value.trim();
+    if (!texto) return;
+    
+    const notas = JSON.parse(localStorage.getItem('tablero_notas') || '[]');
+    notas.push({
+        texto: texto,
+        color: colorNotaCorcho || '#ffd93d',
+        fecha: new Date().toLocaleDateString()
+    });
+    localStorage.setItem('tablero_notas', JSON.stringify(notas));
+    input.value = '';
+    inicializarNotasCorcho();
+}
+
+function eliminarNotaCorcho(index) {
+    const notas = JSON.parse(localStorage.getItem('tablero_notas') || '[]');
+    notas.splice(index, 1);
+    localStorage.setItem('tablero_notas', JSON.stringify(notas));
+    inicializarNotasCorcho();
+}
+
+window.marcarDiaCorcho = marcarDiaCorcho;
+window.agregarNotaCorcho = agregarNotaCorcho;
+window.eliminarNotaCorcho = eliminarNotaCorcho;
+window.seleccionarColorCorcho = seleccionarColorCorcho;
 
 // ============================================================
 // TEMA OSCURO / CLARO
