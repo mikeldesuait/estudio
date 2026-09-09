@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Constitucional Ii</title>
+    <title>Derecho Constitucional II</title>
     <link rel="stylesheet" href="/estudio/css/styles.css">
     <link rel="stylesheet" href="/estudio/css/themes.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -28,28 +28,53 @@
         .temas-list { display: flex; flex-direction: column; gap: 8px; }
         .btn-volver { background: transparent; border: 1px solid var(--border); color: var(--text-secondary); padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: var(--transition); display: inline-flex; align-items: center; gap: 6px; }
         .btn-volver:hover { border-color: var(--accent); color: var(--accent); }
+        .loading-temas { text-align: center; padding: 30px; color: var(--text-secondary); }
+        .loading-temas i { font-size: 24px; display: block; margin-bottom: 10px; }
+        .progreso-botones { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+        .progreso-botones button {
+            width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border);
+            background: transparent; color: var(--text-secondary); cursor: pointer;
+            font-size: 11px; font-weight: 700; transition: var(--transition);
+        }
+        .progreso-botones button:hover { border-color: var(--accent); color: var(--accent); }
+        .progreso-botones button.activo { background: var(--accent); color: white; border-color: var(--accent); }
+        .progreso-texto { min-width: 32px; text-align: center; font-weight: 600; font-size: 14px; }
+        .area-header {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .area-header .btn-volver {
+            align-self: flex-start;
+        }
+        .area-header h1 {
+            margin: 0;
+        }
+        .area-header p {
+            margin: 0;
+        }
     </style>
 </head>
 <body>
     <div class="container" style="padding-top:80px; max-width:900px; margin:0 auto;">
         <div class="area-header">
-            <button class="btn-volver" onclick="window.location.href='/estudio/?nivel=asignaturaswindow.location.href='/?nivel=asignaturas&area=grado-derecho&curso=1&semestre=1'area=grado-derechowindow.location.href='/?nivel=asignaturas&area=grado-derecho&curso=1&semestre=1'curso=0window.location.href='/?nivel=asignaturas&area=grado-derecho&curso=1&semestre=1'semestre=0'">← Volver a las asignaturas</button>
-            <h1>📋 Constitucional Ii</h1>
+            <button class="btn-volver" onclick="window.location.href='/estudio/?nivel=asignaturas&area=grado-derecho&curso=2&semestre=1'">← Volver a las asignaturas</button>
+            <h1>📋 Derecho Constitucional II</h1>
             <p style="color:var(--text-secondary);">Código: 66022026 | 5 ECTS</p>
         </div>
         
-        <!-- ===== GUÍA Y PROGRAMA ===== -->
         <div class="card">
             <h2>📚 Materiales de la asignatura</h2>
             <div class="info-grid">
-                <a href="/estudio/grado-derecho/constitucional-ii/guia/guia.pdf" class="info-card" target="_blank">
+                <a href="guia/guia.pdf" class="info-card" target="_blank">
                     <span class="icon">📘</span>
                     <div class="info">
                         <span class="titulo">Guía de la asignatura</span>
                         <span class="subtitulo">PDF <span class="badge-pdf">PDF</span></span>
                     </div>
                 </a>
-                <a href="/estudio/grado-derecho/constitucional-ii/programa/programa.pdf" class="info-card" target="_blank">
+                <a href="programa/programa.pdf" class="info-card" target="_blank">
                     <span class="icon">📋</span>
                     <div class="info">
                         <span class="titulo">Programa de la asignatura</span>
@@ -62,31 +87,99 @@
             </div>
         </div>
         
-        <!-- ===== TEMAS ===== -->
         <div class="card">
             <h2>📑 Temas</h2>
-            <div class="temas-list">
-                <div class="tema-item" onclick="window.location.href='/estudio/?nivel=asignaturaswindow.location.href='temas/tema1/tema.html'area=grado-derechowindow.location.href='temas/tema1/tema.html'curso=0window.location.href='temas/tema1/tema.html'semestre=0'">
-                    <div class="tema-info">
-                        <span class="tema-numero">1</span>
-                        <span class="tema-titulo">Tema 1 - Introducción</span>
-                    </div>
-                    <div class="tema-progreso">
-                        <span id="progresoDisplay">0%</span>
-                        <i class="fas fa-chevron-right"></i>
-                    </div>
+            <div id="temasContainer">
+                <div class="loading-temas">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    Cargando temas...
                 </div>
             </div>
         </div>
     </div>
     
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const progreso = localStorage.getItem('progreso_tema_constitucional-ii-tema1');
-            if (progreso) {
-                document.getElementById('progresoDisplay').textContent = progreso + '%';
+        const ASIGNATURA_KEY = 'constitucional-ii';
+
+        fetch('config.json')
+            .then(response => response.json())
+            .then(data => {
+                const container = document.getElementById('temasContainer');
+                const temas = data.temas || [];
+                
+                if (temas.length === 0) {
+                    container.innerHTML = '<p style="color:var(--text-secondary);">No hay temas cargados.</p>';
+                    return;
+                }
+                
+                let html = '<div class="temas-list">';
+                temas.forEach((t, index) => {
+                    const temaId = t.id || 'tema' + (index + 1);
+                    const numTema = index + 1;
+                    const titulo = t.titulo || 'Tema ' + numTema;
+                    const key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
+                    const progreso = parseInt(localStorage.getItem(key)) || 0;
+                    
+                    html += `
+                        <div class="tema-item" style="flex-wrap: wrap; gap: 8px;">
+                            <div class="tema-info" onclick="window.location.href='temas/${temaId}/tema.html'" style="cursor: pointer; flex: 1;">
+                                <span class="tema-numero">${numTema}</span>
+                                <span class="tema-titulo">${titulo}</span>
+                            </div>
+                            <div class="tema-progreso">
+                                <span class="progreso-texto" id="progreso_${temaId}">${progreso}%</span>
+                                <div class="progreso-botones">
+                                    <button onclick="cambiarProgreso('${temaId}', -10)" title="-10%">−</button>
+                                    <button onclick="cambiarProgreso('${temaId}', 10)" title="+10%">+</button>
+                                    <button onclick="cambiarProgreso('${temaId}', 25)" title="+25%">+25</button>
+                                    <button onclick="cambiarProgreso('${temaId}', 50)" title="50%">50</button>
+                                    <button onclick="cambiarProgreso('${temaId}', 100)" title="100%">100</button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                html += '</div>';
+                container.innerHTML = html;
+            })
+            .catch(error => {
+                document.getElementById('temasContainer').innerHTML = `
+                    <p style="color:var(--text-secondary);">Error al cargar los temas: ${error.message}</p>
+                `;
+                console.error('Error cargando temas:', error);
+            });
+
+        function cambiarProgreso(temaId, cambio) {
+            const key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
+            let actual = parseInt(localStorage.getItem(key)) || 0;
+            let nuevo = Math.max(0, Math.min(100, actual + cambio));
+            localStorage.setItem(key, nuevo.toString());
+            const el = document.getElementById('progreso_' + temaId);
+            if (el) el.textContent = nuevo + '%';
+            mostrarToast('📊 Progreso actualizado: ' + nuevo + '%');
+        }
+
+        function mostrarToast(mensaje) {
+            let toast = document.getElementById('toast-progreso');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'toast-progreso';
+                toast.style.cssText = `
+                    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+                    background: #1a3d66; color: white; padding: 10px 24px;
+                    border-radius: 30px; font-weight: 600; font-size: 14px;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                    opacity: 0; transition: opacity 0.3s ease; z-index: 9999;
+                `;
+                document.body.appendChild(toast);
             }
-        });
+            toast.textContent = mensaje;
+            toast.style.opacity = '1';
+            clearTimeout(toast._timer);
+            toast._timer = setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 2000);
+        }
     </script>
 </body>
 </html>
