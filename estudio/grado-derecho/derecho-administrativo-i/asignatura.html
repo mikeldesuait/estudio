@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Derecho Administrativo I</title>
-    <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="/css/themes.css">
+    <link rel="stylesheet" href="../../css/styles.css">
+    <link rel="stylesheet" href="../../css/themes.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 16px 0; }
@@ -35,23 +35,22 @@
 <body>
     <div class="container" style="padding-top:80px; max-width:900px; margin:0 auto;">
         <div class="area-header">
-            <button class="btn-volver" onclick="window.location.href='/?nivel=asignaturas&area=grado-derecho&curso=1&semestre=2'">← Volver a las asignaturas</button>
+            <button class="btn-volver" onclick="window.location.href='../../?nivel=asignaturas&area=grado-derecho&curso=1&semestre=2'">← Volver a las asignaturas</button>
             <h1>🏢 Derecho Administrativo I</h1>
             <p style="color:var(--text-secondary);">Código: 66901029 | 6 ECTS</p>
         </div>
         
-        <!-- ===== GUÍA Y PROGRAMA ===== -->
         <div class="card">
             <h2>📚 Materiales de la asignatura</h2>
             <div class="info-grid">
-                <a href="/estudio/grado-derecho/derecho-administrativo-i/guia/guia.pdf" class="info-card" target="_blank">
+                <a href="guia/guia.pdf" class="info-card" target="_blank">
                     <span class="icon">📘</span>
                     <div class="info">
                         <span class="titulo">Guía de la asignatura</span>
                         <span class="subtitulo">PDF <span class="badge-pdf">PDF</span></span>
                     </div>
                 </a>
-                <a href="/estudio/grado-derecho/derecho-administrativo-i/programa/programa.pdf" class="info-card" target="_blank">
+                <a href="programa/programa.pdf" class="info-card" target="_blank">
                     <span class="icon">📋</span>
                     <div class="info">
                         <span class="titulo">Programa de la asignatura</span>
@@ -64,7 +63,6 @@
             </div>
         </div>
         
-        <!-- ===== TEMAS ===== -->
         <div class="card">
             <h2>📑 Temas</h2>
             <div id="temasContainer">
@@ -77,8 +75,7 @@
     </div>
     
     <script>
-        // Cargar los temas desde config.json
-        fetch('/estudio/grado-derecho/derecho-administrativo-i/config.json')
+        fetch('config.json')
             .then(response => response.json())
             .then(data => {
                 const container = document.getElementById('temasContainer');
@@ -111,7 +108,6 @@
                 html += '</div>';
                 container.innerHTML = html;
                 
-                // Cargar progreso de cada tema
                 temas.forEach((t, index) => {
                     const temaId = t.id || 'tema' + (index + 1);
                     const key = 'progreso_tema_derecho-admin-' + temaId;
