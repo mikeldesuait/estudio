@@ -192,8 +192,8 @@ function mostrarEstudio(main) {
     const nivel = estado.nivel || 'areas';
     const areaId = estado.areaId || '';
     
-    // Si es herramientas o networking, mostrar directamente las asignaturas
-    if ((areaId === 'herramientas' || areaId === 'networking') && nivel === 'asignaturas') {
+    // Si es herramientas, networking o pnl, mostrar directamente las asignaturas
+    if ((areaId === 'herramientas' || areaId === 'networking' || areaId === 'pnl') && nivel === 'asignaturas') {
         mostrarAsignaturas(main, areaId, '0', '0');
         return;
     }
@@ -224,10 +224,10 @@ async function mostrarAreas(main) {
         const totalAsig = asig.length;
         const pct = totalAsig > 0 ? Math.round((ap/totalAsig)*100) : 0;
         
-        // Herramientas o Networking: estilo especial sin cursos/semestres
-        if (area.id === 'herramientas' || area.id === 'networking') {
-            const color = area.id === 'herramientas' ? '#8b5cf6' : '#00b4d8';
-            const label = area.id === 'herramientas' ? 'Herramientas' : 'Recursos';
+        // Herramientas, Networking o PNL: estilo especial sin cursos/semestres
+        if (area.id === 'herramientas' || area.id === 'networking' || area.id === 'pnl') {
+            const color = area.id === 'herramientas' ? '#8b5cf6' : area.id === 'networking' ? '#00b4d8' : '#9b59b6';
+            const label = area.id === 'herramientas' ? 'Herramientas' : area.id === 'networking' ? 'Recursos' : 'Formación';
             html += `
                 <div class="area-card" onclick="navegar('asignaturas','${area.id}')" style="border: 2px dashed ${color};">
                     <div class="icon">${area.icon || '🔧'}</div>
@@ -352,10 +352,10 @@ async function mostrarAsignaturas(main, areaId, cursoId, semestreId) {
     const area = areas.find(a => a.id === areaId);
     if (!area) { main.innerHTML = '<h2>Área no encontrada</h2>'; return; }
     
-    const esHerramientas = (areaId === 'herramientas' || areaId === 'networking');
+    const esHerramientas = (areaId === 'herramientas' || areaId === 'networking' || areaId === 'pnl');
     let asig = await getAsignaturas(areaId);
     
-    // Si es herramientas o networking, mostrar todas sin filtrar por curso/semestre
+    // Si es herramientas, networking o pnl, mostrar todas sin filtrar por curso/semestre
     if (!esHerramientas) {
         asig = asig.filter(a => a.curso == cursoId && a.semestre == semestreId);
     }
@@ -389,9 +389,10 @@ async function mostrarAsignaturas(main, areaId, cursoId, semestreId) {
         let estiloAdicional = '';
         
         if (esHerramientas) {
-            // Herramientas/Networking: estilo especial sin estado de aprobada
-            borderColor = areaId === 'herramientas' ? '#8b5cf6' : '#00b4d8';
-            badge = `<span class="badge-herramienta">${areaId === 'herramientas' ? '🔧 Herramienta' : '🌐 Recurso'}</span>`;
+            // Herramientas/Networking/PNL: estilo especial sin estado de aprobada
+            borderColor = areaId === 'herramientas' ? '#8b5cf6' : areaId === 'networking' ? '#00b4d8' : '#9b59b6';
+            const label = areaId === 'herramientas' ? '🔧 Herramienta' : areaId === 'networking' ? '🌐 Recurso' : '🧠 Asignatura';
+            badge = `<span class="badge-herramienta">${label}</span>`;
             opacidad = '1';
         } else if (ap) {
             borderColor = '#10b981';
