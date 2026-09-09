@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Derecho Administrativo I</title>
-    <link rel="stylesheet" href="../../../css/styles.css">
-    <link rel="stylesheet" href="../../../css/themes.css">
+    <link rel="stylesheet" href="/estudio/css/styles.css">
+    <link rel="stylesheet" href="/estudio/css/themes.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
         .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 16px 0; }
@@ -30,8 +30,6 @@
         .btn-volver:hover { border-color: var(--accent); color: var(--accent); }
         .loading-temas { text-align: center; padding: 30px; color: var(--text-secondary); }
         .loading-temas i { font-size: 24px; display: block; margin-bottom: 10px; }
-
-        /* Botones de progreso */
         .progreso-botones { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
         .progreso-botones button {
             width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border);
@@ -46,11 +44,11 @@
 <body>
     <div class="container" style="padding-top:80px; max-width:900px; margin:0 auto;">
         <div class="area-header">
-            <button class="btn-volver" onclick="window.location.href='../../?nivel=asignaturas&area=grado-derecho&curso=1&semestre=2'">← Volver a las asignaturas</button>
+            <button class="btn-volver" onclick="window.location.href='/estudio/?nivel=asignaturas&area=grado-derecho&curso=1&semestre=2'">← Volver a las asignaturas</button>
             <h1>🏢 Derecho Administrativo I</h1>
             <p style="color:var(--text-secondary);">Código: 66901029 | 6 ECTS</p>
         </div>
-        
+
         <div class="card">
             <h2>📚 Materiales de la asignatura</h2>
             <div class="info-grid">
@@ -73,7 +71,7 @@
                 <i class="fas fa-info-circle"></i> Haz clic en las tarjetas para abrir los PDFs en una nueva pestaña.
             </div>
         </div>
-        
+
         <div class="card">
             <h2>📑 Temas</h2>
             <div id="temasContainer">
@@ -84,37 +82,29 @@
             </div>
         </div>
     </div>
-    
+
     <script>
-        // ========================================
-        // NOMBRE DE LA ASIGNATURA PARA EL LOCALSTORAGE
-        // ========================================
         const ASIGNATURA_KEY = 'derecho-admin';
 
-        // ========================================
-        // CARGAR TEMAS DESDE CONFIG.JSON
-        // ========================================
         fetch('config.json')
             .then(response => response.json())
             .then(data => {
                 const container = document.getElementById('temasContainer');
                 const temas = data.temas || [];
-                
+
                 if (temas.length === 0) {
                     container.innerHTML = '<p style="color:var(--text-secondary);">No hay temas cargados.</p>';
                     return;
                 }
-                
+
                 let html = '<div class="temas-list">';
                 temas.forEach((t, index) => {
                     const temaId = t.id || 'tema' + (index + 1);
                     const numTema = index + 1;
                     const titulo = t.titulo || 'Tema ' + numTema;
-                    
-                    // Cargar progreso guardado
                     const key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
                     const progreso = parseInt(localStorage.getItem(key)) || 0;
-                    
+
                     html += `
                         <div class="tema-item" style="flex-wrap: wrap; gap: 8px;">
                             <div class="tema-info" onclick="window.location.href='temas/${temaId}/tema.html'" style="cursor: pointer; flex: 1;">
@@ -144,27 +134,16 @@
                 console.error('Error cargando temas:', error);
             });
 
-        // ========================================
-        // FUNCIÓN PARA CAMBIAR EL PROGRESO
-        // ========================================
         function cambiarProgreso(temaId, cambio) {
             const key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
             let actual = parseInt(localStorage.getItem(key)) || 0;
             let nuevo = Math.max(0, Math.min(100, actual + cambio));
-            
             localStorage.setItem(key, nuevo.toString());
-            
-            // Actualizar el texto
             const el = document.getElementById('progreso_' + temaId);
             if (el) el.textContent = nuevo + '%';
-            
-            // Mostrar confirmación
             mostrarToast('📊 Progreso actualizado: ' + nuevo + '%');
         }
 
-        // ========================================
-        // TOAST DE CONFIRMACIÓN
-        // ========================================
         function mostrarToast(mensaje) {
             let toast = document.getElementById('toast-progreso');
             if (!toast) {
@@ -179,10 +158,8 @@
                 `;
                 document.body.appendChild(toast);
             }
-            
             toast.textContent = mensaje;
             toast.style.opacity = '1';
-            
             clearTimeout(toast._timer);
             toast._timer = setTimeout(() => {
                 toast.style.opacity = '0';
