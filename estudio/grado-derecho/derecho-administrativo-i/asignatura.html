@@ -24,12 +24,23 @@
         .tema-info { display: flex; align-items: center; gap: 12px; }
         .tema-numero { background: var(--bg-accent); color: var(--accent); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
         .tema-titulo { font-weight: 500; }
-        .tema-progreso { display: flex; align-items: center; gap: 12px; color: var(--text-secondary); }
+        .tema-progreso { display: flex; align-items: center; gap: 12px; }
         .temas-list { display: flex; flex-direction: column; gap: 8px; }
         .btn-volver { background: transparent; border: 1px solid var(--border); color: var(--text-secondary); padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: var(--transition); display: inline-flex; align-items: center; gap: 6px; }
         .btn-volver:hover { border-color: var(--accent); color: var(--accent); }
         .loading-temas { text-align: center; padding: 30px; color: var(--text-secondary); }
         .loading-temas i { font-size: 24px; display: block; margin-bottom: 10px; }
+
+        /* Botones de progreso */
+        .progreso-botones { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
+        .progreso-botones button {
+            width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border);
+            background: transparent; color: var(--text-secondary); cursor: pointer;
+            font-size: 11px; font-weight: 700; transition: var(--transition);
+        }
+        .progreso-botones button:hover { border-color: var(--accent); color: var(--accent); }
+        .progreso-botones button.activo { background: var(--accent); color: white; border-color: var(--accent); }
+        .progreso-texto { min-width: 32px; text-align: center; font-weight: 600; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -75,6 +86,14 @@
     </div>
     
     <script>
+        // ========================================
+        // NOMBRE DE LA ASIGNATURA PARA EL LOCALSTORAGE
+        // ========================================
+        const ASIGNATURA_KEY = 'derecho-admin';
+
+        // ========================================
+        // CARGAR TEMAS DESDE CONFIG.JSON
+        // ========================================
         fetch('config.json')
             .then(response => response.json())
             .then(data => {
@@ -92,31 +111,31 @@
                     const numTema = index + 1;
                     const titulo = t.titulo || 'Tema ' + numTema;
                     
+                    // Cargar progreso guardado
+                    const key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
+                    const progreso = parseInt(localStorage.getItem(key)) || 0;
+                    
                     html += `
-                        <div class="tema-item" onclick="window.location.href='temas/${temaId}/tema.html'">
-                            <div class="tema-info">
+                        <div class="tema-item" style="flex-wrap: wrap; gap: 8px;">
+                            <div class="tema-info" onclick="window.location.href='temas/${temaId}/tema.html'" style="cursor: pointer; flex: 1;">
                                 <span class="tema-numero">${numTema}</span>
                                 <span class="tema-titulo">${titulo}</span>
                             </div>
                             <div class="tema-progreso">
-                                <span id="progreso_${temaId}">0%</span>
-                                <i class="fas fa-chevron-right"></i>
+                                <span class="progreso-texto" id="progreso_${temaId}">${progreso}%</span>
+                                <div class="progreso-botones">
+                                    <button onclick="cambiarProgreso('${temaId}', -10)" title="-10%">−</button>
+                                    <button onclick="cambiarProgreso('${temaId}', 10)" title="+10%">+</button>
+                                    <button onclick="cambiarProgreso('${temaId}', 25)" title="+25%">+25</button>
+                                    <button onclick="cambiarProgreso('${temaId}', 50)" title="50%">50</button>
+                                    <button onclick="cambiarProgreso('${temaId}', 100)" title="100%">100</button>
+                                </div>
                             </div>
                         </div>
                     `;
                 });
                 html += '</div>';
                 container.innerHTML = html;
-                
-                temas.forEach((t, index) => {
-                    const temaId = t.id || 'tema' + (index + 1);
-                    const key = 'progreso_tema_derecho-admin-' + temaId;
-                    const progreso = localStorage.getItem(key);
-                    if (progreso) {
-                        const el = document.getElementById('progreso_' + temaId);
-                        if (el) el.textContent = progreso + '%';
-                    }
-                });
             })
             .catch(error => {
                 document.getElementById('temasContainer').innerHTML = `
@@ -124,6 +143,51 @@
                 `;
                 console.error('Error cargando temas:', error);
             });
+
+        // ========================================
+        // FUNCIÓN PARA CAMBIAR EL PROGRESO
+        // ========================================
+        function cambiarProgreso(temaId, cambio) {
+            const key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
+            let actual = parseInt(localStorage.getItem(key)) || 0;
+            let nuevo = Math.max(0, Math.min(100, actual + cambio));
+            
+            localStorage.setItem(key, nuevo.toString());
+            
+            // Actualizar el texto
+            const el = document.getElementById('progreso_' + temaId);
+            if (el) el.textContent = nuevo + '%';
+            
+            // Mostrar confirmación
+            mostrarToast('📊 Progreso actualizado: ' + nuevo + '%');
+        }
+
+        // ========================================
+        // TOAST DE CONFIRMACIÓN
+        // ========================================
+        function mostrarToast(mensaje) {
+            let toast = document.getElementById('toast-progreso');
+            if (!toast) {
+                toast = document.createElement('div');
+                toast.id = 'toast-progreso';
+                toast.style.cssText = `
+                    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+                    background: #1a3d66; color: white; padding: 10px 24px;
+                    border-radius: 30px; font-weight: 600; font-size: 14px;
+                    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+                    opacity: 0; transition: opacity 0.3s ease; z-index: 9999;
+                `;
+                document.body.appendChild(toast);
+            }
+            
+            toast.textContent = mensaje;
+            toast.style.opacity = '1';
+            
+            clearTimeout(toast._timer);
+            toast._timer = setTimeout(() => {
+                toast.style.opacity = '0';
+            }, 2000);
+        }
     </script>
 </body>
 </html>
