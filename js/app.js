@@ -145,7 +145,7 @@ function navegar(nivel, areaId, cursoId, semestreId, asignaturaId, temaId) {
 }
 
 // ============================================================
-// DASHBOARD - NUEVA VERSIÓN CORCHO
+// DASHBOARD - VERSIÓN PROFESIONAL
 // ============================================================
 
 async function mostrarDashboard(main) {
@@ -158,19 +158,23 @@ async function mostrarDashboard(main) {
     
     for (let area of areas) {
         const asig = await getAsignaturas(area.id);
-        const areaData = {
+        const aprobadasArea = asig.filter(a => {
+            const key = 'aprobada_' + area.id + '_' + a.id;
+            return localStorage.getItem(key) === 'true';
+        }).length;
+        const matriculadasArea = asig.filter(a => a.matriculada === true).length;
+        
+        areasConAsignaturas.push({
             id: area.id,
             nombre: area.nombre,
             icon: area.icon || '📚',
-            asignaturas: asig,
-            aprobadas: asig.filter(a => estaAprobada(area.id, a.id)).length,
-            matriculadas: asig.filter(a => esMatriculada(a)).length,
+            aprobadas: aprobadasArea,
+            matriculadas: matriculadasArea,
             total: asig.length
-        };
-        areasConAsignaturas.push(areaData);
+        });
         totalAsignaturas += asig.length;
-        aprobadas += areaData.aprobadas;
-        matriculadas += areaData.matriculadas;
+        aprobadas += aprobadasArea;
+        matriculadas += matriculadasArea;
         
         const ultimaVisita = localStorage.getItem('ultima_visita');
         if (ultimaVisita) {
@@ -196,101 +200,606 @@ async function mostrarDashboard(main) {
     };
     
     let html = `
-        <div class="dashboard-corcho">
-            
-            <div class="menu-lateral">
-                <div class="menu-titulo">📋 Menú</div>
-                ${ultimaAsignatura ? `
-                    <button class="btn-menu continuar" onclick="window.location.href='${ultimaAsignatura.url || '#'}'">
-                        <span class="icono">▶️</span> Continuar
-                        <span class="badge">${ultimoProgreso}%</span>
-                    </button>
-                ` : `
-                    <button class="btn-menu continuar" onclick="cargarVista('estudio')">
-                        <span class="icono">📖</span> Empezar
-                    </button>
-                `}
-                ${areas.map(area => `
-                    <button class="btn-menu" onclick="window.location.href='/estudio/?area=${area.id}'" style="border-left: 3px solid ${colors[area.id] || '#6c757d'};">
-                        <span class="icono">${area.icon || '📚'}</span> ${area.nombre}
-                    </button>
-                `).join('')}
-                <button class="btn-menu" onclick="cargarVista('configuracion')" style="margin-top:auto; border-top:1px solid var(--border); padding-top:10px;">
-                    <span class="icono">⚙️</span> Configuración
+    <style>
+        .dashboard-pro {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 20px;
+            height: calc(100vh - 150px);
+            min-height: 450px;
+            padding: 5px 0;
+        }
+        
+        .menu-pro {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 16px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            box-shadow: var(--shadow);
+        }
+        .menu-pro .menu-titulo {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            font-weight: 700;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 6px;
+            text-align: center;
+        }
+        .menu-pro .btn-menu {
+            padding: 10px 12px;
+            border-radius: 10px;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 13px;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
+            width: 100%;
+            text-align: left;
+        }
+        .menu-pro .btn-menu:hover {
+            background: var(--bg-hover);
+            transform: translateX(4px);
+        }
+        .menu-pro .btn-menu .icono { font-size: 18px; width: 24px; text-align: center; }
+        .menu-pro .btn-menu .badge {
+            margin-left: auto;
+            font-size: 10px;
+            background: var(--bg-hover);
+            padding: 2px 10px;
+            border-radius: 12px;
+            color: var(--text-secondary);
+        }
+        .menu-pro .btn-menu.continuar {
+            background: var(--accent);
+            color: white;
+            margin-bottom: 4px;
+        }
+        .menu-pro .btn-menu.continuar:hover {
+            opacity: 0.85;
+            transform: translateX(4px);
+        }
+        .menu-pro .btn-menu.continuar .badge {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+        
+        .contenido-pro {
+            display: grid;
+            grid-template-rows: auto 1fr auto;
+            gap: 14px;
+            min-height: 0;
+        }
+        
+        .fila-pro {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+        
+        .calendario-pro {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 14px 16px;
+            box-shadow: var(--shadow);
+        }
+        .calendario-pro .cal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .calendario-pro .cal-header h4 {
+            margin: 0;
+            font-size: 13px;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+        .calendario-pro .cal-header .cal-mes {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+        .calendario-pro .cal-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+        .calendario-pro .cal-grid .cal-dia-semana {
+            font-size: 9px;
+            text-align: center;
+            font-weight: 700;
+            color: var(--text-secondary);
+            padding: 2px 0;
+        }
+        .calendario-pro .cal-grid .cal-dia {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.15s;
+            background: var(--bg-hover);
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+        .calendario-pro .cal-grid .cal-dia:hover { background: var(--accent); color: white; }
+        .calendario-pro .cal-grid .cal-dia.hoy { background: var(--accent); color: white; font-weight: 700; }
+        .calendario-pro .cal-grid .cal-dia.estudio { background: #4ecdc4; color: white; }
+        .calendario-pro .cal-grid .cal-dia.vacio { background: transparent; cursor: default; }
+        .calendario-pro .cal-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 6px;
+            padding-top: 6px;
+            border-top: 1px solid var(--border);
+        }
+        
+        .continuar-pro {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 14px 18px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .continuar-pro .c-icono { font-size: 32px; }
+        .continuar-pro .c-info { flex: 1; min-width: 0; }
+        .continuar-pro .c-nombre { font-weight: 600; font-size: 15px; }
+        .continuar-pro .c-tema { font-size: 13px; color: var(--text-secondary); }
+        .continuar-pro .c-progreso { font-size: 12px; color: var(--text-secondary); }
+        .continuar-pro .c-btn {
+            padding: 6px 20px;
+            border-radius: 20px;
+            border: none;
+            background: var(--accent);
+            color: white;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .continuar-pro .c-btn:hover { opacity: 0.85; }
+        
+        .corcho-pro {
+            background: #c4956a;
+            background-image: radial-gradient(circle, rgba(0,0,0,0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+            border-radius: 16px;
+            border: 4px solid #a87b53;
+            padding: 16px 18px;
+            box-shadow: inset 0 4px 20px rgba(0,0,0,0.15), 0 4px 20px rgba(0,0,0,0.08);
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 120px;
+        }
+        .corcho-pro .corcho-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .corcho-pro .corcho-header h4 {
+            margin: 0;
+            font-size: 13px;
+            color: rgba(255,255,255,0.9);
+            font-weight: 600;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+        .corcho-pro .corcho-header span {
+            font-size: 11px;
+            color: rgba(255,255,255,0.6);
+        }
+        .corcho-pro .notas-corcho {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            flex: 1;
+            align-content: flex-start;
+            padding: 4px 0;
+            overflow-y: auto;
+            min-height: 60px;
+        }
+        .corcho-pro .nota-corcho {
+            background: #ffd93d;
+            padding: 10px 14px 8px 14px;
+            border-radius: 3px 3px 8px 8px;
+            font-size: 13px;
+            min-width: 70px;
+            max-width: 170px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05);
+            position: relative;
+            transform: rotate(var(--rot, 0deg));
+            transition: transform 0.2s;
+            word-break: break-word;
+        }
+        .corcho-pro .nota-corcho:hover {
+            transform: scale(1.02) rotate(0deg);
+            z-index: 10;
+        }
+        .corcho-pro .nota-corcho::before {
+            content: '📌';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
+        .corcho-pro .nota-corcho .nota-texto { margin-top: 4px; line-height: 1.3; }
+        .corcho-pro .nota-corcho .nota-del {
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: rgba(0,0,0,0.25);
+            border: none;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            color: white;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .corcho-pro .nota-corcho:hover .nota-del { opacity: 1; }
+        .corcho-pro .nota-corcho .nota-del:hover { background: rgba(200,0,0,0.6); }
+        .corcho-pro .nota-vacia {
+            width: 100%;
+            text-align: center;
+            color: rgba(255,255,255,0.7);
+            font-size: 14px;
+            padding: 16px 0;
+        }
+        .corcho-pro .nota-input-row {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 2px solid rgba(255,255,255,0.15);
+        }
+        .corcho-pro .nota-input-row input {
+            flex: 1;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: none;
+            background: rgba(255,255,255,0.9);
+            color: #2d3748;
+            font-size: 13px;
+            min-height: 34px;
+        }
+        .corcho-pro .nota-input-row input:focus { outline: 2px solid rgba(255,255,255,0.4); }
+        .corcho-pro .nota-input-row .btn-add {
+            padding: 6px 16px;
+            border-radius: 8px;
+            border: none;
+            background: rgba(255,255,255,0.9);
+            color: #2d3748;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        .corcho-pro .nota-input-row .btn-add:hover { background: white; }
+        .corcho-pro .nota-colores {
+            display: flex;
+            gap: 4px;
+            margin-top: 6px;
+        }
+        .corcho-pro .nota-colores .c-btn {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            border: 2px solid rgba(255,255,255,0.25);
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .corcho-pro .nota-colores .c-btn:hover { transform: scale(1.1); }
+        .corcho-pro .nota-colores .c-btn.sel { border-color: white; box-shadow: 0 0 10px rgba(255,255,255,0.4); }
+        
+        .progreso-pro {
+            background: var(--bg-card);
+            border-radius: 16px;
+            border: 1px solid var(--border);
+            padding: 10px 18px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .progreso-pro .p-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+        .progreso-pro .p-bar {
+            flex: 1;
+            min-width: 80px;
+            height: 6px;
+            background: var(--bg-hover);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .progreso-pro .p-bar .p-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), #4ecdc4);
+            transition: width 0.5s;
+            border-radius: 3px;
+        }
+        .progreso-pro .p-stats {
+            display: flex;
+            gap: 14px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+        }
+        .progreso-pro .p-stats strong { color: var(--text-primary); }
+        .progreso-pro .p-areas {
+            display: flex;
+            gap: 10px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            flex-wrap: wrap;
+        }
+        .progreso-pro .p-areas .ok { color: #4ecdc4; font-weight: 600; }
+        
+        @media (max-width: 768px) {
+            .dashboard-pro {
+                grid-template-columns: 1fr;
+                height: auto;
+                min-height: auto;
+            }
+            .menu-pro { flex-direction: row; flex-wrap: wrap; padding: 10px; }
+            .menu-pro .menu-titulo { display: none; }
+            .menu-pro .btn-menu { width: auto; padding: 6px 12px; font-size: 12px; }
+            .fila-pro { grid-template-columns: 1fr; }
+            .corcho-pro { min-height: 100px; }
+            .progreso-pro { flex-direction: column; align-items: stretch; gap: 6px; }
+        }
+    </style>
+    
+    <div class="dashboard-pro">
+        
+        <div class="menu-pro">
+            <div class="menu-titulo">📋 Navegación</div>
+            ${ultimaAsignatura ? `
+                <button class="btn-menu continuar" onclick="window.location.href='${ultimaAsignatura.url || '#'}'">
+                    <span class="icono">▶</span> Continuar
+                    <span class="badge">${ultimoProgreso}%</span>
                 </button>
+            ` : `
+                <button class="btn-menu continuar" onclick="cargarVista('estudio')">
+                    <span class="icono">📖</span> Empezar
+                </button>
+            `}
+            ${areas.map(area => `
+                <button class="btn-menu" onclick="window.location.href='/estudio/?area=${area.id}'" style="border-left: 3px solid ${colors[area.id] || '#6c757d'};">
+                    <span class="icono">${area.icon || '📚'}</span> ${area.nombre}
+                </button>
+            `).join('')}
+            <button class="btn-menu" onclick="cargarVista('configuracion')" style="margin-top:auto; border-top:1px solid var(--border); padding-top:10px;">
+                <span class="icono">⚙️</span> Configuración
+            </button>
+        </div>
+        
+        <div class="contenido-pro">
+            
+            <div class="fila-pro">
+                
+                <div class="calendario-pro">
+                    <div class="cal-header">
+                        <h4><i class="fas fa-calendar-alt"></i> <span class="cal-mes" id="calMesLabelPro"></span></h4>
+                        <span style="font-size:11px; color:var(--text-secondary);" id="calHorasLabelPro">⏱️ 0h hoy</span>
+                    </div>
+                    <div class="cal-grid" id="calGridPro"></div>
+                </div>
+                
+                <div class="continuar-pro">
+                    ${ultimaAsignatura ? `
+                        <span class="c-icono">${ultimaAsignatura.icon || '📚'}</span>
+                        <div class="c-info">
+                            <div class="c-nombre">${ultimaAsignatura.asignaturaNombre || 'Asignatura'}</div>
+                            <div class="c-tema">${ultimaAsignatura.temaNombre || 'Tema'}</div>
+                            <div class="c-progreso">Progreso: ${ultimoProgreso}%</div>
+                        </div>
+                        <button class="c-btn" onclick="window.location.href='${ultimaAsignatura.url || '#'}'">▶ Continuar</button>
+                    ` : `
+                        <span class="c-icono">📖</span>
+                        <div class="c-info">
+                            <div class="c-nombre">Sin actividad</div>
+                            <div class="c-tema">Empieza a estudiar</div>
+                        </div>
+                        <button class="c-btn" onclick="cargarVista('estudio')">Ir</button>
+                    `}
+                </div>
             </div>
             
-            <div class="contenido-principal">
-                
-                <div class="fila-superior">
-                    <div class="calendario-wrap">
-                        <div class="cal-header">
-                            <h4><i class="fas fa-calendar-alt"></i> <span class="cal-mes" id="calMesLabel"></span></h4>
-                            <span style="font-size:11px; color:var(--text-secondary);" id="calHorasLabel">⏱️ 0h hoy</span>
-                        </div>
-                        <div class="cal-grid" id="calGridDashboard"></div>
-                    </div>
-                    
-                    <div class="continuar-mini">
-                        ${ultimaAsignatura ? `
-                            <span class="c-icono">${ultimaAsignatura.icon || '📚'}</span>
-                            <div class="c-info">
-                                <div class="c-nombre">${ultimaAsignatura.asignaturaNombre || 'Asignatura'}</div>
-                                <div class="c-tema">${ultimaAsignatura.temaNombre || 'Tema'}</div>
-                                <div class="c-progreso">Progreso: ${ultimoProgreso}%</div>
-                            </div>
-                            <button class="c-btn" onclick="window.location.href='${ultimaAsignatura.url || '#'}'">▶ Continuar</button>
-                        ` : `
-                            <span class="c-icono">📖</span>
-                            <div class="c-info">
-                                <div class="c-nombre">Sin actividad</div>
-                                <div class="c-tema">Empieza a estudiar</div>
-                            </div>
-                            <button class="c-btn" onclick="cargarVista('estudio')">Ir</button>
-                        `}
-                    </div>
+            <div class="corcho-pro">
+                <div class="corcho-header">
+                    <h4><i class="fas fa-thumbtack"></i> Notas</h4>
+                    <span>📌 ${notas.length} notas</span>
                 </div>
-                
-                <div class="corcho-wrap">
-                    <div class="corcho-header">
-                        <h4><i class="fas fa-thumbtack"></i> Notas</h4>
-                        <span style="font-size:10px; color:rgba(255,255,255,0.6);">📌 ${notas.length} notas</span>
-                    </div>
-                    <div class="notas-corcho" id="notasCorcho">
-                        ${notas.length === 0 ? `<div class="nota-vacia">📌 Pincha una nota aquí</div>` : ''}
-                    </div>
-                    <div class="nota-input-row">
-                        <input type="text" id="notaInputCorcho" placeholder="Escribe una nota..." maxlength="60" />
-                        <button class="btn-add" onclick="agregarNotaCorcho()">➕ Añadir</button>
-                    </div>
-                    <div class="nota-colores" id="notaColoresCorcho"></div>
+                <div class="notas-corcho" id="notasCorchoPro">
+                    ${notas.length === 0 ? `<div class="nota-vacia">📌 Pincha una nota aquí</div>` : ''}
                 </div>
-                
-                <div class="progreso-abajo">
-                    <span class="p-label">📊 Progreso</span>
-                    <div class="p-bar">
-                        <div class="p-fill" style="width:${pctTotal}%;"></div>
-                    </div>
-                    <div class="p-stats">
-                        <span>✅ <strong>${aprobadas}</strong> aprob.</span>
-                        <span>📌 <strong>${matriculadas}</strong> mat.</span>
-                        <span>📚 <strong>${totalAsignaturas}</strong> total</span>
-                    </div>
-                    <div class="p-areas">
-                        ${areasConAsignaturas.map(a => `
-                            <span>${a.icon} <span class="ok">${a.aprobadas}</span>/${a.total}</span>
-                        `).join('')}
-                    </div>
+                <div class="nota-input-row">
+                    <input type="text" id="notaInputPro" placeholder="Escribe una nota..." maxlength="60" />
+                    <button class="btn-add" onclick="agregarNotaPro()">+ Añadir</button>
                 </div>
-                
+                <div class="nota-colores" id="notaColoresPro"></div>
             </div>
+            
+            <div class="progreso-pro">
+                <span class="p-label">📊 Progreso</span>
+                <div class="p-bar">
+                    <div class="p-fill" style="width:${pctTotal}%;"></div>
+                </div>
+                <div class="p-stats">
+                    <span>✅ <strong>${aprobadas}</strong> aprob.</span>
+                    <span>📌 <strong>${matriculadas}</strong> mat.</span>
+                    <span>📚 <strong>${totalAsignaturas}</strong> total</span>
+                </div>
+                <div class="p-areas">
+                    ${areasConAsignaturas.map(a => `
+                        <span>${a.icon} <span class="ok">${a.aprobadas}</span>/${a.total}</span>
+                    `).join('')}
+                </div>
+            </div>
+            
         </div>
+    </div>
     `;
     
     main.innerHTML = html;
     
-    inicializarCalendarioCorcho();
-    inicializarNotasCorcho();
+    inicializarCalendarioPro();
+    inicializarNotasPro();
+}
+
+// ============================================================
+// CALENDARIO
+// ============================================================
+
+function inicializarCalendarioPro() {
+    const grid = document.getElementById('calGridPro');
+    if (!grid) return;
+    
+    const hoy = new Date();
+    const año = hoy.getFullYear();
+    const mes = hoy.getMonth();
+    const diasSemana = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
+    
+    let html = diasSemana.map(d => `<div class="cal-dia-semana">${d}</div>`).join('');
+    
+    const primerDia = new Date(año, mes, 1).getDay();
+    const diasAntes = primerDia === 0 ? 6 : primerDia - 1;
+    const diasEnMes = new Date(año, mes + 1, 0).getDate();
+    const hoyNum = hoy.getDate();
+    
+    for (let i = 0; i < diasAntes; i++) {
+        html += `<div class="cal-dia vacio"></div>`;
+    }
+    for (let d = 1; d <= diasEnMes; d++) {
+        const esHoy = (d === hoyNum);
+        const key = 'estudio_fecha_' + año + '-' + String(mes+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+        const esEstudio = localStorage.getItem(key);
+        const clase = esHoy ? 'cal-dia hoy' : esEstudio ? 'cal-dia estudio' : 'cal-dia';
+        html += `<div class="${clase}" onclick="marcarDiaPro(${d})">${d}</div>`;
+    }
+    grid.innerHTML = html;
+    
+    const mesEl = document.getElementById('calMesLabelPro');
+    if (mesEl) {
+        const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+        mesEl.textContent = `${meses[mes]} ${año}`;
+    }
+    actualizarHorasPro();
+}
+
+function marcarDiaPro(dia) {
+    const hoy = new Date();
+    const fecha = hoy.getFullYear() + '-' + String(hoy.getMonth()+1).padStart(2,'0') + '-' + String(dia).padStart(2,'0');
+    const key = 'estudio_fecha_' + fecha;
+    if (localStorage.getItem(key)) {
+        localStorage.removeItem(key);
+    } else {
+        localStorage.setItem(key, 'true');
+    }
+    inicializarCalendarioPro();
+    actualizarHorasPro();
+}
+
+function actualizarHorasPro() {
+    const hoy = new Date();
+    const key = 'estudio_fecha_' + hoy.getFullYear() + '-' + String(hoy.getMonth()+1).padStart(2,'0') + '-' + String(hoy.getDate()).padStart(2,'0');
+    const horas = localStorage.getItem(key) ? 1 : 0;
+    const el = document.getElementById('calHorasLabelPro');
+    if (el) el.textContent = `⏱️ ${horas}h hoy`;
+}
+
+// ============================================================
+// NOTAS
+// ============================================================
+
+let colorNotaPro = '#ffd93d';
+
+function inicializarNotasPro() {
+    const notas = JSON.parse(localStorage.getItem('tablero_notas') || '[]');
+    const container = document.getElementById('notasCorchoPro');
+    if (!container) return;
+    
+    const colores = ['#ffd93d', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#dda0dd', '#ff9ff3', '#feca57'];
+    
+    if (notas.length === 0) {
+        container.innerHTML = '<div class="nota-vacia">📌 Pincha una nota aquí</div>';
+    } else {
+        container.innerHTML = notas.map((n, i) => `
+            <div class="nota-corcho" style="background:${n.color || '#ffd93d'}; --rot: ${(Math.random() - 0.5) * 4}deg;">
+                <button class="nota-del" onclick="eliminarNotaPro(${i})">✕</button>
+                <div class="nota-texto">${n.texto}</div>
+            </div>
+        `).join('');
+    }
+    
+    const colorContainer = document.getElementById('notaColoresPro');
+    if (colorContainer) {
+        colorContainer.innerHTML = colores.map(c => `
+            <button class="c-btn ${c === colorNotaPro ? 'sel' : ''}" onclick="seleccionarColorPro('${c}')" style="background:${c};"></button>
+        `).join('');
+    }
+}
+
+function seleccionarColorPro(color) {
+    colorNotaPro = color;
+    document.querySelectorAll('#notaColoresPro .c-btn').forEach(b => {
+        b.classList.toggle('sel', b.style.background === color);
+    });
+}
+
+function agregarNotaPro() {
+    const input = document.getElementById('notaInputPro');
+    const texto = input.value.trim();
+    if (!texto) return;
+    
+    const notas = JSON.parse(localStorage.getItem('tablero_notas') || '[]');
+    notas.push({
+        texto: texto,
+        color: colorNotaPro || '#ffd93d',
+        fecha: new Date().toLocaleDateString()
+    });
+    localStorage.setItem('tablero_notas', JSON.stringify(notas));
+    input.value = '';
+    inicializarNotasPro();
+}
+
+function eliminarNotaPro(index) {
+    const notas = JSON.parse(localStorage.getItem('tablero_notas') || '[]');
+    notas.splice(index, 1);
+    localStorage.setItem('tablero_notas', JSON.stringify(notas));
+    inicializarNotasPro();
 }
 
 // ============================================================
@@ -301,7 +810,6 @@ function mostrarEstudio(main) {
     const nivel = estado.nivel || 'areas';
     const areaId = estado.areaId || '';
     
-    // Si es herramientas, networking o pnl, mostrar directamente las asignaturas
     if ((areaId === 'herramientas' || areaId === 'networking' || areaId === 'pnl') && nivel === 'asignaturas') {
         mostrarAsignaturas(main, areaId, '0', '0');
         return;
@@ -333,7 +841,6 @@ async function mostrarAreas(main) {
         const totalAsig = asig.length;
         const pct = totalAsig > 0 ? Math.round((ap/totalAsig)*100) : 0;
         
-        // Herramientas, Networking o PNL: estilo especial sin cursos/semestres
         if (area.id === 'herramientas' || area.id === 'networking' || area.id === 'pnl') {
             const color = area.id === 'herramientas' ? '#8b5cf6' : area.id === 'networking' ? '#00b4d8' : '#9b59b6';
             const label = area.id === 'herramientas' ? 'Herramientas' : area.id === 'networking' ? 'Recursos' : 'Formación';
@@ -464,12 +971,10 @@ async function mostrarAsignaturas(main, areaId, cursoId, semestreId) {
     const esHerramientas = (areaId === 'herramientas' || areaId === 'networking' || areaId === 'pnl');
     let asig = await getAsignaturas(areaId);
     
-    // Si es herramientas, networking o pnl, mostrar todas sin filtrar por curso/semestre
     if (!esHerramientas) {
         asig = asig.filter(a => a.curso == cursoId && a.semestre == semestreId);
     }
     
-    // Construir cabecera
     let html = `
         <div class="area-header">
             <button class="btn btn-outline" onclick="navegar('${esHerramientas ? 'areas' : 'semestres'}','${areaId}'${esHerramientas ? '' : ",'"+cursoId+"'"})"><i class="fas fa-arrow-left"></i> Volver</button>
@@ -487,7 +992,6 @@ async function mostrarAsignaturas(main, areaId, cursoId, semestreId) {
     }
     html += `</div><div class="asignaturas-grid">`;
     
-    // Mostrar asignaturas
     asig.forEach(a => {
         const ap = estaAprobada(areaId, a.id);
         const matriculada = esMatriculada(a);
@@ -498,7 +1002,6 @@ async function mostrarAsignaturas(main, areaId, cursoId, semestreId) {
         let estiloAdicional = '';
         
         if (esHerramientas) {
-            // Herramientas/Networking/PNL: estilo especial sin estado de aprobada
             borderColor = areaId === 'herramientas' ? '#8b5cf6' : areaId === 'networking' ? '#00b4d8' : '#9b59b6';
             const label = areaId === 'herramientas' ? '🔧 Herramienta' : areaId === 'networking' ? '🌐 Recurso' : '🧠 Asignatura';
             badge = `<span class="badge-herramienta">${label}</span>`;
@@ -731,134 +1234,6 @@ function volverAsignaturas() {
 window.volverAsignaturas = volverAsignaturas;
 
 // ============================================================
-// FUNCIONES DEL DASHBOARD CORCHO
-// ============================================================
-
-function inicializarCalendarioCorcho() {
-    const grid = document.getElementById('calGridDashboard');
-    if (!grid) return;
-    
-    const hoy = new Date();
-    const año = hoy.getFullYear();
-    const mes = hoy.getMonth();
-    const diasSemana = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-    
-    let html = diasSemana.map(d => `<div class="cal-dia-semana">${d}</div>`).join('');
-    
-    const primerDia = new Date(año, mes, 1).getDay();
-    const diasAntes = primerDia === 0 ? 6 : primerDia - 1;
-    const diasEnMes = new Date(año, mes + 1, 0).getDate();
-    const hoyNum = hoy.getDate();
-    
-    for (let i = 0; i < diasAntes; i++) {
-        html += `<div class="cal-dia vacio"></div>`;
-    }
-    for (let d = 1; d <= diasEnMes; d++) {
-        const esHoy = (d === hoyNum);
-        const key = 'estudio_fecha_' + año + '-' + String(mes+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
-        const esEstudio = localStorage.getItem(key);
-        const clase = esHoy ? 'cal-dia hoy' : esEstudio ? 'cal-dia estudio' : 'cal-dia';
-        html += `<div class="${clase}" onclick="marcarDiaCorcho(${d})">${d}</div>`;
-    }
-    grid.innerHTML = html;
-    
-    const mesEl = document.getElementById('calMesLabel');
-    if (mesEl) {
-        const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-        mesEl.textContent = `${meses[mes]} ${año}`;
-    }
-    actualizarHorasCorcho();
-}
-
-function marcarDiaCorcho(dia) {
-    const hoy = new Date();
-    const fecha = hoy.getFullYear() + '-' + String(hoy.getMonth()+1).padStart(2,'0') + '-' + String(dia).padStart(2,'0');
-    const key = 'estudio_fecha_' + fecha;
-    if (localStorage.getItem(key)) {
-        localStorage.removeItem(key);
-    } else {
-        localStorage.setItem(key, 'true');
-    }
-    inicializarCalendarioCorcho();
-    actualizarHorasCorcho();
-}
-
-function actualizarHorasCorcho() {
-    const hoy = new Date();
-    const key = 'estudio_fecha_' + hoy.getFullYear() + '-' + String(hoy.getMonth()+1).padStart(2,'0') + '-' + String(hoy.getDate()).padStart(2,'0');
-    const horas = localStorage.getItem(key) ? 1 : 0;
-    const el = document.getElementById('calHorasLabel');
-    if (el) el.textContent = `⏱️ ${horas}h hoy`;
-}
-
-// ============================================================
-// NOTAS DEL CORCHO
-// ============================================================
-
-let colorNotaCorcho = '#ffd93d';
-
-function inicializarNotasCorcho() {
-    const notas = JSON.parse(localStorage.getItem('tablero_notas') || '[]');
-    const container = document.getElementById('notasCorcho');
-    if (!container) return;
-    
-    const colores = ['#ffd93d', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#dda0dd', '#ff9ff3', '#feca57'];
-    
-    if (notas.length === 0) {
-        container.innerHTML = '<div class="nota-vacia">📌 Pincha una nota aquí</div>';
-    } else {
-        container.innerHTML = notas.map((n, i) => `
-            <div class="nota-corcho" style="background:${n.color || '#ffd93d'}; --rot: ${(Math.random() - 0.5) * 4}deg;">
-                <button class="nota-del" onclick="eliminarNotaCorcho(${i})">✕</button>
-                <div class="nota-texto">${n.texto}</div>
-            </div>
-        `).join('');
-    }
-    
-    const colorContainer = document.getElementById('notaColoresCorcho');
-    if (colorContainer) {
-        colorContainer.innerHTML = colores.map(c => `
-            <button class="c-btn ${c === colorNotaCorcho ? 'sel' : ''}" onclick="seleccionarColorCorcho('${c}')" style="background:${c};"></button>
-        `).join('');
-    }
-}
-
-function seleccionarColorCorcho(color) {
-    colorNotaCorcho = color;
-    document.querySelectorAll('#notaColoresCorcho .c-btn').forEach(b => {
-        b.classList.toggle('sel', b.style.background === color);
-    });
-}
-
-function agregarNotaCorcho() {
-    const input = document.getElementById('notaInputCorcho');
-    const texto = input.value.trim();
-    if (!texto) return;
-    
-    const notas = JSON.parse(localStorage.getItem('tablero_notas') || '[]');
-    notas.push({
-        texto: texto,
-        color: colorNotaCorcho || '#ffd93d',
-        fecha: new Date().toLocaleDateString()
-    });
-    localStorage.setItem('tablero_notas', JSON.stringify(notas));
-    input.value = '';
-    inicializarNotasCorcho();
-}
-
-function eliminarNotaCorcho(index) {
-    const notas = JSON.parse(localStorage.getItem('tablero_notas') || '[]');
-    notas.splice(index, 1);
-    localStorage.setItem('tablero_notas', JSON.stringify(notas));
-    inicializarNotasCorcho();
-}
-
-window.marcarDiaCorcho = marcarDiaCorcho;
-window.agregarNotaCorcho = agregarNotaCorcho;
-window.eliminarNotaCorcho = eliminarNotaCorcho;
-window.seleccionarColorCorcho = seleccionarColorCorcho;
-
-// ============================================================
 // TEMA OSCURO / CLARO
 // ============================================================
 
@@ -882,3 +1257,7 @@ document.getElementById('menuToggle').addEventListener('click', function() {
 window.cargarVista = cargarVista;
 window.navegar = navegar;
 window.toggleAprobada = toggleAprobada;
+window.marcarDiaPro = marcarDiaPro;
+window.agregarNotaPro = agregarNotaPro;
+window.eliminarNotaPro = eliminarNotaPro;
+window.seleccionarColorPro = seleccionarColorPro;
