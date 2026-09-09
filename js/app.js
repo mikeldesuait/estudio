@@ -191,6 +191,13 @@ async function mostrarDashboard(main) {
 function mostrarEstudio(main) {
     const nivel = estado.nivel || 'areas';
     const areaId = estado.areaId || '';
+    
+    // Si es herramientas o networking, mostrar directamente las asignaturas
+    if ((areaId === 'herramientas' || areaId === 'networking') && nivel === 'asignaturas') {
+        mostrarAsignaturas(main, areaId, '0', '0');
+        return;
+    }
+    
     const cursoId = estado.cursoId || '';
     const semestreId = estado.semestreId || '';
     const asignaturaId = estado.asignaturaId || '';
@@ -217,24 +224,21 @@ async function mostrarAreas(main) {
         const totalAsig = asig.length;
         const pct = totalAsig > 0 ? Math.round((ap/totalAsig)*100) : 0;
         
-        // Detectar si el área tiene cursos/semestres
-        const tieneCursos = asig.some(a => parseInt(a.curso) > 0 || parseInt(a.semestre) > 0);
-        
-        if (!tieneCursos) {
-            // Área sin cursos/semestres → salto directo a asignaturas
-            const color = area.id === 'herramientas' ? '#8b5cf6' : area.id === 'networking' ? '#00b4d8' : area.id === 'pnl' ? '#9b59b6' : '#3498db';
+        // Herramientas o Networking: estilo especial sin cursos/semestres
+        if (area.id === 'herramientas' || area.id === 'networking') {
+            const color = area.id === 'herramientas' ? '#8b5cf6' : '#00b4d8';
+            const label = area.id === 'herramientas' ? 'Herramientas' : 'Recursos';
             html += `
                 <div class="area-card" onclick="navegar('asignaturas','${area.id}')" style="border: 2px dashed ${color};">
-                    <div class="icon">${area.icon || '📚'}</div>
+                    <div class="icon">${area.icon || '🔧'}</div>
                     <div class="nombre">${area.nombre}</div>
                     <div class="desc">${area.descripcion || ''}</div>
                     <div style="font-size:13px; color:var(--text-secondary); margin-top:8px;">
-                        📖 ${asig.length} asignatura${asig.length > 1 ? 's' : ''} disponibles
+                        ⚡ ${label} disponibles: ${asig.length}
                     </div>
                 </div>
             `;
         } else {
-            // Área con cursos/semestres → navegación normal
             html += `
                 <div class="area-card" onclick="navegar('cursos','${area.id}')">
                     <div class="icon">${area.icon || '📚'}</div>
@@ -348,24 +352,22 @@ async function mostrarAsignaturas(main, areaId, cursoId, semestreId) {
     const area = areas.find(a => a.id === areaId);
     if (!area) { main.innerHTML = '<h2>Área no encontrada</h2>'; return; }
     
+    const esHerramientas = (areaId === 'herramientas' || areaId === 'networking');
     let asig = await getAsignaturas(areaId);
     
-    // Detectar si el área tiene cursos/semestres
-    const tieneCursos = asig.some(a => parseInt(a.curso) > 0 || parseInt(a.semestre) > 0);
-    
-    // Si tiene cursos, filtrar por curso y semestre
-    if (tieneCursos) {
+    // Si es herramientas o networking, mostrar todas sin filtrar por curso/semestre
+    if (!esHerramientas) {
         asig = asig.filter(a => a.curso == cursoId && a.semestre == semestreId);
     }
     
     // Construir cabecera
     let html = `
         <div class="area-header">
-            <button class="btn btn-outline" onclick="navegar('${tieneCursos ? 'semestres' : 'areas'}','${areaId}'${tieneCursos ? ",'"+cursoId+"'" : ''})"><i class="fas fa-arrow-left"></i> Volver</button>
+            <button class="btn btn-outline" onclick="navegar('${esHerramientas ? 'areas' : 'semestres'}','${areaId}'${esHerramientas ? '' : ",'"+cursoId+"'"})"><i class="fas fa-arrow-left"></i> Volver</button>
             <h1>${area.icon || '📚'} ${area.nombre}</h1>
     `;
     
-    if (tieneCursos) {
+    if (!esHerramientas) {
         const nombresCursos = { '1': 'Primer Curso', '2': 'Segundo Curso', '3': 'Tercer Curso', '4': 'Cuarto Curso' };
         const nombresSemestres = { '0': 'Anuales', '1': 'Primer Semestre', '2': 'Segundo Semestre' };
         const nombreCurso = nombresCursos[cursoId] || 'Curso ' + cursoId;
@@ -386,11 +388,10 @@ async function mostrarAsignaturas(main, areaId, cursoId, semestreId) {
         let opacidad = '1';
         let estiloAdicional = '';
         
-        if (!tieneCursos) {
-            // Área sin cursos/semestres: estilo especial
-            const colors = { 'herramientas': '#8b5cf6', 'networking': '#00b4d8', 'pnl': '#9b59b6' };
-            borderColor = colors[areaId] || '#3498db';
-            badge = `<span class="badge-herramienta">📖 Asignatura</span>`;
+        if (esHerramientas) {
+            // Herramientas/Networking: estilo especial sin estado de aprobada
+            borderColor = areaId === 'herramientas' ? '#8b5cf6' : '#00b4d8';
+            badge = `<span class="badge-herramienta">${areaId === 'herramientas' ? '🔧 Herramienta' : '🌐 Recurso'}</span>`;
             opacidad = '1';
         } else if (ap) {
             borderColor = '#10b981';
@@ -420,16 +421,16 @@ async function mostrarAsignaturas(main, areaId, cursoId, semestreId) {
                     <span class="codigo">${a.codigo || ''}</span>
                 </div>
                 <div class="info">
-                    ${tieneCursos ? `<span><i class="fas fa-star"></i> ${a.creditos || 0} ECTS</span>` : ''}
+                    ${!esHerramientas ? `<span><i class="fas fa-star"></i> ${a.creditos || 0} ECTS</span>` : ''}
                     <span><i class="fas fa-tag"></i> ${a.caracter || ''}</span>
                 </div>
                 <div class="acciones">
-                    ${tieneCursos ? `
+                    ${!esHerramientas ? `
                         <button onclick="toggleAprobada('${areaId}','${a.id}')" class="btn ${ap ? 'btn-success' : 'btn-outline'}" style="${ap ? 'background:#10b981;color:white;' : ''}">
                             ${ap ? '✅ Desmarcar aprobada' : '📋 Marcar aprobada'}
                         </button>
                     ` : ''}
-                    <button onclick="window.location.href='${url}'" class="btn btn-primary">${tieneCursos ? '📖 Ver contenido' : '🔧 Abrir'}</button>
+                    <button onclick="window.location.href='${url}'" class="btn btn-primary">${esHerramientas ? '🔧 Abrir herramienta' : '📖 Ver contenido'}</button>
                 </div>
             </div>
         `;
