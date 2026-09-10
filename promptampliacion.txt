@@ -1,0 +1,244 @@
+﻿Aquí tienes el **prompt actualizado** con todo lo nuevo que hemos añadido (escritorio, widgets, calendario, exportar/importar, etc.):
+
+---
+
+## 📌 PROMPT ACTUALIZADO PARA DEEPSEEK
+
+```
+Tengo un sistema de estudio personal alojado en GitHub Pages en:
+https://mikeldesuait.github.io/estudio/
+
+Necesito ayuda para mantenerlo y ampliarlo. Este es mi sistema:
+
+## ESTRUCTURA DEL PROYECTO
+
+El proyecto está en mi PC en: ~/estudio/
+
+Estructura de carpetas:
+
+estudio/
+├── index.html                    ← Página principal
+├── css/
+│   ├── styles.css
+│   └── themes.css
+├── js/
+│   └── app.js                    ← Núcleo de TODA la app
+└── estudio/                      ← CARPETA DE CONTENIDO
+    ├── grado-derecho/            ← Área CON cursos y semestres
+    │   ├── config.json
+    │   ├── asignaturas.json      ← Lista de asignaturas con curso y semestre
+    │   └── [asignatura]/         ← Cada asignatura tiene:
+    │       ├── config.json       ← Con lista de temas
+    │       ├── asignatura.html   ← Página de la asignatura
+    │       ├── guia/
+    │       │   └── guia.pdf
+    │       ├── programa/
+    │       │   └── programa.pdf
+    │       └── temas/
+    │           └── temaX/
+    │               └── tema.html
+    │
+    ├── pnl/                      ← Área SIN cursos ni semestres
+    │   ├── config.json
+    │   ├── asignaturas.json      ← "curso": "0", "semestre": "0"
+    │   └── practitioner/
+    │       ├── config.json
+    │       ├── asignatura.html
+    │       └── temas/
+    │           └── temaX/
+    │               └── PNLX.html
+    │
+    ├── herramientas/             ← Área SIN cursos ni semestres
+    │   ├── config.json
+    │   ├── asignaturas.json      ← "curso": "0", "semestre": "0"
+    │   └── creador-prompts/
+    │       ├── config.json
+    │       └── asignatura.html
+    │
+    └── networking/               ← Área SIN cursos ni semestres
+        ├── config.json
+        ├── asignaturas.json      ← "curso": "0", "semestre": "0"
+        └── cisco/
+            ├── config.json
+            └── asignatura.html
+
+## REGLAS DEL SISTEMA
+
+### Áreas CON cursos y semestres (ej: grado-derecho):
+- Navegación: Áreas → Cursos → Semestres → Asignaturas
+- En `asignaturas.json`: `"curso": "1"`, `"semestre": "1"` (números > 0)
+- El botón "Volver" en cada asignatura usa:
+  ```html
+  <button class="btn-volver" onclick="window.location.href='/estudio/?nivel=asignaturas&area=grado-derecho&curso=X&semestre=Y'">
+  ```
+
+### Áreas SIN cursos ni semestres (ej: pnl, herramientas, networking):
+- Navegación: Áreas → Asignaturas (directo)
+- En `asignaturas.json`: `"curso": "0"`, `"semestre": "0"`
+- El botón "Volver" en cada asignatura usa:
+  ```html
+  <button class="btn-volver" onclick="window.location.href='/estudio/?nivel=asignaturas&area=NOMBRE_AREA&curso=0&semestre=0'">
+  ```
+- Deben estar añadidas en `app.js` en la lista `listaAreas` Y en las condiciones de:
+  - `mostrarEstudio` (para que no pase por cursos)
+  - `mostrarAreas` (estilo especial sin barra de progreso)
+  - `mostrarAsignaturas` (sin filtrar por curso/semestre)
+
+### Rutas en GitHub Pages:
+- **Todas las rutas deben ser absolutas empezando por `/estudio/`**
+- Ejemplo: `<link rel="stylesheet" href="/estudio/css/styles.css">`
+- Ejemplo: `window.location.href='/estudio/?nivel=...'`
+- En asignaturas embebidas (dentro de `estudio/estudio/...`) los `../../` NO funcionan bien → usar rutas absolutas
+
+### Progreso:
+- Se guarda en `localStorage` con clave: `progreso_[ASIGNATURA_KEY]_[temaId]`
+- La variable `ASIGNATURA_KEY` está definida en cada `asignatura.html`
+
+## ESCRITORIO (DASHBOARD) - NUEVO
+
+El "dashboard" o "escritorio" es una pantalla tipo corcho infinito con widgets arrastrables:
+
+### Estructura del escritorio:
+- Fondo de corcho que ocupa toda la pantalla (clase `.escritorio`)
+- Widgets flotantes (`position: absolute`) que se guardan en `localStorage` bajo la clave `escritorio_elementos`
+- Cada elemento tiene: `{ id, tipo, x, y, w, h }`
+
+### Tipos de widgets:
+1. **Botones de áreas** (tipo: `area`): llevan a la vista de estudio
+   - Si el área tiene cursos (Derecho) → `href='/estudio/?nivel=cursos&area=grado-derecho'`
+   - Si NO tiene cursos (PNL, Herramientas, Networking) → `href='/estudio/?nivel=asignaturas&area=XXX&curso=0&semestre=0'`
+2. **Calendario** (tipo: `calendario`): widget único con vistas Día/Semana/Mes
+3. **Notas** (tipo: `nota`): post-its de colores con texto editable
+
+### Modo Mover (ON/OFF):
+- Botón `#btnModoMover` en la barra inferior
+- Con **OFF**: los botones de áreas navegan, las notas se editan al hacer clic
+- Con **ON**: se pueden arrastrar y redimensionar todos los widgets (usando `interact.js`)
+- Se aplica añadiendo la clase `.modo-mover` al `<body>`
+- Al cambiar de modo, se llama `interact(elemento).unset()` y se recrean los widgets
+
+### Librería externa:
+- **interact.js** (v1.10.26) cargada desde CDN en `index.html`
+- Se usa para drag & drop y resize de los widgets
+
+### Calendario:
+- Vistas: `dia`, `semana`, `mes` (se guarda en `elemento.vista`)
+- Eventos guardados en `localStorage` bajo `eventos_calendario`:
+  ```json
+  [{ "id": "ev-123", "fecha": "2026-09-10", "hora": "10:00", "titulo": "...", "desc": "..." }]
+  ```
+- Al hacer clic en un día, se abre un modal para ver/editar/eliminar/crear eventos
+- Los días con eventos se marcan con clase `.evento` (color rojo)
+
+### Copia de seguridad:
+- Botones **Exportar / Importar** en la barra inferior
+- Exportar: descarga un `.json` con:
+  - `escritorio` (widgets)
+  - `eventos` (calendario)
+  - `progreso` (todas las claves `progreso_*` de localStorage)
+  - `aprobadas` (todas las claves `aprobada_*`)
+  - `theme` (claro/oscuro)
+- Importar: carga un `.json` y restaura todo en localStorage (con confirmación)
+
+### URLs limpias del menú superior:
+- Botón **Escritorio** → limpia URL a `/estudio/`
+- Botón **Áreas** → va a `/estudio/?nivel=areas`
+- Botón **Progreso** → va a `/estudio/?nivel=configuracion`
+- Al cambiar de vista, `cargarVista()` resetea los estilos de `#mainContent` según vista
+
+## ¿QUÉ NECESITO?
+
+Dependiendo de lo que necesite, te pediré que me ayudes con:
+
+### A) Añadir un nuevo tema a una asignatura existente
+- Debes decirme: el área, la asignatura y el título del tema
+- Tú me darás el comando para añadirlo al `config.json` de la asignatura
+
+### B) Crear una nueva asignatura dentro de un área existente
+- Debes decirme: el área, el ID de la asignatura, el nombre, el código, créditos, icono, curso y semestre (0 si no tiene)
+- Tú me darás el comando para crear la carpeta y todos los archivos necesarios
+
+### C) Crear una nueva área de estudio (sin cursos ni semestres)
+- Debes decirme: el ID del área, el nombre, el icono y la descripción
+- Tú me darás el comando para crear la carpeta y todos los archivos necesarios
+- **IMPORTANTE**: recordar añadir el área a:
+  - `listaAreas` en `app.js`
+  - Condiciones de `mostrarEstudio`, `mostrarAreas`, `mostrarAsignaturas` en `app.js`
+
+### D) Modificar el escritorio (dashboard)
+- Puedo pedirte que añadas nuevos tipos de widgets, o que cambies el comportamiento de los existentes
+- Recordar que todo se guarda en `localStorage.escritorio_elementos`
+
+### E) Modificar el calendario
+- Puedo pedirte cambios en las vistas, en el modal de eventos, o en el guardado
+
+## COMANDOS QUE CONOZCO
+
+### Para subir cambios a GitHub:
+```bash
+cd ~/estudio
+git add .
+git commit -m "Mensaje del cambio"
+git push
+```
+
+### Para ver la estructura:
+```bash
+tree ~/estudio/estudio/NOMBRE_AREA/
+```
+
+### Para buscar una función en app.js:
+```bash
+grep -A 20 "function NOMBRE_FUNCION" ~/estudio/js/app.js
+```
+
+## FORMATO DE RESPUESTA QUE ESPERO
+
+Cuando te pida ayuda, quiero que me des:
+
+1. Los comandos exactos para ejecutar en mi terminal (Ubuntu)
+2. El contenido de los archivos que necesito crear/modificar
+3. Las explicaciones breves de lo que hace cada paso
+
+## IMPORTANTE:
+- **NO me des código que tenga que copiar y pegar a mano en el navegador**
+- **NO me hagas editar archivos manualmente en VS Code**
+- **NO uses Python inline complejo en terminal** (a veces falla con caracteres especiales)
+- **PREFIERO**: comandos `cat > archivo << 'EOF'` para crear archivos completos
+- **PREFIERO**: comandos `sed` simples para reemplazos pequeños
+- **PREFIERO**: comandos que funcionen pegados directamente en la terminal
+- Si hay que modificar `app.js`, dame el archivo COMPLETO con cat > o el comando sed exacto
+- Siempre usa rutas absolutas `/estudio/` para GitHub Pages
+- Si hay que reiniciar el servidor Python local: `cd ~/estudio && python3 -m http.server 8000`
+- Si hay que probar cambios locales antes de subir: abrir `http://localhost:8000`
+
+## CONTEXTO ACTUAL
+
+- El sistema YA funciona correctamente en producción
+- Está alojado en GitHub Pages con el repo: `mikeldesuait/estudio`
+- Uso Ubuntu + VS Code + Git
+- Uso LocalStorage para guardar todo el estado (no hay backend)
+- El escritorio, calendario, notas y exportar/importar ya están implementados y funcionan
+
+¿Entendido? ¡Empecemos!
+```
+
+---
+
+## 📌 Diferencias con el anterior:
+
+| Añadido | Descripción |
+|---------|-------------|
+| **Sección ESCRITORIO** | Explica el dashboard tipo corcho, widgets, interact.js |
+| **Modo Mover** | Cómo funciona el toggle ON/OFF |
+| **Calendario** | Vistas, eventos, modal, localStorage |
+| **Exportar/Importar** | Copia de seguridad JSON |
+| **URLs limpias** | Menú superior sin `#` |
+| **Reglas de rutas** | Énfasis en absolutas para GitHub Pages |
+| **Comandos útiles** | `grep` para buscar funciones, `python3 -m http.server` |
+| **Preferencias** | `cat > archivo << 'EOF'` en lugar de Python complejo |
+| **Contexto actual** | Qué ya está hecho |
+
+---
+
+**Copia este prompt cuando vayas a pedir ayuda a otra IA y entenderá todo tu sistema al 100%.** 🚀
