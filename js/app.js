@@ -94,8 +94,14 @@ function cargarEstadoDesdeURL() {
 }
 
 function cargarVista(vista) {
-    if (vista === 'dashboard') {
-        window.history.pushState({}, '', '/estudio/');
+    const main = document.getElementById('mainContent');
+    if (main) {
+        if (vista === 'dashboard') {
+            main.style.cssText = 'max-width:100%;padding:0;margin:0;height:calc(100vh - 130px);overflow:hidden;';
+            window.history.pushState({}, '', '/estudio/');
+        } else {
+            main.style.cssText = 'padding:24px;max-width:1400px;margin:0 auto;height:auto;min-height:calc(100vh - 200px);overflow:auto;';
+        }
     }
     document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
     document.querySelectorAll('.nav-links a').forEach(l => {
@@ -106,7 +112,6 @@ function cargarVista(vista) {
             l.classList.add('active');
         }
     });
-    const main = document.getElementById('mainContent');
     if (vista === 'dashboard') mostrarDashboard(main);
     else if (vista === 'estudio') mostrarEstudio(main);
     else if (vista === 'configuracion') mostrarConfiguracion(main);
