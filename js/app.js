@@ -1,10 +1,14 @@
 // ============================================================
-// ESTUDIO PERSONAL - ESCRITORIO LIBRE (CORCHO INFINITO)
+// ESTUDIO PERSONAL - ESCRITORIO LIBRE v2
+// - Modo mover ON/OFF
+// - Calendario con consulta/edición de eventos
+// - Botones de áreas funcionales
 // ============================================================
 
 let areas = [];
 let asignaturasCache = {};
 let estado = { nivel: 'areas', areaId: '', cursoId: '', semestreId: '', asignaturaId: '', temaId: '' };
+let modoMover = false; // ← NUEVO: modo mover ON/OFF
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('📚 Estudio Personal iniciado');
@@ -122,27 +126,25 @@ function navegar(nivel, areaId, cursoId, semestreId, asignaturaId, temaId) {
 // ============================================================
 
 function mostrarDashboard(main) {
-    // Cargar elementos guardados
     let elementos = JSON.parse(localStorage.getItem('escritorio_elementos') || 'null');
     if (!elementos) {
-        // Elementos por defecto
         elementos = {
             areas: areas.map((a, i) => ({
                 id: 'area-' + a.id,
                 tipo: 'area',
                 areaId: a.id,
-                x: 20 + (i % 4) * 160,
+                x: 20 + (i % 4) * 170,
                 y: 20,
-                w: 150,
+                w: 160,
                 h: 50
             })),
             calendario: {
                 id: 'calendario',
                 tipo: 'calendario',
-                x: window.innerWidth - 420,
+                x: Math.max(20, window.innerWidth - 440),
                 y: 20,
-                w: 400,
-                h: 320,
+                w: 420,
+                h: 340,
                 vista: 'semana'
             },
             notas: []
@@ -150,21 +152,17 @@ function mostrarDashboard(main) {
         localStorage.setItem('escritorio_elementos', JSON.stringify(elementos));
     }
     
-    // Guardar datos globales
     window._escritorio = elementos;
     window._areas = areas;
-    
-    const colors = {
+    window._colors = {
         'grado-derecho': '#3b82f6',
         'pnl': '#9b59b6',
         'herramientas': '#8b5cf6',
         'networking': '#00b4d8'
     };
-    window._colors = colors;
     
     let html = `
     <style>
-        /* Reset del main para el escritorio */
         #mainContent.container {
             max-width: 100% !important;
             padding: 0 !important;
@@ -173,7 +171,6 @@ function mostrarDashboard(main) {
             overflow: hidden;
         }
         
-        /* Escritorio (corcho gigante) */
         .escritorio {
             position: relative;
             width: 100%;
@@ -189,7 +186,6 @@ function mostrarDashboard(main) {
             box-shadow: inset 0 0 100px rgba(0,0,0,0.1);
         }
         
-        /* Elemento flotante genérico */
         .elemento-flotante {
             position: absolute;
             touch-action: none;
@@ -198,6 +194,11 @@ function mostrarDashboard(main) {
         }
         .elemento-flotante.dragging { z-index: 1000; }
         .elemento-flotante.resizing { z-index: 1001; }
+        
+        /* Modo mover activo: cursor de movimiento */
+        body.modo-mover .elemento-flotante { cursor: move; }
+        body.modo-mover .elem-nota .nota-texto { cursor: move; pointer-events: none; }
+        body:not(.modo-mover) .elem-nota .nota-texto { cursor: text; pointer-events: auto; }
         
         /* Botón de área */
         .elem-area {
@@ -226,10 +227,13 @@ function mostrarDashboard(main) {
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(0,0,0,0.2);
         }
-        .elem-area.continuar {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
+        body.modo-mover .elem-area {
+            cursor: move;
+            pointer-events: auto;
+        }
+        /* Cuando NO está modo mover, el clic va al enlace */
+        body:not(.modo-mover) .elem-area {
+            cursor: pointer;
         }
         
         /* Calendario */
@@ -251,8 +255,8 @@ function mostrarDashboard(main) {
             align-items: center;
             background: var(--bg-hover);
             border-bottom: 1px solid var(--border);
-            cursor: move;
             flex-shrink: 0;
+            cursor: move;
         }
         .elem-calendario .cal-titulo {
             font-size: 13px;
@@ -281,6 +285,7 @@ function mostrarDashboard(main) {
             flex: 1;
             padding: 6px 10px;
             overflow-y: auto;
+            cursor: default;
         }
         
         /* Grid calendario */
@@ -326,14 +331,14 @@ function mostrarDashboard(main) {
             background: rgba(255,255,255,0.8);
         }
         
-        /* Vista DÍA del calendario */
+        /* Vista DÍA */
         .cal-dia-detalle {
             display: flex;
             flex-direction: column;
             gap: 4px;
         }
         .cal-dia-detalle .fecha-grande {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             color: var(--text-primary);
             margin-bottom: 6px;
@@ -347,9 +352,22 @@ function mostrarDashboard(main) {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 8px;
         }
-        .cal-dia-detalle .evento-item .titulo { font-weight: 500; }
+        .cal-dia-detalle .evento-item .info { flex: 1; min-width: 0; }
+        .cal-dia-detalle .evento-item .titulo { font-weight: 600; word-break: break-word; }
         .cal-dia-detalle .evento-item .hora { font-size: 10px; color: var(--text-secondary); }
+        .cal-dia-detalle .evento-item .desc { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+        .cal-dia-detalle .evento-item .btn-del-evento {
+            background: none;
+            border: none;
+            color: #ff6b6b;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        .cal-dia-detalle .evento-item .btn-del-evento:hover { background: rgba(255,0,0,0.1); }
         .cal-dia-detalle .btn-add-evento {
             background: var(--accent);
             color: white;
@@ -359,7 +377,7 @@ function mostrarDashboard(main) {
             font-size: 11px;
             cursor: pointer;
             font-weight: 600;
-            margin-top: 4px;
+            margin-top: 6px;
         }
         
         /* Nota */
@@ -376,7 +394,6 @@ function mostrarDashboard(main) {
             height: 100%;
             width: 100%;
             overflow: hidden;
-            cursor: move;
         }
         .elem-nota::before {
             content: '📌';
@@ -396,15 +413,13 @@ function mostrarDashboard(main) {
             line-height: 1.4;
             margin-top: 4px;
             outline: none;
-            cursor: text;
+            padding: 4px;
+            margin: 0;
+            margin-top: 4px;
         }
         .elem-nota .nota-texto:focus {
-            background: rgba(255,255,255,0.3);
+            background: rgba(255,255,255,0.4);
             border-radius: 4px;
-            padding: 4px;
-            margin: 0 -4px;
-            margin-top: 4px;
-            margin-bottom: -4px;
         }
         .elem-nota .nota-del {
             position: absolute;
@@ -423,6 +438,7 @@ function mostrarDashboard(main) {
             justify-content: center;
             opacity: 0;
             transition: opacity 0.2s;
+            z-index: 5;
         }
         .elem-nota:hover .nota-del { opacity: 1; }
         .elem-nota .nota-del:hover { background: rgba(200,0,0,0.3); color: white; }
@@ -472,6 +488,11 @@ function mostrarDashboard(main) {
             border-color: var(--accent);
             transform: translateY(-2px);
         }
+        .widgets-bar button.modo-mover-activo {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
         
         /* Modal de eventos */
         .modal-evento-overlay {
@@ -490,13 +511,26 @@ function mostrarDashboard(main) {
             border-radius: 16px;
             padding: 24px;
             width: 90%;
-            max-width: 400px;
+            max-width: 420px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-height: 85vh;
+            overflow-y: auto;
         }
         .modal-evento h3 {
             margin: 0 0 16px 0;
             font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
+        .modal-evento h3 .close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            color: var(--text-secondary);
+        }
+        .modal-evento h3 .close:hover { color: var(--text-primary); }
         .modal-evento label {
             display: block;
             font-size: 12px;
@@ -505,7 +539,7 @@ function mostrarDashboard(main) {
             margin-bottom: 4px;
             margin-top: 12px;
         }
-        .modal-evento input, .modal-evento textarea {
+        .modal-evento input, .modal-evento textarea, .modal-evento select {
             width: 100%;
             padding: 8px 12px;
             border-radius: 8px;
@@ -514,6 +548,7 @@ function mostrarDashboard(main) {
             color: var(--text-primary);
             font-family: inherit;
             font-size: 14px;
+            box-sizing: border-box;
         }
         .modal-evento input:focus, .modal-evento textarea:focus {
             outline: none;
@@ -541,6 +576,17 @@ function mostrarDashboard(main) {
             background: var(--accent);
             color: white;
         }
+        .modal-evento .btn-eliminar {
+            background: #ef4444;
+            color: white;
+            margin-right: auto;
+        }
+        
+        .eventos-dia-lista {
+            margin-top: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
         
         @media (max-width: 768px) {
             #mainContent.container {
@@ -549,49 +595,92 @@ function mostrarDashboard(main) {
             .widgets-bar {
                 bottom: 60px;
                 font-size: 11px;
+                flex-wrap: wrap;
+                max-width: 95vw;
             }
             .widgets-bar .bar-label { display: none; }
+            .widgets-bar button { padding: 5px 8px; font-size: 11px; }
         }
     </style>
     
-    <div class="escritorio" id="escritorio">
-        <!-- Los elementos flotantes se insertan aquí por JS -->
-    </div>
+    <div class="escritorio" id="escritorio"></div>
     
     <div class="widgets-bar">
         <span class="bar-label">➕ Añadir:</span>
         <button onclick="añadirNota()"><i class="fas fa-sticky-note"></i> Nota</button>
-        <button onclick="añadirCalendario()"><i class="fas fa-calendar-alt"></i> Calendario</button>
+        <button onclick="abrirModalEvento()"><i class="fas fa-calendar-plus"></i> Evento</button>
         <button onclick="resetEscritorio()"><i class="fas fa-undo"></i> Reset</button>
+        <button id="btnModoMover" onclick="toggleModoMover()"><i class="fas fa-arrows-alt"></i> Mover: OFF</button>
     </div>
     
     <div class="modal-evento-overlay" id="modalEvento">
         <div class="modal-evento">
-            <h3 id="modalEventoTitulo">📅 Nuevo evento</h3>
-            <label>Fecha</label>
-            <input type="date" id="eventoFecha" />
-            <label>Hora (opcional)</label>
-            <input type="time" id="eventoHora" />
-            <label>Título</label>
-            <input type="text" id="eventoTitulo" placeholder="Ej: Examen de Derecho" />
-            <label>Descripción (opcional)</label>
-            <textarea id="eventoDesc" rows="2" placeholder="Detalles..."></textarea>
-            <div class="acciones">
-                <button class="btn-cancelar" onclick="cerrarModalEvento()">Cancelar</button>
-                <button class="btn-guardar" onclick="guardarEvento()">Guardar</button>
+            <h3>
+                <span id="modalEventoTitulo">📅 Evento</span>
+                <button class="close" onclick="cerrarModalEvento()">✕</button>
+            </h3>
+            
+            <div id="eventosExistentesContainer"></div>
+            
+            <div id="formEventoContainer">
+                <input type="hidden" id="eventoId" />
+                <label>Fecha</label>
+                <input type="date" id="eventoFecha" />
+                <label>Hora (opcional)</label>
+                <input type="time" id="eventoHora" />
+                <label>Título</label>
+                <input type="text" id="eventoTitulo" placeholder="Ej: Examen de Derecho" />
+                <label>Descripción (opcional)</label>
+                <textarea id="eventoDesc" rows="2" placeholder="Detalles..."></textarea>
+                <div class="acciones">
+                    <button class="btn-eliminar" id="btnEliminarEvento" onclick="eliminarEventoActual()" style="display:none;">🗑️ Eliminar</button>
+                    <button class="btn-cancelar" onclick="cerrarModalEvento()">Cancelar</button>
+                    <button class="btn-guardar" onclick="guardarEvento()">Guardar</button>
+                </div>
             </div>
         </div>
     </div>
     `;
     
     main.innerHTML = html;
-    
-    // Renderizar los elementos del escritorio
     renderizarEscritorio();
+    
+    // Aplicar estado del modo mover
+    if (modoMover) {
+        document.body.classList.add('modo-mover');
+        const btn = document.getElementById('btnModoMover');
+        if (btn) {
+            btn.classList.add('modo-mover-activo');
+            btn.innerHTML = '<i class="fas fa-arrows-alt"></i> Mover: ON';
+        }
+    }
 }
 
 // ============================================================
-// RENDERIZAR ELEMENTOS DEL ESCRITORIO
+// MODO MOVER
+// ============================================================
+
+function toggleModoMover() {
+    modoMover = !modoMover;
+    const btn = document.getElementById('btnModoMover');
+    
+    if (modoMover) {
+        document.body.classList.add('modo-mover');
+        if (btn) {
+            btn.classList.add('modo-mover-activo');
+            btn.innerHTML = '<i class="fas fa-arrows-alt"></i> Mover: ON';
+        }
+    } else {
+        document.body.classList.remove('modo-mover');
+        if (btn) {
+            btn.classList.remove('modo-mover-activo');
+            btn.innerHTML = '<i class="fas fa-arrows-alt"></i> Mover: OFF';
+        }
+    }
+}
+
+// ============================================================
+// RENDERIZAR ELEMENTOS
 // ============================================================
 
 function renderizarEscritorio() {
@@ -602,7 +691,7 @@ function renderizarEscritorio() {
     const elementos = window._escritorio;
     const colors = window._colors || {};
     
-    // Renderizar botones de áreas
+    // Botones de áreas
     (elementos.areas || []).forEach(elem => {
         const area = areas.find(a => a.id === elem.areaId);
         if (!area) return;
@@ -616,16 +705,22 @@ function renderizarEscritorio() {
         div.style.width = elem.w + 'px';
         div.style.height = elem.h + 'px';
         div.style.borderColor = colors[area.id] || '#6c757d';
-        div.innerHTML = `<span style="font-size:16px;">${area.icon || '📚'}</span> ${area.nombre}`;
+        div.innerHTML = `<span style="font-size:16px;pointer-events:none;">${area.icon || '📚'}</span> <span style="pointer-events:none;">${area.nombre}</span>`;
         
-        // Evitar que al arrastrar se active el enlace
-        div.addEventListener('dragstart', e => e.preventDefault());
+        // Si NO está modo mover, permitir navegación con clic
+        // Si SÍ está modo mover, el clic se bloquea para poder arrastrar
+        div.addEventListener('click', (e) => {
+            if (modoMover) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        });
         
         escritorio.appendChild(div);
-        hacerArrastrable(div, elem);
+        if (modoMover) hacerArrastrable(div, elem);
     });
     
-    // Renderizar calendario
+    // Calendario
     if (elementos.calendario) {
         const elem = elementos.calendario;
         const div = document.createElement('div');
@@ -638,10 +733,10 @@ function renderizarEscritorio() {
         div.innerHTML = renderCalendarioHTML(elem.vista || 'semana');
         
         escritorio.appendChild(div);
-        hacerArrastrable(div, elem);
+        if (modoMover) hacerArrastrable(div, elem);
     }
     
-    // Renderizar notas
+    // Notas
     (elementos.notas || []).forEach(elem => {
         const div = document.createElement('div');
         div.className = 'elemento-flotante elem-nota';
@@ -653,21 +748,30 @@ function renderizarEscritorio() {
         div.style.background = elem.color || '#ffd93d';
         div.innerHTML = `
             <button class="nota-del" onclick="eliminarNota('${elem.id}')">✕</button>
-            <div class="nota-texto" contenteditable="true" spellcheck="false" 
-                 onblur="guardarTextoNota('${elem.id}', this.textContent)"
-                 onmousedown="event.stopPropagation()">${elem.texto || ''}</div>
+            <div class="nota-texto" contenteditable="${modoMover ? 'false' : 'true'}" spellcheck="false">${elem.texto || ''}</div>
         `;
         
+        const textoDiv = div.querySelector('.nota-texto');
+        textoDiv.addEventListener('blur', () => {
+            if (!modoMover) {
+                guardarTextoNota(elem.id, textoDiv.textContent);
+            }
+        });
+        textoDiv.addEventListener('mousedown', (e) => {
+            if (modoMover) {
+                e.preventDefault();
+            } else {
+                e.stopPropagation();
+            }
+        });
+        
         escritorio.appendChild(div);
-        hacerArrastrable(div, elem);
+        if (modoMover) hacerArrastrable(div, elem);
     });
-    
-    // Habilitar interact.js para redimensionar y arrastrar
-    habilitarInteract();
 }
 
 // ============================================================
-// CALENDARIO HTML (día / semana / mes)
+// CALENDARIO HTML
 // ============================================================
 
 function renderCalendarioHTML(vista) {
@@ -680,26 +784,26 @@ function renderCalendarioHTML(vista) {
     let cuerpo = '';
     
     if (vista === 'dia') {
-        // Vista DÍA
         const key = hoy.getFullYear() + '-' + String(hoy.getMonth()+1).padStart(2,'0') + '-' + String(hoy.getDate()).padStart(2,'0');
-        const diaEventos = eventos.filter(e => e.fecha === key);
+        const diaEventos = eventos.filter(e => e.fecha === key).sort((a,b) => (a.hora||'').localeCompare(b.hora||''));
         cuerpo = `
             <div class="cal-dia-detalle">
                 <div class="fecha-grande">${diasSemanaLargo[hoy.getDay() === 0 ? 6 : hoy.getDay()-1]}, ${hoy.getDate()} de ${meses[hoy.getMonth()]}</div>
                 ${diaEventos.length === 0 ? '<p style="text-align:center;color:var(--text-secondary);font-size:12px;">Sin eventos</p>' : ''}
-                ${diaEventos.map((e, i) => `
+                ${diaEventos.map(e => `
                     <div class="evento-item">
-                        <div>
+                        <div class="info">
                             <div class="titulo">${e.titulo}</div>
-                            ${e.hora ? `<div class="hora">${e.hora}</div>` : ''}
+                            ${e.hora ? `<div class="hora">⏰ ${e.hora}</div>` : ''}
+                            ${e.desc ? `<div class="desc">${e.desc}</div>` : ''}
                         </div>
+                        <button class="btn-del-evento" onclick="eliminarEventoPorId('${e.id}')">🗑️</button>
                     </div>
                 `).join('')}
                 <button class="btn-add-evento" onclick="abrirModalEvento('${key}')">+ Añadir evento</button>
             </div>
         `;
     } else if (vista === 'semana') {
-        // Vista SEMANA
         const diaSemana = hoy.getDay();
         const diff = diaSemana === 0 ? 6 : diaSemana - 1;
         const inicio = new Date(hoy);
@@ -720,16 +824,15 @@ function renderCalendarioHTML(vista) {
             let clase = 'cal-dia';
             if (esHoy) clase += ' hoy';
             if (tieneEvento) clase += ' evento';
-            grid += `<div class="${clase}" onclick="abrirDia('${key}')" style="min-height:48px;">
+            grid += `<div class="${clase}" onclick="abrirDiaCalendario('${key}')" style="min-height:48px;">
                 <div style="font-weight:700;">${dia}</div>
-                <div style="font-size:9px;color:inherit;opacity:0.7;">${meses[mesNum-1].substring(0,3)}</div>
+                <div style="font-size:9px;opacity:0.7;">${meses[mesNum-1].substring(0,3)}</div>
                 ${tieneEvento ? '<div class="punto"></div>' : ''}
             </div>`;
         }
         grid += '</div>';
         cuerpo = grid;
     } else {
-        // Vista MES
         const año = hoy.getFullYear();
         const mes = hoy.getMonth();
         const primerDia = new Date(año, mes, 1).getDay();
@@ -751,7 +854,7 @@ function renderCalendarioHTML(vista) {
             let clase = 'cal-dia';
             if (esHoy) clase += ' hoy';
             if (tieneEvento) clase += ' evento';
-            grid += `<div class="${clase}" onclick="abrirDia('${key}')">${d}</div>`;
+            grid += `<div class="${clase}" onclick="abrirDiaCalendario('${key}')">${d}</div>`;
         }
         grid += '</div>';
         cuerpo = grid;
@@ -778,52 +881,97 @@ function cambiarVista(vista) {
     elementos.calendario.vista = vista;
     localStorage.setItem('escritorio_elementos', JSON.stringify(elementos));
     
-    // Actualizar solo el calendario
     const cal = document.getElementById('calendario');
     if (cal) {
-        // Mantener el header, cambiar solo body
-        const body = cal.querySelector('.cal-body');
-        const header = cal.querySelector('.cal-header');
-        if (header && body) {
-            const nuevoHTML = renderCalendarioHTML(vista);
-            const temp = document.createElement('div');
-            temp.innerHTML = nuevoHTML;
-            cal.innerHTML = nuevoHTML;
-        } else {
-            cal.innerHTML = renderCalendarioHTML(vista);
-        }
+        cal.innerHTML = renderCalendarioHTML(vista);
     }
 }
 
-function abrirDia(key) {
-    // Abrir modal para añadir evento a ese día
-    abrirModalEvento(key);
-}
-
 // ============================================================
-// MODAL EVENTO
+// MODAL EVENTO - Con consulta y edición
 // ============================================================
 
 let _fechaEventoActual = null;
 
 function abrirModalEvento(fecha) {
-    _fechaEventoActual = fecha;
+    _fechaEventoActual = fecha || null;
+    
+    // Establecer fecha por defecto
     const hoy = new Date();
     const fechaInput = document.getElementById('eventoFecha');
-    if (fechaInput) {
-        // Si fecha es string YYYY-MM-DD
-        if (typeof fecha === 'string' && fecha.includes('-')) {
-            fechaInput.value = fecha;
-        } else {
-            fechaInput.value = hoy.getFullYear() + '-' + String(hoy.getMonth()+1).padStart(2,'0') + '-' + String(hoy.getDate()).padStart(2,'0');
-        }
+    if (fecha && typeof fecha === 'string' && fecha.includes('-')) {
+        fechaInput.value = fecha;
+    } else {
+        fechaInput.value = hoy.getFullYear() + '-' + String(hoy.getMonth()+1).padStart(2,'0') + '-' + String(hoy.getDate()).padStart(2,'0');
     }
-    document.getElementById('modalEventoTitulo').textContent = '📅 Nuevo evento';
+    
+    // Limpiar formulario
+    document.getElementById('eventoId').value = '';
     document.getElementById('eventoTitulo').value = '';
     document.getElementById('eventoHora').value = '';
     document.getElementById('eventoDesc').value = '';
+    document.getElementById('btnEliminarEvento').style.display = 'none';
+    
+    // Mostrar eventos existentes del día
+    mostrarEventosExistentes(fechaInput.value);
+    
+    document.getElementById('modalEventoTitulo').textContent = '📅 Evento';
     document.getElementById('modalEvento').classList.add('show');
+    
+    // Actualizar eventos al cambiar la fecha
+    fechaInput.onchange = () => {
+        mostrarEventosExistentes(fechaInput.value);
+    };
+    
     setTimeout(() => document.getElementById('eventoTitulo').focus(), 100);
+}
+
+function mostrarEventosExistentes(fecha) {
+    const container = document.getElementById('eventosExistentesContainer');
+    if (!container) return;
+    
+    const eventos = JSON.parse(localStorage.getItem('eventos_calendario') || '[]');
+    const delDia = eventos.filter(e => e.fecha === fecha).sort((a,b) => (a.hora||'').localeCompare(b.hora||''));
+    
+    if (delDia.length === 0) {
+        container.innerHTML = '';
+        return;
+    }
+    
+    container.innerHTML = `
+        <label style="margin-top:0;">📌 Eventos existentes (${delDia.length}):</label>
+        <div class="eventos-dia-lista">
+            ${delDia.map(e => `
+                <div class="evento-item" style="background:var(--bg-hover);padding:8px;border-radius:6px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center;gap:8px;">
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-weight:600;font-size:13px;">${e.titulo}</div>
+                        ${e.hora ? `<div style="font-size:11px;color:var(--text-secondary);">⏰ ${e.hora}</div>` : ''}
+                        ${e.desc ? `<div style="font-size:11px;color:var(--text-secondary);">${e.desc}</div>` : ''}
+                    </div>
+                    <div style="display:flex;gap:4px;">
+                        <button onclick="editarEvento('${e.id}')" style="background:none;border:none;cursor:pointer;font-size:14px;padding:4px 6px;border-radius:4px;" title="Editar">✏️</button>
+                        <button onclick="eliminarEventoPorId('${e.id}')" style="background:none;border:none;cursor:pointer;font-size:14px;padding:4px 6px;border-radius:4px;color:#ff6b6b;" title="Eliminar">🗑️</button>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+        <hr style="margin:12px 0;border:none;border-top:1px solid var(--border);" />
+    `;
+}
+
+function editarEvento(id) {
+    const eventos = JSON.parse(localStorage.getItem('eventos_calendario') || '[]');
+    const evento = eventos.find(e => e.id === id);
+    if (!evento) return;
+    
+    document.getElementById('eventoId').value = evento.id;
+    document.getElementById('eventoFecha').value = evento.fecha;
+    document.getElementById('eventoHora').value = evento.hora || '';
+    document.getElementById('eventoTitulo').value = evento.titulo;
+    document.getElementById('eventoDesc').value = evento.desc || '';
+    document.getElementById('btnEliminarEvento').style.display = 'inline-block';
+    document.getElementById('modalEventoTitulo').textContent = '✏️ Editar evento';
+    document.getElementById('eventoTitulo').focus();
 }
 
 function cerrarModalEvento() {
@@ -831,6 +979,7 @@ function cerrarModalEvento() {
 }
 
 function guardarEvento() {
+    const id = document.getElementById('eventoId').value;
     const fecha = document.getElementById('eventoFecha').value;
     const hora = document.getElementById('eventoHora').value;
     const titulo = document.getElementById('eventoTitulo').value.trim();
@@ -841,67 +990,90 @@ function guardarEvento() {
         return;
     }
     
-    const eventos = JSON.parse(localStorage.getItem('eventos_calendario') || '[]');
-    eventos.push({ fecha, hora, titulo, desc });
+    let eventos = JSON.parse(localStorage.getItem('eventos_calendario') || '[]');
+    
+    if (id) {
+        // Editar existente
+        const idx = eventos.findIndex(e => e.id === id);
+        if (idx >= 0) {
+            eventos[idx] = { ...eventos[idx], fecha, hora, titulo, desc };
+        }
+    } else {
+        // Nuevo
+        eventos.push({ id: 'ev-' + Date.now(), fecha, hora, titulo, desc });
+    }
+    
     localStorage.setItem('eventos_calendario', JSON.stringify(eventos));
     
+    // Refrescar
     cerrarModalEvento();
-    // Recargar calendario
+    refrescarCalendario();
+}
+
+function eliminarEventoActual() {
+    const id = document.getElementById('eventoId').value;
+    if (!id) return;
+    if (!confirm('¿Eliminar este evento?')) return;
+    eliminarEventoPorId(id);
+    cerrarModalEvento();
+}
+
+function eliminarEventoPorId(id) {
+    if (!confirm('¿Eliminar este evento?')) return;
+    let eventos = JSON.parse(localStorage.getItem('eventos_calendario') || '[]');
+    eventos = eventos.filter(e => e.id !== id);
+    localStorage.setItem('eventos_calendario', JSON.stringify(eventos));
+    refrescarCalendario();
+    
+    // Si el modal está abierto, refrescar lista
+    if (document.getElementById('modalEvento').classList.contains('show')) {
+        const fecha = document.getElementById('eventoFecha').value;
+        mostrarEventosExistentes(fecha);
+    }
+}
+
+function refrescarCalendario() {
     const cal = document.getElementById('calendario');
     if (cal && window._escritorio.calendario) {
         cal.innerHTML = renderCalendarioHTML(window._escritorio.calendario.vista || 'semana');
     }
 }
 
+function abrirDiaCalendario(key) {
+    // Abrir modal con esa fecha, mostrando eventos existentes
+    abrirModalEvento(key);
+}
+
 // ============================================================
-// DRAG & DROP + RESIZE CON INTERACT.JS
+// DRAG & RESIZE
 // ============================================================
 
 function hacerArrastrable(elemento, elemData) {
-    // Guardar datos en el elemento
-    elemento.dataset.elemId = elemData.id;
-    
     interact(elemento)
         .draggable({
             inertia: false,
-            modifiers: [
-                interact.modifiers.restrictRect({
-                    restriction: 'parent',
-                    endOnly: false
-                })
-            ],
             autoScroll: true,
             listeners: {
-                start(event) {
-                    elemento.classList.add('dragging');
-                },
+                start() { elemento.classList.add('dragging'); },
                 move(event) {
                     const target = event.target;
                     const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
                     const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
-                    
                     target.style.transform = `translate(${x}px, ${y}px)`;
                     target.setAttribute('data-x', x);
                     target.setAttribute('data-y', y);
                 },
-                end(event) {
+                end() {
                     elemento.classList.remove('dragging');
                     const x = parseFloat(elemento.getAttribute('data-x')) || 0;
                     const y = parseFloat(elemento.getAttribute('data-y')) || 0;
-                    
-                    // Actualizar posición en datos
-                    const nuevaX = elemData.x + x;
-                    const nuevaY = elemData.y + y;
-                    elemData.x = Math.max(0, nuevaX);
-                    elemData.y = Math.max(0, nuevaY);
-                    
-                    // Reset transform y aplicar posición absoluta
+                    elemData.x = Math.max(0, elemData.x + x);
+                    elemData.y = Math.max(0, elemData.y + y);
                     elemento.style.transform = '';
                     elemento.setAttribute('data-x', 0);
                     elemento.setAttribute('data-y', 0);
                     elemento.style.left = elemData.x + 'px';
                     elemento.style.top = elemData.y + 'px';
-                    
                     guardarEscritorio();
                 }
             }
@@ -909,44 +1081,34 @@ function hacerArrastrable(elemento, elemData) {
         .resizable({
             edges: { left: true, right: true, bottom: true, top: true },
             listeners: {
-                start(event) {
-                    elemento.classList.add('resizing');
-                },
+                start() { elemento.classList.add('resizing'); },
                 move(event) {
                     const target = event.target;
                     let x = (parseFloat(target.getAttribute('data-x')) || 0);
                     let y = (parseFloat(target.getAttribute('data-y')) || 0);
-                    
                     target.style.width = event.rect.width + 'px';
                     target.style.height = event.rect.height + 'px';
-                    
                     x += event.deltaRect.left;
                     y += event.deltaRect.top;
-                    
                     target.style.transform = `translate(${x}px, ${y}px)`;
                     target.setAttribute('data-x', x);
                     target.setAttribute('data-y', y);
-                    
-                    // Actualizar dimensiones en datos
                     elemData.w = event.rect.width;
                     elemData.h = event.rect.height;
                 },
-                end(event) {
+                end() {
                     elemento.classList.remove('resizing');
                     const x = parseFloat(elemento.getAttribute('data-x')) || 0;
                     const y = parseFloat(elemento.getAttribute('data-y')) || 0;
-                    
                     elemData.x = elemData.x + x;
                     elemData.y = elemData.y + y;
                     elemData.w = parseFloat(elemento.style.width);
                     elemData.h = parseFloat(elemento.style.height);
-                    
                     elemento.style.transform = '';
                     elemento.setAttribute('data-x', 0);
                     elemento.setAttribute('data-y', 0);
                     elemento.style.left = elemData.x + 'px';
                     elemento.style.top = elemData.y + 'px';
-                    
                     guardarEscritorio();
                 }
             }
@@ -958,13 +1120,13 @@ function guardarEscritorio() {
 }
 
 // ============================================================
-// ACCIONES DEL ESCRITORIO
+// ACCIONES
 // ============================================================
 
 function añadirNota() {
     const elementos = window._escritorio;
     const colores = ['#ffd93d', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#dda0dd', '#ff9ff3', '#feca57'];
-    const nuevaNota = {
+    elementos.notas.push({
         id: 'nota-' + Date.now(),
         tipo: 'nota',
         texto: '',
@@ -973,8 +1135,7 @@ function añadirNota() {
         y: 100 + Math.random() * 200,
         w: 180,
         h: 140
-    };
-    elementos.notas.push(nuevaNota);
+    });
     guardarEscritorio();
     renderizarEscritorio();
 }
@@ -995,26 +1156,6 @@ function guardarTextoNota(id, texto) {
     }
 }
 
-function añadirCalendario() {
-    const elementos = window._escritorio;
-    // Si ya existe, no añadir otro
-    if (elementos.calendario) {
-        alert('Ya tienes un calendario');
-        return;
-    }
-    elementos.calendario = {
-        id: 'calendario',
-        tipo: 'calendario',
-        x: 200,
-        y: 200,
-        w: 400,
-        h: 320,
-        vista: 'semana'
-    };
-    guardarEscritorio();
-    renderizarEscritorio();
-}
-
 function resetEscritorio() {
     if (!confirm('¿Resetear el escritorio a su estado inicial?')) return;
     localStorage.removeItem('escritorio_elementos');
@@ -1022,16 +1163,11 @@ function resetEscritorio() {
 }
 
 // ============================================================
-// RESTO DE VISTAS (ESTUDIO, CONFIGURACIÓN)
+// RESTO DE VISTAS
 // ============================================================
 
 function mostrarEstudio(main) {
-    // Restaurar padding del container
-    main.style.padding = '24px';
-    main.style.maxWidth = '1400px';
-    main.style.margin = '0 auto';
-    main.style.height = 'auto';
-    main.style.overflow = 'auto';
+    main.style.cssText = 'padding:24px;max-width:1400px;margin:0 auto;height:auto;overflow:auto;';
     
     const nivel = estado.nivel || 'areas';
     const areaId = estado.areaId || '';
@@ -1054,36 +1190,15 @@ async function mostrarAreas(main) {
         const asig = await getAsignaturas(area.id);
         const ap = asig.filter(a => estaAprobada(area.id, a.id)).length;
         const mat = asig.filter(a => esMatriculada(a)).length;
-        const totalAsig = asig.length;
-        const pct = totalAsig > 0 ? Math.round((ap/totalAsig)*100) : 0;
-        
-        if (area.id === 'herramientas' || area.id === 'networking' || area.id === 'pnl') {
-            const color = area.id === 'herramientas' ? '#8b5cf6' : area.id === 'networking' ? '#00b4d8' : '#9b59b6';
-            html += `
-                <div class="area-card" onclick="navegar('asignaturas','${area.id}')" style="border: 2px dashed ${color};">
-                    <div class="icon">${area.icon || '🔧'}</div>
-                    <div class="nombre">${area.nombre}</div>
-                    <div class="desc">${area.descripcion || ''}</div>
-                    <div style="font-size:13px; color:var(--text-secondary); margin-top:8px;">
-                        ⚡ ${asig.length} disponibles
-                    </div>
-                </div>
-            `;
-        } else {
-            html += `
-                <div class="area-card" onclick="navegar('cursos','${area.id}')">
-                    <div class="icon">${area.icon || '📚'}</div>
-                    <div class="nombre">${area.nombre}</div>
-                    <div class="desc">${area.descripcion || ''}</div>
-                    <div class="progress-track" style="margin-top:8px;">
-                        <div class="progress-fill" style="width:${pct}%; height:6px;"></div>
-                    </div>
-                    <div style="font-size:13px; color:var(--text-secondary); margin-top:4px;">
-                        ${ap}/${totalAsig} aprobadas | ${mat} matriculadas
-                    </div>
-                </div>
-            `;
-        }
+        const total = asig.length;
+        const pct = total > 0 ? Math.round((ap/total)*100) : 0;
+        html += `<div class="area-card" onclick="navegar('cursos','${area.id}')">
+            <div class="icon">${area.icon || '📚'}</div>
+            <div class="nombre">${area.nombre}</div>
+            <div class="desc">${area.descripcion || ''}</div>
+            <div class="progress-track" style="margin-top:8px;"><div class="progress-fill" style="width:${pct}%;height:6px;"></div></div>
+            <div style="font-size:13px;color:var(--text-secondary);margin-top:4px;">${ap}/${total} aprobadas | ${mat} matriculadas</div>
+        </div>`;
     }
     html += `</div>`;
     main.innerHTML = html;
@@ -1094,19 +1209,17 @@ async function mostrarCursos(main, areaId) {
     if (!area) { main.innerHTML = '<h2>Área no encontrada</h2>'; return; }
     const asig = await getAsignaturas(areaId);
     const cursos = [...new Set(asig.map(a => a.curso))].sort();
-    const nombresCursos = { '1': 'Primer Curso', '2': 'Segundo Curso', '3': 'Tercer Curso', '4': 'Cuarto Curso' };
-    const iconosCursos = { '1': '1️⃣', '2': '2️⃣', '3': '3️⃣', '4': '4️⃣' };
+    const nombres = { '1': 'Primer Curso', '2': 'Segundo Curso', '3': 'Tercer Curso', '4': 'Cuarto Curso' };
+    const iconos = { '1': '1️⃣', '2': '2️⃣', '3': '3️⃣', '4': '4️⃣' };
     let html = `<div class="area-header"><button class="btn btn-outline" onclick="navegar('areas')"><i class="fas fa-arrow-left"></i> Volver</button><h1>${area.icon || '📚'} ${area.nombre}</h1></div><div class="area-grid">`;
-    for (let cursoId of cursos) {
-        const asigCurso = asig.filter(a => a.curso == cursoId);
-        const ap = asigCurso.filter(a => estaAprobada(areaId, a.id)).length;
-        const mat = asigCurso.filter(a => esMatriculada(a)).length;
-        const pct = asigCurso.length > 0 ? Math.round((ap/asigCurso.length)*100) : 0;
-        html += `<div class="area-card" onclick="navegar('semestres','${areaId}','${cursoId}')">
-            <div class="icon" style="font-size:32px;">${iconosCursos[cursoId] || '📚'}</div>
-            <div class="nombre">${nombresCursos[cursoId] || 'Curso ' + cursoId}</div>
-            <div style="font-size:13px; color:var(--text-secondary); margin-top:4px;">${ap}/${asigCurso.length} aprobadas | ${mat} matriculadas (${pct}%)</div>
-            <div class="progress-track" style="margin-top:8px;"><div class="progress-fill" style="width:${pct}%; height:6px;"></div></div>
+    for (let c of cursos) {
+        const ac = asig.filter(a => a.curso == c);
+        const ap = ac.filter(a => estaAprobada(areaId, a.id)).length;
+        const pct = ac.length > 0 ? Math.round((ap/ac.length)*100) : 0;
+        html += `<div class="area-card" onclick="navegar('semestres','${areaId}','${c}')">
+            <div class="icon" style="font-size:32px;">${iconos[c] || '📚'}</div>
+            <div class="nombre">${nombres[c] || 'Curso ' + c}</div>
+            <div class="progress-track" style="margin-top:8px;"><div class="progress-fill" style="width:${pct}%;height:6px;"></div></div>
         </div>`;
     }
     html += `</div>`;
@@ -1115,24 +1228,20 @@ async function mostrarCursos(main, areaId) {
 
 async function mostrarSemestres(main, areaId, cursoId) {
     const area = areas.find(a => a.id === areaId);
-    if (!area) { main.innerHTML = '<h2>Área no encontrada</h2>'; return; }
+    if (!area) return;
     const asig = await getAsignaturas(areaId);
-    const asigCurso = asig.filter(a => a.curso == cursoId);
-    const semestres = [...new Set(asigCurso.map(a => a.semestre))].sort();
-    const nombresSemestres = { '0': '📅 Anuales', '1': '📖 Primer Semestre', '2': '📖 Segundo Semestre' };
-    const nombresCursos = { '1': 'Primer Curso', '2': 'Segundo Curso', '3': 'Tercer Curso', '4': 'Cuarto Curso' };
-    let html = `<div class="area-header"><button class="btn btn-outline" onclick="navegar('cursos','${areaId}')"><i class="fas fa-arrow-left"></i> Volver</button><h1>${area.icon || '📚'} ${area.nombre} - ${nombresCursos[cursoId] || 'Curso ' + cursoId}</h1></div><div class="area-grid">`;
-    for (let semId of semestres) {
-        const asigSem = asigCurso.filter(a => a.semestre == semId);
-        const ap = asigSem.filter(a => estaAprobada(areaId, a.id)).length;
-        const mat = asigSem.filter(a => esMatriculada(a)).length;
-        const total = asigSem.length;
-        const pct = total > 0 ? Math.round((ap/total)*100) : 0;
-        html += `<div class="area-card" onclick="navegar('asignaturas','${areaId}','${cursoId}','${semId}')">
-            <div class="icon" style="font-size:32px;">${nombresSemestres[semId].includes('Anual') ? '📅' : '📖'}</div>
-            <div class="nombre">${nombresSemestres[semId] || 'Semestre ' + semId}</div>
-            <div style="font-size:13px; color:var(--text-secondary); margin-top:4px;">${ap}/${total} aprobadas | ${mat} matriculadas (${pct}%)</div>
-            <div class="progress-track" style="margin-top:8px;"><div class="progress-fill" style="width:${pct}%; height:6px;"></div></div>
+    const ac = asig.filter(a => a.curso == cursoId);
+    const semestres = [...new Set(ac.map(a => a.semestre))].sort();
+    const nombres = { '0': '📅 Anuales', '1': '📖 Primer Semestre', '2': '📖 Segundo Semestre' };
+    let html = `<div class="area-header"><button class="btn btn-outline" onclick="navegar('cursos','${areaId}')"><i class="fas fa-arrow-left"></i> Volver</button><h1>${area.icon || '📚'} ${area.nombre}</h1></div><div class="area-grid">`;
+    for (let s of semestres) {
+        const as = ac.filter(a => a.semestre == s);
+        const ap = as.filter(a => estaAprobada(areaId, a.id)).length;
+        const pct = as.length > 0 ? Math.round((ap/as.length)*100) : 0;
+        html += `<div class="area-card" onclick="navegar('asignaturas','${areaId}','${cursoId}','${s}')">
+            <div class="icon" style="font-size:32px;">${(nombres[s]||'').includes('Anual') ? '📅' : '📖'}</div>
+            <div class="nombre">${nombres[s] || 'Semestre ' + s}</div>
+            <div class="progress-track" style="margin-top:8px;"><div class="progress-fill" style="width:${pct}%;height:6px;"></div></div>
         </div>`;
     }
     html += `</div>`;
@@ -1141,23 +1250,19 @@ async function mostrarSemestres(main, areaId, cursoId) {
 
 async function mostrarAsignaturas(main, areaId, cursoId, semestreId) {
     const area = areas.find(a => a.id === areaId);
-    if (!area) { main.innerHTML = '<h2>Área no encontrada</h2>'; return; }
-    const esHerramientas = (areaId === 'herramientas' || areaId === 'networking' || areaId === 'pnl');
+    if (!area) return;
+    const esH = (areaId === 'herramientas' || areaId === 'networking' || areaId === 'pnl');
     let asig = await getAsignaturas(areaId);
-    if (!esHerramientas) asig = asig.filter(a => a.curso == cursoId && a.semestre == semestreId);
-    
-    let html = `<div class="area-header"><button class="btn btn-outline" onclick="navegar('${esHerramientas ? 'areas' : 'semestres'}','${areaId}'${esHerramientas ? '' : ",'"+cursoId+"'"})"><i class="fas fa-arrow-left"></i> Volver</button><h1>${area.icon || '📚'} ${area.nombre}</h1></div><div class="asignaturas-grid">`;
-    
+    if (!esH) asig = asig.filter(a => a.curso == cursoId && a.semestre == semestreId);
+    let html = `<div class="area-header"><button class="btn btn-outline" onclick="navegar('${esH ? 'areas' : 'semestres'}','${areaId}'${esH ? '' : ",'"+cursoId+"'"})"><i class="fas fa-arrow-left"></i> Volver</button><h1>${area.icon || '📚'} ${area.nombre}</h1></div><div class="asignaturas-grid">`;
     asig.forEach(a => {
         const ap = estaAprobada(areaId, a.id);
-        const matriculada = esMatriculada(a);
-        let borderColor = esHerramientas ? (areaId === 'herramientas' ? '#8b5cf6' : areaId === 'networking' ? '#00b4d8' : '#9b59b6') : (ap ? '#10b981' : matriculada ? '#3b82f6' : '#9ca3af');
-        let badge = esHerramientas ? '<span class="badge-herramienta">📖 Asignatura</span>' : (ap ? '<span class="badge-aprobada">✅ Aprobada</span>' : (matriculada ? '<span class="badge-matriculada">📌 Matriculada</span>' : '<span class="badge-no-matriculada">📋 No matriculada</span>'));
+        const mat = esMatriculada(a);
+        const bc = esH ? '#8b5cf6' : (ap ? '#10b981' : mat ? '#3b82f6' : '#9ca3af');
         const url = area.path + a.path + 'asignatura.html';
-        html += `<div class="asignatura-card" style="border-left: 4px solid ${borderColor}; opacity: ${ap && !esHerramientas ? '0.6' : '1'};">
-            <div class="header"><div class="nombre-linea"><span class="nombre">${a.icon || '📚'} ${a.nombre}</span>${badge}</div><span class="codigo">${a.codigo || ''}</span></div>
-            <div class="info">${!esHerramientas ? `<span><i class="fas fa-star"></i> ${a.creditos || 0} ECTS</span>` : ''}<span><i class="fas fa-tag"></i> ${a.caracter || ''}</span></div>
-            <div class="acciones">${!esHerramientas ? `<button onclick="toggleAprobada('${areaId}','${a.id}')" class="btn ${ap ? 'btn-success' : 'btn-outline'}">${ap ? '✅ Desmarcar' : '📋 Marcar aprobada'}</button>` : ''}<button onclick="window.location.href='${url}'" class="btn btn-primary">${esHerramientas ? '🔧 Abrir' : '📖 Ver contenido'}</button></div>
+        html += `<div class="asignatura-card" style="border-left:4px solid ${bc};opacity:${ap&&!esH?'0.6':'1'};">
+            <div class="header"><div class="nombre-linea"><span class="nombre">${a.icon || '📚'} ${a.nombre}</span></div><span class="codigo">${a.codigo || ''}</span></div>
+            <div class="acciones"><button onclick="window.location.href='${url}'" class="btn btn-primary">${esH ? '🔧 Abrir' : '📖 Ver contenido'}</button></div>
         </div>`;
     });
     html += `</div>`;
@@ -1166,20 +1271,17 @@ async function mostrarAsignaturas(main, areaId, cursoId, semestreId) {
 
 function mostrarTemas(main, areaId, cursoId, semestreId, asignaturaId) {
     const area = areas.find(a => a.id === areaId);
-    if (!area) { main.innerHTML = '<h2>Área no encontrada</h2>'; return; }
+    if (!area) return;
     let asignatura = asignaturasCache[areaId]?.find(a => a.id === asignaturaId);
-    if (!asignatura) { main.innerHTML = '<h2>Asignatura no encontrada</h2>'; return; }
-    fetch(area.path + asignatura.path + 'config.json')
-        .then(r => r.json())
-        .then(data => {
-            let html = `<div class="area-header"><button class="btn btn-outline" onclick="navegar('asignaturas','${areaId}','${cursoId}','${semestreId}')"><i class="fas fa-arrow-left"></i> Volver</button><h1>${asignatura.icon || '📚'} ${asignatura.nombre}</h1></div><div class="card"><h2>📑 Temas</h2><div class="temas-list">`;
-            (data.temas || []).forEach((t, i) => {
-                html += `<div class="tema-item" onclick="navegar('tema','${areaId}','${cursoId}','${semestreId}','${asignaturaId}','${t.id}')"><div class="tema-info"><span class="tema-numero">${i+1}</span><span class="tema-titulo">${t.titulo}</span></div><div class="tema-progreso"><span>0%</span><i class="fas fa-chevron-right"></i></div></div>`;
-            });
-            html += `</div></div>`;
-            main.innerHTML = html;
-        })
-        .catch(() => { main.innerHTML = '<p>No se pudo cargar el config.json</p>'; });
+    if (!asignatura) return;
+    fetch(area.path + asignatura.path + 'config.json').then(r => r.json()).then(data => {
+        let html = `<div class="area-header"><button class="btn btn-outline" onclick="navegar('asignaturas','${areaId}','${cursoId}','${semestreId}')"><i class="fas fa-arrow-left"></i> Volver</button><h1>${asignatura.icon || '📚'} ${asignatura.nombre}</h1></div><div class="card"><h2>📑 Temas</h2><div class="temas-list">`;
+        (data.temas || []).forEach((t, i) => {
+            html += `<div class="tema-item" onclick="navegar('tema','${areaId}','${cursoId}','${semestreId}','${asignaturaId}','${t.id}')"><div class="tema-info"><span class="tema-numero">${i+1}</span><span class="tema-titulo">${t.titulo}</span></div><div class="tema-progreso"><i class="fas fa-chevron-right"></i></div></div>`;
+        });
+        html += `</div></div>`;
+        main.innerHTML = html;
+    });
 }
 
 function mostrarTema(main, areaId, cursoId, semestreId, asignaturaId, temaId) {
@@ -1187,26 +1289,18 @@ function mostrarTema(main, areaId, cursoId, semestreId, asignaturaId, temaId) {
     if (!area) return;
     let asignatura = asignaturasCache[areaId]?.find(a => a.id === asignaturaId);
     if (!asignatura) return;
-    fetch(area.path + asignatura.path + 'temas/' + temaId + '/tema.html')
-        .then(r => r.text())
-        .then(html => {
-            main.innerHTML = html;
-            main.querySelectorAll('script').forEach(oldScript => {
-                const newScript = document.createElement('script');
-                newScript.textContent = oldScript.textContent;
-                document.body.appendChild(newScript);
-            });
-        })
-        .catch(() => { main.innerHTML = '<p>No se encontró el tema</p>'; });
+    fetch(area.path + asignatura.path + 'temas/' + temaId + '/tema.html').then(r => r.text()).then(html => {
+        main.innerHTML = html;
+        main.querySelectorAll('script').forEach(oldScript => {
+            const newScript = document.createElement('script');
+            newScript.textContent = oldScript.textContent;
+            document.body.appendChild(newScript);
+        });
+    });
 }
 
 async function mostrarConfiguracion(main) {
-    main.style.padding = '24px';
-    main.style.maxWidth = '1400px';
-    main.style.margin = '0 auto';
-    main.style.height = 'auto';
-    main.style.overflow = 'auto';
-    
+    main.style.cssText = 'padding:24px;max-width:1400px;margin:0 auto;height:auto;overflow:auto;';
     let total = 0, ap = 0, mat = 0;
     for (let area of areas) {
         const asig = await getAsignaturas(area.id);
@@ -1214,11 +1308,9 @@ async function mostrarConfiguracion(main) {
         ap += asig.filter(a => estaAprobada(area.id, a.id)).length;
         mat += asig.filter(a => esMatriculada(a)).length;
     }
-    main.innerHTML = `
-        <h1 class="page-title">⚙️ Configuración</h1>
-        <div class="card"><h2>📋 Datos del Sistema</h2><p><strong>Áreas:</strong> ${areas.length}</p><p><strong>Asignaturas:</strong> ${total}</p><p><strong>Aprobadas:</strong> ${ap}</p><p><strong>Matriculadas:</strong> ${mat}</p></div>
-        <div class="card"><h2>🧹 Limpieza</h2><button class="btn btn-danger" onclick="if(confirm('¿Borrar todo el progreso?')){localStorage.clear();alert('Reiniciado');cargarVista('configuracion');}"><i class="fas fa-trash"></i> Reiniciar Progreso</button></div>
-    `;
+    main.innerHTML = `<h1 class="page-title">⚙️ Configuración</h1>
+        <div class="card"><h2>📋 Datos</h2><p><strong>Áreas:</strong> ${areas.length}</p><p><strong>Asignaturas:</strong> ${total}</p><p><strong>Aprobadas:</strong> ${ap}</p><p><strong>Matriculadas:</strong> ${mat}</p></div>
+        <div class="card"><h2>🧹 Limpieza</h2><button class="btn btn-danger" onclick="if(confirm('¿Borrar todo?')){localStorage.clear();location.reload();}"><i class="fas fa-trash"></i> Reiniciar</button></div>`;
 }
 
 // ============================================================
@@ -1227,10 +1319,10 @@ async function mostrarConfiguracion(main) {
 
 document.getElementById('themeToggle').addEventListener('click', function() {
     const html = document.documentElement;
-    const newTheme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    html.setAttribute('data-theme', newTheme);
-    this.querySelector('i').className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-    localStorage.setItem('theme', newTheme);
+    const t = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-theme', t);
+    this.querySelector('i').className = t === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    localStorage.setItem('theme', t);
 });
 
 const savedTheme = localStorage.getItem('theme') || 'light';
@@ -1241,17 +1333,20 @@ document.getElementById('menuToggle').addEventListener('click', () => {
     document.getElementById('navLinks').classList.toggle('open');
 });
 
-// Exponer funciones
+// Exponer
 window.cargarVista = cargarVista;
 window.navegar = navegar;
 window.toggleAprobada = toggleAprobada;
 window.cambiarVista = cambiarVista;
-window.abrirDia = abrirDia;
+window.abrirDiaCalendario = abrirDiaCalendario;
 window.abrirModalEvento = abrirModalEvento;
 window.cerrarModalEvento = cerrarModalEvento;
 window.guardarEvento = guardarEvento;
+window.editarEvento = editarEvento;
+window.eliminarEventoPorId = eliminarEventoPorId;
+window.eliminarEventoActual = eliminarEventoActual;
 window.añadirNota = añadirNota;
 window.eliminarNota = eliminarNota;
 window.guardarTextoNota = guardarTextoNota;
-window.añadirCalendario = añadirCalendario;
 window.resetEscritorio = resetEscritorio;
+window.toggleModoMover = toggleModoMover;
