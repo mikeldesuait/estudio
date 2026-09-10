@@ -1,9 +1,10 @@
 // ============================================================
-// ESTUDIO PERSONAL - NÚCLEO DE LA HERRAMIENTA
+// ESTUDIO PERSONAL - DASHBOARD CON WIDGETS (GridStack)
 // ============================================================
 
 let areas = [];
 let asignaturasCache = {};
+let grid = null;
 let estado = {
     nivel: 'areas',
     areaId: '',
@@ -144,12 +145,33 @@ function navegar(nivel, areaId, cursoId, semestreId, asignaturaId, temaId) {
 }
 
 // ============================================================
-// DASHBOARD - VERSIÓN FINAL COMPLETA
+// DASHBOARD - WIDGETS CON GRIDSTACK
 // ============================================================
 
 async function mostrarDashboard(main) {
+    // Cargar GridStack si no está cargado
+    if (typeof GridStack === 'undefined') {
+        const script = document.createElement('script');
+        script.src = 'lib/gridstack.min.js';
+        script.onload = () => {
+            cargarGridStack(main);
+        };
+        document.head.appendChild(script);
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'lib/gridstack.min.css';
+        document.head.appendChild(link);
+    } else {
+        cargarGridStack(main);
+    }
+}
+
+function cargarGridStack(main) {
+    // Obtener datos
     let ultimaAsignatura = null;
     let ultimoProgreso = 0;
+    let notas = JSON.parse(localStorage.getItem('tablero_notas') || '[]');
+    let eventos = JSON.parse(localStorage.getItem('eventos_calendario') || '[]');
     
     for (let area of areas) {
         const ultimaVisita = localStorage.getItem('ultima_visita');
@@ -165,7 +187,6 @@ async function mostrarDashboard(main) {
         }
     }
     
-    const notas = JSON.parse(localStorage.getItem('tablero_notas') || '[]');
     const colors = {
         'grado-derecho': '#3b82f6',
         'pnl': '#9b59b6',
@@ -173,595 +194,556 @@ async function mostrarDashboard(main) {
         'networking': '#00b4d8'
     };
     
-    // Estado del calendario
-    let mesActual = new Date().getMonth();
-    let añoActual = new Date().getFullYear();
+    // Guardar datos en ventana para acceso desde widgets
+    window._dashboardData = { ultimaAsignatura, ultimoProgreso, notas, eventos, colors };
     
-    let html = `
-    <style>
-        .dashboard-final {
-            display: grid;
-            grid-template-columns: 1fr 340px;
-            gap: 16px;
-            height: calc(100vh - 150px);
-            min-height: 400px;
-            padding: 5px 0;
-        }
-        
-        .col-izquierda {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        .areas-pestanas {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-        .btn-area-pestana {
-            padding: 8px 16px;
-            border-radius: 10px;
-            border: 2px solid var(--border);
-            background: var(--bg-card);
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 13px;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: var(--text-primary);
-            max-width: 140px;
-            overflow: hidden;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            flex-shrink: 0;
-            text-decoration: none;
-        }
-        .btn-area-pestana .icono { font-size: 16px; flex-shrink: 0; }
-        .btn-area-pestana .nombre {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-        .btn-area-pestana:hover {
-            transform: translateY(-2px);
-            border-color: var(--accent);
-            box-shadow: var(--shadow-hover);
-        }
-        .btn-area-pestana.continuar {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
-        .btn-area-pestana.continuar:hover { opacity: 0.85; }
-        .btn-area-pestana .badge {
-            font-size: 10px;
-            background: rgba(0,0,0,0.1);
-            padding: 1px 8px;
-            border-radius: 12px;
-            flex-shrink: 0;
-        }
-        .btn-area-pestana.continuar .badge {
-            background: rgba(255,255,255,0.2);
-        }
-        
-        .col-derecha {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-        
-        /* CALENDARIO */
-        .calendario-completo {
-            background: var(--bg-card);
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            padding: 12px 14px;
-            box-shadow: var(--shadow);
-        }
-        .calendario-completo .cal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 6px;
-        }
-        .calendario-completo .cal-header h4 {
-            margin: 0;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-primary);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .calendario-completo .cal-header h4 i { font-size: 14px; color: var(--text-secondary); }
-        .calendario-completo .cal-header .cal-nav {
-            display: flex;
-            gap: 4px;
-        }
-        .calendario-completo .cal-header .cal-nav button {
-            background: none;
-            border: none;
-            padding: 4px 10px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 14px;
-            color: var(--text-secondary);
-            transition: all 0.2s;
-        }
-        .calendario-completo .cal-header .cal-nav button:hover {
-            background: var(--bg-hover);
-            color: var(--text-primary);
-        }
-        .calendario-completo .cal-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 2px;
-        }
-        .calendario-completo .cal-grid .cal-dia-semana {
-            font-size: 9px;
-            text-align: center;
-            font-weight: 700;
-            color: var(--text-secondary);
-            padding: 4px 0;
-            text-transform: uppercase;
-        }
-        .calendario-completo .cal-grid .cal-dia {
-            aspect-ratio: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: all 0.15s;
-            background: var(--bg-hover);
-            color: var(--text-primary);
-            font-weight: 500;
-            position: relative;
-            min-height: 32px;
-        }
-        .calendario-completo .cal-grid .cal-dia:hover { 
-            background: var(--accent); 
-            color: white; 
-            transform: scale(1.05);
-        }
-        .calendario-completo .cal-grid .cal-dia.hoy { 
-            background: var(--accent); 
-            color: white; 
-            font-weight: 700;
-        }
-        .calendario-completo .cal-grid .cal-dia.estudio { 
-            background: #4ecdc4; 
-            color: white; 
-        }
-        .calendario-completo .cal-grid .cal-dia.evento { 
-            background: #ff6b6b; 
-            color: white; 
-        }
-        .calendario-completo .cal-grid .cal-dia .punto {
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: #ff6b6b;
-            position: absolute;
-            bottom: 2px;
-        }
-        .calendario-completo .cal-grid .cal-dia.vacio { 
-            background: transparent; 
-            cursor: default;
-        }
-        .calendario-completo .cal-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-            color: var(--text-secondary);
-            margin-top: 4px;
-            padding-top: 4px;
-            border-top: 1px solid var(--border);
-        }
-        .calendario-completo .cal-info .eventos-hoy {
-            cursor: pointer;
-            color: var(--accent);
-            font-weight: 500;
-        }
-        .calendario-completo .cal-info .eventos-hoy:hover { text-decoration: underline; }
-        
-        /* CORCHO */
-        .corcho-final {
-            background: #c4956a;
-            background-image: radial-gradient(circle, rgba(0,0,0,0.05) 1px, transparent 1px);
-            background-size: 20px 20px;
-            border-radius: 16px;
-            border: 4px solid #a87b53;
-            padding: 12px 14px;
-            box-shadow: inset 0 4px 20px rgba(0,0,0,0.15), 0 4px 20px rgba(0,0,0,0.08);
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            min-height: 150px;
-        }
-        .corcho-final .corcho-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 6px;
-        }
-        .corcho-final .corcho-header h4 {
-            margin: 0;
-            font-size: 12px;
-            color: rgba(255,255,255,0.9);
-            font-weight: 600;
-            text-shadow: 0 1px 3px rgba(0,0,0,0.2);
-        }
-        .corcho-final .corcho-header span {
-            font-size: 10px;
-            color: rgba(255,255,255,0.6);
-        }
-        .corcho-final .notas-corcho {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            flex: 1;
-            align-content: flex-start;
-            padding: 4px 0;
-            overflow-y: auto;
-            min-height: 60px;
-        }
-        .corcho-final .nota-corcho {
-            background: #ffd93d;
-            padding: 8px 12px 6px 12px;
-            border-radius: 3px 3px 8px 8px;
-            font-size: 12px;
-            min-width: 60px;
-            max-width: 160px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            position: relative;
-            transform: rotate(var(--rot, 0deg));
-            transition: transform 0.2s, box-shadow 0.2s;
-            word-break: break-word;
-            cursor: grab;
-            user-select: none;
-            line-height: 1.3;
-        }
-        .corcho-final .nota-corcho:active { cursor: grabbing; }
-        .corcho-final .nota-corcho:hover {
-            transform: scale(1.02) rotate(0deg);
-            z-index: 10;
-            box-shadow: 0 6px 20px rgba(0,0,0,0.25);
-        }
-        .corcho-final .nota-corcho.dragging {
-            opacity: 0.5;
-            transform: scale(0.95);
-        }
-        .corcho-final .nota-corcho::before {
-            content: '📌';
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 16px;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
-        }
-        .corcho-final .nota-corcho .nota-texto { 
-            margin-top: 2px; 
-            line-height: 1.3;
-            white-space: pre-wrap;
-        }
-        .corcho-final .nota-corcho .nota-del {
-            position: absolute;
-            top: -4px;
-            right: -4px;
-            background: rgba(0,0,0,0.25);
-            border: none;
-            border-radius: 50%;
-            width: 18px;
-            height: 18px;
-            color: white;
-            font-size: 11px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        .corcho-final .nota-corcho:hover .nota-del { opacity: 1; }
-        .corcho-final .nota-corcho .nota-del:hover { background: rgba(200,0,0,0.6); }
-        .corcho-final .nota-vacia {
-            width: 100%;
-            text-align: center;
-            color: rgba(255,255,255,0.6);
-            font-size: 13px;
-            padding: 20px 0;
-        }
-        .corcho-final .nota-input-row {
-            display: flex;
-            gap: 4px;
-            margin-top: 6px;
-            padding-top: 6px;
-            border-top: 2px solid rgba(255,255,255,0.15);
-        }
-        .corcho-final .nota-input-row textarea {
-            flex: 1;
-            padding: 4px 10px;
-            border-radius: 6px;
-            border: none;
-            background: rgba(255,255,255,0.9);
-            color: #2d3748;
-            font-size: 11px;
-            min-height: 32px;
-            max-height: 60px;
-            resize: vertical;
-            font-family: inherit;
-        }
-        .corcho-final .nota-input-row textarea:focus { outline: 2px solid rgba(255,255,255,0.4); }
-        .corcho-final .nota-input-row .btn-add {
-            padding: 4px 14px;
-            border-radius: 6px;
-            border: none;
-            background: rgba(255,255,255,0.9);
-            color: #2d3748;
-            font-weight: 600;
-            font-size: 12px;
-            cursor: pointer;
-            white-space: nowrap;
-        }
-        .corcho-final .nota-input-row .btn-add:hover { background: white; }
-        .corcho-final .nota-colores {
-            display: flex;
-            gap: 4px;
-            margin-top: 4px;
-        }
-        .corcho-final .nota-colores .c-btn {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            border: 2px solid rgba(255,255,255,0.25);
-            cursor: pointer;
-            transition: all 0.15s;
-        }
-        .corcho-final .nota-colores .c-btn:hover { transform: scale(1.1); }
-        .corcho-final .nota-colores .c-btn.sel { border-color: white; box-shadow: 0 0 10px rgba(255,255,255,0.4); }
-        
-        /* MODAL CALENDARIO */
-        .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(0,0,0,0.5);
-            backdrop-filter: blur(4px);
-            z-index: 9999;
-            display: none;
-            align-items: center;
-            justify-content: center;
-        }
-        .modal-overlay.show { display: flex; }
-        .modal-calendario {
-            background: var(--bg-card);
-            border-radius: 20px;
-            padding: 24px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            border: 1px solid var(--border);
-        }
-        .modal-calendario .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-        .modal-calendario .modal-header h2 {
-            margin: 0;
-            font-size: 20px;
-        }
-        .modal-calendario .modal-header .close-btn {
-            background: none;
-            border: none;
-            font-size: 24px;
-            cursor: pointer;
-            color: var(--text-secondary);
-            padding: 0 8px;
-        }
-        .modal-calendario .modal-header .close-btn:hover { color: var(--text-primary); }
-        .modal-calendario .modal-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 4px;
-        }
-        .modal-calendario .modal-grid .modal-dia-semana {
-            font-size: 11px;
-            text-align: center;
-            font-weight: 700;
-            color: var(--text-secondary);
-            padding: 6px 0;
-        }
-        .modal-calendario .modal-grid .modal-dia {
-            padding: 8px 4px;
-            text-align: center;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.15s;
-            background: var(--bg-hover);
-            color: var(--text-primary);
-        }
-        .modal-calendario .modal-grid .modal-dia:hover { background: var(--accent); color: white; }
-        .modal-calendario .modal-grid .modal-dia.hoy { background: var(--accent); color: white; font-weight: 700; }
-        .modal-calendario .modal-grid .modal-dia.evento { background: #ff6b6b; color: white; }
-        .modal-calendario .modal-grid .modal-dia.vacio { background: transparent; cursor: default; }
-        .modal-calendario .modal-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        .modal-calendario .modal-nav button {
-            background: none;
-            border: none;
-            font-size: 18px;
-            cursor: pointer;
-            color: var(--text-secondary);
-            padding: 4px 12px;
-            border-radius: 6px;
-        }
-        .modal-calendario .modal-nav button:hover { background: var(--bg-hover); color: var(--text-primary); }
-        .modal-calendario .modal-eventos-dia {
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid var(--border);
-        }
-        .modal-calendario .modal-eventos-dia .evento-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px 10px;
-            border-radius: 6px;
-            background: var(--bg-hover);
-            margin-bottom: 4px;
-            font-size: 13px;
-        }
-        .modal-calendario .modal-eventos-dia .evento-item .del-evento {
-            background: none;
-            border: none;
-            color: #ff6b6b;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        .modal-calendario .modal-eventos-dia .evento-item .del-evento:hover { color: #e74c3c; }
-        
-        @media (max-width: 768px) {
-            .dashboard-final {
-                grid-template-columns: 1fr;
-                height: auto;
-                min-height: auto;
+    // Crear el contenedor GridStack
+    main.innerHTML = `
+        <style>
+            .grid-stack {
+                height: calc(100vh - 140px);
+                min-height: 500px;
+                width: 100%;
             }
-            .col-derecha { order: -1; }
-            .btn-area-pestana { max-width: 120px; font-size: 12px; padding: 6px 12px; }
-            .corcho-final { min-height: 100px; }
-        }
-    </style>
-    
-    <div class="dashboard-final">
+            .grid-stack-item {
+                background: var(--bg-card);
+                border-radius: 16px;
+                border: 1px solid var(--border);
+                box-shadow: var(--shadow);
+                overflow: hidden;
+                transition: box-shadow 0.2s;
+            }
+            .grid-stack-item:hover {
+                box-shadow: var(--shadow-hover);
+            }
+            .grid-stack-item .grid-stack-item-content {
+                padding: 12px 14px;
+                height: 100%;
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+            }
+            .widget-handle {
+                cursor: grab;
+                padding: 4px 0 8px 0;
+                font-size: 12px;
+                font-weight: 600;
+                color: var(--text-secondary);
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                border-bottom: 1px solid var(--border);
+                margin-bottom: 8px;
+                flex-shrink: 0;
+            }
+            .widget-handle i { font-size: 14px; margin-right: 6px; }
+            .widget-handle .widget-actions {
+                display: flex;
+                gap: 4px;
+            }
+            .widget-handle .widget-actions button {
+                background: none;
+                border: none;
+                cursor: pointer;
+                color: var(--text-secondary);
+                font-size: 12px;
+                padding: 2px 6px;
+                border-radius: 4px;
+                transition: all 0.2s;
+            }
+            .widget-handle .widget-actions button:hover {
+                background: var(--bg-hover);
+                color: var(--text-primary);
+            }
+            
+            /* ÁREAS WIDGET */
+            .areas-widget .area-botones {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+            .areas-widget .area-botones .btn-area {
+                padding: 6px 12px;
+                border-radius: 8px;
+                border: 2px solid var(--border);
+                background: var(--bg-card);
+                cursor: pointer;
+                font-weight: 600;
+                font-size: 12px;
+                transition: all 0.2s;
+                display: flex;
+                align-items: center;
+                gap: 4px;
+                color: var(--text-primary);
+                text-decoration: none;
+                flex: 1 1 auto;
+                min-width: 80px;
+                justify-content: center;
+            }
+            .areas-widget .area-botones .btn-area:hover {
+                transform: translateY(-2px);
+                border-color: var(--accent);
+                box-shadow: var(--shadow-hover);
+            }
+            .areas-widget .area-botones .btn-area.continuar {
+                background: var(--accent);
+                color: white;
+                border-color: var(--accent);
+            }
+            .areas-widget .area-botones .btn-area .badge {
+                font-size: 9px;
+                background: rgba(0,0,0,0.1);
+                padding: 1px 6px;
+                border-radius: 10px;
+            }
+            .areas-widget .area-botones .btn-area.continuar .badge {
+                background: rgba(255,255,255,0.2);
+            }
+            
+            /* CORCHO WIDGET */
+            .corcho-widget {
+                background: #c4956a;
+                background-image: radial-gradient(circle, rgba(0,0,0,0.05) 1px, transparent 1px);
+                background-size: 20px 20px;
+                border-radius: 12px;
+                border: 4px solid #a87b53;
+                padding: 8px 10px;
+                flex: 1;
+                min-height: 80px;
+                display: flex;
+                flex-direction: column;
+                margin: -4px;
+            }
+            .corcho-widget .notas-corcho {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                flex: 1;
+                align-content: flex-start;
+                padding: 4px 0;
+                overflow-y: auto;
+                min-height: 50px;
+            }
+            .corcho-widget .nota-corcho {
+                background: #ffd93d;
+                padding: 6px 10px 4px 10px;
+                border-radius: 3px 3px 6px 6px;
+                font-size: 11px;
+                min-width: 50px;
+                max-width: 140px;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+                position: relative;
+                transform: rotate(var(--rot, 0deg));
+                transition: transform 0.2s;
+                word-break: break-word;
+                cursor: grab;
+            }
+            .corcho-widget .nota-corcho:active { cursor: grabbing; }
+            .corcho-widget .nota-corcho:hover {
+                transform: scale(1.02) rotate(0deg);
+                z-index: 10;
+            }
+            .corcho-widget .nota-corcho::before {
+                content: '📌';
+                position: absolute;
+                top: -10px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 14px;
+                filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+            }
+            .corcho-widget .nota-corcho .nota-texto { margin-top: 2px; line-height: 1.2; }
+            .corcho-widget .nota-corcho .nota-del {
+                position: absolute;
+                top: -4px;
+                right: -4px;
+                background: rgba(0,0,0,0.25);
+                border: none;
+                border-radius: 50%;
+                width: 16px;
+                height: 16px;
+                color: white;
+                font-size: 10px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                transition: opacity 0.2s;
+            }
+            .corcho-widget .nota-corcho:hover .nota-del { opacity: 1; }
+            .corcho-widget .nota-corcho .nota-del:hover { background: rgba(200,0,0,0.6); }
+            .corcho-widget .nota-vacia {
+                width: 100%;
+                text-align: center;
+                color: rgba(255,255,255,0.6);
+                font-size: 12px;
+                padding: 10px 0;
+            }
+            .corcho-widget .nota-input-row {
+                display: flex;
+                gap: 4px;
+                margin-top: 4px;
+                padding-top: 4px;
+                border-top: 2px solid rgba(255,255,255,0.15);
+                flex-shrink: 0;
+            }
+            .corcho-widget .nota-input-row textarea {
+                flex: 1;
+                padding: 4px 8px;
+                border-radius: 6px;
+                border: none;
+                background: rgba(255,255,255,0.9);
+                color: #2d3748;
+                font-size: 11px;
+                min-height: 28px;
+                max-height: 50px;
+                resize: vertical;
+                font-family: inherit;
+            }
+            .corcho-widget .nota-input-row textarea:focus { outline: 2px solid rgba(255,255,255,0.4); }
+            .corcho-widget .nota-input-row .btn-add {
+                padding: 4px 12px;
+                border-radius: 6px;
+                border: none;
+                background: rgba(255,255,255,0.9);
+                color: #2d3748;
+                font-weight: 600;
+                font-size: 11px;
+                cursor: pointer;
+            }
+            .corcho-widget .nota-input-row .btn-add:hover { background: white; }
+            .corcho-widget .nota-colores {
+                display: flex;
+                gap: 3px;
+                margin-top: 4px;
+                flex-shrink: 0;
+            }
+            .corcho-widget .nota-colores .c-btn {
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                border: 2px solid rgba(255,255,255,0.25);
+                cursor: pointer;
+                transition: all 0.15s;
+            }
+            .corcho-widget .nota-colores .c-btn:hover { transform: scale(1.1); }
+            .corcho-widget .nota-colores .c-btn.sel { border-color: white; box-shadow: 0 0 10px rgba(255,255,255,0.4); }
+            
+            /* CALENDARIO WIDGET */
+            .calendario-widget .cal-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 4px;
+            }
+            .calendario-widget .cal-header .cal-titulo {
+                font-size: 14px;
+                font-weight: 600;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                gap: 6px;
+            }
+            .calendario-widget .cal-header .cal-titulo i { font-size: 14px; color: var(--text-secondary); }
+            .calendario-widget .cal-nav {
+                display: flex;
+                gap: 2px;
+            }
+            .calendario-widget .cal-nav button {
+                background: none;
+                border: none;
+                padding: 2px 8px;
+                border-radius: 4px;
+                cursor: pointer;
+                font-size: 12px;
+                color: var(--text-secondary);
+                transition: all 0.2s;
+            }
+            .calendario-widget .cal-nav button:hover {
+                background: var(--bg-hover);
+                color: var(--text-primary);
+            }
+            .calendario-widget .cal-nav .vista-btn.active {
+                background: var(--accent);
+                color: white;
+            }
+            .calendario-widget .cal-grid {
+                display: grid;
+                gap: 2px;
+                flex: 1;
+            }
+            .calendario-widget .cal-grid .cal-dia-semana {
+                font-size: 8px;
+                text-align: center;
+                font-weight: 700;
+                color: var(--text-secondary);
+                padding: 2px 0;
+                text-transform: uppercase;
+            }
+            .calendario-widget .cal-grid .cal-dia {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                font-size: 11px;
+                border-radius: 4px;
+                cursor: pointer;
+                transition: all 0.15s;
+                background: var(--bg-hover);
+                color: var(--text-primary);
+                font-weight: 500;
+                position: relative;
+                min-height: 28px;
+            }
+            .calendario-widget .cal-grid .cal-dia:hover { 
+                background: var(--accent); 
+                color: white; 
+                transform: scale(1.05);
+            }
+            .calendario-widget .cal-grid .cal-dia.hoy { 
+                background: var(--accent); 
+                color: white; 
+                font-weight: 700;
+            }
+            .calendario-widget .cal-grid .cal-dia.estudio { 
+                background: #4ecdc4; 
+                color: white; 
+            }
+            .calendario-widget .cal-grid .cal-dia.evento { 
+                background: #ff6b6b; 
+                color: white; 
+            }
+            .calendario-widget .cal-grid .cal-dia .punto {
+                width: 3px;
+                height: 3px;
+                border-radius: 50%;
+                background: #ff6b6b;
+                position: absolute;
+                bottom: 2px;
+            }
+            .calendario-widget .cal-grid .cal-dia.vacio { 
+                background: transparent; 
+                cursor: default;
+            }
+            .calendario-widget .cal-info {
+                display: flex;
+                justify-content: space-between;
+                font-size: 10px;
+                color: var(--text-secondary);
+                margin-top: 4px;
+                padding-top: 4px;
+                border-top: 1px solid var(--border);
+                flex-shrink: 0;
+            }
+            
+            .grid-stack-item .grid-stack-item-content {
+                padding: 8px 10px;
+            }
+            .grid-stack-item .widget-handle {
+                font-size: 11px;
+                padding: 2px 0 6px 0;
+                margin-bottom: 4px;
+            }
+            
+            /* RESPONSIVE */
+            @media (max-width: 768px) {
+                .grid-stack {
+                    height: auto !important;
+                    min-height: 600px;
+                }
+                .grid-stack-item {
+                    position: relative !important;
+                    width: 100% !important;
+                    left: 0 !important;
+                    top: auto !important;
+                    margin-bottom: 10px;
+                }
+                .grid-stack-item .grid-stack-item-content {
+                    max-height: 300px;
+                }
+                .grid-stack > .grid-stack-item {
+                    min-height: 200px !important;
+                }
+            }
+        </style>
         
-        <!-- COLUMNA IZQUIERDA: ÁREAS -->
-        <div class="col-izquierda">
-            <div class="areas-pestanas">
-                ${ultimaAsignatura ? `
-                    <a class="btn-area-pestana continuar" href="${ultimaAsignatura.url || '#'}">
-                        <span class="icono">▶</span>
-                        <span class="nombre">Continuar</span>
-                        <span class="badge">${ultimoProgreso}%</span>
-                    </a>
-                ` : ''}
-                ${areas.map(area => `
-                    <a class="btn-area-pestana" href="/estudio/?area=${area.id}" style="border-color: ${colors[area.id] || '#6c757d'};">
-                        <span class="icono">${area.icon || '📚'}</span>
-                        <span class="nombre">${area.nombre}</span>
-                    </a>
-                `).join('')}
-            </div>
-            
-            <!-- Espacio para futuros widgets -->
-            <div style="flex:1; min-height:50px;"></div>
-        </div>
-        
-        <!-- COLUMNA DERECHA: CALENDARIO + CORCHO -->
-        <div class="col-derecha">
-            
-            <!-- CALENDARIO COMPLETO -->
-            <div class="calendario-completo">
-                <div class="cal-header">
-                    <h4 onclick="abrirCalendarioModal()">
-                        <i class="fas fa-calendar-alt"></i> 
-                        <span id="calMesTitulo"></span>
-                    </h4>
-                    <div class="cal-nav">
-                        <button onclick="cambiarMesCalendario(-1)">◀</button>
-                        <button onclick="cambiarMesCalendario(1)">▶</button>
-                        <button onclick="resetearMesCalendario()" style="font-size:11px;">Hoy</button>
-                    </div>
-                </div>
-                <div class="cal-grid" id="calGridFinal"></div>
-                <div class="cal-info">
-                    <span id="calInfoFecha"></span>
-                    <span class="eventos-hoy" id="eventosHoyBtn" onclick="abrirCalendarioModal()">📌 0 eventos hoy</span>
-                </div>
-            </div>
-            
-            <!-- CORCHO NOTAS -->
-            <div class="corcho-final">
-                <div class="corcho-header">
-                    <h4><i class="fas fa-thumbtack"></i> Notas</h4>
-                    <span>📌 ${notas.length}</span>
-                </div>
-                <div class="notas-corcho" id="notasCorchoFinal">
-                    ${notas.length === 0 ? `<div class="nota-vacia">📌 Pincha una nota</div>` : ''}
-                </div>
-                <div class="nota-input-row">
-                    <textarea id="notaInputFinal" placeholder="Escribe una nota..." rows="1"></textarea>
-                    <button class="btn-add" onclick="agregarNotaFinal()">+</button>
-                </div>
-                <div class="nota-colores" id="notaColoresFinal"></div>
-            </div>
-            
-        </div>
-    </div>
-    
-    <!-- MODAL CALENDARIO -->
-    <div class="modal-overlay" id="modalCalendario">
-        <div class="modal-calendario">
-            <div class="modal-header">
-                <h2 id="modalTitulo">📅 Calendario</h2>
-                <button class="close-btn" onclick="cerrarCalendarioModal()">✕</button>
-            </div>
-            <div class="modal-nav">
-                <button onclick="cambiarMesModal(-1)">◀</button>
-                <span id="modalMesTitulo" style="font-weight:600; font-size:16px;"></span>
-                <button onclick="cambiarMesModal(1)">▶</button>
-            </div>
-            <div class="modal-grid" id="modalGrid"></div>
-            <div class="modal-eventos-dia" id="modalEventosDia">
-                <p style="color:var(--text-secondary); font-size:13px;">Selecciona un día para ver eventos</p>
-            </div>
-        </div>
-    </div>
+        <div class="grid-stack" id="dashboardGrid"></div>
     `;
     
-    main.innerHTML = html;
+    // Inicializar GridStack después de renderizar
+    setTimeout(() => {
+        initGridStack();
+    }, 100);
+}
+
+function initGridStack() {
+    if (typeof GridStack === 'undefined') {
+        console.error('GridStack no cargado');
+        return;
+    }
     
-    // Estado del calendario
-    window._mesCalendario = new Date().getMonth();
-    window._añoCalendario = new Date().getFullYear();
-    window._fechaSeleccionada = null;
+    const gridElement = document.getElementById('dashboardGrid');
+    if (!gridElement) return;
     
-    inicializarCalendarioFinal();
-    inicializarNotasFinal();
-    inicializarDragNotas();
+    // Obtener datos
+    const data = window._dashboardData || {};
+    const colors = data.colors || {};
+    const areasList = areas || [];
+    const ultimaAsignatura = data.ultimaAsignatura || null;
+    const ultimoProgreso = data.ultimoProgreso || 0;
+    const notas = data.notas || [];
+    const eventos = data.eventos || [];
+    
+    // Configurar GridStack
+    const grid = GridStack.init({
+        column: 12,
+        minRow: 1,
+        margin: 10,
+        float: true,
+        disableOneColumnMode: false,
+        resizable: {
+            handles: 'e, s, se'
+        }
+    }, gridElement);
+    
+    window._grid = grid;
+    
+    // Definir widgets
+    const widgets = [
+        {
+            id: 'widget-areas',
+            x: 0, y: 0, w: 12, h: 2,
+            title: '🚀 Áreas de Estudio',
+            content: renderAreasWidget(areasList, ultimaAsignatura, ultimoProgreso, colors)
+        },
+        {
+            id: 'widget-calendario',
+            x: 0, y: 2, w: 6, h: 4,
+            title: '📅 Calendario',
+            content: renderCalendarioWidget(eventos)
+        },
+        {
+            id: 'widget-corcho',
+            x: 6, y: 2, w: 6, h: 4,
+            title: '📌 Notas',
+            content: renderCorchoWidget(notas)
+        }
+    ];
+    
+    // Cargar widgets en GridStack
+    widgets.forEach(w => {
+        grid.addWidget({
+            id: w.id,
+            x: w.x,
+            y: w.y,
+            w: w.w,
+            h: w.h,
+            content: `
+                <div class="grid-stack-item-content">
+                    <div class="widget-handle">
+                        <span><i class="fas fa-grip-lines"></i> ${w.title}</span>
+                        <div class="widget-actions">
+                            <button onclick="recargarWidget('${w.id}')" title="Recargar">⟳</button>
+                            <button onclick="eliminarWidget('${w.id}')" title="Cerrar">✕</button>
+                        </div>
+                    </div>
+                    ${w.content}
+                </div>
+            `
+        });
+    });
+    
+    // Guardar referencia para funciones
+    window._gridWidgets = widgets;
+    
+    // Cargar eventos y notas después de renderizar
+    setTimeout(() => {
+        inicializarEventosNotas();
+    }, 200);
 }
 
 // ============================================================
-// CALENDARIO COMPLETO
+// RENDERIZADO DE WIDGETS
 // ============================================================
 
-function inicializarCalendarioFinal() {
-    const grid = document.getElementById('calGridFinal');
-    if (!grid) return;
+function renderAreasWidget(areasList, ultimaAsignatura, ultimoProgreso, colors) {
+    let html = `<div class="areas-widget"><div class="area-botones">`;
     
+    if (ultimaAsignatura) {
+        html += `
+            <a class="btn-area continuar" href="${ultimaAsignatura.url || '#'}">
+                ▶ Continuar <span class="badge">${ultimoProgreso}%</span>
+            </a>
+        `;
+    }
+    
+    areasList.forEach(area => {
+        html += `
+            <a class="btn-area" href="/estudio/?area=${area.id}" style="border-color: ${colors[area.id] || '#6c757d'};">
+                ${area.icon || '📚'} ${area.nombre}
+            </a>
+        `;
+    });
+    
+    html += `</div></div>`;
+    return html;
+}
+
+function renderCorchoWidget(notas) {
+    let html = `<div class="corcho-widget">`;
+    html += `<div class="notas-corcho" id="notasCorchoWidget">`;
+    
+    if (notas.length === 0) {
+        html += `<div class="nota-vacia">📌 Pincha una nota</div>`;
+    } else {
+        html += notas.map((n, i) => `
+            <div class="nota-corcho" style="background:${n.color || '#ffd93d'}; --rot: ${(Math.random() - 0.5) * 4}deg;" data-index="${i}">
+                <button class="nota-del" onclick="eliminarNotaWidget(${i})">✕</button>
+                <div class="nota-texto">${n.texto}</div>
+            </div>
+        `).join('');
+    }
+    
+    html += `
+        </div>
+        <div class="nota-input-row">
+            <textarea id="notaInputWidget" placeholder="Nota..." rows="1"></textarea>
+            <button class="btn-add" onclick="agregarNotaWidget()">+</button>
+        </div>
+        <div class="nota-colores" id="notaColoresWidget"></div>
+    </div>`;
+    
+    return html;
+}
+
+function renderCalendarioWidget(eventos) {
     const hoy = new Date();
-    const mes = window._mesCalendario;
-    const año = window._añoCalendario;
+    const mes = hoy.getMonth();
+    const año = hoy.getFullYear();
     const diasSemana = ['L', 'M', 'X', 'J', 'V', 'S', 'D'];
-    const eventos = JSON.parse(localStorage.getItem('eventos_calendario') || '[]');
+    const meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
     
-    let html = diasSemana.map(d => `<div class="cal-dia-semana">${d}</div>`).join('');
+    let html = `<div class="calendario-widget">
+        <div class="cal-header">
+            <span class="cal-titulo" onclick="abrirCalendarioModal()">
+                <i class="fas fa-calendar-alt"></i> ${meses[mes]} ${año}
+            </span>
+            <div class="cal-nav">
+                <button onclick="cambiarVistaCalendario('dia')" class="vista-btn" data-vista="dia">Día</button>
+                <button onclick="cambiarVistaCalendario('semana')" class="vista-btn active" data-vista="semana">Sem</button>
+                <button onclick="cambiarVistaCalendario('mes')" class="vista-btn" data-vista="mes">Mes</button>
+            </div>
+        </div>
+        <div class="cal-grid" id="calGridWidget" style="grid-template-columns: repeat(7, 1fr);">
+    `;
     
+    // Cabecera días
+    diasSemana.forEach(d => {
+        html += `<div class="cal-dia-semana">${d}</div>`;
+    });
+    
+    // Calcular días del mes
     const primerDia = new Date(año, mes, 1).getDay();
     const diasAntes = primerDia === 0 ? 6 : primerDia - 1;
     const diasEnMes = new Date(año, mes + 1, 0).getDate();
@@ -777,337 +759,176 @@ function inicializarCalendarioFinal() {
         const key = año + '-' + String(mes+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
         const esEstudio = localStorage.getItem('estudio_fecha_' + key);
         const tieneEvento = eventos.some(e => e.fecha === key);
-        
         let clase = 'cal-dia';
         if (esHoy) clase += ' hoy';
         if (esEstudio) clase += ' estudio';
         if (tieneEvento) clase += ' evento';
-        
-        html += `<div class="${clase}" onclick="seleccionarDiaCalendario(${d}, ${mes+1}, ${año})">
-            ${d}
-            ${tieneEvento ? '<span class="punto"></span>' : ''}
-        </div>`;
-    }
-    grid.innerHTML = html;
-    
-    // Actualizar títulos
-    const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-    const titulo = document.getElementById('calMesTitulo');
-    if (titulo) titulo.textContent = `${meses[mes]} ${año}`;
-    
-    const infoFecha = document.getElementById('calInfoFecha');
-    if (infoFecha) {
-        infoFecha.textContent = `${meses[mes]} ${año}`;
+        html += `<div class="${clase}" onclick="seleccionarDiaCalendario(${d})">${d}</div>`;
     }
     
-    actualizarEventosHoy();
-}
-
-function cambiarMesCalendario(delta) {
-    window._mesCalendario += delta;
-    if (window._mesCalendario < 0) {
-        window._mesCalendario = 11;
-        window._añoCalendario--;
-    } else if (window._mesCalendario > 11) {
-        window._mesCalendario = 0;
-        window._añoCalendario++;
-    }
-    inicializarCalendarioFinal();
-}
-
-function resetearMesCalendario() {
-    const hoy = new Date();
-    window._mesCalendario = hoy.getMonth();
-    window._añoCalendario = hoy.getFullYear();
-    inicializarCalendarioFinal();
-}
-
-function seleccionarDiaCalendario(dia, mes, año) {
-    const fecha = año + '-' + String(mes).padStart(2,'0') + '-' + String(dia).padStart(2,'0');
-    window._fechaSeleccionada = fecha;
-    abrirCalendarioModal();
-}
-
-function actualizarEventosHoy() {
-    const hoy = new Date();
-    const key = hoy.getFullYear() + '-' + String(hoy.getMonth()+1).padStart(2,'0') + '-' + String(hoy.getDate()).padStart(2,'0');
-    const eventos = JSON.parse(localStorage.getItem('eventos_calendario') || '[]');
-    const hoyEventos = eventos.filter(e => e.fecha === key);
-    const el = document.getElementById('eventosHoyBtn');
-    if (el) el.textContent = `📌 ${hoyEventos.length} eventos hoy`;
-}
-
-// ============================================================
-// MODAL CALENDARIO
-// ============================================================
-
-let _modalMes = new Date().getMonth();
-let _modalAño = new Date().getFullYear();
-
-function abrirCalendarioModal() {
-    document.getElementById('modalCalendario').classList.add('show');
-    _modalMes = window._mesCalendario;
-    _modalAño = window._añoCalendario;
-    renderizarModal();
-}
-
-function cerrarCalendarioModal() {
-    document.getElementById('modalCalendario').classList.remove('show');
-}
-
-function cambiarMesModal(delta) {
-    _modalMes += delta;
-    if (_modalMes < 0) { _modalMes = 11; _modalAño--; }
-    else if (_modalMes > 11) { _modalMes = 0; _modalAño++; }
-    renderizarModal();
-}
-
-function renderizarModal() {
-    const grid = document.getElementById('modalGrid');
-    const titulo = document.getElementById('modalMesTitulo');
-    const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-    titulo.textContent = `${meses[_modalMes]} ${_modalAño}`;
-    
-    const diasSemana = ['L','M','X','J','V','S','D'];
-    let html = diasSemana.map(d => `<div class="modal-dia-semana">${d}</div>`).join('');
-    
-    const primerDia = new Date(_modalAño, _modalMes, 1).getDay();
-    const diasAntes = primerDia === 0 ? 6 : primerDia - 1;
-    const diasEnMes = new Date(_modalAño, _modalMes + 1, 0).getDate();
-    const hoy = new Date();
-    const hoyNum = hoy.getDate();
-    const hoyMes = hoy.getMonth();
-    const hoyAño = hoy.getFullYear();
-    const eventos = JSON.parse(localStorage.getItem('eventos_calendario') || '[]');
-    
-    for (let i = 0; i < diasAntes; i++) {
-        html += `<div class="modal-dia vacio"></div>`;
-    }
-    for (let d = 1; d <= diasEnMes; d++) {
-        const esHoy = (d === hoyNum && _modalMes === hoyMes && _modalAño === hoyAño);
-        const key = _modalAño + '-' + String(_modalMes+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
-        const tieneEvento = eventos.some(e => e.fecha === key);
-        let clase = 'modal-dia';
-        if (esHoy) clase += ' hoy';
-        if (tieneEvento) clase += ' evento';
-        html += `<div class="${clase}" onclick="seleccionarDiaModal(${d})">${d}</div>`;
-    }
-    grid.innerHTML = html;
-    
-    // Si hay fecha seleccionada, mostrar eventos
-    if (window._fechaSeleccionada) {
-        mostrarEventosDia(window._fechaSeleccionada);
-    } else {
-        const hoyKey = hoy.getFullYear() + '-' + String(hoy.getMonth()+1).padStart(2,'0') + '-' + String(hoy.getDate()).padStart(2,'0');
-        mostrarEventosDia(hoyKey);
-    }
-}
-
-function seleccionarDiaModal(dia) {
-    const key = _modalAño + '-' + String(_modalMes+1).padStart(2,'0') + '-' + String(dia).padStart(2,'0');
-    window._fechaSeleccionada = key;
-    mostrarEventosDia(key);
-}
-
-function mostrarEventosDia(fecha) {
-    const container = document.getElementById('modalEventosDia');
-    const eventos = JSON.parse(localStorage.getItem('eventos_calendario') || '[]');
-    const diaEventos = eventos.filter(e => e.fecha === fecha);
-    
-    if (diaEventos.length === 0) {
-        container.innerHTML = `
-            <p style="color:var(--text-secondary); font-size:13px;">📅 No hay eventos este día</p>
-            <button onclick="agregarEventoFecha('${fecha}')" style="padding:4px 12px; border-radius:6px; border:1px solid var(--border); background:transparent; cursor:pointer; font-size:12px; color:var(--text-secondary);">
-                + Añadir evento
-            </button>
-        `;
-        return;
-    }
-    
-    let html = `<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-        <span style="font-weight:600; font-size:14px;">📌 ${diaEventos.length} eventos</span>
-        <button onclick="agregarEventoFecha('${fecha}')" style="padding:4px 12px; border-radius:6px; border:1px solid var(--border); background:transparent; cursor:pointer; font-size:12px;">+ Añadir</button>
+    html += `
+        </div>
+        <div class="cal-info">
+            <span>${new Date().toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'short' })}</span>
+            <span>📌 ${eventos.length} eventos</span>
+        </div>
     </div>`;
-    diaEventos.forEach((e, i) => {
-        html += `<div class="evento-item">
-            <span>${e.titulo}</span>
-            <button class="del-evento" onclick="eliminarEvento(${i}, '${fecha}')">✕</button>
-        </div>`;
-    });
-    container.innerHTML = html;
-}
-
-function agregarEventoFecha(fecha) {
-    const titulo = prompt('📌 Título del evento:');
-    if (!titulo) return;
-    const eventos = JSON.parse(localStorage.getItem('eventos_calendario') || '[]');
-    eventos.push({ titulo, fecha });
-    localStorage.setItem('eventos_calendario', JSON.stringify(eventos));
-    renderizarModal();
-    inicializarCalendarioFinal();
-    actualizarEventosHoy();
-}
-
-function eliminarEvento(index, fecha) {
-    let eventos = JSON.parse(localStorage.getItem('eventos_calendario') || '[]');
-    eventos = eventos.filter((e, i) => !(i === index && e.fecha === fecha));
-    localStorage.setItem('eventos_calendario', JSON.stringify(eventos));
-    renderizarModal();
-    inicializarCalendarioFinal();
-    actualizarEventosHoy();
+    
+    return html;
 }
 
 // ============================================================
-// NOTAS CON ARRASTRE
+// FUNCIONES DE WIDGETS
 // ============================================================
 
-let colorNotaFinal = '#ffd93d';
-let notaArrastrando = null;
-let offsetX, offsetY;
+let colorNotaWidget = '#ffd93d';
 
-function inicializarNotasFinal() {
-    const notas = JSON.parse(localStorage.getItem('tablero_notas') || '[]');
-    const container = document.getElementById('notasCorchoFinal');
-    if (!container) return;
-    
-    const colores = ['#ffd93d', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#dda0dd', '#ff9ff3', '#feca57'];
-    
-    if (notas.length === 0) {
-        container.innerHTML = '<div class="nota-vacia">📌 Pincha una nota</div>';
-    } else {
-        container.innerHTML = notas.map((n, i) => `
-            <div class="nota-corcho" style="background:${n.color || '#ffd93d'}; --rot: ${(Math.random() - 0.5) * 4}deg;" data-index="${i}">
-                <button class="nota-del" onclick="eliminarNotaFinal(${i})">✕</button>
-                <div class="nota-texto">${n.texto}</div>
-            </div>
-        `).join('');
-    }
-    
-    const colorContainer = document.getElementById('notaColoresFinal');
-    if (colorContainer) {
-        colorContainer.innerHTML = colores.map(c => `
-            <button class="c-btn ${c === colorNotaFinal ? 'sel' : ''}" onclick="seleccionarColorFinal('${c}')" style="background:${c};"></button>
-        `).join('');
-    }
-    
-    inicializarDragNotas();
-}
-
-function inicializarDragNotas() {
-    const notas = document.querySelectorAll('.nota-corcho');
-    const container = document.getElementById('notasCorchoFinal');
-    if (!container) return;
-    
-    notas.forEach(nota => {
-        nota.addEventListener('mousedown', function(e) {
-            if (e.target.classList.contains('nota-del')) return;
-            iniciarArrastre(e, this, container);
-        });
-        nota.addEventListener('touchstart', function(e) {
-            if (e.target.classList.contains('nota-del')) return;
-            const touch = e.touches[0];
-            const me = new MouseEvent('mousedown', {
-                clientX: touch.clientX,
-                clientY: touch.clientY
-            });
-            iniciarArrastre(me, this, container);
-        }, { passive: true });
-    });
-}
-
-function iniciarArrastre(e, nota, container) {
-    const rect = nota.getBoundingClientRect();
-    notaArrastrando = nota;
-    offsetX = e.clientX - rect.left;
-    offsetY = e.clientY - rect.top;
-    nota.style.position = 'fixed';
-    nota.style.zIndex = '999';
-    nota.style.width = rect.width + 'px';
-    nota.classList.add('dragging');
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', onMouseUp);
-    document.addEventListener('touchmove', onTouchMove, { passive: false });
-    document.addEventListener('touchend', onTouchEnd, { passive: false });
-}
-
-function onMouseMove(e) {
-    if (!notaArrastrando) return;
-    notaArrastrando.style.left = (e.clientX - offsetX) + 'px';
-    notaArrastrando.style.top = (e.clientY - offsetY) + 'px';
-}
-
-function onMouseUp() {
-    if (!notaArrastrando) return;
-    notaArrastrando.classList.remove('dragging');
-    notaArrastrando.style.position = '';
-    notaArrastrando.style.left = '';
-    notaArrastrando.style.top = '';
-    notaArrastrando.style.zIndex = '';
-    notaArrastrando.style.width = '';
-    notaArrastrando = null;
-    document.removeEventListener('mousemove', onMouseMove);
-    document.removeEventListener('mouseup', onMouseUp);
-}
-
-function onTouchMove(e) {
-    e.preventDefault();
-    if (!notaArrastrando) return;
-    const touch = e.touches[0];
-    notaArrastrando.style.left = (touch.clientX - offsetX) + 'px';
-    notaArrastrando.style.top = (touch.clientY - offsetY) + 'px';
-}
-
-function onTouchEnd() {
-    if (!notaArrastrando) return;
-    notaArrastrando.classList.remove('dragging');
-    notaArrastrando.style.position = '';
-    notaArrastrando.style.left = '';
-    notaArrastrando.style.top = '';
-    notaArrastrando.style.zIndex = '';
-    notaArrastrando.style.width = '';
-    notaArrastrando = null;
-    document.removeEventListener('touchmove', onTouchMove);
-    document.removeEventListener('touchend', onTouchEnd);
-}
-
-function seleccionarColorFinal(color) {
-    colorNotaFinal = color;
-    document.querySelectorAll('#notaColoresFinal .c-btn').forEach(b => {
-        b.classList.toggle('sel', b.style.background === color);
-    });
-}
-
-function agregarNotaFinal() {
-    const input = document.getElementById('notaInputFinal');
+function agregarNotaWidget() {
+    const input = document.getElementById('notaInputWidget');
+    if (!input) return;
     const texto = input.value.trim();
     if (!texto) return;
     
     const notas = JSON.parse(localStorage.getItem('tablero_notas') || '[]');
     notas.push({
         texto: texto,
-        color: colorNotaFinal || '#ffd93d',
+        color: colorNotaWidget || '#ffd93d',
         fecha: new Date().toLocaleDateString()
     });
     localStorage.setItem('tablero_notas', JSON.stringify(notas));
     input.value = '';
-    input.style.height = 'auto';
-    inicializarNotasFinal();
+    recargarWidget('widget-corcho');
 }
 
-function eliminarNotaFinal(index) {
+function eliminarNotaWidget(index) {
     const notas = JSON.parse(localStorage.getItem('tablero_notas') || '[]');
     notas.splice(index, 1);
     localStorage.setItem('tablero_notas', JSON.stringify(notas));
-    inicializarNotasFinal();
+    recargarWidget('widget-corcho');
 }
 
-// Autoajuste del textarea
-document.addEventListener('input', function(e) {
-    if (e.target && e.target.id === 'notaInputFinal') {
-        e.target.style.height = 'auto';
-        e.target.style.height = (e.target.scrollHeight) + 'px';
+function seleccionarColorWidget(color) {
+    colorNotaWidget = color;
+    document.querySelectorAll('#notaColoresWidget .c-btn').forEach(b => {
+        b.classList.toggle('sel', b.style.background === color);
+    });
+}
+
+function recargarWidget(widgetId) {
+    const grid = window._grid;
+    if (!grid) return;
+    const widget = grid.getWidgetById(widgetId);
+    if (!widget) return;
+    
+    // Recargar según el widget
+    if (widgetId === 'widget-corcho') {
+        const notas = JSON.parse(localStorage.getItem('tablero_notas') || '[]');
+        const container = widget.querySelector('.grid-stack-item-content');
+        if (container) {
+            // Mantener el handle
+            const handle = container.querySelector('.widget-handle');
+            const nuevoContenido = renderCorchoWidget(notas);
+            const nuevoWidget = document.createElement('div');
+            nuevoWidget.innerHTML = nuevoContenido;
+            container.innerHTML = '';
+            if (handle) container.appendChild(handle);
+            // Añadir el contenido
+            const contenido = document.createElement('div');
+            contenido.innerHTML = nuevoContenido;
+            while (contenido.children.length > 0) {
+                container.appendChild(contenido.children[0]);
+            }
+            // Re-inicializar eventos
+            inicializarEventosNotas();
+        }
+    } else if (widgetId === 'widget-calendario') {
+        const eventos = JSON.parse(localStorage.getItem('eventos_calendario') || '[]');
+        // Recargar calendario
+        const container = widget.querySelector('.grid-stack-item-content');
+        if (container) {
+            const handle = container.querySelector('.widget-handle');
+            const nuevoContenido = renderCalendarioWidget(eventos);
+            container.innerHTML = '';
+            if (handle) container.appendChild(handle);
+            const contenido = document.createElement('div');
+            contenido.innerHTML = nuevoContenido;
+            while (contenido.children.length > 0) {
+                container.appendChild(contenido.children[0]);
+            }
+        }
+    } else if (widgetId === 'widget-areas') {
+        const data = window._dashboardData || {};
+        const colors = data.colors || {};
+        const areasList = areas || [];
+        const ultimaAsignatura = data.ultimaAsignatura || null;
+        const ultimoProgreso = data.ultimoProgreso || 0;
+        const container = widget.querySelector('.grid-stack-item-content');
+        if (container) {
+            const handle = container.querySelector('.widget-handle');
+            const nuevoContenido = renderAreasWidget(areasList, ultimaAsignatura, ultimoProgreso, colors);
+            container.innerHTML = '';
+            if (handle) container.appendChild(handle);
+            const contenido = document.createElement('div');
+            contenido.innerHTML = nuevoContenido;
+            while (contenido.children.length > 0) {
+                container.appendChild(contenido.children[0]);
+            }
+        }
     }
-});
+}
+
+function eliminarWidget(widgetId) {
+    const grid = window._grid;
+    if (!grid) return;
+    const widget = grid.getWidgetById(widgetId);
+    if (widget) {
+        grid.removeWidget(widget);
+        grid.compact();
+    }
+}
+
+function cambiarVistaCalendario(vista) {
+    // Cambiar vista activa
+    document.querySelectorAll('.cal-nav .vista-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.vista === vista);
+    });
+    // Recargar calendario con nueva vista
+    recargarWidget('widget-calendario');
+}
+
+function seleccionarDiaCalendario(dia) {
+    const hoy = new Date();
+    const fecha = hoy.getFullYear() + '-' + String(hoy.getMonth()+1).padStart(2,'0') + '-' + String(dia).padStart(2,'0');
+    abrirCalendarioModal();
+}
+
+function abrirCalendarioModal() {
+    // Función simplificada - mostrar eventos del día
+    const hoy = new Date();
+    const key = hoy.getFullYear() + '-' + String(hoy.getMonth()+1).padStart(2,'0') + '-' + String(hoy.getDate()).padStart(2,'0');
+    const eventos = JSON.parse(localStorage.getItem('eventos_calendario') || '[]');
+    const hoyEventos = eventos.filter(e => e.fecha === key);
+    alert(`📅 Eventos de hoy (${hoy.toLocaleDateString('es-ES')}):\n\n${hoyEventos.length > 0 ? hoyEventos.map(e => '📌 ' + e.titulo).join('\n') : 'No hay eventos'}`);
+}
+
+function inicializarEventosNotas() {
+    // Autoajuste de textarea
+    document.addEventListener('input', function(e) {
+        if (e.target && e.target.id === 'notaInputWidget') {
+            e.target.style.height = 'auto';
+            e.target.style.height = (e.target.scrollHeight) + 'px';
+        }
+    });
+    
+    // Inicializar colores de notas
+    const colores = ['#ffd93d', '#ff6b6b', '#4ecdc4', '#45b7d1', '#96ceb4', '#dda0dd', '#ff9ff3', '#feca57'];
+    const container = document.getElementById('notaColoresWidget');
+    if (container) {
+        container.innerHTML = colores.map(c => `
+            <button class="c-btn ${c === colorNotaWidget ? 'sel' : ''}" onclick="seleccionarColorWidget('${c}')" style="background:${c};"></button>
+        `).join('');
+    }
+}
 
 // ============================================================
 // RESTO DE FUNCIONES (ESTUDIO, ÁREAS, CURSOS, SEMESTRES, ETC.)
@@ -1533,15 +1354,11 @@ document.getElementById('menuToggle').addEventListener('click', function() {
 window.cargarVista = cargarVista;
 window.navegar = navegar;
 window.toggleAprobada = toggleAprobada;
-window.agregarNotaFinal = agregarNotaFinal;
-window.eliminarNotaFinal = eliminarNotaFinal;
-window.seleccionarColorFinal = seleccionarColorFinal;
-window.cambiarMesCalendario = cambiarMesCalendario;
-window.resetearMesCalendario = resetearMesCalendario;
+window.recargarWidget = recargarWidget;
+window.eliminarWidget = eliminarWidget;
+window.agregarNotaWidget = agregarNotaWidget;
+window.eliminarNotaWidget = eliminarNotaWidget;
+window.seleccionarColorWidget = seleccionarColorWidget;
+window.cambiarVistaCalendario = cambiarVistaCalendario;
 window.seleccionarDiaCalendario = seleccionarDiaCalendario;
 window.abrirCalendarioModal = abrirCalendarioModal;
-window.cerrarCalendarioModal = cerrarCalendarioModal;
-window.cambiarMesModal = cambiarMesModal;
-window.seleccionarDiaModal = seleccionarDiaModal;
-window.agregarEventoFecha = agregarEventoFecha;
-window.eliminarEvento = eliminarEvento;
