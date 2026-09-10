@@ -75,6 +75,12 @@ function cargarEstadoDesdeURL() {
     const p = new URLSearchParams(window.location.search);
     const nivel = p.get('nivel');
     if (nivel) {
+        // Si la URL tiene # o nivel=areas sin contenido, ir al dashboard
+        if (window.location.hash === '#' || (nivel === 'areas' && !p.get('area'))) {
+            window.history.pushState({}, '', '/estudio/');
+            cargarVista('dashboard');
+            return true;
+        }
         estado.nivel = nivel;
         estado.areaId = p.get('area') || '';
         estado.cursoId = p.get('curso') || '';
@@ -88,6 +94,9 @@ function cargarEstadoDesdeURL() {
 }
 
 function cargarVista(vista) {
+    if (vista === 'dashboard') {
+        window.history.pushState({}, '', '/estudio/');
+    }
     document.querySelectorAll('.nav-links a').forEach(l => l.classList.remove('active'));
     document.querySelectorAll('.nav-links a').forEach(l => {
         const t = l.textContent.toLowerCase();
@@ -678,7 +687,12 @@ function renderizarEscritorio() {
         div.className = 'elemento-flotante elem-area';
         div.id = elem.id;
         // URL CORRECTA con nivel y area
-        div.href = '/estudio/?nivel=asignaturas&area=' + area.id + '&curso=0&semestre=0';
+        const areasConCursos = ['grado-derecho'];
+        if (areasConCursos.includes(area.id)) {
+            div.href = '/estudio/?nivel=cursos&area=' + area.id;
+        } else {
+            div.href = '/estudio/?nivel=asignaturas&area=' + area.id + '&curso=0&semestre=0';
+        }
         div.style.left = elem.x + 'px';
         div.style.top = elem.y + 'px';
         div.style.width = elem.w + 'px';
