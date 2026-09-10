@@ -604,6 +604,9 @@ function mostrarDashboard(main) {
         <button onclick="añadirNota()"><i class="fas fa-sticky-note"></i> Nota</button>
         <button onclick="abrirModalEvento()"><i class="fas fa-calendar-plus"></i> Evento</button>
         <button onclick="resetEscritorio()"><i class="fas fa-undo"></i> Reset</button>
+        <button onclick="exportarCopia()"><i class="fas fa-download"></i> Exportar</button>
+        <button onclick="importarCopia()"><i class="fas fa-upload"></i> Importar</button>
+        <input type="file" id="archivoImportar" accept=".json" style="display:none;" onchange="procesarImportacion(event)" />
         <button id="btnModoMover" onclick="toggleModoMover()"><i class="fas fa-arrows-alt"></i> Mover: OFF</button>
     </div>
     
@@ -1354,6 +1357,133 @@ window.añadirNota = añadirNota;
 window.eliminarNota = eliminarNota;
 window.guardarTextoNota = guardarTextoNota;
 window.resetEscritorio = resetEscritorio;
+// ============================================================
+// EXPORTAR / IMPORTAR COPIA DE SEGURIDAD
+// ============================================================
+
+function exportarCopia() {
+    const backup = {
+        version: '1.0',
+        fecha: new Date().toISOString(),
+        escritorio: JSON.parse(localStorage.getItem('escritorio_elementos') || '{}'),
+        eventos: JSON.parse(localStorage.getItem('eventos_calendario') || '[]'),
+        progreso: {},
+        aprobadas: {},
+        theme: localStorage.getItem('theme') || 'light'
+    };
+    
+    // Guardar todas las claves de localStorage que empiecen por "progreso_" y "aprobada_"
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key.startsWith('progreso_')) {
+            backup.progreso[key] = localStorage.getItem(key);
+        }
+        if (key.startsWith('aprobada_')) {
+            backup.aprobadas[key] = localStorage.getItem(key);
+        }
+    }
+    
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const fecha = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+    a.href = url;
+    a.download = 'estudio-backup-' + fecha + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    mostrarToast('✅ Copia exportada: ' + a.download);
+}
+
+function importarCopia() {
+    document.getElementById('archivoImportar').click();
+}
+
+function procesarImportacion(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const backup = JSON.parse(e.target.result);
+            
+            if (!backup.escritorio && !backup.eventos && !backup.progreso && !backup.aprobadas) {
+                alert('⚠️ El archivo no parece una copia válida');
+                return;
+            }
+            
+            if (!confirm('⚠️ Esto sobrescribirá tus datos actuales. ¿Continuar?')) return;
+            
+            // Restaurar escritorio
+            if (backup.escritorio) {
+                localStorage.setItem('escritorio_elementos', JSON.stringify(backup.escritorio));
+            }
+            
+            // Restaurar eventos
+            if (backup.eventos) {
+                localStorage.setItem('eventos_calendario', JSON.stringify(backup.eventos));
+            }
+            
+            // Restaurar progreso
+            if (backup.progreso) {
+                Object.keys(backup.progreso).forEach(k => {
+                    localStorage.setItem(k, backup.progreso[k]);
+                });
+            }
+            
+            // Restaurar aprobadas
+            if (backup.aprobadas) {
+                Object.keys(backup.aprobadas).forEach(k => {
+                    localStorage.setItem(k, backup.aprobadas[k]);
+                });
+            }
+            
+            // Restaurar tema
+            if (backup.theme) {
+                localStorage.setItem('theme', backup.theme);
+                document.documentElement.setAttribute('data-theme', backup.theme);
+            }
+            
+            mostrarToast('✅ Copia importada correctamente');
+            
+            // Recargar el dashboard
+            setTimeout(() => {
+                window.location.href = '/estudio/';
+                window.location.reload();
+            }, 800);
+            
+        } catch (err) {
+            alert('❌ Error al leer el archivo: ' + err.message);
+        }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+}
+
+function mostrarToast(msg) {
+    let toast = document.getElementById('toast-global');
+    if (!toast) {
+        toast = document.createElement('div');
+        toast.id = 'toast-global';
+        toast.style.cssText = 'position:fixed;bottom:140px;left:50%;transform:translateX(-50%);background:#10b981;color:white;padding:12px 24px;border-radius:30px;font-weight:600;font-size:14px;box-shadow:0 8px 30px rgba(0,0,0,0.3);z-index:99999;transition:opacity 0.3s;';
+        document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.style.opacity = '1';
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(() => {
+        toast.style.opacity = '0';
+    }, 2500);
+}
+
+window.exportarCopia = exportarCopia;
+window.importarCopia = importarCopia;
+window.procesarImportacion = procesarImportacion;
+window.mostrarToast = mostrarToast;
+
 window.toggleModoMover = toggleModoMover;
 
 // ============================================================
