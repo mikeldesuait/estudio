@@ -1,14 +1,14 @@
 // ============================================================
-// ESTUDIO PERSONAL - ESCRITORIO LIBRE v2
-// - Modo mover ON/OFF
-// - Calendario con consulta/edición de eventos
-// - Botones de áreas funcionales
+// ESTUDIO PERSONAL - ESCRITORIO LIBRE v3
+// - Modo mover ON/OFF (arreglado: destruye y recrea interact)
+// - URLs de áreas correctas
+// - Calendario con consulta/edición
 // ============================================================
 
 let areas = [];
 let asignaturasCache = {};
 let estado = { nivel: 'areas', areaId: '', cursoId: '', semestreId: '', asignaturaId: '', temaId: '' };
-let modoMover = false; // ← NUEVO: modo mover ON/OFF
+let modoMover = false;
 
 document.addEventListener('DOMContentLoaded', () => {
     console.log('📚 Estudio Personal iniciado');
@@ -195,9 +195,14 @@ function mostrarDashboard(main) {
         .elemento-flotante.dragging { z-index: 1000; }
         .elemento-flotante.resizing { z-index: 1001; }
         
-        /* Modo mover activo: cursor de movimiento */
-        body.modo-mover .elemento-flotante { cursor: move; }
-        body.modo-mover .elem-nota .nota-texto { cursor: move; pointer-events: none; }
+        /* Modo mover ON - permite arrastrar */
+        body.modo-mover .elemento-flotante { cursor: grab; }
+        body.modo-mover .elemento-flotante.dragging { cursor: grabbing; }
+        body.modo-mover .elem-area { pointer-events: auto; cursor: grab; }
+        body.modo-mover .elem-nota .nota-texto { pointer-events: none; }
+        
+        /* Modo mover OFF - permite editar e interactuar */
+        body:not(.modo-mover) .elem-area { cursor: pointer; }
         body:not(.modo-mover) .elem-nota .nota-texto { cursor: text; pointer-events: auto; }
         
         /* Botón de área */
@@ -213,27 +218,20 @@ function mostrarDashboard(main) {
             font-weight: 600;
             font-size: 13px;
             color: var(--text-primary);
-            cursor: pointer;
             text-decoration: none;
             box-shadow: 0 4px 12px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.1);
             transition: transform 0.15s, box-shadow 0.15s;
             white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis;
             height: 100%;
             width: 100%;
+            box-sizing: border-box;
         }
-        .elem-area:hover {
+        body:not(.modo-mover) .elem-area:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-        }
-        body.modo-mover .elem-area {
-            cursor: move;
-            pointer-events: auto;
-        }
-        /* Cuando NO está modo mover, el clic va al enlace */
-        body:not(.modo-mover) .elem-area {
-            cursor: pointer;
+            background: var(--accent);
+            color: white;
         }
         
         /* Calendario */
@@ -247,6 +245,7 @@ function mostrarDashboard(main) {
             border: 1px solid var(--border);
             height: 100%;
             width: 100%;
+            box-sizing: border-box;
         }
         .elem-calendario .cal-header {
             padding: 6px 10px;
@@ -256,8 +255,8 @@ function mostrarDashboard(main) {
             background: var(--bg-hover);
             border-bottom: 1px solid var(--border);
             flex-shrink: 0;
-            cursor: move;
         }
+        body.modo-mover .elem-calendario .cal-header { cursor: grab; }
         .elem-calendario .cal-titulo {
             font-size: 13px;
             font-weight: 600;
@@ -285,10 +284,8 @@ function mostrarDashboard(main) {
             flex: 1;
             padding: 6px 10px;
             overflow-y: auto;
-            cursor: default;
         }
         
-        /* Grid calendario */
         .cal-grid {
             display: grid;
             gap: 2px;
@@ -331,7 +328,6 @@ function mostrarDashboard(main) {
             background: rgba(255,255,255,0.8);
         }
         
-        /* Vista DÍA */
         .cal-dia-detalle {
             display: flex;
             flex-direction: column;
@@ -394,6 +390,7 @@ function mostrarDashboard(main) {
             height: 100%;
             width: 100%;
             overflow: hidden;
+            box-sizing: border-box;
         }
         .elem-nota::before {
             content: '📌';
@@ -414,8 +411,6 @@ function mostrarDashboard(main) {
             margin-top: 4px;
             outline: none;
             padding: 4px;
-            margin: 0;
-            margin-top: 4px;
         }
         .elem-nota .nota-texto:focus {
             background: rgba(255,255,255,0.4);
@@ -443,7 +438,7 @@ function mostrarDashboard(main) {
         .elem-nota:hover .nota-del { opacity: 1; }
         .elem-nota .nota-del:hover { background: rgba(200,0,0,0.3); color: white; }
         
-        /* Tienda de widgets (barra inferior) */
+        /* Barra inferior */
         .widgets-bar {
             position: fixed;
             bottom: 70px;
@@ -486,15 +481,17 @@ function mostrarDashboard(main) {
             background: var(--accent);
             color: white;
             border-color: var(--accent);
-            transform: translateY(-2px);
         }
         .widgets-bar button.modo-mover-activo {
             background: #10b981;
             color: white;
             border-color: #10b981;
         }
+        .widgets-bar button.modo-mover-activo:hover {
+            background: #059669;
+        }
         
-        /* Modal de eventos */
+        /* Modal evento */
         .modal-evento-overlay {
             position: fixed;
             inset: 0;
@@ -539,7 +536,7 @@ function mostrarDashboard(main) {
             margin-bottom: 4px;
             margin-top: 12px;
         }
-        .modal-evento input, .modal-evento textarea, .modal-evento select {
+        .modal-evento input, .modal-evento textarea {
             width: 100%;
             padding: 8px 12px;
             border-radius: 8px;
@@ -568,19 +565,9 @@ function mostrarDashboard(main) {
             font-weight: 600;
             font-size: 13px;
         }
-        .modal-evento .btn-cancelar {
-            background: var(--bg-hover);
-            color: var(--text-primary);
-        }
-        .modal-evento .btn-guardar {
-            background: var(--accent);
-            color: white;
-        }
-        .modal-evento .btn-eliminar {
-            background: #ef4444;
-            color: white;
-            margin-right: auto;
-        }
+        .modal-evento .btn-cancelar { background: var(--bg-hover); color: var(--text-primary); }
+        .modal-evento .btn-guardar { background: var(--accent); color: white; }
+        .modal-evento .btn-eliminar { background: #ef4444; color: white; margin-right: auto; }
         
         .eventos-dia-lista {
             margin-top: 12px;
@@ -589,15 +576,8 @@ function mostrarDashboard(main) {
         }
         
         @media (max-width: 768px) {
-            #mainContent.container {
-                height: calc(100vh - 110px);
-            }
-            .widgets-bar {
-                bottom: 60px;
-                font-size: 11px;
-                flex-wrap: wrap;
-                max-width: 95vw;
-            }
+            #mainContent.container { height: calc(100vh - 110px); }
+            .widgets-bar { bottom: 60px; font-size: 11px; flex-wrap: wrap; max-width: 95vw; }
             .widgets-bar .bar-label { display: none; }
             .widgets-bar button { padding: 5px 8px; font-size: 11px; }
         }
@@ -619,9 +599,7 @@ function mostrarDashboard(main) {
                 <span id="modalEventoTitulo">📅 Evento</span>
                 <button class="close" onclick="cerrarModalEvento()">✕</button>
             </h3>
-            
             <div id="eventosExistentesContainer"></div>
-            
             <div id="formEventoContainer">
                 <input type="hidden" id="eventoId" />
                 <label>Fecha</label>
@@ -646,14 +624,7 @@ function mostrarDashboard(main) {
     renderizarEscritorio();
     
     // Aplicar estado del modo mover
-    if (modoMover) {
-        document.body.classList.add('modo-mover');
-        const btn = document.getElementById('btnModoMover');
-        if (btn) {
-            btn.classList.add('modo-mover-activo');
-            btn.innerHTML = '<i class="fas fa-arrows-alt"></i> Mover: ON';
-        }
-    }
+    actualizarBotonModoMover();
 }
 
 // ============================================================
@@ -662,20 +633,27 @@ function mostrarDashboard(main) {
 
 function toggleModoMover() {
     modoMover = !modoMover;
-    const btn = document.getElementById('btnModoMover');
     
     if (modoMover) {
         document.body.classList.add('modo-mover');
-        if (btn) {
-            btn.classList.add('modo-mover-activo');
-            btn.innerHTML = '<i class="fas fa-arrows-alt"></i> Mover: ON';
-        }
     } else {
         document.body.classList.remove('modo-mover');
-        if (btn) {
-            btn.classList.remove('modo-mover-activo');
-            btn.innerHTML = '<i class="fas fa-arrows-alt"></i> Mover: OFF';
-        }
+    }
+    
+    actualizarBotonModoMover();
+    // Re-renderizar para aplicar/quitar interact
+    renderizarEscritorio();
+}
+
+function actualizarBotonModoMover() {
+    const btn = document.getElementById('btnModoMover');
+    if (!btn) return;
+    if (modoMover) {
+        btn.classList.add('modo-mover-activo');
+        btn.innerHTML = '<i class="fas fa-arrows-alt"></i> Mover: ON';
+    } else {
+        btn.classList.remove('modo-mover-activo');
+        btn.innerHTML = '<i class="fas fa-arrows-alt"></i> Mover: OFF';
     }
 }
 
@@ -699,7 +677,8 @@ function renderizarEscritorio() {
         const div = document.createElement('a');
         div.className = 'elemento-flotante elem-area';
         div.id = elem.id;
-        div.href = '/estudio/?area=' + area.id;
+        // URL CORRECTA con nivel y area
+        div.href = '/estudio/?nivel=asignaturas&area=' + area.id + '&curso=0&semestre=0';
         div.style.left = elem.x + 'px';
         div.style.top = elem.y + 'px';
         div.style.width = elem.w + 'px';
@@ -707,8 +686,7 @@ function renderizarEscritorio() {
         div.style.borderColor = colors[area.id] || '#6c757d';
         div.innerHTML = `<span style="font-size:16px;pointer-events:none;">${area.icon || '📚'}</span> <span style="pointer-events:none;">${area.nombre}</span>`;
         
-        // Si NO está modo mover, permitir navegación con clic
-        // Si SÍ está modo mover, el clic se bloquea para poder arrastrar
+        // Si está modo mover, bloquear el clic para poder arrastrar
         div.addEventListener('click', (e) => {
             if (modoMover) {
                 e.preventDefault();
@@ -717,7 +695,11 @@ function renderizarEscritorio() {
         });
         
         escritorio.appendChild(div);
-        if (modoMover) hacerArrastrable(div, elem);
+        
+        // Solo activar interact si modo mover está ON
+        if (modoMover) {
+            hacerArrastrable(div, elem);
+        }
     });
     
     // Calendario
@@ -733,7 +715,10 @@ function renderizarEscritorio() {
         div.innerHTML = renderCalendarioHTML(elem.vista || 'semana');
         
         escritorio.appendChild(div);
-        if (modoMover) hacerArrastrable(div, elem);
+        
+        if (modoMover) {
+            hacerArrastrable(div, elem);
+        }
     }
     
     // Notas
@@ -757,16 +742,12 @@ function renderizarEscritorio() {
                 guardarTextoNota(elem.id, textoDiv.textContent);
             }
         });
-        textoDiv.addEventListener('mousedown', (e) => {
-            if (modoMover) {
-                e.preventDefault();
-            } else {
-                e.stopPropagation();
-            }
-        });
         
         escritorio.appendChild(div);
-        if (modoMover) hacerArrastrable(div, elem);
+        
+        if (modoMover) {
+            hacerArrastrable(div, elem);
+        }
     });
 }
 
@@ -888,7 +869,7 @@ function cambiarVista(vista) {
 }
 
 // ============================================================
-// MODAL EVENTO - Con consulta y edición
+// MODAL EVENTO
 // ============================================================
 
 let _fechaEventoActual = null;
@@ -896,7 +877,6 @@ let _fechaEventoActual = null;
 function abrirModalEvento(fecha) {
     _fechaEventoActual = fecha || null;
     
-    // Establecer fecha por defecto
     const hoy = new Date();
     const fechaInput = document.getElementById('eventoFecha');
     if (fecha && typeof fecha === 'string' && fecha.includes('-')) {
@@ -905,20 +885,17 @@ function abrirModalEvento(fecha) {
         fechaInput.value = hoy.getFullYear() + '-' + String(hoy.getMonth()+1).padStart(2,'0') + '-' + String(hoy.getDate()).padStart(2,'0');
     }
     
-    // Limpiar formulario
     document.getElementById('eventoId').value = '';
     document.getElementById('eventoTitulo').value = '';
     document.getElementById('eventoHora').value = '';
     document.getElementById('eventoDesc').value = '';
     document.getElementById('btnEliminarEvento').style.display = 'none';
     
-    // Mostrar eventos existentes del día
     mostrarEventosExistentes(fechaInput.value);
     
     document.getElementById('modalEventoTitulo').textContent = '📅 Evento';
     document.getElementById('modalEvento').classList.add('show');
     
-    // Actualizar eventos al cambiar la fecha
     fechaInput.onchange = () => {
         mostrarEventosExistentes(fechaInput.value);
     };
@@ -942,7 +919,7 @@ function mostrarEventosExistentes(fecha) {
         <label style="margin-top:0;">📌 Eventos existentes (${delDia.length}):</label>
         <div class="eventos-dia-lista">
             ${delDia.map(e => `
-                <div class="evento-item" style="background:var(--bg-hover);padding:8px;border-radius:6px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center;gap:8px;">
+                <div style="background:var(--bg-hover);padding:8px;border-radius:6px;margin-bottom:4px;display:flex;justify-content:space-between;align-items:center;gap:8px;">
                     <div style="flex:1;min-width:0;">
                         <div style="font-weight:600;font-size:13px;">${e.titulo}</div>
                         ${e.hora ? `<div style="font-size:11px;color:var(--text-secondary);">⏰ ${e.hora}</div>` : ''}
@@ -993,19 +970,16 @@ function guardarEvento() {
     let eventos = JSON.parse(localStorage.getItem('eventos_calendario') || '[]');
     
     if (id) {
-        // Editar existente
         const idx = eventos.findIndex(e => e.id === id);
         if (idx >= 0) {
             eventos[idx] = { ...eventos[idx], fecha, hora, titulo, desc };
         }
     } else {
-        // Nuevo
         eventos.push({ id: 'ev-' + Date.now(), fecha, hora, titulo, desc });
     }
     
     localStorage.setItem('eventos_calendario', JSON.stringify(eventos));
     
-    // Refrescar
     cerrarModalEvento();
     refrescarCalendario();
 }
@@ -1025,7 +999,6 @@ function eliminarEventoPorId(id) {
     localStorage.setItem('eventos_calendario', JSON.stringify(eventos));
     refrescarCalendario();
     
-    // Si el modal está abierto, refrescar lista
     if (document.getElementById('modalEvento').classList.contains('show')) {
         const fecha = document.getElementById('eventoFecha').value;
         mostrarEventosExistentes(fecha);
@@ -1040,15 +1013,17 @@ function refrescarCalendario() {
 }
 
 function abrirDiaCalendario(key) {
-    // Abrir modal con esa fecha, mostrando eventos existentes
     abrirModalEvento(key);
 }
 
 // ============================================================
-// DRAG & RESIZE
+// DRAG & RESIZE CON INTERACT.JS
 // ============================================================
 
 function hacerArrastrable(elemento, elemData) {
+    // Destruir instancias previas si existen
+    interact(elemento).unset();
+    
     interact(elemento)
         .draggable({
             inertia: false,
@@ -1192,13 +1167,24 @@ async function mostrarAreas(main) {
         const mat = asig.filter(a => esMatriculada(a)).length;
         const total = asig.length;
         const pct = total > 0 ? Math.round((ap/total)*100) : 0;
-        html += `<div class="area-card" onclick="navegar('cursos','${area.id}')">
-            <div class="icon">${area.icon || '📚'}</div>
-            <div class="nombre">${area.nombre}</div>
-            <div class="desc">${area.descripcion || ''}</div>
-            <div class="progress-track" style="margin-top:8px;"><div class="progress-fill" style="width:${pct}%;height:6px;"></div></div>
-            <div style="font-size:13px;color:var(--text-secondary);margin-top:4px;">${ap}/${total} aprobadas | ${mat} matriculadas</div>
-        </div>`;
+        
+        if (area.id === 'herramientas' || area.id === 'networking' || area.id === 'pnl') {
+            const color = area.id === 'herramientas' ? '#8b5cf6' : area.id === 'networking' ? '#00b4d8' : '#9b59b6';
+            html += `<div class="area-card" onclick="navegar('asignaturas','${area.id}')" style="border:2px dashed ${color};">
+                <div class="icon">${area.icon || '📚'}</div>
+                <div class="nombre">${area.nombre}</div>
+                <div class="desc">${area.descripcion || ''}</div>
+                <div style="font-size:13px;color:var(--text-secondary);margin-top:8px;">⚡ ${asig.length} disponibles</div>
+            </div>`;
+        } else {
+            html += `<div class="area-card" onclick="navegar('cursos','${area.id}')">
+                <div class="icon">${area.icon || '📚'}</div>
+                <div class="nombre">${area.nombre}</div>
+                <div class="desc">${area.descripcion || ''}</div>
+                <div class="progress-track" style="margin-top:8px;"><div class="progress-fill" style="width:${pct}%;height:6px;"></div></div>
+                <div style="font-size:13px;color:var(--text-secondary);margin-top:4px;">${ap}/${total} aprobadas | ${mat} matriculadas</div>
+            </div>`;
+        }
     }
     html += `</div>`;
     main.innerHTML = html;
