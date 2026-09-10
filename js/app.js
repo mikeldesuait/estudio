@@ -1350,3 +1350,43 @@ window.eliminarNota = eliminarNota;
 window.guardarTextoNota = guardarTextoNota;
 window.resetEscritorio = resetEscritorio;
 window.toggleModoMover = toggleModoMover;
+
+// ============================================================
+// NAVEGACIÓN DEL MENÚ SUPERIOR (URLs limpias)
+// ============================================================
+
+function irAlEscritorio(e) {
+    if (e) e.preventDefault();
+    window.history.pushState({}, '', '/estudio/');
+    cargarVista('dashboard');
+    // Cerrar menú móvil si está abierto
+    const nav = document.getElementById('navLinks');
+    if (nav) nav.classList.remove('open');
+}
+
+function irAEstudio(e) {
+    if (e) e.preventDefault();
+    window.history.pushState({}, '', '/estudio/?nivel=areas');
+    estado.nivel = 'areas';
+    estado.areaId = '';
+    estado.cursoId = '';
+    estado.semestreId = '';
+    estado.asignaturaId = '';
+    estado.temaId = '';
+    cargarVista('estudio');
+    const nav = document.getElementById('navLinks');
+    if (nav) nav.classList.remove('open');
+}
+
+function irAProgreso(e) {
+    if (e) e.preventDefault();
+    window.history.pushState({}, '', '/estudio/?nivel=configuracion');
+    cargarVista('configuracion');
+    const nav = document.getElementById('navLinks');
+    if (nav) nav.classList.remove('open');
+}
+
+// Exponer
+window.irAlEscritorio = irAlEscritorio;
+window.irAEstudio = irAEstudio;
+window.irAProgreso = irAProgreso;
