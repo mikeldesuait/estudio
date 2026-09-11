@@ -5,12 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>PromptMaker · UNED</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background: #0d1a2b;
@@ -18,429 +13,189 @@
             min-height: 100vh;
             padding: 20px;
         }
-
-        .app {
-            max-width: 1000px;
-            margin: 0 auto;
-        }
-
+        .app { max-width: 1000px; margin: 0 auto; }
         h1 {
-            font-size: 26px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 12px;
+            font-size: 26px; font-weight: 700;
+            display: flex; align-items: center; gap: 12px;
             margin-bottom: 4px;
         }
-
         .subhead {
-            color: #8a9bb8;
-            font-size: 14px;
+            color: #8a9bb8; font-size: 14px;
             margin-bottom: 24px;
             border-left: 3px solid #2a5a8a;
             padding-left: 16px;
         }
-
         .tabs {
-            display: flex;
-            gap: 4px;
-            background: #0f1f33;
-            border-radius: 12px;
-            padding: 4px;
-            margin-bottom: 24px;
-            border: 1px solid #1e3450;
-            flex-wrap: wrap;
+            display: flex; gap: 4px;
+            background: #0f1f33; border-radius: 12px;
+            padding: 4px; margin-bottom: 24px;
+            border: 1px solid #1e3450; flex-wrap: wrap;
         }
-
         .tabs button {
-            flex: 1;
-            min-width: 60px;
-            padding: 12px 8px;
-            border: none;
-            border-radius: 9px;
-            background: transparent;
-            color: #8a9bb8;
-            font-weight: 600;
-            font-size: 12px;
-            cursor: pointer;
-            transition: 0.2s;
+            flex: 1; min-width: 60px; padding: 12px 8px;
+            border: none; border-radius: 9px;
+            background: transparent; color: #8a9bb8;
+            font-weight: 600; font-size: 12px;
+            cursor: pointer; transition: 0.2s;
         }
-
         .tabs button.active {
-            background: #1a3d66;
-            color: #fff;
+            background: #1a3d66; color: #fff;
             box-shadow: 0 4px 14px rgba(20, 80, 180, 0.3);
         }
-
-        .tabs button:hover:not(.active) {
-            color: #c8d8f0;
-        }
-
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
+        .tabs button:hover:not(.active) { color: #c8d8f0; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
         .card {
-            background: #0f1f33;
-            border-radius: 16px;
-            padding: 20px 22px;
-            margin-bottom: 18px;
+            background: #0f1f33; border-radius: 16px;
+            padding: 20px 22px; margin-bottom: 18px;
             border: 1px solid #1e3450;
         }
-
         .card-title {
-            font-size: 14px;
-            font-weight: 600;
-            color: #b0c8e8;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            font-size: 14px; font-weight: 600;
+            color: #b0c8e8; margin-bottom: 12px;
+            display: flex; align-items: center; gap: 10px;
         }
-
         .btn-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-bottom: 4px;
+            display: flex; flex-wrap: wrap;
+            gap: 8px; margin-bottom: 4px;
         }
-
         .btn-group .opt {
             padding: 8px 18px;
             border: 2px solid #1e3450;
             border-radius: 30px;
             background: transparent;
-            color: #b0c8e8;
-            font-weight: 600;
-            font-size: 13px;
-            cursor: pointer;
+            color: #b0c8e8; font-weight: 600;
+            font-size: 13px; cursor: pointer;
             transition: 0.2s;
         }
-
-        .btn-group .opt:hover {
-            border-color: #3a6a9a;
-        }
-
+        .btn-group .opt:hover { border-color: #3a6a9a; }
         .btn-group .opt.active {
-            background: #1a3d66;
-            border-color: #2a6aaa;
+            background: #1a3d66; border-color: #2a6aaa;
             color: #fff;
             box-shadow: 0 4px 14px rgba(20, 80, 180, 0.25);
         }
-
         .check-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            margin-top: 4px;
+            display: flex; flex-wrap: wrap;
+            gap: 16px; margin-top: 4px;
         }
-
         .check-group label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            color: #b0c8e8;
-            cursor: pointer;
+            display: flex; align-items: center;
+            gap: 8px; font-size: 13px;
+            color: #b0c8e8; cursor: pointer;
         }
-
         .check-group input[type="checkbox"] {
-            width: 16px;
-            height: 16px;
-            accent-color: #2a6aaa;
-            cursor: pointer;
+            width: 16px; height: 16px;
+            accent-color: #2a6aaa; cursor: pointer;
         }
-
-        textarea,
-        input[type="text"] {
-            width: 100%;
-            background: #091220;
-            border: 1px solid #1e3450;
-            border-radius: 12px;
-            padding: 14px 16px;
-            font-size: 14px;
-            line-height: 1.7;
-            color: #d6e2f5;
+        textarea, input[type="text"] {
+            width: 100%; background: #091220;
+            border: 1px solid #1e3450; border-radius: 12px;
+            padding: 14px 16px; font-size: 14px;
+            line-height: 1.7; color: #d6e2f5;
             font-family: 'Consolas', 'Monaco', monospace;
-            resize: vertical;
-            transition: 0.15s;
+            resize: vertical; transition: 0.15s;
         }
-
-        textarea:focus,
-        input[type="text"]:focus {
-            outline: none;
-            border-color: #3a7ac0;
+        textarea:focus, input[type="text"]:focus {
+            outline: none; border-color: #3a7ac0;
             box-shadow: 0 0 0 3px rgba(40, 100, 200, 0.15);
         }
-
         textarea.texto-tema {
-            min-height: 180px;
-            font-size: 13px;
+            min-height: 180px; font-size: 13px;
             font-family: 'Segoe UI', sans-serif;
         }
-
-        textarea.prompt-output {
-            min-height: 300px;
-            font-size: 13px;
-        }
-
-        textarea.html-input {
-            min-height: 200px;
-            font-size: 13px;
-        }
-
+        textarea.prompt-output { min-height: 300px; font-size: 13px; }
+        textarea.html-input { min-height: 200px; font-size: 13px; }
         textarea.resumen-input {
-            min-height: 250px;
-            font-size: 13px;
+            min-height: 250px; font-size: 13px;
             font-family: 'Segoe UI', sans-serif;
         }
-
         input[type="text"] {
             font-family: 'Segoe UI', sans-serif;
-            font-size: 15px;
-            min-height: 46px;
+            font-size: 15px; min-height: 46px;
         }
-
         .actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-top: 14px;
+            display: flex; flex-wrap: wrap;
+            gap: 10px; margin-top: 14px;
         }
-
         .btn {
-            padding: 10px 22px;
-            border: none;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
+            padding: 10px 22px; border: none;
+            border-radius: 40px; font-weight: 600;
+            font-size: 14px; cursor: pointer;
             transition: 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            display: inline-flex; align-items: center; gap: 8px;
         }
-
-        .btn-primary {
-            background: #1a4a7a;
-            color: #fff;
-            box-shadow: 0 4px 14px rgba(20, 80, 180, 0.3);
-        }
-
-        .btn-primary:hover {
-            background: #2a5a9a;
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: #1a2a44;
-            color: #b0c8e8;
-            border: 1px solid #2a4a6a;
-        }
-
-        .btn-secondary:hover {
-            background: #2a3a5e;
-        }
-
-        .btn-success {
-            background: #1a6a4a;
-            color: #fff;
-        }
-
-        .btn-success:hover {
-            background: #2a7a5a;
-            transform: translateY(-1px);
-        }
-
-        .btn-danger {
-            background: #6a2a2a;
-            color: #fff;
-        }
-
-        .btn-danger:hover {
-            background: #8a3a3a;
-        }
-
-        .btn-warning {
-            background: #6a5a1a;
-            color: #fff;
-        }
-
-        .btn-warning:hover {
-            background: #8a7a2a;
-        }
-
-        .btn-purple {
-            background: #4a2a7a;
-            color: #fff;
-        }
-
-        .btn-purple:hover {
-            background: #5a3a9a;
-            transform: translateY(-1px);
-        }
-
+        .btn-primary { background: #1a4a7a; color: #fff; box-shadow: 0 4px 14px rgba(20, 80, 180, 0.3); }
+        .btn-primary:hover { background: #2a5a9a; transform: translateY(-1px); }
+        .btn-secondary { background: #1a2a44; color: #b0c8e8; border: 1px solid #2a4a6a; }
+        .btn-secondary:hover { background: #2a3a5e; }
+        .btn-success { background: #1a6a4a; color: #fff; }
+        .btn-success:hover { background: #2a7a5a; transform: translateY(-1px); }
+        .btn-danger { background: #6a2a2a; color: #fff; }
+        .btn-danger:hover { background: #8a3a3a; }
+        .btn-warning { background: #6a5a1a; color: #fff; }
+        .btn-warning:hover { background: #8a7a2a; }
+        .btn-purple { background: #4a2a7a; color: #fff; }
+        .btn-purple:hover { background: #5a3a9a; transform: translateY(-1px); }
         .badge-count {
-            background: #1a3d66;
-            padding: 2px 10px;
-            border-radius: 20px;
-            font-size: 12px;
+            background: #1a3d66; padding: 2px 10px;
+            border-radius: 20px; font-size: 12px;
             color: #b0c8e8;
         }
-
-        .field-hint {
-            font-size: 12px;
-            color: #6a8aaa;
-            margin-top: 4px;
-        }
-
+        .field-hint { font-size: 12px; color: #6a8aaa; margin-top: 4px; }
         .step-badge {
-            display: inline-block;
-            background: #2a5a8a;
-            color: #fff;
-            border-radius: 30px;
-            padding: 2px 14px;
-            font-size: 11px;
-            font-weight: 700;
-            margin-right: 8px;
+            display: inline-block; background: #2a5a8a;
+            color: #fff; border-radius: 30px;
+            padding: 2px 14px; font-size: 11px;
+            font-weight: 700; margin-right: 8px;
         }
-
         .library-item {
-            background: #091220;
-            border-radius: 10px;
-            padding: 12px 16px;
-            margin-bottom: 8px;
+            background: #091220; border-radius: 10px;
+            padding: 12px 16px; margin-bottom: 8px;
             border: 1px solid #1a2a44;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 8px;
+            display: flex; justify-content: space-between;
+            align-items: center; flex-wrap: wrap; gap: 8px;
         }
-
         .library-item .info .title {
-            font-weight: 600;
-            font-size: 14px;
-            color: #e0e8f0;
+            font-weight: 600; font-size: 14px; color: #e0e8f0;
         }
-
-        .library-item .info .meta {
-            font-size: 12px;
-            color: #6a8aaa;
-        }
-
-        .library-item .actions-lib {
-            display: flex;
-            gap: 6px;
-            flex-wrap: wrap;
-        }
-
-        .library-item .actions-lib .btn {
-            padding: 5px 12px;
-            font-size: 12px;
-        }
-
-        .empty-library {
-            color: #6a8aaa;
-            text-align: center;
-            padding: 30px 20px;
-            font-size: 14px;
-        }
-
+        .library-item .info .meta { font-size: 12px; color: #6a8aaa; }
+        .library-item .actions-lib { display: flex; gap: 6px; flex-wrap: wrap; }
+        .library-item .actions-lib .btn { padding: 5px 12px; font-size: 12px; }
+        .empty-library { color: #6a8aaa; text-align: center; padding: 30px 20px; font-size: 14px; }
         .toast {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
+            position: fixed; bottom: 30px; left: 50%;
             transform: translateX(-50%);
-            background: #1a3d66;
-            color: #fff;
-            padding: 12px 28px;
-            border-radius: 40px;
-            font-weight: 600;
-            font-size: 14px;
+            background: #1a3d66; color: #fff;
+            padding: 12px 28px; border-radius: 40px;
+            font-weight: 600; font-size: 14px;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            z-index: 999;
-            pointer-events: none;
+            opacity: 0; transition: opacity 0.3s ease;
+            z-index: 999; pointer-events: none;
         }
-
-        .toast.show {
-            opacity: 1;
-        }
-
-        .flow-steps {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
+        .toast.show { opacity: 1; }
+        .flow-steps { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
         .flow-steps .step {
-            background: #0f1f33;
-            border: 1px solid #1e3450;
-            border-radius: 30px;
-            padding: 6px 18px;
-            font-size: 13px;
-            color: #8a9bb8;
+            background: #0f1f33; border: 1px solid #1e3450;
+            border-radius: 30px; padding: 6px 18px;
+            font-size: 13px; color: #8a9bb8;
         }
-
         .flow-steps .step.active {
-            background: #1a3d66;
-            border-color: #2a6aaa;
-            color: #fff;
+            background: #1a3d66; border-color: #2a6aaa; color: #fff;
         }
-
         @media (max-width: 700px) {
-            body {
-                padding: 10px;
-            }
-            .card {
-                padding: 14px 12px;
-            }
-            .btn-group .opt {
-                padding: 6px 12px;
-                font-size: 12px;
-            }
-            .btn {
-                padding: 8px 14px;
-                font-size: 12px;
-            }
-            .tabs button {
-                font-size: 10px;
-                padding: 10px 4px;
-                min-width: 50px;
-            }
-            .library-item {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            .library-item .actions-lib {
-                justify-content: flex-start;
-            }
-            .flow-steps .step {
-                font-size: 11px;
-                padding: 4px 12px;
-            }
+            body { padding: 10px; }
+            .card { padding: 14px 12px; }
+            .btn-group .opt { padding: 6px 12px; font-size: 12px; }
+            .btn { padding: 8px 14px; font-size: 12px; }
+            .tabs button { font-size: 10px; padding: 10px 4px; min-width: 50px; }
+            .library-item { flex-direction: column; align-items: stretch; }
+            .library-item .actions-lib { justify-content: flex-start; }
+            .flow-steps .step { font-size: 11px; padding: 4px 12px; }
         }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #0a1520;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #2a4a6a;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #3a5a7a;
-        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a1520; }
+        ::-webkit-scrollbar-thumb { background: #2a4a6a; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #3a5a7a; }
     </style>
 </head>
 <body>
@@ -466,9 +221,7 @@
         <button data-tab="tab-library">📚 Biblioteca</button>
     </div>
 
-    <!-- ========================================================== -->
-    <!-- TAB 1: GENERAR PROMPT (Paso 1)                             -->
-    <!-- ========================================================== -->
+    <!-- ============ TAB 1: GENERAR PROMPT ============ -->
     <div id="tab-prompt" class="tab-content active">
 
         <div class="card">
@@ -476,12 +229,6 @@
             <div class="btn-group" id="modalidadGroup">
                 <button class="opt active" data-value="test">📝 Tipo Test</button>
                 <button class="opt" data-value="desarrollo">📖 Desarrollo</button>
-                <button class="opt" data-value="mixto">🧩 Mixto</button>
-            </div>
-            <div class="btn-group" style="margin-top:10px;" id="nivelGroup">
-                <button class="opt" data-value="rapido">⚡ Rápido</button>
-                <button class="opt active" data-value="estudio">📚 Estudio</button>
-                <button class="opt" data-value="intensivo">🔥 Intensivo</button>
             </div>
             <div class="check-group" style="margin-top:10px;">
                 <label><input type="checkbox" id="optChecklist" checked /> Checklist de epígrafes</label>
@@ -513,9 +260,7 @@
 
     </div>
 
-    <!-- ========================================================== -->
-    <!-- TAB 2: GENERAR HTML (Paso 2)                              -->
-    <!-- ========================================================== -->
+    <!-- ============ TAB 2: GENERAR HTML ============ -->
     <div id="tab-html" class="tab-content">
 
         <div class="card">
@@ -541,15 +286,13 @@
 
     </div>
 
-    <!-- ========================================================== -->
-    <!-- TAB 3: DESCARGAR HTML (Paso 3)                            -->
-    <!-- ========================================================== -->
+    <!-- ============ TAB 3: DESCARGAR HTML ============ -->
     <div id="tab-download" class="tab-content">
 
         <div class="card">
-            <div class="card-title"><span class="step-badge">Paso 3</span> HTML de DeepSeek</div>
-            <textarea class="html-input" id="htmlInput" placeholder="Pega aquí el HTML que te ha devuelto DeepSeek en el Paso 2 (debe empezar con &lt;!DOCTYPE html&gt;)..."></textarea>
-            <div class="field-hint">🔧 DeepSeek devuelve el HTML con preguntas interactivas. Cópialo y pégalo aquí.</div>
+            <div class="card-title"><span class="step-badge">Paso 3</span> Pega el HTML de DeepSeek</div>
+            <textarea class="html-input" id="htmlInput" placeholder="Pega aquí el HTML que te ha devuelto DeepSeek en el Paso 2 (con o sin bloques ```html). Se limpiará automáticamente..."></textarea>
+            <div class="field-hint" id="htmlStatus">🔧 Pega el HTML y se procesará automáticamente.</div>
         </div>
 
         <div class="card">
@@ -559,25 +302,48 @@
 
         <div class="card">
             <div class="card-title"><span class="step-badge">Paso 3</span> Vista previa</div>
-            <textarea class="prompt-output" id="htmlOutput" readonly style="min-height: 100px;">Pega el HTML de DeepSeek y pon el título para descargar...</textarea>
+            <div id="previewBox" style="
+                background: #091220;
+                border: 1px solid #1e3450;
+                border-radius: 12px;
+                min-height: 300px;
+                max-height: 500px;
+                overflow: auto;
+                padding: 0;
+                position: relative;
+            ">
+                <iframe id="previewIframe" style="
+                    width: 100%;
+                    height: 500px;
+                    border: none;
+                    border-radius: 12px;
+                    background: #f5f7fa;
+                    display: none;
+                "></iframe>
+                <div id="previewPlaceholder" style="
+                    color: #6a8aaa;
+                    text-align: center;
+                    padding: 100px 20px;
+                    font-size: 14px;
+                ">🖼️ La vista previa aparecerá aquí al pegar el HTML</div>
+            </div>
             <div class="actions">
                 <button class="btn btn-success" id="descargarHtmlBtn">📥 Descargar .html</button>
-                <button class="btn btn-primary" id="copiarHtmlBtn">📋 Copiar código</button>
+                <button class="btn btn-primary" id="copiarHtmlBtn">📋 Copiar código limpio</button>
                 <button class="btn btn-secondary" id="limpiarHtmlBtn">🗑️ Limpiar</button>
             </div>
+            <div class="field-hint" id="htmlInfo" style="margin-top:8px;">Sin HTML cargado.</div>
         </div>
 
         <div class="card" style="border-color: #2a5a3a; background: #0d1f2a;">
             <div style="font-size:13px; color:#8aabaa;">
-                💡 <strong>Paso 3:</strong> El HTML se descarga directamente. Incluye: <strong>Idea central</strong> + <strong>Resumen detallado</strong> + <strong>Preguntas interactivas</strong> (respuestas ocultas con botón "Mostrar respuesta") + <strong>Modo claro/oscuro</strong> + <strong>Índice</strong>.
+                💡 <strong>Paso 3:</strong> Pega el HTML de DeepSeek (con o sin <code>```html</code>). Se <strong>limpia automáticamente</strong>, se muestra la <strong>vista previa</strong> y puedes <strong>copiar o descargar</strong> directamente.
             </div>
         </div>
 
     </div>
 
-    <!-- ========================================================== -->
-    <!-- TAB 4: BIBLIOTECA                                          -->
-    <!-- ========================================================== -->
+    <!-- ============ TAB 4: BIBLIOTECA ============ -->
     <div id="tab-library" class="tab-content">
 
         <div class="card">
@@ -600,831 +366,264 @@
 
 </div>
 
-<!-- ========================================================== -->
-<!-- TOAST                                                     -->
-<!-- ========================================================== -->
 <div id="toast" class="toast"></div>
 
 <script>
     (function() {
 
         // ============================================================
-        // CSS COMPLETO PARA INCLUIR EN EL PROMPT DEL PASO 2
+        // CSS DE REFERENCIA (para incluir en el prompt del Paso 2)
         // ============================================================
 
         const CSS_ESTUDIO = `
 /* ===== ESTILO ÚNICO PARA RESÚMENES UNED ===== */
-body {
-    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    max-width: 950px;
-    margin: 30px auto;
-    padding: 20px;
-    background: #f5f7fa;
-    color: #1a1a2e;
-    line-height: 1.8;
-    font-size: 17px;
-}
-h1 {
-    font-size: 30px;
-    color: #0a1628;
-    border-bottom: 4px solid #1a3d66;
-    padding-bottom: 14px;
-}
-h2 {
-    font-size: 23px;
-    color: #1a3d66;
-    margin-top: 32px;
-    border-left: 4px solid #1a3d66;
-    padding-left: 16px;
-}
-h3 {
-    font-size: 20px;
-    color: #2a4a7a;
-    margin-top: 26px;
-}
-h4 {
-    font-size: 18px;
-    color: #3a5a8a;
-    margin-top: 20px;
-}
-strong {
-    color: #0a2a4a;
-}
-ul {
-    padding-left: 24px;
-}
-li {
-    margin-bottom: 6px;
-}
-blockquote {
-    background: #e8edf4;
-    padding: 12px 20px;
-    border-left: 4px solid #1a3d66;
-    margin: 16px 0;
-    border-radius: 4px;
-}
-hr {
-    border: none;
-    border-top: 2px solid #d0d8e4;
-    margin: 28px 0;
-}
-.indice {
-    background: #e8edf4;
-    padding: 16px 24px;
-    border-radius: 10px;
-    margin-bottom: 30px;
-}
-.indice ul {
-    list-style: none;
-    padding-left: 0;
-}
-.indice li {
-    padding: 3px 0;
-}
-.indice li.h1 {
-    font-weight: 600;
-}
-.indice li.h2 {
-    padding-left: 20px;
-    font-weight: 400;
-}
-.indice a {
-    color: #1a3d66;
-    text-decoration: none;
-}
-.indice a:hover {
-    text-decoration: underline;
-}
-.idea-central {
-    background: #e0e8f4;
-    padding: 18px 24px;
-    border-radius: 12px;
-    margin: 20px 0 30px 0;
-    border-left: 5px solid #1a3d66;
-}
-.idea-central h2 {
-    margin-top: 0;
-    border-left: none;
-    padding-left: 0;
-}
-.modo-btn {
-    position: fixed;
-    top: 16px;
-    right: 16px;
-    padding: 8px 18px;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    font-weight: 600;
-    background: #1a3d66;
-    color: #fff;
-    font-size: 14px;
-    z-index: 999;
-}
-.modo-btn:hover {
-    background: #2a5a8a;
-}
-.dark-mode {
-    background: #0d1a2b;
-    color: #d6e2f5;
-}
-.dark-mode h1 {
-    color: #b0c8e8;
-    border-bottom-color: #2a5a8a;
-}
-.dark-mode h2 {
-    color: #8ab0e0;
-    border-left-color: #2a5a8a;
-}
-.dark-mode h3 {
-    color: #6a9ac0;
-}
-.dark-mode h4 {
-    color: #5a8aaa;
-}
-.dark-mode strong {
-    color: #c8ddf0;
-}
-.dark-mode blockquote {
-    background: #142a44;
-    border-left-color: #2a5a8a;
-}
-.dark-mode .indice {
-    background: #142a44;
-}
-.dark-mode .indice a {
-    color: #8ab0e0;
-}
-.dark-mode .idea-central {
-    background: #142a44;
-    border-left-color: #2a5a8a;
-}
-.dark-mode hr {
-    border-top-color: #2a4a6a;
-}
-@media (max-width: 768px) {
-    body {
-        font-size: 16px;
-        padding: 14px;
-    }
-    h1 {
-        font-size: 25px;
-    }
-    h2 {
-        font-size: 21px;
-    }
-}
-
-/* ===== ESTILOS PARA PREGUNTAS INTERACTIVAS ===== */
-.pregunta {
-    background: #f0f4fa;
-    border-radius: 12px;
-    padding: 16px 20px;
-    margin-bottom: 16px;
-    border: 1px solid #d0d8e4;
-}
-.dark-mode .pregunta {
-    background: #142a44;
-    border-color: #2a4a6a;
-}
-.pregunta .enunciado {
-    font-weight: 600;
-    margin-bottom: 8px;
-}
-.pregunta .opciones {
-    list-style: none;
-    padding-left: 8px;
-}
-.pregunta .opciones li {
-    margin-bottom: 4px;
-    padding: 4px 8px;
-    border-radius: 6px;
-}
-.pregunta .opciones li.correcta {
-    background: #d4edda;
-    color: #155724;
-    border-left: 4px solid #28a745;
-}
-.dark-mode .pregunta .opciones li.correcta {
-    background: #1a4a3a;
-    color: #8fdfb0;
-    border-left-color: #2ecc71;
-}
-.pregunta .respuesta-oculta {
-    display: none;
-    margin-top: 12px;
-    padding: 12px 16px;
-    background: #e8f0fe;
-    border-radius: 8px;
-    border-left: 4px solid #1a3d66;
-}
-.dark-mode .pregunta .respuesta-oculta {
-    background: #1a3050;
-    border-left-color: #2a5a8a;
-}
-.pregunta .respuesta-oculta.visible {
-    display: block;
-}
-.pregunta .btn-respuesta {
-    margin-top: 10px;
-    padding: 6px 18px;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    font-weight: 600;
-    font-size: 13px;
-    background: #1a3d66;
-    color: #fff;
-    transition: 0.2s;
-}
-.pregunta .btn-respuesta:hover {
-    background: #2a5a8a;
-}
-.dark-mode .pregunta .btn-respuesta {
-    background: #2a5a8a;
-}
-.dark-mode .pregunta .btn-respuesta:hover {
-    background: #3a7aaa;
-}
-.pregunta .trampa {
-    margin-top: 8px;
-    font-size: 14px;
-    color: #6a4a2a;
-    font-style: italic;
-}
-.dark-mode .pregunta .trampa {
-    color: #c8a878;
-}
-.pregunta-desarrollo .esquema-oculto {
-    display: none;
-    margin-top: 12px;
-    padding: 12px 16px;
-    background: #e8f0fe;
-    border-radius: 8px;
-    border-left: 4px solid #1a3d66;
-}
-.dark-mode .pregunta-desarrollo .esquema-oculto {
-    background: #1a3050;
-    border-left-color: #2a5a8a;
-}
-.pregunta-desarrollo .esquema-oculto.visible {
-    display: block;
-}`;
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; max-width: 950px; margin: 30px auto; padding: 20px; background: #f5f7fa; color: #1a1a2e; line-height: 1.8; font-size: 17px; }
+h1 { font-size: 30px; color: #0a1628; border-bottom: 4px solid #1a3d66; padding-bottom: 14px; }
+h2 { font-size: 23px; color: #1a3d66; margin-top: 32px; border-left: 4px solid #1a3d66; padding-left: 16px; }
+h3 { font-size: 20px; color: #2a4a7a; margin-top: 26px; }
+h4 { font-size: 18px; color: #3a5a8a; margin-top: 20px; }
+strong { color: #0a2a4a; }
+ul { padding-left: 24px; }
+li { margin-bottom: 6px; }
+blockquote { background: #e8edf4; padding: 12px 20px; border-left: 4px solid #1a3d66; margin: 16px 0; border-radius: 4px; }
+hr { border: none; border-top: 2px solid #d0d8e4; margin: 28px 0; }
+.indice { background: #e8edf4; padding: 16px 24px; border-radius: 10px; margin-bottom: 30px; }
+.indice ul { list-style: none; padding-left: 0; }
+.indice li { padding: 3px 0; }
+.indice li.h1 { font-weight: 600; }
+.indice li.h2 { padding-left: 20px; font-weight: 400; }
+.indice a { color: #1a3d66; text-decoration: none; }
+.indice a:hover { text-decoration: underline; }
+.idea-central { background: #e0e8f4; padding: 18px 24px; border-radius: 12px; margin: 20px 0 30px 0; border-left: 5px solid #1a3d66; }
+.idea-central h2 { margin-top: 0; border-left: none; padding-left: 0; }
+.modo-btn { position: fixed; top: 16px; right: 16px; padding: 8px 18px; border: none; border-radius: 30px; cursor: pointer; font-weight: 600; background: #1a3d66; color: #fff; font-size: 14px; z-index: 999; }
+.modo-btn:hover { background: #2a5a8a; }
+.dark-mode { background: #0d1a2b; color: #d6e2f5; }
+.dark-mode h1 { color: #b0c8e8; border-bottom-color: #2a5a8a; }
+.dark-mode h2 { color: #8ab0e0; border-left-color: #2a5a8a; }
+.dark-mode h3 { color: #6a9ac0; }
+.dark-mode h4 { color: #5a8aaa; }
+.dark-mode strong { color: #c8ddf0; }
+.dark-mode blockquote { background: #142a44; border-left-color: #2a5a8a; }
+.dark-mode .indice { background: #142a44; }
+.dark-mode .indice a { color: #8ab0e0; }
+.dark-mode .idea-central { background: #142a44; border-left-color: #2a5a8a; }
+.dark-mode hr { border-top-color: #2a4a6a; }
+@media (max-width: 768px) { body { font-size: 16px; padding: 14px; } h1 { font-size: 25px; } h2 { font-size: 21px; } }
+.pregunta { background: #f0f4fa; border-radius: 12px; padding: 16px 20px; margin-bottom: 16px; border: 1px solid #d0d8e4; }
+.dark-mode .pregunta { background: #142a44; border-color: #2a4a6a; }
+.pregunta .enunciado { font-weight: 600; margin-bottom: 8px; }
+.pregunta .opciones { list-style: none; padding-left: 8px; }
+.pregunta .opciones li { margin-bottom: 4px; padding: 4px 8px; border-radius: 6px; }
+.pregunta .opciones li.correcta { background: #d4edda; color: #155724; border-left: 4px solid #28a745; }
+.dark-mode .pregunta .opciones li.correcta { background: #1a4a3a; color: #8fdfb0; border-left-color: #2ecc71; }
+.pregunta .respuesta-oculta { display: none; margin-top: 12px; padding: 12px 16px; background: #e8f0fe; border-radius: 8px; border-left: 4px solid #1a3d66; }
+.dark-mode .pregunta .respuesta-oculta { background: #1a3050; border-left-color: #2a5a8a; }
+.pregunta .respuesta-oculta.visible { display: block; }
+.pregunta .btn-respuesta { margin-top: 10px; padding: 6px 18px; border: none; border-radius: 30px; cursor: pointer; font-weight: 600; font-size: 13px; background: #1a3d66; color: #fff; transition: 0.2s; }
+.pregunta .btn-respuesta:hover { background: #2a5a8a; }
+.dark-mode .pregunta .btn-respuesta { background: #2a5a8a; }
+.dark-mode .pregunta .btn-respuesta:hover { background: #3a7aaa; }
+.pregunta .trampa { margin-top: 8px; font-size: 14px; color: #6a4a2a; font-style: italic; }
+.dark-mode .pregunta .trampa { color: #c8a878; }
+.pregunta-desarrollo .esquema-oculto { display: none; margin-top: 12px; padding: 12px 16px; background: #e8f0fe; border-radius: 8px; border-left: 4px solid #1a3d66; }
+.dark-mode .pregunta-desarrollo .esquema-oculto { background: #1a3050; border-left-color: #2a5a8a; }
+.pregunta-desarrollo .esquema-oculto.visible { display: block; }`;
 
         // ============================================================
-        // PLANTILLAS DE PROMPT PARA EL PASO 1 (Generar resumen)
+        // PLANTILLA HTML DE REFERENCIA (para forzar literalidad)
+        // DeepSeek solo debe rellenar los marcadores {{...}}
         // ============================================================
 
-        function getPromptResumen(modalidad, nivel) {
+        const PLANTILLA_HTML_REFERENCIA = `<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{TITULO}}</title>
+<style>
+/* PEGAR AQUÍ EXACTAMENTE EL CSS PROPORCIONADO */
+</style>
+</head>
+<body>
+<button class="modo-btn" onclick="toggleModo()">🌙 Modo oscuro</button>
+
+<nav class="indice">
+<h2>📑 Índice</h2>
+<ul>
+{{INDICE_ITEMS}}
+</ul>
+</nav>
+
+<h1>{{TITULO}}</h1>
+
+<section class="idea-central">
+<h2>💡 Idea central</h2>
+<p>{{IDEA_CENTRAL}}</p>
+</section>
+
+<h2>📚 Resumen por epígrafes</h2>
+{{EPIGRAFES}}
+
+<h2>📝 Preguntas tipo test</h2>
+{{PREGUNTAS_TEST}}
+
+<h2>✍️ Preguntas de desarrollo</h2>
+{{PREGUNTAS_DESARROLLO}}
+
+<script>
+function toggleModo() {
+    document.body.classList.toggle('dark-mode');
+    const btn = document.querySelector('.modo-btn');
+    btn.textContent = document.body.classList.contains('dark-mode') ? '☀️ Modo claro' : '🌙 Modo oscuro';
+}
+function toggleRespuesta(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('visible');
+    const btn = el.previousElementSibling;
+    btn.textContent = el.classList.contains('visible') ? '🙈 Ocultar respuesta' : '👁️ Mostrar respuesta';
+}
+function toggleEsquema(id) {
+    const el = document.getElementById(id);
+    el.classList.toggle('visible');
+    const btn = el.previousElementSibling;
+    btn.textContent = el.classList.contains('visible') ? '🙈 Ocultar esquema' : '👁️ Mostrar esquema';
+}
+</script>
+</body>
+</html>`;
+
+        // ============================================================
+        // PROMPT PASO 1 — Test / Desarrollo
+        // ============================================================
+
+        function getPromptResumen(modalidad) {
             const opciones = {
                 checklist: document.getElementById('optChecklist').checked,
                 prioridad: document.getElementById('optPrioridad').checked
             };
 
             let extra = '';
-            if (opciones.checklist) extra += '\n- Incluir checklist de epígrafes procesados (solo para verificación interna, NO en el HTML final).';
-            if (opciones.prioridad) extra += '\n- Marcar epígrafes con prioridad (🔴🟡🟢) solo para verificación interna, NO en el HTML final.';
+            if (opciones.checklist) extra += '\n- Checklist de epígrafes procesados (solo verificación interna, NO en el HTML final).';
+            if (opciones.prioridad) extra += '\n- Marcas de prioridad 🔴🟡🟢 (solo verificación interna, NO en el HTML final).';
 
             let base = '';
 
             if (modalidad === 'test') {
-                if (nivel === 'rapido') {
-                    base = `# PROMPT PARA DEEPSEEK · TIPO TEST · NIVEL RÁPIDO
+                base = `# TAREA: RESUMEN TIPO TEST
 
-## Rol
-Actúa como un profesor universitario experto en Derecho Administrativo y en la preparación de materiales de estudio para exámenes tipo test.
+## ROL
+Profesor universitario experto en Derecho Administrativo, especializado en preparar materiales para exámenes tipo test.
 
-## Instrucción principal
-Te proporcionaré el texto de un tema académico. Deberás generar un **resumen de estudio** que:
+## INSTRUCCIONES (obligatorio cumplir TODAS)
+1. Sintetiza y condensa el texto: elimina repeticiones, ejemplos excesivos y desarrollos secundarios.
+2. Mantén TODOS los conceptos, definiciones, argumentos y referencias importantes que puedan preguntarse.
+3. Respeta la estructura del original (epígrafes y subepígrafes).
+4. Incluye definiciones literales SOLO para los conceptos más importantes.
+5. Reduce la extensión de forma significativa, pero sin perder información sustancial.
 
-1. **Sintetice y condense** el contenido original, eliminando repeticiones, ejemplos excesivos y desarrollos secundarios.
-2. **Mantenga TODOS los conceptos, definiciones, argumentos y referencias importantes** que puedan ser preguntados en el examen.
-3. **Respete la estructura del original** (epígrafes y subepígrafes).
-4. **Incluya definiciones literales** (frases textuales del manual) solo para los conceptos más importantes y que tengan una redacción especialmente relevante para el examen.
-5. **Reduzca la extensión original de forma significativa**, pero sin que el estudiante pierda información sustancial. El resumen debe ser un **verdadero resumen**, no una transcripción.
+## FORMATO DE SALIDA (respetar EXACTAMENTE este orden)
 
-## Formato de salida obligatorio
-
-### 1. IDEA CENTRAL (5 minutos)
+### 1. IDEA CENTRAL
 Un párrafo de 5-6 líneas que resuma TODO el tema.
 
----
-
 ### 2. RESUMEN POR EPÍGRAFES
-**CADA epígrafe y subepígrafe** debe incluir:
-
+Para CADA epígrafe y subepígrafe, incluye:
 **Epígrafe X.X. [Nombre]**
-- **Resumen:** (Síntesis del contenido: idea principal, argumentos esenciales, ejemplos clave).
-- **Definiciones literales:** (Solo las frases textuales más importantes, copiadas tal cual).
-- **Matiz a recordar:** (Palabra clave que puede ser cambiada en una pregunta trampa).
-
-*(ESTA ESTRUCTURA DEBE REPETIRSE PARA CADA EPÍGRAFE Y SUBEPÍGRAFE. NO TE SALTES NINGUNO.)*
-
----
+- Resumen: síntesis del contenido (idea principal + argumentos esenciales).
+- Definiciones literales: solo las frases textuales clave (copiadas tal cual).
+- Matiz a recordar: palabra clave que puede cambiarse en una pregunta trampa.
 
 ### 3. PREGUNTAS TIPO TEST
-**5 preguntas** con 4 opciones cada una. Para cada pregunta:
-- Enunciado extraído de una idea clave del texto.
-- Opción A
-- Opción B
-- Opción C
-- Opción D
-- **Respuesta correcta:** Indicada (letra y texto).
-- **Trampa identificada:** Explicación.
-
----
-
-### 4. PREGUNTAS DE RESERVA
-**2 preguntas** muy difíciles (trampas muy sutiles).
-
----
-
-## REGLAS DE ORO
-1. **Equilibrio:** Ni copiar todo ni omitir lo importante. Síntesis con sustancia.
-2. **Literalidad selectiva:** Solo las definiciones más relevantes se copian textualmente.
-3. **No inventes:** Todo debe salir del texto proporcionado.
-4. **Numeración completa:** Respeta TODOS los epígrafes.
-
----
-
-## TEXTO A ANALIZAR`;
-                } else if (nivel === 'estudio') {
-                    base = `# PROMPT PARA DEEPSEEK · TIPO TEST · NIVEL ESTUDIO
-
-## Rol
-Actúa como un profesor universitario experto en Derecho Administrativo y en la preparación de materiales de estudio para exámenes tipo test.
-
-## Instrucción principal
-Te proporcionaré el texto de un tema académico. Deberás generar un **resumen de estudio** que:
-
-1. **Sintetice y condense** el contenido original, eliminando repeticiones, ejemplos excesivos y desarrollos secundarios.
-2. **Mantenga TODOS los conceptos, definiciones, argumentos y referencias importantes** que puedan ser preguntados en el examen.
-3. **Respete la estructura del original** (epígrafes y subepígrafes).
-4. **Incluya definiciones literales** (frases textuales del manual) solo para los conceptos más importantes y que tengan una redacción especialmente relevante para el examen.
-5. **Reduzca la extensión original de forma significativa**, pero sin que el estudiante pierda información sustancial. El resumen debe ser un **verdadero resumen**, no una transcripción.
-
-## Formato de salida obligatorio
-
-### 1. IDEA CENTRAL (5 minutos)
-Un párrafo de 5-6 líneas que resuma TODO el tema.
-
----
-
-### 2. RESUMEN POR EPÍGRAFES
-**CADA epígrafe y subepígrafe** debe incluir:
-
-**Epígrafe X.X. [Nombre]**
-- **Resumen:** (Síntesis del contenido: idea principal, argumentos esenciales, ejemplos clave).
-- **Definiciones literales:** (Solo las frases textuales más importantes, copiadas tal cual).
-- **Matiz a recordar:** (Palabra clave que puede ser cambiada en una pregunta trampa).
-
-*(ESTA ESTRUCTURA DEBE REPETIRSE PARA CADA EPÍGRAFE Y SUBEPÍGRAFE. NO TE SALTES NINGUNO.)*
-
----
-
-### 3. PREGUNTAS TIPO TEST
-**10 preguntas** con 4 opciones cada una. Para cada pregunta:
+10 preguntas con 4 opciones cada una. Para cada pregunta:
 - Enunciado
-- Opción A
-- Opción B
-- Opción C
-- Opción D
-- **Respuesta correcta:** Indicada.
-- **Trampa identificada:** Explicación.
-
----
+- Opción A / B / C / D
+- Respuesta correcta
+- Trampa identificada
 
 ### 4. PREGUNTAS DE RESERVA
-**2 preguntas** muy difíciles.
-
----
+2 preguntas muy difíciles.
 
 ## REGLAS DE ORO
-1. **Equilibrio:** Ni copiar todo ni omitir lo importante.
-2. **Literalidad selectiva:** Solo las definiciones más relevantes.
-3. **No inventes.**
-4. **Numeración completa.**
+1. Equilibrio: ni copiar todo ni omitir lo importante.
+2. Literalidad selectiva: solo las definiciones más relevantes.
+3. No inventes: todo debe salir del texto.
+4. Numeración completa: respeta TODOS los epígrafes.${extra ? '\n\n## OPCIONES EXTRA' + extra : ''}
 
----
+## VERIFICACIÓN FINAL (hazlo ANTES de responder)
+Antes de generar la salida, comprueba internamente:
+- ¿He incluido TODOS los epígrafes y subepígrafes sin saltarme ninguno?
+- ¿He respetado el orden exacto del formato de salida?
+- ¿He generado exactamente 10 preguntas + 2 de reserva?
+- ¿Cada pregunta tiene 4 opciones, respuesta correcta y trampa?
+Si alguna respuesta es NO, corrige antes de responder.
 
-## TEXTO A ANALIZAR`;
-                } else { // intensivo
-                    base = `# PROMPT PARA DEEPSEEK · TIPO TEST · NIVEL INTENSIVO
+=== TEXTO A ANALIZAR ===`;
 
-## Rol
-Actúa como un profesor universitario experto en Derecho Administrativo y en la preparación de materiales de estudio para exámenes tipo test.
+            } else { // desarrollo
+                base = `# TAREA: RESUMEN DE DESARROLLO
 
-## Instrucción principal
-Te proporcionaré el texto de un tema académico. Deberás generar un **resumen de estudio** que:
+## ROL
+Profesor universitario experto en Derecho Administrativo, especializado en preparar materiales para exámenes de desarrollo.
 
-1. **Sintetice y condense** el contenido original, eliminando repeticiones, ejemplos excesivos y desarrollos secundarios.
-2. **Mantenga TODOS los conceptos, definiciones, argumentos y referencias importantes** que puedan ser preguntados en el examen.
-3. **Respete la estructura del original** (epígrafes y subepígrafes).
-4. **Incluya definiciones literales** (frases textuales del manual) solo para los conceptos más importantes y que tengan una redacción especialmente relevante para el examen.
-5. **Reduzca la extensión original de forma significativa**, pero sin que el estudiante pierda información sustancial. El resumen debe ser un **verdadero resumen**, no una transcripción.
+## INSTRUCCIONES (obligatorio cumplir TODAS)
+1. Sintetiza y condensa el texto: elimina repeticiones y ejemplos excesivos.
+2. Mantén TODOS los conceptos, argumentos y referencias importantes para desarrollar por escrito.
+3. Respeta la estructura del original (epígrafes y subepígrafes).
+4. **Redacta cada epígrafe con un resumen conceptual propio**, no como una lista de puntos sueltos. El estudiante debe poder LEER y ENTENDER el concepto.
+5. NO copies definiciones literales del manual: conceptualiza con tus propias palabras.
+6. Reduce la extensión de forma significativa, sin perder capacidad de entender y explicar.
 
-## Formato de salida obligatorio
+## FORMATO DE SALIDA (respetar EXACTAMENTE este orden)
 
-### 1. IDEA CENTRAL (5 minutos)
+### 1. IDEA CENTRAL
 Un párrafo de 5-6 líneas que resuma TODO el tema.
 
----
-
 ### 2. RESUMEN POR EPÍGRAFES
-**CADA epígrafe y subepígrafe** debe incluir:
+Para CADA epígrafe y subepígrafe, incluye SIEMPRE estos 5 apartados en este orden:
 
 **Epígrafe X.X. [Nombre]**
-- **Resumen:** (Síntesis del contenido: idea principal, argumentos esenciales, ejemplos clave).
-- **Definiciones literales:** (Solo las frases textuales más importantes, copiadas tal cual).
-- **Matiz a recordar:** (Palabra clave que puede ser cambiada en una pregunta trampa).
+- **Resumen redactado:** Párrafo (5-8 líneas) que desarrolle el concepto con tus propias palabras, explicando la idea principal, cómo se articula y por qué es relevante.
+- **Concepto clave:** Una sola frase que sintetice la esencia del epígrafe.
+- **Argumentos del autor:** Lista de 3-5 argumentos esenciales.
+- **Conexiones:** Cómo se relaciona este epígrafe con otros del tema.
+- **Matiz a recordar:** Una palabra, dato o distinción clave para el examen.
 
-*(ESTA ESTRUCTURA DEBE REPETIRSE PARA CADA EPÍGRAFE Y SUBEPÍGRAFE. NO TE SALTES NINGUNO.)*
-
----
-
-### 3. PREGUNTAS TIPO TEST
-**15 preguntas** con 4 opciones cada una. Para cada pregunta:
-- Enunciado
-- Opción A
-- Opción B
-- Opción C
-- Opción D
-- **Respuesta correcta:** Indicada.
-- **Trampa identificada:** Explicación.
-
----
-
-### 4. PREGUNTAS DE RESERVA
-**3 preguntas** muy difíciles.
-
----
-
-## REGLAS DE ORO
-1. **Equilibrio:** Ni copiar todo ni omitir lo importante.
-2. **Literalidad selectiva:** Solo las definiciones más relevantes.
-3. **No inventes.**
-4. **Numeración completa.**
-
----
-
-## TEXTO A ANALIZAR`;
-                }
-
-            // ---- DESARROLLO ----
-            } else if (modalidad === 'desarrollo') {
-                if (nivel === 'rapido') {
-                    base = `# PROMPT PARA DEEPSEEK · DESARROLLO · NIVEL RÁPIDO
-
-## Rol
-Actúa como un profesor universitario experto en Derecho Administrativo y en la preparación de materiales de estudio para exámenes de desarrollo.
-
-## Instrucción principal
-Te proporcionaré el texto de un tema académico. Deberás generar un **resumen conceptual** que:
-
-1. **Sintetice y condense** el contenido original, eliminando repeticiones y ejemplos excesivos.
-2. **Mantenga TODOS los conceptos, argumentos y referencias importantes** para poder desarrollar una pregunta de examen.
-3. **Respete la estructura del original** (epígrafes y subepígrafes).
-4. **Explique las ideas con claridad**, para que el estudiante las entienda y pueda desarrollarlas por escrito.
-5. **No copie definiciones literales** (no es necesario para desarrollo), sino que **conceptualice** las ideas con sus propias palabras.
-6. **Reduzca la extensión original de forma significativa**, pero sin que el estudiante pierda la capacidad de entender y explicar el tema.
-
-## Formato de salida obligatorio
-
-### 1. IDEA CENTRAL (5 minutos)
-Un párrafo de 5-6 líneas que resuma TODO el tema.
-
----
-
-### 2. RESUMEN POR EPÍGRAFES
-**CADA epígrafe y subepígrafe** debe incluir:
-
-**Epígrafe X.X. [Nombre]**
-- **Concepto clave:** (Explicación clara y sintética de la idea principal).
-- **Argumentos del autor:** (Lista de los argumentos esenciales).
-- **Conexiones:** (Cómo se relaciona este epígrafe con otros).
-
-*(ESTA ESTRUCTURA DEBE REPETIRSE PARA CADA EPÍGRAFE Y SUBEPÍGRAFE. NO TE SALTES NINGUNO.)*
-
----
-
-### 3. PREGUNTAS DE DESARROLLO
-**3 preguntas** de desarrollo. Para cada pregunta:
-- Enunciado.
-- **Esquema de respuesta:** (3-4 puntos).
-- **Conceptos clave:** (Lista).
-
----
-
-### 4. PREGUNTAS DE RESERVA
-**2 preguntas** muy difíciles.
-
----
-
-## REGLAS DE ORO
-1. **Equilibrio:** Síntesis con sustancia.
-2. **Conceptualización:** No copies definiciones literales.
-3. **Fidelidad al texto.**
-4. **Numeración completa.**
-
----
-
-## TEXTO A ANALIZAR`;
-                } else if (nivel === 'estudio') {
-                    base = `# PROMPT PARA DEEPSEEK · DESARROLLO · NIVEL ESTUDIO
-
-## Rol
-Actúa como un profesor universitario experto en Derecho Administrativo y en la preparación de materiales de estudio para exámenes de desarrollo.
-
-## Instrucción principal
-Te proporcionaré el texto de un tema académico. Deberás generar un **resumen conceptual** que:
-
-1. **Sintetice y condense** el contenido original, eliminando repeticiones y ejemplos excesivos.
-2. **Mantenga TODOS los conceptos, argumentos y referencias importantes** para poder desarrollar una pregunta de examen.
-3. **Respete la estructura del original** (epígrafes y subepígrafes).
-4. **Explique las ideas con claridad**, para que el estudiante las entienda y pueda desarrollarlas por escrito.
-5. **No copie definiciones literales** (no es necesario para desarrollo), sino que **conceptualice** las ideas con sus propias palabras.
-6. **Reduzca la extensión original de forma significativa**, pero sin que el estudiante pierda la capacidad de entender y explicar el tema.
-
-## Formato de salida obligatorio
-
-### 1. IDEA CENTRAL (5 minutos)
-Un párrafo de 5-6 líneas que resuma TODO el tema.
-
----
-
-### 2. RESUMEN POR EPÍGRAFES
-**CADA epígrafe y subepígrafe** debe incluir:
-
-**Epígrafe X.X. [Nombre]**
-- **Concepto clave:** (Explicación clara y sintética de la idea principal).
-- **Argumentos del autor:** (Lista de los argumentos esenciales).
-- **Conexiones:** (Cómo se relaciona este epígrafe con otros).
-
-*(ESTA ESTRUCTURA DEBE REPETIRSE PARA CADA EPÍGRAFE Y SUBEPÍGRAFE. NO TE SALTES NINGUNO.)*
-
----
-
-### 3. MINI-RESÚMEN POR EPÍGRAFE (Para repaso rápido)
-**Epígrafe 1.1:** [Idea central en 1-2 líneas]
-... *(todos los epígrafes)*
-
----
+### 3. MINI-RESUMEN POR EPÍGRAFE
+**Epígrafe 1.1:** idea central en 1-2 líneas.
+... (todos los epígrafes)
 
 ### 4. PREGUNTAS DE DESARROLLO
-**5 preguntas** de desarrollo. Para cada pregunta:
-- Enunciado.
-- **Esquema de respuesta:** (5-6 puntos).
-- **Conceptos clave:** (Lista).
-
----
+5 preguntas. Para cada una:
+- Enunciado
+- Esquema de respuesta (5-6 puntos)
+- Conceptos clave (lista)
 
 ### 5. PREGUNTAS DE RESERVA
-**2 preguntas** muy difíciles.
-
----
+2 preguntas muy difíciles.
 
 ## REGLAS DE ORO
-1. **Equilibrio:** Síntesis con sustancia.
-2. **Conceptualización:** No copies definiciones literales.
-3. **Fidelidad al texto.**
-4. **Numeración completa.**
-
----
-
-## TEXTO A ANALIZAR`;
-                } else { // intensivo
-                    base = `# PROMPT PARA DEEPSEEK · DESARROLLO · NIVEL INTENSIVO
-
-## Rol
-Actúa como un profesor universitario experto en Derecho Administrativo y en la preparación de materiales de estudio para exámenes de desarrollo.
-
-## Instrucción principal
-Te proporcionaré el texto de un tema académico. Deberás generar un **resumen conceptual** que:
-
-1. **Sintetice y condense** el contenido original, eliminando repeticiones y ejemplos excesivos.
-2. **Mantenga TODOS los conceptos, argumentos y referencias importantes** para poder desarrollar una pregunta de examen.
-3. **Respete la estructura del original** (epígrafes y subepígrafes).
-4. **Explique las ideas con claridad**, para que el estudiante las entienda y pueda desarrollarlas por escrito.
-5. **No copie definiciones literales** (no es necesario para desarrollo), sino que **conceptualice** las ideas con sus propias palabras.
-6. **Reduzca la extensión original de forma significativa**, pero sin que el estudiante pierda la capacidad de entender y explicar el tema.
-
-## Formato de salida obligatorio
-
-### 1. IDEA CENTRAL (5 minutos)
-Un párrafo de 5-6 líneas que resuma TODO el tema.
-
----
-
-### 2. RESUMEN POR EPÍGRAFES
-**CADA epígrafe y subepígrafe** debe incluir:
-
-**Epígrafe X.X. [Nombre]**
-- **Concepto clave:** (Explicación clara y sintética de la idea principal).
-- **Argumentos del autor:** (Lista de los argumentos esenciales).
-- **Conexiones:** (Cómo se relaciona este epígrafe con otros).
-
-*(ESTA ESTRUCTURA DEBE REPETIRSE PARA CADA EPÍGRAFE Y SUBEPÍGRAFE. NO TE SALTES NINGUNO.)*
-
----
-
-### 3. MINI-RESÚMEN POR EPÍGRAFE (Para repaso rápido)
-**Epígrafe 1.1:** [Idea central en 1-2 líneas]
-... *(todos los epígrafes)*
-
----
-
-### 4. PREGUNTAS DE DESARROLLO
-**7 preguntas** de desarrollo que obliguen a conectar epígrafes de diferentes partes del texto. Para cada pregunta:
-- Enunciado.
-- **Esquema de respuesta:** (5-7 puntos).
-- **Conceptos clave:** (Lista).
-
----
-
-### 5. PREGUNTAS DE RESERVA
-**3 preguntas** muy difíciles (que conecten 3 o más epígrafes).
-
----
-
-## REGLAS DE ORO
-1. **Equilibrio:** Síntesis con sustancia.
-2. **Conceptualización:** No copies definiciones literales.
-3. **Fidelidad al texto.**
-4. **Numeración completa.**
-
----
-
-## TEXTO A ANALIZAR`;
-                }
-
-            // ---- MIXTO ----
-            } else {
-                if (nivel === 'rapido') {
-                    base = `# PROMPT PARA DEEPSEEK · MIXTO · NIVEL RÁPIDO
-
-## Rol
-Actúa como un profesor universitario experto en Derecho Administrativo y en la preparación de materiales de estudio para exámenes mixtos.
-
-## Instrucción principal
-Te proporcionaré el texto de un tema académico. Deberás generar un **resumen de estudio** que:
-
-1. **Sintetice y condense** el contenido original.
-2. **Mantenga TODOS los conceptos, definiciones, argumentos y referencias importantes** para ambas modalidades.
-3. **Respete la estructura del original** (epígrafes y subepígrafes).
-4. **Incluya definiciones literales** (solo las más importantes, para tipo test) y **explicaciones conceptuales** (para desarrollo).
-5. **Reduzca la extensión original de forma significativa**, pero sin que el estudiante pierda información sustancial.
-
-## Formato de salida obligatorio
-
-### 1. IDEA CENTRAL (5 minutos)
-Un párrafo de 5-6 líneas.
-
----
-
-### 2. RESUMEN POR EPÍGRAFES
-**CADA epígrafe y subepígrafe** debe incluir:
-
-**Epígrafe X.X. [Nombre]**
-- **Resumen:** (Síntesis del contenido).
-- **Definiciones literales:** (Solo las frases más importantes, para tipo test).
-- **Concepto clave para desarrollar:** (Explicación de la idea principal, para desarrollo).
-
----
-
-### 3. PREGUNTAS TIPO TEST: 5 preguntas + 2 reserva (con trampas)
-### 4. PREGUNTAS DE DESARROLLO: 3 preguntas + 2 reserva (con esquema)
-
----
-
-## REGLAS DE ORO
-1. **Equilibrio:** Síntesis con sustancia.
-2. **Literalidad selectiva.**
-3. **Claridad conceptual.**
-4. **Numeración completa.**
-
----
-
-## TEXTO A ANALIZAR`;
-                } else if (nivel === 'estudio') {
-                    base = `# PROMPT PARA DEEPSEEK · MIXTO · NIVEL ESTUDIO
-
-## Rol
-Actúa como un profesor universitario experto en Derecho Administrativo y en la preparación de materiales de estudio para exámenes mixtos.
-
-## Instrucción principal
-Te proporcionaré el texto de un tema académico. Deberás generar un **resumen de estudio** que:
-
-1. **Sintetice y condense** el contenido original.
-2. **Mantenga TODOS los conceptos, definiciones, argumentos y referencias importantes** para ambas modalidades.
-3. **Respete la estructura del original** (epígrafes y subepígrafes).
-4. **Incluya definiciones literales** (solo las más importantes, para tipo test) y **explicaciones conceptuales** (para desarrollo).
-5. **Reduzca la extensión original de forma significativa**, pero sin que el estudiante pierda información sustancial.
-
-## Formato de salida obligatorio
-
-### 1. IDEA CENTRAL (5 minutos)
-Un párrafo de 5-6 líneas.
-
----
-
-### 2. RESUMEN POR EPÍGRAFES
-**CADA epígrafe y subepígrafe** debe incluir:
-
-**Epígrafe X.X. [Nombre]**
-- **Resumen:** (Síntesis del contenido).
-- **Definiciones literales:** (Solo las frases más importantes, para tipo test).
-- **Concepto clave para desarrollar:** (Explicación de la idea principal, para desarrollo).
-- **Matiz a recordar:** (Para detectar trampas en test).
-- **Argumentos clave:** (Para desarrollo).
-
----
-
-### 3. MINI-RESÚMEN POR EPÍGRAFE (Para repaso rápido)
-**Epígrafe 1.1:** [Idea central en 1-2 líneas]
-... *(todos los epígrafes)*
-
----
-
-### 4. PREGUNTAS TIPO TEST: 10 preguntas + 2 reserva (con trampas)
-### 5. PREGUNTAS DE DESARROLLO: 5 preguntas + 2 reserva (con esquema)
-
----
-
-## REGLAS DE ORO
-1. **Equilibrio:** Síntesis con sustancia.
-2. **Literalidad selectiva.**
-3. **Claridad conceptual.**
-4. **Numeración completa.**
-
----
-
-## TEXTO A ANALIZAR`;
-                } else { // intensivo
-                    base = `# PROMPT PARA DEEPSEEK · MIXTO · NIVEL INTENSIVO
-
-## Rol
-Actúa como un profesor universitario experto en Derecho Administrativo y en la preparación de materiales de estudio para exámenes mixtos.
-
-## Instrucción principal
-Te proporcionaré el texto de un tema académico. Deberás generar un **resumen de estudio** que:
-
-1. **Sintetice y condense** el contenido original.
-2. **Mantenga TODOS los conceptos, definiciones, argumentos y referencias importantes** para ambas modalidades.
-3. **Respete la estructura del original** (epígrafes y subepígrafes).
-4. **Incluya definiciones literales** (solo las más importantes, para tipo test) y **explicaciones conceptuales** (para desarrollo).
-5. **Reduzca la extensión original de forma significativa**, pero sin que el estudiante pierda información sustancial.
-
-## Formato de salida obligatorio
-
-### 1. IDEA CENTRAL (5 minutos)
-Un párrafo de 5-6 líneas.
-
----
-
-### 2. RESUMEN POR EPÍGRAFES
-**CADA epígrafe y subepígrafe** debe incluir:
-
-**Epígrafe X.X. [Nombre]**
-- **Resumen:** (Síntesis del contenido).
-- **Definiciones literales:** (Solo las frases más importantes, para tipo test).
-- **Concepto clave para desarrollar:** (Explicación de la idea principal, para desarrollo).
-- **Matiz a recordar:** (Para detectar trampas en test).
-- **Argumentos clave:** (Para desarrollo).
-
----
-
-### 3. MINI-RESÚMEN POR EPÍGRAFE (Para repaso rápido)
-**Epígrafe 1.1:** [Idea central en 1-2 líneas]
-... *(todos los epígrafes)*
-
----
-
-### 4. PREGUNTAS TIPO TEST: 15 preguntas + 3 reserva (con trampas muy sutiles)
-### 5. PREGUNTAS DE DESARROLLO: 7 preguntas + 3 reserva (que conecten 3 o más epígrafes)
-
----
-
-## REGLAS DE ORO
-1. **Equilibrio:** Síntesis con sustancia.
-2. **Literalidad selectiva.**
-3. **Claridad conceptual.**
-4. **Numeración completa.**
-
----
-
-## TEXTO A ANALIZAR`;
-                }
-            }
-
-            if (extra) {
-                base += '\n\n## OPCIONES EXTRA\n' + extra;
+1. Equilibrio: síntesis con sustancia.
+2. Conceptualización: no copies definiciones literales.
+3. Fidelidad al texto: todo sale del original.
+4. Numeración completa: respeta TODOS los epígrafes.${extra ? '\n\n## OPCIONES EXTRA' + extra : ''}
+
+## VERIFICACIÓN FINAL (hazlo ANTES de responder)
+- ¿He incluido TODOS los epígrafes y subepígrafes?
+- ¿Cada epígrafe tiene los 5 apartados?
+- ¿El "Resumen redactado" es un párrafo con sustancia, no una lista?
+- ¿He generado exactamente 5 preguntas + 2 de reserva?
+- ¿He evitado copiar definiciones literales?
+Si alguna respuesta es NO, corrige antes de responder.
+
+=== TEXTO A ANALIZAR ===`;
             }
 
             return base;
         }
 
         // ============================================================
-        // PROMPT PARA EL PASO 2 (Generar HTML interactivo)
+        // PROMPT PASO 2 — HTML LITERAL (con plantilla de referencia)
         // ============================================================
 
         function getPromptHTML(resumen) {
@@ -1432,57 +631,75 @@ Un párrafo de 5-6 líneas.
                 return '⚠️ Primero pega el resumen en el campo superior y haz clic en "Generar prompt para HTML".';
             }
 
-            return `# PROMPT PARA DEEPSEEK · GENERACIÓN DE HTML FINAL · PREGUNTAS INTERACTIVAS
+            return `# TAREA: CONVERTIR RESUMEN A HTML INTERACTIVO (ESTRUCTURA FIJA)
 
-## Rol
-Actúa como un diseñador de materiales de estudio y experto en HTML/CSS/JavaScript.
+## ROL
+Eres un generador de HTML determinista. NO diseñas, NO improvisas, NO modificas la estructura. Solo rellenas una plantilla predefinida con los datos del resumen.
 
-## Instrucción principal
-Te proporciono un resumen académico detallado. Deberás **generar ÚNICAMENTE el código HTML** de ese resumen, formateado para estudiar en tablet de 10", sin ningún texto adicional, sin explicaciones, sin bloques de código markdown.
+## REGLA ABSOLUTA (leer antes de continuar)
+Vas a rellenar la PLANTILLA HTML DE REFERENCIA que aparece más abajo.
+- **NO cambies** nombres de clases CSS.
+- **NO cambies** nombres de funciones JavaScript.
+- **NO cambies** la estructura del HTML.
+- **NO añadas** CSS nuevo ni modifiques el CSS dado.
+- **NO añadas** secciones, botones o elementos nuevos.
+- **NO uses** bloques markdown (\`\`\`html). Devuelve SOLO el HTML puro.
+- Empieza por \`<!DOCTYPE html>\` y termina en \`</html>\`.
 
-## Formato de salida exigido
-**DEVUELVE ÚNICAMENTE EL CÓDIGO HTML.** Comienza con \`<!DOCTYPE html>\` y termina con \`</html>\`.
+## FORMATO DE SALIDA
+- Un único archivo HTML autocontenido.
+- Sin explicaciones antes ni después.
+- Sin markdown.
 
-## Estructura obligatoria del HTML
-1. **Idea central (5 minutos):** Destacada visualmente (con fondo y borde).
-2. **Resumen por epígrafes:** Cada epígrafe con resumen extenso, definiciones literales y matices (según corresponda a la modalidad).
-3. **Preguntas tipo test:** Con **respuestas ocultas inicialmente**. Cada pregunta debe tener un botón "Mostrar respuesta" que, al hacer clic, revele:
-   - La opción correcta (resaltada en verde).
-   - La trampa identificada (explicando por qué las otras opciones son incorrectas).
-4. **Preguntas de desarrollo:** Con **esquemas de respuesta ocultos inicialmente**. Cada pregunta debe tener un botón "Mostrar esquema" que revele el esquema de respuesta.
-5. **Índice** al principio con enlaces a cada epígrafe.
-6. **Botón de modo claro/oscuro** (con JavaScript para alternar).
+## CÓMO RELLENAR LA PLANTILLA
+Sustituye cada marcador \`{{...}}\` por el contenido correspondiente:
+- \`{{TITULO}}\` → título del tema (deducido del resumen).
+- \`{{INDICE_ITEMS}}\` → una línea por cada epígrafe: \`<li class="h2"><a href="#ep-X">X.X Nombre</a></li>\`.
+- \`{{IDEA_CENTRAL}}\` → párrafo de la idea central.
+- \`{{EPIGRAFES}}\` → bloque completo de cada epígrafe. Para TEST incluye: resumen, definiciones literales y matiz. Para DESARROLLO incluye: resumen redactado, concepto clave, argumentos, conexiones y matiz. Cada epígrafe debe ir en \`<section id="ep-X"><h3>X.X Nombre</h3>...</section>\`.
+- \`{{PREGUNTAS_TEST}}\` → por cada pregunta: 
+  \`<div class="pregunta"><p class="enunciado">...</p><ul class="opciones"><li>A) ...</li><li class="correcta">B) ...</li>...</ul><button class="btn-respuesta" onclick="toggleRespuesta('resp-N')">👁️ Mostrar respuesta</button><div class="respuesta-oculta" id="resp-N"><p><strong>Respuesta correcta:</strong> ...</p><p class="trampa"><strong>Trampa:</strong> ...</p></div></div>\`
+- \`{{PREGUNTAS_DESARROLLO}}\` → por cada pregunta:
+  \`<div class="pregunta pregunta-desarrollo"><p class="enunciado">...</p><button class="btn-respuesta" onclick="toggleEsquema('esq-N')">👁️ Mostrar esquema</button><div class="esquema-oculto" id="esq-N"><p><strong>Esquema:</strong></p><ul><li>...</li></ul></div></div>\`
 
-## Elementos que NO deben aparecer en el HTML final
-- ❌ Checklist de epígrafes procesados.
-- ❌ Prioridades (🔴🟡🟢).
-- ❌ Instrucciones del prompt.
-- ❌ Texto adicional fuera del HTML.
-
-## Comportamiento interactivo
-- Las respuestas correctas y las trampas deben estar **ocultas inicialmente**.
-- Cada pregunta tendrá un botón **"Mostrar respuesta"** que, al hacer clic, mostrará la respuesta correcta y la trampa.
-- El botón debe cambiar a **"Ocultar respuesta"** al hacer clic de nuevo.
-- Las preguntas de desarrollo tendrán un botón **"Mostrar esquema"** similar.
-
-## CSS OBLIGATORIO
-Usa EXACTAMENTE el CSS que te proporciono a continuación:
-
+## CSS OBLIGATORIO (copiar EXACTAMENTE, sin modificar)
 \`\`\`css
 ${CSS_ESTUDIO}
 \`\`\`
 
-## RESUMEN A CONVERTIR EN HTML
+## PLANTILLA HTML DE REFERENCIA (estructura exacta que debes seguir)
+\`\`\`html
+${PLANTILLA_HTML_REFERENCIA}
+\`\`\`
 
+## PROHIBIDO
+- ❌ Cambiar clases, ids o nombres de funciones.
+- ❌ Añadir CSS propio o modificar el CSS dado.
+- ❌ Añadir secciones, botones, iconos o enlaces nuevos.
+- ❌ Devolver markdown (\`\`\`html).
+- ❌ Añadir texto fuera del HTML.
+- ❌ Incluir checklists, prioridades 🔴🟡🟢 o instrucciones del prompt.
+
+## VERIFICACIÓN FINAL (hazlo ANTES de responder)
+Comprueba internamente:
+- ¿El HTML empieza con <!DOCTYPE html> y termina con </html>?
+- ¿He mantenido EXACTAMENTE las clases CSS de la plantilla?
+- ¿He mantenido EXACTAMENTE los nombres de funciones (toggleModo, toggleRespuesta, toggleEsquema)?
+- ¿He respetado el orden: botón modo → índice → título → idea central → epígrafes → test → desarrollo?
+- ¿Las respuestas están OCULTAS inicialmente (sin clase "visible")?
+- ¿He usado el CSS dado sin modificar nada?
+- ¿He devuelto SOLO el HTML, sin markdown ni texto extra?
+Si alguna respuesta es NO, corrige antes de responder.
+
+=== RESUMEN A CONVERTIR ===
 ${resumen}`;
         }
 
         // ============================================================
-        // ELEMENTOS DOM
+        // DOM
         // ============================================================
 
         const modalidadBtns = document.querySelectorAll('#modalidadGroup .opt');
-        const nivelBtns = document.querySelectorAll('#nivelGroup .opt');
         const textoTema = document.getElementById('textoTema');
         const promptOutput = document.getElementById('promptOutput');
         const fusionarPromptBtn = document.getElementById('fusionarPromptBtn');
@@ -1496,7 +713,6 @@ ${resumen}`;
 
         const htmlInput = document.getElementById('htmlInput');
         const tituloTema = document.getElementById('tituloTema');
-        const htmlOutput = document.getElementById('htmlOutput');
         const descargarHtmlBtn = document.getElementById('descargarHtmlBtn');
         const copiarHtmlBtn = document.getElementById('copiarHtmlBtn');
         const limpiarHtmlBtn = document.getElementById('limpiarHtmlBtn');
@@ -1519,25 +735,18 @@ ${resumen}`;
         // ============================================================
 
         let toastTimer = null;
-
         function showToast(message, duration = 2000) {
             toast.textContent = message;
             toast.classList.add('show');
             clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => {
-                toast.classList.remove('show');
-            }, duration);
+            toastTimer = setTimeout(() => toast.classList.remove('show'), duration);
         }
 
         // ============================================================
         // ESTADO
         // ============================================================
 
-        let estado = {
-            modalidad: 'test',
-            nivel: 'estudio'
-        };
-
+        let estado = { modalidad: 'test' };
         let biblioteca = [];
 
         // ============================================================
@@ -1563,22 +772,20 @@ ${resumen}`;
                 libCount.textContent = '0';
                 return;
             }
-
             let html = '';
             biblioteca.forEach((item, index) => {
                 html += `
                     <div class="library-item">
                         <div class="info">
                             <div class="title">${escapeHtml(item.titulo || 'Sin título')}</div>
-                            <div class="meta">${escapeHtml(item.modalidad || '')} · ${escapeHtml(item.nivel || '')} · ${new Date(item.fecha).toLocaleDateString()}</div>
+                            <div class="meta">${escapeHtml(item.modalidad || '')} · ${new Date(item.fecha).toLocaleDateString()}</div>
                         </div>
                         <div class="actions-lib">
                             <button class="btn btn-primary" onclick="verResumen(${index})" style="padding:5px 12px;font-size:12px;">📄 Ver</button>
                             <button class="btn btn-success" onclick="exportarResumen(${index})" style="padding:5px 12px;font-size:12px;">📥 HTML</button>
                             <button class="btn btn-danger" onclick="eliminarResumen(${index})" style="padding:5px 12px;font-size:12px;">🗑️</button>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
             libraryContainer.innerHTML = html;
             libCount.textContent = biblioteca.length;
@@ -1595,7 +802,7 @@ ${resumen}`;
             if (!item) return;
             htmlInput.value = item.html || '';
             tituloTema.value = item.titulo || '';
-            htmlOutput.value = item.html ? '✅ HTML cargado correctamente' : 'Pega el HTML de DeepSeek y pon el título para descargar...';
+            procesarHTMLPegado();
             cambiarTab('tab-download');
             showToast('📄 HTML cargado en el editor', 1500);
         };
@@ -1618,35 +825,80 @@ ${resumen}`;
         };
 
         // ============================================================
+        // LIMPIEZA HTML (Paso 3)
+        // ============================================================
+
+        function limpiarHTMLDeMarkdown(raw) {
+            if (!raw) return '';
+            let html = raw.trim();
+            const codeMatch = html.match(/```(?:html|HTML)?\s*([\s\S]*?)```/);
+            if (codeMatch) html = codeMatch[1].trim();
+            html = html.replace(/^```(?:html|HTML)?\s*/i, '');
+            html = html.replace(/\s*```$/i, '');
+            return html.trim();
+        }
+
+        function esHTMLValido(html) {
+            if (!html) return false;
+            return html.includes('<!DOCTYPE') || html.includes('<html');
+        }
+
+        function procesarHTMLPegado() {
+            const raw = htmlInput.value;
+            const limpio = limpiarHTMLDeMarkdown(raw);
+
+            const status = document.getElementById('htmlStatus');
+            const info = document.getElementById('htmlInfo');
+            const iframe = document.getElementById('previewIframe');
+            const placeholder = document.getElementById('previewPlaceholder');
+
+            if (!limpio) {
+                status.textContent = '🔧 Pega el HTML y se procesará automáticamente.';
+                status.style.color = '';
+                info.textContent = 'Sin HTML cargado.';
+                iframe.style.display = 'none';
+                placeholder.style.display = 'block';
+                return;
+            }
+
+            if (!esHTMLValido(limpio)) {
+                status.textContent = '⚠️ El contenido no parece HTML válido.';
+                status.style.color = '#c8a878';
+                info.textContent = 'HTML no válido.';
+                iframe.style.display = 'none';
+                placeholder.style.display = 'block';
+                return;
+            }
+
+            status.textContent = '✅ HTML detectado y limpio. Listo para copiar o descargar.';
+            status.style.color = '#8fdfb0';
+
+            const kb = (new Blob([limpio]).size / 1024).toFixed(1);
+            info.textContent = `📦 ${limpio.length} caracteres · ${kb} KB · listo para descargar`;
+
+            iframe.srcdoc = limpio;
+            iframe.style.display = 'block';
+            placeholder.style.display = 'none';
+        }
+
+        // ============================================================
         // FUNCIONES
         // ============================================================
 
         function generarPromptCompleto() {
             const modalidad = estado.modalidad;
-            const nivel = estado.nivel;
             const texto = textoTema.value.trim();
-
-            let plantilla = getPromptResumen(modalidad, nivel);
-
+            const plantilla = getPromptResumen(modalidad);
             let completo = plantilla;
-            if (texto) {
-                completo += '\n\n' + texto;
-            } else {
-                completo += '\n\n[⚠️ No has pegado ningún texto del tema.]';
-            }
-
+            completo += '\n' + (texto || '[⚠️ No has pegado ningún texto del tema.]');
             promptOutput.value = completo;
         }
 
         function generarPromptHTML() {
             const resumen = resumenInput.value.trim();
-            const prompt = getPromptHTML(resumen);
-            htmlPromptOutput.value = prompt;
-            if (resumen) {
-                showToast('✅ Prompt para HTML generado', 1500);
-            } else {
-                showToast('⚠️ Primero pega el resumen', 2000);
-            }
+            htmlPromptOutput.value = getPromptHTML(resumen);
+            if (resumen) showToast('✅ Prompt para HTML generado', 1500);
+            else showToast('⚠️ Primero pega el resumen', 2000);
         }
 
         function descargarArchivo(contenido, nombre, extension) {
@@ -1661,19 +913,17 @@ ${resumen}`;
             URL.revokeObjectURL(url);
         }
 
-        function guardarEnBiblioteca(titulo, html, modalidad, nivel) {
+        function guardarEnBiblioteca(titulo, html, modalidad) {
             let resumen = html;
             const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
             if (bodyMatch) {
                 resumen = bodyMatch[1].replace(/<[^>]*>/g, '').trim().substring(0, 500) + '...';
             }
-
             biblioteca.push({
                 titulo: titulo,
                 resumen: resumen,
                 html: html,
                 modalidad: modalidad || estado.modalidad,
-                nivel: nivel || estado.nivel,
                 fecha: new Date().toISOString()
             });
             guardarBiblioteca();
@@ -1682,17 +932,9 @@ ${resumen}`;
         function cambiarTab(tabId) {
             tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === tabId));
             tabContents.forEach(c => c.classList.toggle('active', c.id === tabId));
-
-            const pasoMap = {
-                'tab-prompt': 0,
-                'tab-html': 1,
-                'tab-download': 2,
-                'tab-library': 3
-            };
+            const pasoMap = { 'tab-prompt': 0, 'tab-html': 1, 'tab-download': 2, 'tab-library': 3 };
             const idx = pasoMap[tabId] || 0;
-            flowSteps.forEach((s, i) => {
-                s.classList.toggle('active', i === idx);
-            });
+            flowSteps.forEach((s, i) => s.classList.toggle('active', i === idx));
         }
 
         // ============================================================
@@ -1704,14 +946,6 @@ ${resumen}`;
                 modalidadBtns.forEach(b => b.classList.remove('active'));
                 this.classList.add('active');
                 estado.modalidad = this.dataset.value;
-            });
-        });
-
-        nivelBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                nivelBtns.forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                estado.nivel = this.dataset.value;
             });
         });
 
@@ -1741,9 +975,7 @@ ${resumen}`;
 
         reiniciarPromptBtn.addEventListener('click', function() {
             modalidadBtns.forEach(b => b.classList.toggle('active', b.dataset.value === 'test'));
-            nivelBtns.forEach(b => b.classList.toggle('active', b.dataset.value === 'estudio'));
             estado.modalidad = 'test';
-            estado.nivel = 'estudio';
             document.getElementById('optChecklist').checked = true;
             document.getElementById('optPrioridad').checked = true;
             textoTema.value = '';
@@ -1751,9 +983,7 @@ ${resumen}`;
             showToast('⟳ Reiniciado', 1500);
         });
 
-        generarHtmlPromptBtn.addEventListener('click', function() {
-            generarPromptHTML();
-        });
+        generarHtmlPromptBtn.addEventListener('click', generarPromptHTML);
 
         copiarHtmlPromptBtn.addEventListener('click', async function() {
             const texto = htmlPromptOutput.value;
@@ -1771,52 +1001,46 @@ ${resumen}`;
             }
         });
 
+        // Auto-procesar al pegar/escribir
+        htmlInput.addEventListener('input', procesarHTMLPegado);
+        htmlInput.addEventListener('paste', () => setTimeout(procesarHTMLPegado, 0));
+
         descargarHtmlBtn.addEventListener('click', function() {
-            let html = htmlInput.value.trim();
-            if (!html || html.includes('Pega aquí el HTML')) {
-                showToast('⚠️ Primero pega el HTML de DeepSeek', 2000);
+            const html = limpiarHTMLDeMarkdown(htmlInput.value);
+            if (!esHTMLValido(html)) {
+                showToast('⚠️ Primero pega un HTML válido', 2000);
                 return;
             }
-
             const titulo = tituloTema.value.trim() || 'Resumen UNED';
-
-            const codeMatch = html.match(/```(?:html)?\s*([\s\S]*?)```/);
-            if (codeMatch) {
-                html = codeMatch[1].trim();
-            }
-
-            if (!html.includes('<html') && !html.includes('<!DOCTYPE')) {
-                showToast('⚠️ El contenido no parece HTML válido.', 3000);
-                return;
-            }
-
-            guardarEnBiblioteca(titulo, html, estado.modalidad, estado.nivel);
+            guardarEnBiblioteca(titulo, html, estado.modalidad);
             descargarArchivo(html, titulo, 'html');
-
-            htmlOutput.value = '✅ HTML descargado y guardado.';
             showToast('📥 HTML descargado y guardado', 2000);
         });
 
         copiarHtmlBtn.addEventListener('click', async function() {
-            const texto = htmlInput.value.trim();
-            if (!texto || texto.includes('Pega aquí el HTML')) {
-                showToast('⚠️ Primero pega el HTML de DeepSeek', 2000);
+            const html = limpiarHTMLDeMarkdown(htmlInput.value);
+            if (!esHTMLValido(html)) {
+                showToast('⚠️ Primero pega un HTML válido', 2000);
                 return;
             }
             try {
-                await navigator.clipboard.writeText(texto);
-                showToast('📋 Código HTML copiado', 1500);
+                await navigator.clipboard.writeText(html);
+                showToast('📋 HTML limpio copiado', 1500);
             } catch {
-                htmlInput.select();
+                const ta = document.createElement('textarea');
+                ta.value = html;
+                document.body.appendChild(ta);
+                ta.select();
                 document.execCommand('copy');
-                showToast('📋 Código HTML copiado', 1500);
+                document.body.removeChild(ta);
+                showToast('📋 HTML limpio copiado', 1500);
             }
         });
 
         limpiarHtmlBtn.addEventListener('click', function() {
             htmlInput.value = '';
             tituloTema.value = '';
-            htmlOutput.value = 'Pega el HTML de DeepSeek y pon el título para descargar...';
+            procesarHTMLPegado();
             showToast('🗑️ Campos limpiados', 1500);
         });
 
@@ -1836,11 +1060,9 @@ ${resumen}`;
             showToast('📤 Biblioteca exportada', 1500);
         });
 
-        importarLibBtn.addEventListener('click', function() {
-            importFileInput.click();
-        });
+        importarLibBtn.addEventListener('click', () => importFileInput.click());
 
-        importFileInput.addEventListener('change', function(e) {
+        importFileInput.addEventListener('change', function() {
             const file = this.files[0];
             if (!file) return;
             const reader = new FileReader();
@@ -1876,6 +1098,7 @@ ${resumen}`;
 
         cargarBiblioteca();
         promptOutput.value = 'Selecciona las opciones y pega el texto del tema...';
+        procesarHTMLPegado();
 
     })();
 </script>
