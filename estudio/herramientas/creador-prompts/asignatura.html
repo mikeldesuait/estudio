@@ -61,7 +61,7 @@ input[type="text"] { font-family: 'Segoe UI', sans-serif; font-size: 15px; min-h
 .flow-steps .step { background: #0f1f33; border: 1px solid #1e3450; border-radius: 30px; padding: 6px 18px; font-size: 13px; color: #8a9bb8; }
 .flow-steps .step.active { background: #1a3d66; border-color: #2a6aaa; color: #fff; }
 
-/* ===== CAJA TIPO EDITOR ===== */
+/* CAJA TIPO EDITOR */
 .editor-box { background: #091220; border: 1px solid #1e3450; border-radius: 12px; overflow: hidden; margin-top: 10px; }
 .editor-box-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: #0f1f33; border-bottom: 1px solid #1e3450; flex-wrap: wrap; gap: 8px; }
 .editor-box-header .lang { font-size: 13px; color: #8a9bb8; font-weight: 600; font-family: 'Consolas', monospace; }
@@ -390,53 +390,135 @@ function getPromptHTML(resumen) {
         return '⚠️ Primero pega el resumen en el campo superior y haz clic en "Generar prompt para HTML".';
     }
 
-    return '# TAREA: CONVERTIR RESUMEN A HTML INTERACTIVO (ESTRUCTURA FIJA)\n\n' +
+    return '# TAREA: CONVERTIR RESUMEN A HTML INTERACTIVO — ESTRUCTURA FIJA E INMUTABLE\n\n' +
+
 '## ROL\n' +
-'Eres un generador de HTML determinista. NO diseñas, NO improvisas, NO modificas la estructura. Solo rellenas una plantilla predefinida con los datos del resumen.\n\n' +
-'## REGLA ABSOLUTA\n' +
-'Vas a rellenar la PLANTILLA HTML DE REFERENCIA que aparece más abajo.\n' +
-'- NO cambies nombres de clases CSS.\n' +
-'- NO cambies nombres de funciones JavaScript.\n' +
-'- NO cambies la estructura del HTML.\n' +
-'- NO añadas CSS nuevo ni modifiques el CSS dado.\n' +
-'- NO añadas secciones, botones o elementos nuevos.\n' +
-'- Empieza por <!DOCTYPE html> y termina en </html>.\n\n' +
+'Eres un motor de plantillas. NO diseñas, NO interpretas, NO reformulas, NO añades, NO quitas. Tú SOLO sustituyes los marcadores {{...}} de la plantilla por el contenido del resumen. Si algo no está en la plantilla, NO existe.\n\n' +
+
+'## OBJETIVO\n' +
+'Dado un resumen académico en texto, devolver un archivo HTML autocontenido que sea SIEMPRE IDÉNTICO en estructura, clases, ids y funciones al que se obtendría de cualquier otro resumen. Solo cambia el CONTENIDO entre las etiquetas, nunca la ESTRUCTURA.\n\n' +
+
+'## REGLA ABSOLUTA — VIOLARLA INVALIDA LA TAREA\n' +
+'Vas a copiar la PLANTILLA HTML DE REFERENCIA palabra por palabra y rellenar los marcadores. NO tienes permitido:\n' +
+'- ❌ Añadir una sola clase CSS que no esté en la plantilla.\n' +
+'- ❌ Quitar ninguna clase CSS de la plantilla.\n' +
+'- ❌ Renombrar clases, ids o funciones (toggleModo, toggleRespuesta, toggleEsquema se escriben EXACTAMENTE así, en minúsculas y camelCase).\n' +
+'- ❌ Añadir secciones, botones, iconos, badges, contadores, breadcrumbs, tablas, anclas, tooltips, dark-mode extra, scroll-to-top ni nada parecido.\n' +
+'- ❌ Cambiar el orden de las secciones: botón modo → nav.indice → h1 → section.idea-central → h2 Resumen por epígrafes → h2 Preguntas tipo test → h2 Preguntas de desarrollo → script.\n' +
+'- ❌ Añadir estilos inline (style="...") salvo que estén en la plantilla.\n' +
+'- ❌ Modificar el CSS proporcionado. Se copia íntegro, carácter por carácter.\n' +
+'- ❌ Devolver markdown anidado, comentarios, notas o texto fuera del HTML.\n' +
+'- ❌ Adjuntar el HTML como archivo .txt, .html o artefacto descargable.\n\n' +
+
 '## FORMATO DE ENTREGA OBLIGATORIO (CRÍTICO)\n' +
-'Devuelve el HTML COMPLETO usando un bloque de código markdown con la etiqueta `html`, así:\n\n' +
-'```html\n<!DOCTYPE html>\n...\n</html>\n```\n\n' +
+'Devuelve el HTML COMPLETO dentro de un bloque de código markdown con la etiqueta `html`:\n\n' +
+'```html\n' +
+'<!DOCTYPE html>\n' +
+'...\n' +
+'</html>\n' +
+'```\n\n' +
 'REGLAS DE ENTREGA:\n' +
 '- ❌ NO lo adjuntes como archivo descargable.\n' +
 '- ❌ NO uses la función de "crear archivo" ni "artefacto".\n' +
-'- ❌ NO lo devuelvas como .txt.\n' +
-'- ❌ NO lo devuelvas como texto plano sin bloque de código.\n' +
+'- ❌ NO lo devuelvas como .txt ni como texto plano sin bloque de código.\n' +
 '- ✅ Escríbelo directamente en el chat, entre las tres comillas invertidas y la etiqueta `html`.\n' +
-'- ✅ Si es muy largo, divídelo en varias partes numeradas (Parte 1/2, Parte 2/2), pero SIEMPRE dentro de bloques de código markdown con etiqueta `html`.\n\n' +
-'## CÓMO RELLENAR LA PLANTILLA\n' +
-'- {{TITULO}} → título del tema.\n' +
-'- {{INDICE_ITEMS}} → <li class="h2"><a href="#ep-X">X.X Nombre</a></li> por cada epígrafe.\n' +
-'- {{IDEA_CENTRAL}} → párrafo de la idea central.\n' +
-'- {{EPIGRAFES}} → cada epígrafe en <section id="ep-X"><h3>X.X Nombre</h3>...</section>.\n' +
-'- {{PREGUNTAS_TEST}} → por cada pregunta: <div class="pregunta"><p class="enunciado">...</p><ul class="opciones"><li>A) ...</li><li class="correcta">B) ...</li></ul><button class="btn-respuesta" onclick="toggleRespuesta(\'resp-N\')">👁️ Mostrar respuesta</button><div class="respuesta-oculta" id="resp-N"><p><strong>Respuesta correcta:</strong> ...</p><p class="trampa"><strong>Trampa:</strong> ...</p></div></div>\n' +
-'- {{PREGUNTAS_DESARROLLO}} → por cada pregunta: <div class="pregunta pregunta-desarrollo"><p class="enunciado">...</p><button class="btn-respuesta" onclick="toggleEsquema(\'esq-N\')">👁️ Mostrar esquema</button><div class="esquema-oculto" id="esq-N"><p><strong>Esquema:</strong></p><ul><li>...</li></ul></div></div>\n\n' +
-'## CSS OBLIGATORIO (copiar EXACTAMENTE)\n' +
-CSS_ESTUDIO + '\n\n' +
-'## PLANTILLA HTML DE REFERENCIA\n' +
-PLANTILLA_HTML_REFERENCIA + '\n\n' +
-'## PROHIBIDO\n' +
-'- ❌ Cambiar clases, ids o nombres de funciones.\n' +
-'- ❌ Añadir CSS propio o modificar el CSS dado.\n' +
-'- ❌ Añadir secciones, botones, iconos o enlaces nuevos.\n' +
-'- ❌ Añadir texto fuera del HTML.\n' +
-'- ❌ Incluir checklists, prioridades 🔴🟡🟢 o instrucciones del prompt.\n\n' +
-'## VERIFICACIÓN FINAL (hazlo ANTES de responder)\n' +
-'- ¿Empieza con <!DOCTYPE html> y termina con </html>?\n' +
-'- ¿He mantenido EXACTAMENTE las clases CSS?\n' +
-'- ¿He mantenido EXACTAMENTE las funciones toggleModo, toggleRespuesta, toggleEsquema?\n' +
-'- ¿Orden: botón modo → índice → título → idea central → epígrafes → test → desarrollo?\n' +
-'- ¿Respuestas OCULTAS inicialmente?\n' +
-'- ¿He envuelto TODO el HTML en un bloque de código markdown con etiqueta `html`?\n' +
-'- ¿He evitado adjuntarlo como archivo .txt o artefacto descargable?\n' +
-'Si alguna respuesta es NO, corrige antes de responder.\n\n' +
+'- ✅ Si es muy largo, divídelo en partes numeradas (Parte 1/2, Parte 2/2), SIEMPRE dentro de bloques de código markdown con etiqueta `html`.\n\n' +
+
+'## CÓMO RELLENAR LA PLANTILLA — CON EJEMPLOS LITERALES\n' +
+'Usa EXACTAMENTE estos patrones, sustituyendo solo el texto entre las etiquetas:\n\n' +
+
+'### {{TITULO}}\n' +
+'Título del tema extraído del resumen (una sola línea).\n\n' +
+
+'### {{INDICE_ITEMS}}\n' +
+'Un `<li>` por CADA epígrafe y subepígrafe, en orden, sin omitir ninguno:\n' +
+'`<li class="h2"><a href="#ep-1">1. Introducción</a></li>`\n' +
+'`<li class="h2"><a href="#ep-2">2. Las ordenanzas locales</a></li>`\n' +
+'`<li class="h2"><a href="#ep-2-1">2.1. La potestad normativa local: fundamento y ejercicio</a></li>`\n' +
+'Si un epígrafe NO tiene contenido (es solo un contenedor de subepígrafes), inclúyelo igualmente en el índice.\n\n' +
+
+'### {{IDEA_CENTRAL}}\n' +
+'Solo el texto del párrafo. Sin `<p>`, sin comillas, sin prefijos.\n\n' +
+
+'### {{EPIGRAFES}}\n' +
+'Un `<section>` por CADA epígrafe, con el id EXACTO que aparece en el índice:\n\n' +
+'Para modo TEST:\n' +
+'```html\n' +
+'<section id="ep-2-1"><h3>2.1. La potestad normativa local: fundamento y ejercicio</h3>\n' +
+'<p>Texto del resumen del epígrafe.</p>\n' +
+'<blockquote><strong>Definiciones literales:</strong> frase textual citada.</blockquote>\n' +
+'<p><strong>Matiz a recordar:</strong> palabra clave a memorizar.</p>\n' +
+'</section>\n' +
+'```\n\n' +
+'Para modo DESARROLLO:\n' +
+'```html\n' +
+'<section id="ep-2-1"><h3>2.1. La potestad normativa local: fundamento y ejercicio</h3>\n' +
+'<p><strong>Resumen redactado:</strong> párrafo de 5-8 líneas con el concepto desarrollado.</p>\n' +
+'<p><strong>Concepto clave:</strong> una sola frase.</p>\n' +
+'<p><strong>Argumentos del autor:</strong></p>\n' +
+'<ul><li>Argumento 1</li><li>Argumento 2</li><li>Argumento 3</li></ul>\n' +
+'<p><strong>Conexiones:</strong> relación con otros epígrafes.</p>\n' +
+'<p><strong>Matiz a recordar:</strong> palabra clave a memorizar.</p>\n' +
+'</section>\n' +
+'```\n' +
+'Si un epígrafe contenedor no tiene texto propio, omite su `<section>` pero mantenlo en el índice.\n\n' +
+
+'### {{PREGUNTAS_TEST}}\n' +
+'Un `<div class="pregunta">` por pregunta, con este patrón EXACTO (n es el número, empezando en 1):\n' +
+'```html\n' +
+'<div class="pregunta"><p class="enunciado">Texto del enunciado.</p>\n' +
+'<ul class="opciones">\n' +
+'<li>A) Texto opción A</li>\n' +
+'<li class="correcta">B) Texto opción B</li>\n' +
+'<li>C) Texto opción C</li>\n' +
+'<li>D) Texto opción D</li>\n' +
+'</ul>\n' +
+'<button class="btn-respuesta" onclick="toggleRespuesta(\'resp-N\')">👁️ Mostrar respuesta</button>\n' +
+'<div class="respuesta-oculta" id="resp-N"><p><strong>Respuesta correcta:</strong> B</p><p class="trampa"><strong>Trampa:</strong> explicación de por qué las demás son incorrectas.</p></div>\n' +
+'</div>\n' +
+'```\n' +
+'IMPORTANTE: la opción correcta lleva `class="correcta"` en el `<li>`. El `id` del div respuesta-oculta es `resp-N` y coincide con el argumento de `toggleRespuesta(\'resp-N\')`.\n\n' +
+
+'### {{PREGUNTAS_DESARROLLO}}\n' +
+'Un `<div class="pregunta pregunta-desarrollo">` por pregunta, con este patrón EXACTO:\n' +
+'```html\n' +
+'<div class="pregunta pregunta-desarrollo"><p class="enunciado">Texto del enunciado.</p>\n' +
+'<button class="btn-respuesta" onclick="toggleEsquema(\'esq-N\')">👁️ Mostrar esquema</button>\n' +
+'<div class="esquema-oculto" id="esq-N"><p><strong>Esquema:</strong></p><ul><li>Punto 1</li><li>Punto 2</li></ul></div>\n' +
+'</div>\n' +
+'```\n\n' +
+
+'## CSS OBLIGATORIO (copiar EXACTAMENTE, sin modificar un solo carácter)\n' +
+'```css\n' +
+CSS_ESTUDIO + '\n' +
+'```\n\n' +
+
+'## PLANTILLA HTML DE REFERENCIA (estructura inmutable)\n' +
+'```html\n' +
+PLANTILLA_HTML_REFERENCIA + '\n' +
+'```\n\n' +
+
+'## PROHIBIDO (recordatorio)\n' +
+'- ❌ Clases nuevas, ids nuevos, funciones nuevas.\n' +
+'- ❌ Secciones nuevas, botones nuevos, iconos nuevos.\n' +
+'- ❌ Comentarios HTML, notas al pie, avisos, disclaimers.\n' +
+'- ❌ Estilos inline no previstos.\n' +
+'- ❌ Incluir checklists, prioridades 🔴🟡🟢 o cualquier instrucción de este prompt.\n' +
+'- ❌ Devolver markdown, texto adicional o adjuntos.\n\n' +
+
+'## VERIFICACIÓN FINAL — OBLIGATORIA ANTES DE RESPONDER\n' +
+'Recorre mentalmente el HTML que vas a entregar y confirma:\n' +
+'1. ¿Empieza EXACTAMENTE con `<!DOCTYPE html>` y termina EXACTAMENTE con `</html>`?\n' +
+'2. ¿El `<head>` contiene el mismo `<meta charset>`, `<meta viewport>`, `<title>` con el título del tema y el `<style>` con el CSS íntegro?\n' +
+'3. ¿El `<body>` contiene, EN ESTE ORDEN: botón modo-btn, nav.indice, h1, section.idea-central, h2 Resumen por epígrafes, h2 Preguntas tipo test, h2 Preguntas de desarrollo, script?\n' +
+'4. ¿Cada epígrafe va en `<section id="ep-X">` con un `<h3>` y el id coincide EXACTAMENTE con el del índice?\n' +
+'5. ¿Cada pregunta test tiene: div.pregunta, p.enunciado, ul.opciones con 4 li (uno con class="correcta"), button.btn-respuesta con onclick="toggleRespuesta(\'resp-N\')", div.respuesta-oculta con id="resp-N", p.trampa?\n' +
+'6. ¿Cada pregunta desarrollo tiene: div.pregunta.pregunta-desarrollo, p.enunciado, button.btn-respuesta con onclick="toggleEsquema(\'esq-N\')", div.esquema-oculto con id="esq-N"?\n' +
+'7. ¿Las funciones toggleModo, toggleRespuesta y toggleEsquema están EXACTAMENTE con esos nombres?\n' +
+'8. ¿He usado TODAS las clases CSS de la plantilla y NINGUNA de más?\n' +
+'9. ¿He envuelto TODO el HTML en un bloque ```html ... ``` y NO he adjuntado archivo?\n' +
+'Si CUALQUIER respuesta es NO, corrige antes de responder.\n\n' +
+
 '=== RESUMEN A CONVERTIR ===\n' +
 resumen;
 }
