@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PromptMaker · UNED</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #0d1a2b; color: #e0e8f0; min-height: 100vh; padding: 20px; }
+.app { max-width: 1000px; margin: 0 auto; }
+h1 { font-size: 26px; font-weight: 700; display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+.subhead { color: #8a9bb8; font-size: 14px; margin-bottom: 24px; border-left: 3px solid #2a5a8a; padding-left: 16px; }
+.tabs { display: flex; gap: 4px; background: #0f1f33; border-radius: 12px; padding: 4px; margin-bottom: 24px; border: 1px solid #1e3450; flex-wrap: wrap; }
+.tabs button { flex: 1; min-width: 60px; padding: 12px 8px; border: none; border-radius: 9px; background: transparent; color: #8a9bb8; font-weight: 600; font-size: 12px; cursor: pointer; transition: 0.2s; }
+.tabs button.active { background: #1a3d66; color: #fff; box-shadow: 0 4px 14px rgba(20, 80, 180, 0.3); }
+.tabs button:hover:not(.active) { color: #c8d8f0; }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.card { background: #0f1f33; border-radius: 16px; padding: 20px 22px; margin-bottom: 18px; border: 1px solid #1e3450; }
+.card-title { font-size: 14px; font-weight: 600; color: #b0c8e8; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+.btn-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
+.btn-group .opt { padding: 8px 18px; border: 2px solid #1e3450; border-radius: 30px; background: transparent; color: #b0c8e8; font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.2s; }
+.btn-group .opt:hover { border-color: #3a6a9a; }
+.btn-group .opt.active { background: #1a3d66; border-color: #2a6aaa; color: #fff; box-shadow: 0 4px 14px rgba(20, 80, 180, 0.25); }
+.check-group { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 4px; }
+.check-group label { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #b0c8e8; cursor: pointer; }
+.check-group input[type="checkbox"] { width: 16px; height: 16px; accent-color: #2a6aaa; cursor: pointer; }
+textarea, input[type="text"] { width: 100%; background: #091220; border: 1px solid #1e3450; border-radius: 12px; padding: 14px 16px; font-size: 14px; line-height: 1.7; color: #d6e2f5; font-family: 'Consolas', 'Monaco', monospace; resize: vertical; transition: 0.15s; }
+textarea:focus, input[type="text"]:focus { outline: none; border-color: #3a7ac0; box-shadow: 0 0 0 3px rgba(40, 100, 200, 0.15); }
+textarea.texto-tema { min-height: 180px; font-size: 13px; font-family: 'Segoe UI', sans-serif; }
+textarea.prompt-output { min-height: 300px; font-size: 13px; }
+textarea.html-input { min-height: 200px; font-size: 13px; }
+textarea.resumen-input { min-height: 250px; font-size: 13px; font-family: 'Segoe UI', sans-serif; }
+input[type="text"] { font-family: 'Segoe UI', sans-serif; font-size: 15px; min-height: 46px; }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+.btn { padding: 10px 22px; border: none; border-radius: 40px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
+.btn-primary { background: #1a4a7a; color: #fff; box-shadow: 0 4px 14px rgba(20, 80, 180, 0.3); }
+.btn-primary:hover { background: #2a5a9a; transform: translateY(-1px); }
+.btn-secondary { background: #1a2a44; color: #b0c8e8; border: 1px solid #2a4a6a; }
+.btn-secondary:hover { background: #2a3a5e; }
+.btn-success { background: #1a6a4a; color: #fff; }
+.btn-success:hover { background: #2a7a5a; transform: translateY(-1px); }
+.btn-danger { background: #6a2a2a; color: #fff; }
+.btn-danger:hover { background: #8a3a3a; }
+.btn-warning { background: #6a5a1a; color: #fff; }
+.btn-warning:hover { background: #8a7a2a; }
+.btn-purple { background: #4a2a7a; color: #fff; }
+.btn-purple:hover { background: #5a3a9a; transform: translateY(-1px); }
+.badge-count { background: #1a3d66; padding: 2px 10px; border-radius: 20px; font-size: 12px; color: #b0c8e8; }
+.field-hint { font-size: 12px; color: #6a8aaa; margin-top: 4px; }
+.step-badge { display: inline-block; background: #2a5a8a; color: #fff; border-radius: 30px; padding: 2px 14px; font-size: 11px; font-weight: 700; margin-right: 8px; }
+.library-item { background: #091220; border-radius: 10px; padding: 12px 16px; margin-bottom: 8px; border: 1px solid #1a2a44; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+.library-item .info .title { font-weight: 600; font-size: 14px; color: #e0e8f0; }
+.library-item .info .meta { font-size: 12px; color: #6a8aaa; }
+.library-item .actions-lib { display: flex; gap: 6px; flex-wrap: wrap; }
+.library-item .actions-lib .btn { padding: 5px 12px; font-size: 12px; }
+.empty-library { color: #6a8aaa; text-align: center; padding: 30px 20px; font-size: 14px; }
+.toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #1a3d66; color: #fff; padding: 12px 28px; border-radius: 40px; font-weight: 600; font-size: 14px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5); opacity: 0; transition: opacity 0.3s ease; z-index: 999; pointer-events: none; }
+.toast.show { opacity: 1; }
+.flow-steps { display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap; }
+.flow-steps .step { background: #0f1f33; border: 1px solid #1e3450; border-radius: 30px; padding: 6px 18px; font-size: 13px; color: #8a9bb8; }
+.flow-steps .step.active { background: #1a3d66; border-color: #2a6aaa; color: #fff; }
+.editor-box { background: #091220; border: 1px solid #1e3450; border-radius: 12px; overflow: hidden; margin-top: 10px; }
+.editor-box-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: #0f1f33; border-bottom: 1px solid #1e3450; flex-wrap: wrap; gap: 8px; }
+.editor-box-header .lang { font-size: 13px; color: #8a9bb8; font-weight: 600; font-family: 'Consolas', monospace; }
+.editor-box-header .tools { display: flex; gap: 6px; flex-wrap: wrap; }
+.editor-box-header .tools button { background: transparent; border: 1px solid #2a4a6a; color: #b0c8e8; padding: 4px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; transition: 0.2s; }
+.editor-box-header .tools button:hover { background: #1a3d66; color: #fff; border-color: #3a7ac0; }
+.editor-box-body { height: 600px; overflow: auto; background: #f5f7fa; position: relative; }
+.editor-box-body iframe { width: 100%; height: 100%; border: none; display: block; background: #f5f7fa; }
+@media (max-width: 700px) { body { padding: 10px; } .card { padding: 14px 12px; } .btn-group .opt { padding: 6px 12px; font-size: 12px; } .btn { padding: 8px 14px; font-size: 12px; } .tabs button { font-size: 10px; padding: 10px 4px; min-width: 50px; } .library-item { flex-direction: column; align-items: stretch; } .flow-steps .step { font-size: 11px; padding: 4px 12px; } .editor-box-body { height: 400px; } }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: #0a1520; }
+::-webkit-scrollbar-thumb { background: #2a4a6a; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+<h1>⚡ PromptMaker · UNED</h1>
+<div class="subhead">Paso 1: Genera el resumen · Paso 2: Convierte a HTML interactivo · Paso 3: Descarga</div>
+
+<div class="flow-steps">
+<span class="step active">1️⃣ Generar Resumen</span>
+<span class="step">2️⃣ Generar HTML</span>
+<span class="step">3️⃣ Descargar HTML</span>
+<span class="step">📚 Biblioteca</span>
+</div>
+
+<div class="tabs">
+<button class="active" data-tab="tab-prompt">📝 Paso 1</button>
+<button data-tab="tab-html">🎨 Paso 2</button>
+<button data-tab="tab-download">📥 Paso 3</button>
+<button data-tab="tab-library">📚 Biblioteca</button>
+</div>
+
+<div id="tab-prompt" class="tab-content active">
+<div class="card">
+<div class="card-title"><span class="step-badge">Paso 1</span> Configuración del resumen</div>
+<div class="btn-group" id="modalidadGroup">
+<button type="button" class="opt active" data-value="test">📝 Tipo Test</button>
+<button type="button" class="opt" data-value="desarrollo">📖 Desarrollo</button>
+</div>
+</div>
+<div class="card">
+<div class="card-title"><span class="step-badge">Paso 1</span> Texto del tema (desde el PDF)</div>
+<textarea class="texto-tema" id="textoTema" placeholder="Pega aquí el texto del tema copiado del PDF..."></textarea>
+<div class="field-hint">📎 Este texto se fusionará con el prompt.</div>
+</div>
+<div class="card" style="border-color: #3a6a8a;">
+<div class="card-title"><span class="step-badge">Paso 1</span> Prompt para DeepSeek (resumen)</div>
+<textarea class="prompt-output" id="promptOutput" readonly>Selecciona opciones y pega el texto del tema...</textarea>
+<div class="actions">
+<button type="button" class="btn btn-purple" id="fusionarPromptBtn">🔗 Fusionar</button>
+<button type="button" class="btn btn-primary" id="copiarPromptBtn">📋 Copiar</button>
+<button type="button" class="btn btn-secondary" id="reiniciarPromptBtn">⟳ Reiniciar</button>
+</div>
+</div>
+<div class="card" style="border-color: #2a5a3a; background: #0d1f2a;">
+<div style="font-size:13px; color:#8aabaa;">💡 <strong>Paso 1:</strong> Copia el prompt y pégalo en DeepSeek. Te devolverá el resumen. Luego ve al Paso 2.</div>
+</div>
+</div>
+
+<div id="tab-html" class="tab-content">
+<div class="card">
+<div class="card-title"><span class="step-badge">Paso 2</span> Resumen de DeepSeek</div>
+<textarea class="resumen-input" id="resumenInput" placeholder="Pega aquí el resumen que te ha dado DeepSeek en el Paso 1..."></textarea>
+</div>
+<div class="card">
+<div class="card-title"><span class="step-badge">Paso 2</span> Prompt para DeepSeek (HTML interactivo)</div>
+<textarea class="prompt-output" id="htmlPromptOutput" readonly>Primero pega el resumen arriba y haz clic en "Generar prompt para HTML"...</textarea>
+<div class="actions">
+<button type="button" class="btn btn-purple" id="generarHtmlPromptBtn">🎨 Generar prompt para HTML</button>
+<button type="button" class="btn btn-primary" id="copiarHtmlPromptBtn">📋 Copiar</button>
+</div>
+</div>
+</div>
+
+<div id="tab-download" class="tab-content">
+<div class="card" id="pasteCard">
+<div class="card-title"><span class="step-badge">Paso 3</span> Pega el HTML de DeepSeek</div>
+<textarea class="html-input" id="htmlInput" placeholder="Pega aquí el HTML que te ha devuelto DeepSeek..."></textarea>
+<div class="field-hint" id="htmlStatus">🔧 Pega el HTML y se procesará automáticamente.</div>
+</div>
+<div class="card">
+<div class="card-title"><span class="step-badge">Paso 3</span> Título del tema</div>
+<input type="text" id="tituloTema" placeholder="Ej: Tema 1: El Derecho administrativo" />
+</div>
+<div class="card" id="previewCard" style="display:none;">
+<div class="card-title"><span class="step-badge">Paso 3</span> Resultado</div>
+<div class="editor-box">
+<div class="editor-box-header">
+<span class="lang">html</span>
+<div class="tools">
+<button type="button" id="copiarHtmlBtn">📋 Copiar</button>
+<button type="button" id="descargarHtmlBtn">📥 Descargar</button>
+<button type="button" id="ejecutarHtmlBtn">▶️ Ejecutar</button>
+</div>
+</div>
+<div class="editor-box-body" id="previewBox">
+<iframe id="previewIframe"></iframe>
+</div>
+</div>
+<div class="actions" style="margin-top:14px;">
+<button type="button" class="btn btn-secondary" id="limpiarHtmlBtn">🗑️ Cargar otro HTML</button>
+</div>
+<div class="field-hint" id="htmlInfo" style="margin-top:8px;">Sin HTML cargado.</div>
+</div>
+</div>
+
+<div id="tab-library" class="tab-content">
+<div class="card">
+<div class="card-title">📚 Mis resúmenes <span class="badge-count" id="libCount">0</span></div>
+<div id="libraryContainer"><div class="empty-library">📭 No tienes resúmenes guardados.</div></div>
+<div class="actions" style="margin-top: 14px;">
+<button type="button" class="btn btn-warning" id="exportarLibBtn">📤 Exportar</button>
+<button type="button" class="btn btn-secondary" id="importarLibBtn">📥 Importar</button>
+<button type="button" class="btn btn-danger" id="vaciarLibBtn" style="background:#4a1a1a;">🗑️ Vaciar</button>
+</div>
+<input type="file" id="importFileInput" accept=".json" style="display:none;" />
+</div>
+</div>
+
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+(function() {
+'use strict';
+
+var CSS_ESTUDIO = [
+'body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; max-width: 950px; margin: 30px auto; padding: 20px; background: #fbf9f5; color: #2a2622; line-height: 1.85; font-size: 17px; }',
+'h1 { font-size: 30px; color: #2a2622; border-bottom: 4px solid #8b6f47; padding-bottom: 14px; }',
+'h2 { font-size: 23px; color: #6b4f2f; margin-top: 40px; border-left: 5px solid #8b6f47; padding-left: 16px; }',
+'h3 { font-size: 21px; color: #4a3520; margin-top: 30px; }',
+'strong { color: #4a3520; }',
+'ul { padding-left: 24px; }',
+'li { margin-bottom: 6px; }',
+'blockquote { background: #f5ede0; padding: 14px 22px; border-left: 5px solid #c9a876; margin: 18px 0; border-radius: 4px; font-style: italic; color: #4a3520; }',
+'hr { border: none; border-top: 2px dashed #d4c4a8; margin: 34px 0; }',
+
+'.indice { background: #f5ede0; border-radius: 10px; margin-bottom: 34px; overflow: hidden; border-left: 5px solid #8b6f47; }',
+'.indice details { border: none; }',
+'.indice summary { cursor: pointer; padding: 16px 24px; font-weight: 700; font-size: 18px; color: #6b4f2f; list-style: none; user-select: none; display: flex; align-items: center; justify-content: space-between; }',
+'.indice summary::-webkit-details-marker { display: none; }',
+'.indice summary::after { content: "▸"; font-size: 20px; transition: transform 0.2s; margin-left: 10px; color: #8b6f47; }',
+'.indice details[open] summary::after { transform: rotate(90deg); }',
+'.indice summary:hover { background: #ede0c8; }',
+'.indice .indice-content { padding: 0 24px 20px 24px; }',
+'.indice ul { list-style: none; padding-left: 0; margin: 0; }',
+'.indice li { padding: 3px 0; }',
+'.indice li.h2 { padding-left: 20px; }',
+'.indice a { color: #6b4f2f; text-decoration: none; }',
+'.indice a:hover { text-decoration: underline; color: #8b6f47; }',
+
+'.idea-central { background: #f5ede0; padding: 22px 28px; border-radius: 12px; margin: 20px 0 40px 0; border-left: 6px solid #8b6f47; }',
+'.idea-central h2 { margin-top: 0; border-left: none; padding-left: 0; }',
+
+'main { background: #ffffff; padding: 30px 36px; border-radius: 10px; box-shadow: 0 2px 20px rgba(139, 111, 71, 0.08); border: 1px solid #e8dfd0; }',
+
+'section[id^="ep-"] { scroll-margin-top: 20px; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px dashed #e0d5c0; }',
+'section[id^="ep-"]:last-of-type { border-bottom: none; }',
+
+'.bloque-resumen { background: #fbfaf7; border-left: 4px solid #8b6f47; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }',
+'.bloque-resumen p { margin-bottom: 10px; }',
+'.bloque-resumen p:last-child { margin-bottom: 0; }',
+'.etiqueta-resumen { display: inline-block; background: #8b6f47; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }',
+
+'.bloque-clave { background: #fdf6e3; border-left: 5px solid #d4a017; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }',
+'.etiqueta-clave { display: inline-block; background: #d4a017; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }',
+'.bloque-clave ul { list-style: none; padding-left: 0; }',
+'.bloque-clave li { padding: 8px 0 8px 30px; position: relative; border-bottom: 1px dashed #ead9a8; }',
+'.bloque-clave li:last-child { border-bottom: none; }',
+'.bloque-clave li::before { content: "🔑"; position: absolute; left: 0; font-size: 16px; }',
+'.bloque-clave li strong { color: #6b4f2f; }',
+
+'.bloque-pregunta { background: #eef6fb; border-left: 5px solid #3a7ac0; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }',
+'.etiqueta-pregunta { display: inline-block; background: #3a7ac0; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }',
+
+'.bloque-guion { background: #f0f7ee; border-left: 5px solid #4a8c3a; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }',
+'.etiqueta-guion { display: inline-block; background: #4a8c3a; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }',
+'.bloque-guion ol { padding-left: 22px; }',
+'.bloque-guion li { margin-bottom: 8px; }',
+
+'.pregunta { background: #ffffff; border: 1px solid #e0d5c0; border-radius: 10px; padding: 18px 22px; margin-bottom: 18px; }',
+'.pregunta .enunciado { font-weight: 600; margin-bottom: 10px; color: #2a2622; }',
+'.pregunta .opciones { list-style: none; padding-left: 0; }',
+'.pregunta .opciones li { margin-bottom: 6px; padding: 8px 12px; border-radius: 6px; background: #faf8f4; border-left: 3px solid #d4c4a8; transition: all 0.25s; }',
+'.pregunta .opciones li.revelada-correcta { background: #e8f5e2; border-left-color: #4a8c3a; font-weight: 600; }',
+'.pregunta .opciones li.revelada-correcta::after { content: " ✅ ES ESTA"; color: #2d6b1e; font-weight: 700; font-size: 13px; margin-left: 8px; }',
+'.pregunta .opciones li.revelada-incorrecta { background: #fbeaea; border-left-color: #c0392b; opacity: 0.75; }',
+'.pregunta .opciones li.revelada-incorrecta::after { content: " ❌ NO ES ESTA"; color: #8a2820; font-weight: 700; font-size: 13px; margin-left: 8px; }',
+'.pregunta .respuesta-oculta { display: none; margin-top: 14px; padding: 14px 18px; background: #eef6fb; border-radius: 8px; border-left: 4px solid #3a7ac0; }',
+'.pregunta .respuesta-oculta.visible { display: block; }',
+'.pregunta .btn-respuesta { margin-top: 10px; padding: 8px 20px; border: none; border-radius: 30px; cursor: pointer; font-weight: 600; font-size: 13px; background: #3a7ac0; color: #fff; transition: 0.2s; }',
+'.pregunta .btn-respuesta:hover { background: #2a5a8a; }',
+'.pregunta .trampa { margin-top: 10px; font-size: 14px; color: #6b4f2f; font-style: italic; padding-top: 8px; border-top: 1px dashed #c9a876; }',
+
+'.pregunta-desarrollo .esquema-oculto { display: none; margin-top: 14px; padding: 14px 18px; background: #f0f7ee; border-radius: 8px; border-left: 4px solid #4a8c3a; }',
+'.pregunta-desarrollo .esquema-oculto.visible { display: block; }',
+
+'.modo-btn { position: fixed; top: 16px; right: 16px; padding: 8px 18px; border: none; border-radius: 30px; cursor: pointer; font-weight: 600; background: #8b6f47; color: #fff; font-size: 14px; z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }',
+'.modo-btn:hover { background: #6b4f2f; }',
+
+'dark:body, .dark-mode { background: #1a1815; color: #e8dfd0; }',
+'.dark-mode main { background: #252220; border-color: #3a352f; box-shadow: none; }',
+'.dark-mode h1 { color: #e8dfd0; border-bottom-color: #c9a876; }',
+'.dark-mode h2 { color: #d4a017; border-left-color: #c9a876; }',
+'.dark-mode h3 { color: #c9a876; }',
+'.dark-mode strong { color: #d4a017; }',
+'.dark-mode blockquote { background: #2f2b26; border-left-color: #c9a876; color: #e8dfd0; }',
+'.dark-mode hr { border-top-color: #3a352f; }',
+'.dark-mode .indice { background: #2f2b26; border-left-color: #c9a876; }',
+'.dark-mode .indice summary { color: #d4a017; }',
+'.dark-mode .indice summary:hover { background: #3a352f; }',
+'.dark-mode .indice a { color: #d4a017; }',
+'.dark-mode .indice summary::after { color: #c9a876; }',
+'.dark-mode .idea-central { background: #2f2b26; border-left-color: #c9a876; }',
+'.dark-mode section[id^="ep-"] { border-bottom-color: #3a352f; }',
+'.dark-mode .bloque-resumen { background: #2a2622; border-left-color: #c9a876; }',
+'.dark-mode .bloque-clave { background: #2f2b26; border-left-color: #d4a017; }',
+'.dark-mode .bloque-clave li { border-bottom-color: #3a352f; }',
+'.dark-mode .bloque-clave li strong { color: #d4a017; }',
+'.dark-mode .bloque-pregunta { background: #222c36; border-left-color: #5a9ad0; }',
+'.dark-mode .bloque-guion { background: #222c1e; border-left-color: #6ab858; }',
+'.dark-mode .pregunta { background: #252220; border-color: #3a352f; }',
+'.dark-mode .pregunta .opciones li { background: #2a2622; border-left-color: #4a453d; }',
+'.dark-mode .pregunta .opciones li.revelada-correcta { background: #1a3a1a; border-left-color: #6ab858; }',
+'.dark-mode .pregunta .opciones li.revelada-correcta::after { color: #8fdf70; }',
+'.dark-mode .pregunta .opciones li.revelada-incorrecta { background: #3a1a1a; border-left-color: #c0392b; }',
+'.dark-mode .pregunta .opciones li.revelada-incorrecta::after { color: #ff8f80; }',
+'.dark-mode .pregunta .respuesta-oculta { background: #222c36; border-left-color: #5a9ad0; }',
+'.dark-mode .pregunta .btn-respuesta { background: #3a7ac0; }',
+'.dark-mode .pregunta .btn-respuesta:hover { background: #5a9ad0; }',
+'.dark-mode .pregunta .trampa { color: #c9a876; border-top-color: #4a453d; }',
+'.dark-mode .pregunta-desarrollo .esquema-oculto { background: #222c1e; border-left-color: #6ab858; }',
+'.dark-mode .modo-btn { background: #c9a876; color: #1a1815; }',
+'.dark-mode .modo-btn:hover { background: #d4a017; }'
+].join('\n');
+
+var PLANTILLA_HTML_REFERENCIA = [
+'<!DOCTYPE html>',
+'<html lang="es">',
+'<head>',
+'<meta charset="UTF-8">',
+'<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+'<title>{{TITULO}}</title>',
+'<style>',
+'/* PEGAR AQUÍ EXACTAMENTE EL CSS PROPORCIONADO */',
+'</style>',
+'</head>',
+'<body>',
+'<button class="modo-btn" onclick="toggleModo()">🌙 Modo oscuro</button>',
+'',
+'<nav class="indice">',
+'<details>',
+'<summary>📑 Índice</summary>',
+'<div class="indice-content">',
+'<ul>',
+'{{INDICE_ITEMS}}',
+'</ul>',
+'</div>',
+'</details>',
+'</nav>',
+'',
+'<main>',
+'',
+'<h1>{{TITULO}}</h1>',
+'',
+'<section class="idea-central">',
+'<h2>💡 Idea central</h2>',
+'<p>{{IDEA_CENTRAL}}</p>',
+'</section>',
+'',
+'<h2>📚 Resumen por epígrafes</h2>',
+'{{EPIGRAFES}}',
+'',
+'<h2>📝 Preguntas tipo test</h2>',
+'{{PREGUNTAS_TEST}}',
+'',
+'<h2>✍️ Preguntas de desarrollo</h2>',
+'{{PREGUNTAS_DESARROLLO}}',
+'',
+'</main>',
+'',
+'<script>',
+'function toggleModo() {',
+'  document.body.classList.toggle("dark-mode");',
+'  var btn = document.querySelector(".modo-btn");',
+'  btn.textContent = document.body.classList.contains("dark-mode") ? "☀️ Modo claro" : "🌙 Modo oscuro";',
+'}',
+'function toggleRespuesta(id) {',
+'  var el = document.getElementById(id);',
+'  var pregunta = el.closest(".pregunta");',
+'  var opciones = pregunta.querySelectorAll(".opciones li");',
+'  el.classList.toggle("visible");',
+'  var visible = el.classList.contains("visible");',
+'  opciones.forEach(function(li) {',
+'    var t = li.getAttribute("data-correcta");',
+'    if (t === "true") {',
+'      li.classList.toggle("revelada-correcta", visible);',
+'    } else {',
+'      li.classList.toggle("revelada-incorrecta", visible);',
+'    }',
+'  });',
+'  var btn = el.previousElementSibling;',
+'  btn.textContent = visible ? "🙈 Ocultar respuesta" : "👁️ Mostrar respuesta";',
+'}',
+'function toggleEsquema(id) {',
+'  var el = document.getElementById(id);',
+'  el.classList.toggle("visible");',
+'  var btn = el.previousElementSibling;',
+'  btn.textContent = el.classList.contains("visible") ? "🙈 Ocultar esquema" : "👁️ Mostrar esquema";',
+'}',
+'document.addEventListener("click", function(e) {',
+'  var a = e.target.closest(".indice a");',
+'  if (!a) return;',
+'  var href = a.getAttribute("href");',
+'  if (!href || href.indexOf("#") !== 0) return;',
+'  e.preventDefault();',
+'  var target = document.getElementById(href.substring(1));',
+'  if (target) {',
+'    var details = document.querySelector(".indice details");',
+'    if (details) details.removeAttribute("open");',
+'    target.scrollIntoView({ behavior: "smooth", block: "start" });',
+'  }',
+'});',
+'<\/script>',
+'</body>',
+'</html>'
+].join('\n');
+
+function getPromptResumen(modalidad) {
+    var base = '';
+
+    if (modalidad === 'test') {
+        base = '# TAREA: PREPARAR MATERIAL DE ESTUDIO PARA EXAMEN TIPO TEST\n\n' +
+'## ROL\n' +
+'Eres un profesor universitario experto en la materia del texto que te voy a proporcionar. Preparas materiales para que un estudiante pueda aprobar un examen tipo test sin necesidad de leer el manual completo.\n\n' +
+'## FILOSOFÍA DEL TRABAJO\n' +
+'El estudiante NO va a leer el manual. Va a estudiar DIRECTAMENTE de lo que tú generes. Por tanto:\n' +
+'- NO reduzcas hasta el punto de perder conceptos. Si eliminas matices, el estudiante suspende.\n' +
+'- SÍ sintetiza para que se lea mejor que el manual, pero conservando TODOS los conceptos importantes.\n' +
+'- Prioriza conceptos, distinciones y criterios. En este tipo de examen no se pregunta por fechas ni cifras, se pregunta por saber distinguir conceptos que se confunden entre sí.\n' +
+'- El resumen debe permitir al estudiante ENTENDER el epígrafe, no solo memorizarlo.\n' +
+'- Adáptate al tipo de contenido: si es jurídico/normativo fíjate en conceptos, distinciones y jurisprudencia; si es científico/técnico en definiciones, mecanismos y clasificaciones; si es humanístico/social en autores, corrientes y críticas; si es económico/cuantitativo en modelos, supuestos y relaciones.\n\n' +
+'## FORMATO DE SALIDA\n\n' +
+'### 1. IDEA CENTRAL DEL TEMA\n' +
+'Un párrafo de 5-6 líneas que explique de qué va TODO el tema y qué hilo conductor tienen sus epígrafes.\n\n' +
+'---\n\n' +
+'### 2. RESUMEN POR EPÍGRAFE\n' +
+'Para CADA epígrafe y subepígrafe, incluye SIEMPRE estos tres bloques en este orden:\n\n' +
+'**Epígrafe X.X. [Nombre exacto del original]**\n\n' +
+'**📖 PARA ENTENDERLO**\n' +
+'- Texto redactado con tus propias palabras, en párrafos.\n' +
+'- Extensión PROPORCIONAL al original: si el epígrafe ocupa 2 páginas del manual, el resumen debe ocupar aproximadamente media página o una página; si ocupa 2 párrafos, 1 párrafo.\n' +
+'- Criterio: si el estudiante lee solo este resumen, ¿entiende el epígrafe y puede responder preguntas sobre él? Si no, está incompleto.\n' +
+'- Explica los conceptos con claridad, ordena las ideas, pero NO omitas ninguna idea importante.\n' +
+'- NO conviertas el resumen en una lista de puntos sueltos. Debe ser texto legible.\n' +
+'- Si hay clasificaciones, listas o enumeraciones, respétalas íntegras.\n\n' +
+'**🔑 GRÁBATELO**\n' +
+'- Lista de frases o definiciones del manual que hay que recordar LITERALMENTE, tal cual, porque en el examen pueden caer así.\n' +
+'- Solo definiciones o formulaciones explícitas, NO datos numéricos.\n' +
+'- Si el original entrecomilla algo, respétalo entre comillas.\n' +
+'- Formato: una línea por concepto, con la definición escueta.\n\n' +
+'**🎯 TE LA VAN A PREGUNTAR**\n' +
+'- Puntos que hacen que el estudiante acierte o falle:\n' +
+'  - Conceptos que se confunden entre sí.\n' +
+'  - Posturas enfrentadas o autores que dicen cosas opuestas.\n' +
+'  - Fuentes de autoridad relevantes y qué establecen exactamente.\n' +
+'  - Distinciones finas que el examen explota.\n' +
+'  - Reglas que tienen excepciones.\n' +
+'  - Afirmaciones que parecen verdaderas pero no lo son.\n' +
+'- Formato: lista corta de advertencias, cada una con la distinción clara.\n\n' +
+'---\n\n' +
+'### 3. PREGUNTAS TIPO TEST (simulacro)\n' +
+'Genera 10 preguntas tipo test imitando el estilo del examen real:\n\n' +
+'- Enunciado del tipo "Señale la afirmación correcta:" o pregunta directa.\n' +
+'- 3 alternativas (a, b, c). Solo una correcta.\n' +
+'- Alternativas incorrectas PLAUSIBLES (no absurdas): conceptos confundidos, inversión de criterio, generalizaciones falsas, matices alterados.\n' +
+'- Respuesta correcta: letra y texto.\n' +
+'- Trampa identificada: por qué las otras dos son incorrectas.\n\n' +
+'NO preguntes por fechas, cifras ni nombres propios.\n\n' +
+'### 4. PREGUNTAS DE RESERVA\n' +
+'2 preguntas especialmente difíciles, mismo formato, que combinen dos conceptos.\n\n' +
+'---\n\n' +
+'## REGLAS DE ORO\n' +
+'1. El resumen debe permitir estudiar sin abrir el manual. Si dudas entre incluir o no una idea, INCLÚYELA.\n' +
+'2. Las advertencias de "TE LA VAN A PREGUNTAR" deben ser las que REALMENTE caen.\n' +
+'3. Las preguntas test deben parecerse al examen real: 3 alternativas, conceptuales, plausibles.\n' +
+'4. Respeta TODOS los epígrafes y subepígrafes.\n' +
+'5. No inventes datos que no estén en el texto.\n\n' +
+'## VERIFICACIÓN FINAL (hazlo ANTES de responder)\n' +
+'- ¿He incluido TODOS los epígrafes?\n' +
+'- ¿Cada epígrafe tiene los 3 bloques (📖 PARA ENTENDERLO, 🔑 GRÁBATELO, 🎯 TE LA VAN A PREGUNTAR)?\n' +
+'- ¿El Resumen es texto redactado, no lista?\n' +
+'- ¿La extensión es proporcional al original?\n' +
+'- ¿He generado 10 preguntas test + 2 de reserva con 3 alternativas?\n' +
+'- ¿Las opciones incorrectas son plausibles?\n' +
+'Si alguna respuesta es NO, corrige antes de responder.\n\n' +
+'=== TEXTO A ANALIZAR ===';
+    } else {
+        base = '# TAREA: PREPARAR MATERIAL DE ESTUDIO PARA EXAMEN DE DESARROLLO\n\n' +
+'## ROL\n' +
+'Eres un profesor universitario experto en la materia del texto. Preparas materiales para que un estudiante pueda desarrollar por escrito un epígrafe del temario sin abrir el manual. También para comentar un texto relacionado.\n\n' +
+'## FILOSOFÍA DEL TRABAJO\n' +
+'El estudiante no va a leer el manual. Va a estudiar directamente de lo que generes. Por tanto:\n' +
+'- NO reduzcas hasta perder conceptos. Si eliminas matices, el estudiante no puede desarrollar.\n' +
+'- SÍ sintetiza para que se lea mejor que el manual, pero conservando TODOS los conceptos.\n' +
+'- Prioriza conceptos, distinciones y estructura. En desarrollo se evalúa que sepas ordenar, explicar y conectar.\n' +
+'- Adáptate al tipo de contenido (jurídico, científico, humanístico, económico).\n\n' +
+'## FORMATO DE SALIDA\n\n' +
+'### 1. IDEA CENTRAL DEL TEMA\n' +
+'Párrafo de 5-6 líneas explicando el hilo conductor de todo el tema.\n\n' +
+'---\n\n' +
+'### 2. RESUMEN POR EPÍGRAFE\n' +
+'Para CADA epígrafe y subepígrafe, incluye estos tres bloques:\n\n' +
+'**Epígrafe X.X. [Nombre]**\n\n' +
+'**📖 PARA ENTENDERLO**\n' +
+'- Texto redactado con tus palabras, en párrafos, extensión proporcional al original.\n' +
+'- Criterio: si el estudiante lo lee, ¿puede entender el epígrafe y desarrollarlo por escrito? Si no, está incompleto.\n' +
+'- Respeta clasificaciones, listas y enumeraciones íntegras.\n\n' +
+'**🔑 GRÁBATELO**\n' +
+'- Definiciones y formulaciones que conviene citar al desarrollar.\n' +
+'- Solo definiciones, no datos numéricos.\n' +
+'- Si el original entrecomilla algo, respétalo.\n\n' +
+'**🗂️ ASÍ LO ESCRIBO**\n' +
+'- **Guion:** introducción → apartados en orden → conclusión.\n' +
+'- **Imprescindibles:** lista corta de las cosas que no puedes olvidar decir en el examen.\n\n' +
+'---\n\n' +
+'### 3. PREGUNTAS DE DESARROLLO (simulacro)\n' +
+'Genera 5 preguntas de desarrollo sobre los epígrafes del tema, del estilo "Desarrolle el siguiente epígrafe: [nombre]".\n\n' +
+'Para cada una:\n' +
+'- Enunciado.\n' +
+'- Esquema de respuesta (los apartados que debe cubrir).\n' +
+'- Imprescindibles (los conceptos que tienen que aparecer sí o sí).\n\n' +
+'### 4. PREGUNTAS DE RESERVA\n' +
+'2 preguntas más difíciles, mismo formato.\n\n' +
+'## REGLAS DE ORO\n' +
+'1. El resumen debe permitir estudiar sin abrir el manual.\n' +
+'2. El guion debe poder reproducirse en el examen tal cual.\n' +
+'3. Respeta TODOS los epígrafes.\n' +
+'4. No inventes datos.\n\n' +
+'## VERIFICACIÓN FINAL\n' +
+'- ¿Están TODOS los epígrafes?\n' +
+'- ¿Cada uno tiene PARA ENTENDERLO, GRÁBATELO y ASÍ LO ESCRIBO?\n' +
+'- ¿El guion es claro y utilizable en examen?\n' +
+'- ¿He generado 5 preguntas + 2 de reserva?\n' +
+'Si no, corrige.\n\n' +
+'=== TEXTO A ANALIZAR ===';
+    }
+    return base;
+}
+
+function getPromptHTML(resumen) {
+    if (!resumen || resumen.trim() === '') {
+        return '⚠️ Primero pega el resumen en el campo superior y haz clic en "Generar prompt para HTML".';
+    }
+
+    return '# TAREA: CONVERTIR RESUMEN A HTML INTERACTIVO — ESTRUCTURA FIJA E INMUTABLE\n\n' +
+
+'## ROL\n' +
+'Eres un motor de plantillas. NO diseñas, NO interpretas, NO reformulas, NO añades, NO quitas. Tú SOLO sustituyes los marcadores {{...}} de la plantilla por el contenido del resumen.\n\n' +
+
+'## OBJETIVO\n' +
+'Devolver un archivo HTML autocontenido que sea SIEMPRE IDÉNTICO en estructura, clases, ids y funciones al que se obtendría de cualquier otro resumen. Solo cambia el CONTENIDO, nunca la ESTRUCTURA.\n\n' +
+
+'## REGLA ABSOLUTA\n' +
+'- ❌ NO añadas ni quites clases CSS.\n' +
+'- ❌ NO renombres clases, ids ni funciones.\n' +
+'- ❌ NO añadas secciones, botones, iconos ni elementos nuevos.\n' +
+'- ❌ NO cambies el orden de las secciones.\n' +
+'- ❌ NO modifiques el CSS proporcionado.\n' +
+'- ❌ NO devuelvas markdown anidado, comentarios ni texto fuera del HTML.\n' +
+'- ❌ NO adjuntes el HTML como archivo .txt o artefacto descargable.\n\n' +
+
+'## FORMATO DE ENTREGA OBLIGATORIO (CRÍTICO)\n' +
+'Devuelve el HTML COMPLETO dentro de un bloque de código markdown con la etiqueta `html`:\n\n' +
+'```html\n<!DOCTYPE html>\n...\n</html>\n```\n\n' +
+'REGLAS:\n' +
+'- ❌ NO adjuntes archivo.\n' +
+'- ❌ NO uses "crear archivo" ni "artefacto".\n' +
+'- ❌ NO lo devuelvas como .txt ni como texto plano sin bloque.\n' +
+'- ✅ Escríbelo directamente en el chat dentro del bloque ```html.\n' +
+'- ✅ Si es muy largo, divídelo en partes numeradas, SIEMPRE dentro de bloques ```html.\n\n' +
+
+'## CÓMO RELLENAR LA PLANTILLA\n\n' +
+
+'### {{TITULO}}\n' +
+'Título del tema (una línea).\n\n' +
+
+'### {{INDICE_ITEMS}}\n' +
+'Un `<li>` por CADA epígrafe y subepígrafe, en orden:\n' +
+'`<li class="h2"><a href="#ep-1">1. Introducción</a></li>`\n' +
+'`<li class="h2"><a href="#ep-2">2. Las ordenanzas locales</a></li>`\n' +
+'`<li class="h2"><a href="#ep-2-1">2.1. La potestad normativa local</a></li>`\n' +
+'Si un epígrafe es solo contenedor de subepígrafes, inclúyelo igualmente.\n' +
+'IMPORTANTE: el índice va DENTRO de un `<details>` SIN el atributo `open`. Debe salir COMPRIMIDO por defecto.\n\n' +
+
+'### {{IDEA_CENTRAL}}\n' +
+'Solo el texto del párrafo, sin `<p>` ni comillas.\n\n' +
+
+'### {{EPIGRAFES}}\n' +
+'Un `<section>` por CADA epígrafe, con el id EXACTO del índice. Cada `<section>` contiene los bloques con sus etiquetas visuales:\n\n' +
+'```html\n' +
+'<section id="ep-2-1"><h3>2.1. La potestad normativa local: fundamento y ejercicio</h3>\n' +
+'\n' +
+'<div class="bloque-resumen">\n' +
+'<span class="etiqueta-resumen">📖 PARA ENTENDERLO</span>\n' +
+'<p>Texto del resumen del epígrafe, redactado con palabras propias. Extensión proporcional al original.</p>\n' +
+'<p>Puede haber varios párrafos.</p>\n' +
+'</div>\n' +
+'\n' +
+'<div class="bloque-clave">\n' +
+'<span class="etiqueta-clave">🔑 GRÁBATELO</span>\n' +
+'<ul>\n' +
+'<li><strong>concepto X</strong> — definición escueta del original.</li>\n' +
+'<li><strong>concepto Y</strong> — definición escueta del original.</li>\n' +
+'</ul>\n' +
+'</div>\n' +
+'\n' +
+'<div class="bloque-pregunta">\n' +
+'<span class="etiqueta-pregunta">🎯 TE LA VAN A PREGUNTAR</span>\n' +
+'<ul>\n' +
+'<li>Advertencia 1 sobre conceptos confundibles.</li>\n' +
+'<li>Advertencia 2 sobre jurisprudencia clave o criterio.</li>\n' +
+'</ul>\n' +
+'</div>\n' +
+'\n' +
+'</section>\n' +
+'```\n\n' +
+'Para DESARROLLO, el tercer bloque se sustituye por:\n\n' +
+'```html\n' +
+'<div class="bloque-guion">\n' +
+'<span class="etiqueta-guion">🗂️ ASÍ LO ESCRIBO</span>\n' +
+'<p><strong>Guion:</strong></p>\n' +
+'<ol>\n' +
+'<li>Introducción: ...</li>\n' +
+'<li>Apartado 1: ...</li>\n' +
+'<li>Conclusión: ...</li>\n' +
+'</ol>\n' +
+'<p><strong>Imprescindibles:</strong></p>\n' +
+'<ul>\n' +
+'<li>Concepto clave que debe aparecer.</li>\n' +
+'<li>Otro concepto.</li>\n' +
+'</ul>\n' +
+'</div>\n' +
+'```\n\n' +
+
+'### {{PREGUNTAS_TEST}}\n' +
+'Un `<div class="pregunta">` por pregunta (n empieza en 1). Patrón EXACTO:\n\n' +
+'```html\n' +
+'<div class="pregunta"><p class="enunciado">Texto del enunciado.</p>\n' +
+'<ul class="opciones">\n' +
+'<li>a) Texto opción a</li>\n' +
+'<li data-correcta="true">b) Texto opción b</li>\n' +
+'<li>c) Texto opción c</li>\n' +
+'</ul>\n' +
+'<button class="btn-respuesta" onclick="toggleRespuesta(\'resp-N\')">👁️ Mostrar respuesta</button>\n' +
+'<div class="respuesta-oculta" id="resp-N">\n' +
+'<p><strong>Respuesta correcta:</strong> b) Texto completo.</p>\n' +
+'<p class="trampa"><strong>Por qué las otras fallan:</strong> a) porque... c) porque...</p>\n' +
+'</div>\n' +
+'</div>\n' +
+'```\n\n' +
+'REGLAS:\n' +
+'- ❌ NUNCA uses `class="correcta"`.\n' +
+'- ✅ La opción correcta lleva `data-correcta="true"`.\n' +
+'- ✅ Las incorrectas NO llevan atributo.\n' +
+'- ✅ El color verde/rojo se aplica por JavaScript al pulsar el botón.\n\n' +
+
+'### {{PREGUNTAS_DESARROLLO}}\n' +
+'Un `<div class="pregunta pregunta-desarrollo">` por pregunta:\n\n' +
+'```html\n' +
+'<div class="pregunta pregunta-desarrollo"><p class="enunciado">Texto del enunciado.</p>\n' +
+'<button class="btn-respuesta" onclick="toggleEsquema(\'esq-N\')">👁️ Mostrar esquema</button>\n' +
+'<div class="esquema-oculto" id="esq-N">\n' +
+'<p><strong>Esquema:</strong></p>\n' +
+'<ul><li>Apartado 1</li><li>Apartado 2</li><li>Apartado 3</li></ul>\n' +
+'<p><strong>Imprescindibles:</strong></p>\n' +
+'<ul><li>Concepto 1</li><li>Concepto 2</li></ul>\n' +
+'</div>\n' +
+'</div>\n' +
+'```\n\n' +
+
+'## CSS OBLIGATORIO (copiar EXACTAMENTE, sin modificar)\n' +
+'```css\n' +
+CSS_ESTUDIO + '\n' +
+'```\n\n' +
+
+'## PLANTILLA HTML DE REFERENCIA\n' +
+'```html\n' +
+PLANTILLA_HTML_REFERENCIA + '\n' +
+'```\n\n' +
+
+'## VERIFICACIÓN FINAL — OBLIGATORIA\n' +
+'1. ¿Empieza con `<!DOCTYPE html>` y termina con `</html>`?\n' +
+'2. ¿El `<head>` contiene el CSS íntegro sin modificar?\n' +
+'3. ¿El `<body>` contiene, en orden: botón modo, nav.indice con `<details>` sin `open`, main, h1, section.idea-central, h2 Resumen, epígrafes, h2 Preguntas tipo test, h2 Preguntas de desarrollo, script?\n' +
+'4. ¿Cada epígrafe va en `<section id="ep-X">` con un `<h3>` y los bloques con sus etiquetas (bloque-resumen, bloque-clave, bloque-pregunta o bloque-guion)?\n' +
+'5. ¿Cada pregunta test tiene `<li data-correcta="true">` en la correcta? ¿Evité `class="correcta"`?\n' +
+'6. ¿Las funciones son exactamente toggleModo, toggleRespuesta, toggleEsquema, y el listener de clic del índice?\n' +
+'7. ¿He envuelto TODO en un bloque ```html ... ``` sin adjuntar archivo?\n' +
+'Si algo falla, corrige antes de responder.\n\n' +
+
+'=== RESUMEN A CONVERTIR ===\n' +
+resumen;
+}
+
+function $(id) { return document.getElementById(id); }
+
+var modalidadBtns = document.querySelectorAll('#modalidadGroup .opt');
+var textoTema = $('textoTema');
+var promptOutput = $('promptOutput');
+var fusionarPromptBtn = $('fusionarPromptBtn');
+var copiarPromptBtn = $('copiarPromptBtn');
+var reiniciarPromptBtn = $('reiniciarPromptBtn');
+
+var resumenInput = $('resumenInput');
+var htmlPromptOutput = $('htmlPromptOutput');
+var generarHtmlPromptBtn = $('generarHtmlPromptBtn');
+var copiarHtmlPromptBtn = $('copiarHtmlPromptBtn');
+
+var htmlInput = $('htmlInput');
+var tituloTema = $('tituloTema');
+var descargarHtmlBtn = $('descargarHtmlBtn');
+var copiarHtmlBtn = $('copiarHtmlBtn');
+var limpiarHtmlBtn = $('limpiarHtmlBtn');
+var ejecutarHtmlBtn = $('ejecutarHtmlBtn');
+
+var libraryContainer = $('libraryContainer');
+var libCount = $('libCount');
+var exportarLibBtn = $('exportarLibBtn');
+var importarLibBtn = $('importarLibBtn');
+var importFileInput = $('importFileInput');
+var vaciarLibBtn = $('vaciarLibBtn');
+
+var tabBtns = document.querySelectorAll('.tabs button');
+var tabContents = document.querySelectorAll('.tab-content');
+var flowSteps = document.querySelectorAll('.flow-steps .step');
+
+var toast = $('toast');
+
+var toastTimer = null;
+function showToast(message, duration) {
+    if (duration === undefined) duration = 2000;
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() { toast.classList.remove('show'); }, duration);
+}
+
+var estado = { modalidad: 'test' };
+var biblioteca = [];
+
+function cargarBiblioteca() {
+    try {
+        var data = localStorage.getItem('uned_biblioteca');
+        biblioteca = data ? JSON.parse(data) : [];
+    } catch (e) { biblioteca = []; }
+    renderBiblioteca();
+}
+
+function guardarBiblioteca() {
+    try {
+        localStorage.setItem('uned_biblioteca', JSON.stringify(biblioteca));
+    } catch (e) { /* ignore */ }
+    renderBiblioteca();
+}
+
+function renderBiblioteca() {
+    if (biblioteca.length === 0) {
+        libraryContainer.innerHTML = '<div class="empty-library">📭 No tienes resúmenes guardados.</div>';
+        libCount.textContent = '0';
+        return;
+    }
+    var html = '';
+    biblioteca.forEach(function(item, index) {
+        html += '<div class="library-item">' +
+            '<div class="info">' +
+                '<div class="title">' + escapeHtml(item.titulo || 'Sin título') + '</div>' +
+                '<div class="meta">' + escapeHtml(item.modalidad || '') + ' · ' + new Date(item.fecha).toLocaleDateString() + '</div>' +
+            '</div>' +
+            '<div class="actions-lib">' +
+                '<button type="button" class="btn btn-primary" onclick="verResumen(' + index + ')" style="padding:5px 12px;font-size:12px;">📄 Ver</button>' +
+                '<button type="button" class="btn btn-success" onclick="exportarResumen(' + index + ')" style="padding:5px 12px;font-size:12px;">📥 HTML</button>' +
+                '<button type="button" class="btn btn-danger" onclick="eliminarResumen(' + index + ')" style="padding:5px 12px;font-size:12px;">🗑️</button>' +
+            '</div>' +
+        '</div>';
+    });
+    libraryContainer.innerHTML = html;
+    libCount.textContent = biblioteca.length;
+}
+
+function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+window.verResumen = function(index) {
+    var item = biblioteca[index];
+    if (!item) return;
+    htmlInput.value = item.html || '';
+    tituloTema.value = item.titulo || '';
+    procesarHTMLPegado();
+    cambiarTab('tab-download');
+    showToast('📄 HTML cargado', 1500);
+};
+
+window.exportarResumen = function(index) {
+    var item = biblioteca[index];
+    if (!item || !item.html) { showToast('❌ Sin HTML guardado.', 2000); return; }
+    descargarArchivo(item.html, item.titulo || 'resumen', 'html');
+    showToast('📥 HTML descargado', 1500);
+};
+
+window.eliminarResumen = function(index) {
+    if (!confirm('¿Eliminar este resumen?')) return;
+    biblioteca.splice(index, 1);
+    guardarBiblioteca();
+    showToast('🗑️ Eliminado', 1500);
+};
+
+function limpiarHTMLDeMarkdown(raw) {
+    if (!raw) return '';
+    var html = raw.trim();
+    var codeMatch = html.match(/```(?:html|HTML)?\s*([\s\S]*?)```/);
+    if (codeMatch) html = codeMatch[1].trim();
+    html = html.replace(/^```(?:html|HTML)?\s*/i, '');
+    html = html.replace(/\s*```$/i, '');
+    return html.trim();
+}
+
+function esHTMLValido(html) {
+    if (!html) return false;
+    return html.indexOf('<!DOCTYPE') !== -1 || html.indexOf('<html') !== -1;
+}
+
+function procesarHTMLPegado() {
+    try {
+        var raw = htmlInput.value;
+        var limpio = limpiarHTMLDeMarkdown(raw);
+        var status = $('htmlStatus');
+        var info = $('htmlInfo');
+        var iframe = $('previewIframe');
+        var pasteCard = $('pasteCard');
+        var previewCard = $('previewCard');
+        if (!status || !info || !iframe) return;
+        if (!limpio) {
+            status.textContent = '🔧 Pega el HTML y se procesará automáticamente.';
+            status.style.color = '';
+            if (pasteCard) pasteCard.style.display = 'block';
+            if (previewCard) previewCard.style.display = 'none';
+            return;
+        }
+        if (!esHTMLValido(limpio)) {
+            status.textContent = '⚠️ El contenido no parece HTML válido.';
+            status.style.color = '#c8a878';
+            if (pasteCard) pasteCard.style.display = 'block';
+            if (previewCard) previewCard.style.display = 'none';
+            return;
+        }
+        var kb = (new Blob([limpio]).size / 1024).toFixed(1);
+        info.textContent = '✅ HTML cargado · ' + limpio.length + ' caracteres · ' + kb + ' KB';
+        iframe.srcdoc = limpio;
+        if (pasteCard) pasteCard.style.display = 'none';
+        if (previewCard) previewCard.style.display = 'block';
+    } catch (e) { console.warn('Error:', e); }
+}
+
+function generarPromptCompleto() {
+    try {
+        var modalidad = estado.modalidad;
+        var texto = textoTema.value.trim();
+        var plantilla = getPromptResumen(modalidad);
+        var completo = plantilla;
+        completo += '\n' + (texto || '[⚠️ No has pegado ningún texto del tema.]');
+        promptOutput.value = completo;
+        return true;
+    } catch (e) {
+        console.error(e);
+        showToast('❌ Error al generar el prompt', 2000);
+        return false;
+    }
+}
+
+function generarPromptHTML() {
+    try {
+        var resumen = resumenInput.value.trim();
+        htmlPromptOutput.value = getPromptHTML(resumen);
+        if (resumen) showToast('✅ Prompt HTML generado', 1500);
+        else showToast('⚠️ Primero pega el resumen', 2000);
+    } catch (e) {
+        console.error(e);
+        showToast('❌ Error al generar el prompt', 2000);
+    }
+}
+
+function descargarArchivo(contenido, nombre, extension) {
+    var blob = new Blob([contenido], { type: 'text/html;charset=utf-8' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = nombre + '.' + extension;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function guardarEnBiblioteca(titulo, html, modalidad) {
+    var resumen = html;
+    var bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+    if (bodyMatch) {
+        resumen = bodyMatch[1].replace(/<[^>]*>/g, '').trim().substring(0, 500) + '...';
+    }
+    biblioteca.push({
+        titulo: titulo,
+        resumen: resumen,
+        html: html,
+        modalidad: modalidad || estado.modalidad,
+        fecha: new Date().toISOString()
+    });
+    guardarBiblioteca();
+}
+
+function cambiarTab(tabId) {
+    tabBtns.forEach(function(b) { b.classList.toggle('active', b.dataset.tab === tabId); });
+    tabContents.forEach(function(c) { c.classList.toggle('active', c.id === tabId); });
+    var pasoMap = { 'tab-prompt': 0, 'tab-html': 1, 'tab-download': 2, 'tab-library': 3 };
+    var idx = pasoMap[tabId] || 0;
+    flowSteps.forEach(function(s, i) { s.classList.toggle('active', i === idx); });
+}
+
+modalidadBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        modalidadBtns.forEach(function(b) { b.classList.remove('active'); });
+        this.classList.add('active');
+        estado.modalidad = this.dataset.value;
+    });
+});
+
+fusionarPromptBtn.addEventListener('click', function() {
+    if (!textoTema.value.trim()) {
+        if (!confirm('⚠️ No has pegado ningún texto. ¿Continuar?')) return;
+    }
+    if (generarPromptCompleto()) showToast('🔗 Prompt fusionado', 1500);
+});
+
+copiarPromptBtn.addEventListener('click', function() {
+    var texto = promptOutput.value;
+    if (!texto || texto.indexOf('Selecciona') !== -1) { showToast('⚠️ Primero "Fusionar"', 2000); return; }
+    copiarTexto(texto, '📋 Prompt copiado');
+});
+
+reiniciarPromptBtn.addEventListener('click', function() {
+    modalidadBtns.forEach(function(b) { b.classList.toggle('active', b.dataset.value === 'test'); });
+    estado.modalidad = 'test';
+    textoTema.value = '';
+    promptOutput.value = 'Selecciona las opciones y pega el texto del tema...';
+    showToast('⟳ Reiniciado', 1500);
+});
+
+generarHtmlPromptBtn.addEventListener('click', generarPromptHTML);
+
+copiarHtmlPromptBtn.addEventListener('click', function() {
+    var texto = htmlPromptOutput.value;
+    if (!texto || texto.indexOf('Primero pega el resumen') !== -1) { showToast('⚠️ Primero genera el prompt', 2000); return; }
+    copiarTexto(texto, '📋 Prompt HTML copiado');
+});
+
+function copiarTexto(texto, mensaje) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(texto).then(function() { showToast(mensaje, 1500); })
+            .catch(function() { copiarFallback(texto, mensaje); });
+    } else { copiarFallback(texto, mensaje); }
+}
+
+function copiarFallback(texto, mensaje) {
+    var ta = document.createElement('textarea');
+    ta.value = texto;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast(mensaje, 1500);
+}
+
+htmlInput.addEventListener('input', procesarHTMLPegado);
+htmlInput.addEventListener('paste', function() { setTimeout(procesarHTMLPegado, 0); });
+
+descargarHtmlBtn.addEventListener('click', function() {
+    var html = limpiarHTMLDeMarkdown(htmlInput.value);
+    if (!esHTMLValido(html)) { showToast('⚠️ HTML no válido', 2000); return; }
+    var titulo = tituloTema.value.trim() || 'Resumen UNED';
+    guardarEnBiblioteca(titulo, html, estado.modalidad);
+    descargarArchivo(html, titulo, 'html');
+    showToast('📥 HTML descargado', 2000);
+});
+
+copiarHtmlBtn.addEventListener('click', function() {
+    var html = limpiarHTMLDeMarkdown(htmlInput.value);
+    if (!esHTMLValido(html)) { showToast('⚠️ HTML no válido', 2000); return; }
+    copiarTexto(html, '📋 HTML copiado');
+});
+
+if (ejecutarHtmlBtn) {
+    ejecutarHtmlBtn.addEventListener('click', function() {
+        var html = limpiarHTMLDeMarkdown(htmlInput.value);
+        if (!esHTMLValido(html)) { showToast('⚠️ HTML no válido', 2000); return; }
+        var blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+        var url = URL.createObjectURL(blob);
+        window.open(url, '_blank');
+        setTimeout(function() { URL.revokeObjectURL(url); }, 5000);
+        showToast('▶️ HTML abierto', 1500);
+    });
+}
+
+limpiarHtmlBtn.addEventListener('click', function() {
+    htmlInput.value = '';
+    tituloTema.value = '';
+    procesarHTMLPegado();
+    showToast('🗑️ Listo para otro HTML', 1500);
+});
+
+tabBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() { cambiarTab(this.dataset.tab); });
+});
+
+exportarLibBtn.addEventListener('click', function() {
+    if (biblioteca.length === 0) { showToast('📭 Sin resúmenes', 2000); return; }
+    descargarArchivo(JSON.stringify(biblioteca, null, 2), 'biblioteca_uned', 'json');
+    showToast('📤 Exportada', 1500);
+});
+
+importarLibBtn.addEventListener('click', function() { importFileInput.click(); });
+
+importFileInput.addEventListener('change', function() {
+    var file = this.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev) {
+        try {
+            var data = JSON.parse(ev.target.result);
+            if (Array.isArray(data)) {
+                biblioteca = biblioteca.concat(data);
+                guardarBiblioteca();
+                showToast('✅ Importados ' + data.length, 2000);
+            } else { showToast('❌ Formato no válido', 2000); }
+        } catch (e) { showToast('❌ Error al leer', 2000); }
+    };
+    reader.readAsText(file);
+    this.value = '';
+});
+
+vaciarLibBtn.addEventListener('click', function() {
+    if (!confirm('¿Eliminar TODOS los resúmenes?')) return;
+    if (!confirm('¿Seguro?')) return;
+    biblioteca = [];
+    guardarBiblioteca();
+    showToast('🗑️ Vaciada', 1500);
+});
+
+cargarBiblioteca();
+promptOutput.value = 'Selecciona las opciones y pega el texto del tema...';
+
+})();
+</script>
+
+</body>
+</html>
