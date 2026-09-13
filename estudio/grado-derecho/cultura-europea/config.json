@@ -6,6 +6,15 @@
   "caracter": "FORMACIÓN BÁSICA",
   "icon": "🌍",
   "temas": [
-    { "id": "tema1", "titulo": "Tema 1 - Introducción" }
+    {
+      "id": "tema1",
+      "titulo": "Tema 1 - El Estado Moderno y la universalización del Derecho castellano",
+      "archivo": "historiadelderecho - 7. El Estado Moderno y la universalización del Derecho castellano.html"
+    },
+    {
+      "id": "tema2",
+      "titulo": "Tema 2 - El Estado liberal del siglo XIX: constitucionalismo y codificación",
+      "archivo": "historiadelderecho - 8. El Estado liberal del siglo XIX_ constitucionalismo y codificación.html"
+    }
   ]
 }

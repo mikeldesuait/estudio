@@ -6,6 +6,45 @@
   "caracter": "FORMACIÓN BÁSICA",
   "icon": "📜",
   "temas": [
-    { "id": "tema1", "titulo": "Tema 1 - Introducción" }
+    {
+      "id": "tema1",
+      "titulo": "Tema 1 - Cuestiones preliminares",
+      "archivo": "historiadelderecho - 1. Cuestiones preliminares.html"
+    },
+    {
+      "id": "tema2",
+      "titulo": "Tema 2 - Los tiempos primitivos: el despertar de los pueblos de España",
+      "archivo": "historiadelderecho - 2. Los tiempos primitivos_ el despertar de los pueblos de España.html"
+    },
+    {
+      "id": "tema3",
+      "titulo": "Tema 3 - Roma y la vertebración de España",
+      "archivo": "historiadelderecho - 3. Roma y la vertebración de España.html"
+    },
+    {
+      "id": "tema4",
+      "titulo": "Tema 4 - La España visigoda: el crepúsculo de la romanidad",
+      "archivo": "historiadelderecho - 4. La España visigoda_ el crepúsculo de la romanidad.html"
+    },
+    {
+      "id": "tema5",
+      "titulo": "Tema 5 - Al-Andalus: el peculiarismo hispánico en Occidente",
+      "archivo": "historiadelderecho - 5. Al-Andalus_ el peculiarismo hispánico en Occidente.html"
+    },
+    {
+      "id": "tema6",
+      "titulo": "Tema 6 - La España cristiana medieval",
+      "archivo": "historiadelderecho - 6. La España cristiana medieval.html"
+    },
+    {
+      "id": "tema7",
+      "titulo": "Tema 7 - El Estado Moderno y la universalización del Derecho castellano",
+      "archivo": "historiadelderecho - 7. El Estado Moderno y la universalización del Derecho castellano.html"
+    },
+    {
+      "id": "tema8",
+      "titulo": "Tema 8 - El Estado liberal del siglo XIX: constitucionalismo y codificación",
+      "archivo": "historiadelderecho - 8. El Estado liberal del siglo XIX_ constitucionalismo y codificación.html"
+    }
   ]
 }

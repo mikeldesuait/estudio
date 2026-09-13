@@ -117,12 +117,13 @@
                     const temaId = t.id || 'tema' + (index + 1);
                     const numTema = index + 1;
                     const titulo = t.titulo || 'Tema ' + numTema;
+                    const archivo = t.archivo || 'tema.html';
                     const key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
                     const progreso = parseInt(localStorage.getItem(key)) || 0;
                     
                     html += `
                         <div class="tema-item" style="flex-wrap: wrap; gap: 8px;">
-                            <div class="tema-info" onclick="window.location.href='temas/${temaId}/tema.html'" style="cursor: pointer; flex: 1;">
+                            <div class="tema-info" onclick="window.location.href='temas/${temaId}/${archivo}'" style="cursor: pointer; flex: 1;">
                                 <span class="tema-numero">${numTema}</span>
                                 <span class="tema-titulo">${titulo}</span>
                             </div>
