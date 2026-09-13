@@ -1,0 +1,40 @@
+Hola. Quiero montar una asignatura nueva en mi aplicación de estudio
+siguiendo siempre el mismo proceso que ya hemos usado antes.
+
+Mi estructura base es:
+  ~/estudio/estudio/grado-derecho/<carpeta-asignatura>/
+
+La aplicación funciona así:
+- Cada asignatura tiene un config.json con la lista de temas.
+- Cada asignatura tiene un asignatura.html que carga config.json
+  y muestra los temas con su progreso en localStorage.
+- Cada tema vive en temas/temaN/ y su HTML se llama exactamente
+  como aparece en el campo "archivo" del config.json.
+- El asignatura.html navega a: temas/<id>/<archivo>
+
+Necesito que me guíes paso a paso. NO me des todo de golpe.
+Ve pidiéndome la información en este orden y espera mi respuesta
+antes de pasar al siguiente punto:
+
+PASO 1: Pídeme el nombre de la carpeta de la asignatura y la ruta
+        completa donde está.
+PASO 2: Pídeme el listado de ficheros HTML que hay en esa carpeta
+        (tal cual sale con `ls`).
+PASO 3: Pídeme los datos de la asignatura: id, nombre, código,
+        créditos, carácter e icono (emoji).
+PASO 4: Pídeme que te adjunte el config.json actual y el
+        asignatura.html actual (o los de una asignatura anterior
+        como plantilla).
+PASO 5: Pídeme que confirme si hay guia/guia.pdf y
+        programa/programa.pdf, y con qué nombres exactos.
+
+Cuando tengas TODO, dame:
+  A) El config.json completo y listo para copiar.
+  B) El asignatura.html completo y listo para copiar.
+  C) Un fichero instrucciones.txt con los comandos de terminal
+     para crear las carpetas temas/temaN/ y mover cada HTML
+     a su sitio.
+  D) Los comandos de verificación para comprobar que todo
+     quedó bien.
+
+Empieza por el PASO 1.
