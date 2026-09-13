@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estructurador de Planes Dietéticos PDF</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #27ae60;
+            --bg: #f4f7f6;
+            --card-bg: #ffffff;
+            --text: #333;
+            --border: #e0e0e0;
+            --hover-bg: #f8fdf9;
+            --edit-bg: #fffbea;
+            --today-bg: #eafaf1;
+            --today-border: #27ae60;
+            --shopping-color: #e67e22;
+            --advice-color: #8e44ad;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        header { text-align: center; margin-bottom: 25px; }
+        h1 { color: var(--primary); margin-bottom: 10px; }
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        /* --- Sección de Carga --- */
+        .upload-section {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: center;
+            margin-bottom: 20px;
+            border: 2px dashed var(--border);
+            transition: border-color 0.3s;
+        }
+
+        .upload-section:hover { border-color: var(--secondary); }
+        input[type="file"] { display: none; }
+
+        .btn {
+            background-color: var(--secondary);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;
+            transition: background 0.3s;
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .btn:hover { background-color: #219150; }
+        .btn-secondary { background-color: #7f8c8d; }
+        .btn-secondary:hover { background-color: #6c7a7b; }
+        .btn-small { padding: 5px 12px; font-size: 13px; }
+        .btn-danger { background-color: #e74c3c; }
+        .btn-danger:hover { background-color: #c0392b; }
+
+        #status {
+            margin-top: 15px;
+            font-weight: bold;
+            color: var(--primary);
+            min-height: 20px;
+        }
+
+        #debug-info {
+            margin-top: 10px;
+            font-size: 0.85em;
+            color: #7f8c8d;
+            background: #f9f9f9;
+            padding: 8px;
+            border-radius: 6px;
+            display: none;
+        }
+
+        #debug-info.active { display: block; }
+
+        /* --- Panel de Filtros --- */
+        .controls-panel {
+            background: var(--card-bg);
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+            display: none;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .controls-panel.active { display: flex; }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 0.9em;
+        }
+
+        .filter-group select, .filter-group input {
+            padding: 6px 10px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.9em;
+            background: #fff;
+            cursor: pointer;
+        }
+
+        #output { display: none; }
+
+        /* --- Pestañas principales --- */
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            background: #dfe6e9;
+            color: var(--primary);
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 0.95em;
+            transition: background 0.3s;
+        }
+
+        .tab-btn:hover { background: #b2bec3; }
+        .tab-btn.active {
+            background: var(--secondary);
+            color: white;
+        }
+
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* --- Día expandido --- */
+        .day-block {
+            background: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+            overflow: hidden;
+            border-left: 5px solid var(--secondary);
+        }
+
+        .day-block.today {
+            background: var(--today-bg);
+            border-left: 5px solid var(--today-border);
+            box-shadow: 0 6px 15px rgba(39, 174, 96, 0.15);
+        }
+
+        .day-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .day-block.today .day-header {
+            background-color: var(--today-border);
+        }
+
+        .today-badge {
+            background: white;
+            color: var(--today-border);
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.7em;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* --- Día compacto --- */
+        details.day-details {
+            background: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+            overflow: hidden;
+            border-left: 5px solid var(--secondary);
+        }
+
+        details.day-details.today {
+            background: var(--today-bg);
+            border-left: 5px solid var(--today-border);
+        }
+
+        details.day-details .day-summary {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.2em;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            list-style: none;
+        }
+
+        details.day-details.today .day-summary {
+            background-color: var(--today-border);
+        }
+
+        details.day-details .day-summary::-webkit-details-marker { display: none; }
+        details.day-details .day-summary::after {
+            content: '▼';
+            font-size: 0.8em;
+            transition: transform 0.3s ease;
+        }
+        details.day-details[open] .day-summary::after { transform: rotate(180deg); }
+
+        /* --- Comidas --- */
+        .meal-block {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border);
+            background: #fff;
+        }
+
+        .meal-block:last-child { border-bottom: none; }
+
+        .day-block.today .meal-block,
+        details.day-details.today .meal-block {
+            background: rgba(255, 255, 255, 0.7);
+        }
+
+        .meal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .meal-title {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.05em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .meal-title::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background-color: var(--secondary);
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .meal-content {
+            color: #555;
+            padding-left: 16px;
+        }
+
+        .ingredients-list {
+            font-size: 0.9em;
+            background-color: #f9f9f9;
+            padding: 12px;
+            border-radius: 6px;
+            margin-top: 10px;
+            border-left: 3px solid #bdc3c7;
+        }
+
+        .recipe-text {
+            font-style: italic;
+            color: #666;
+            margin-top: 10px;
+            font-size: 0.95em;
+            background: #fffdf5;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        /* --- Secciones adicionales (compra, consejos, alérgenos) --- */
+        .extra-section {
+            background: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin-bottom: 15px;
+            overflow: hidden;
+            border-left: 5px solid var(--shopping-color);
+        }
+
+        .extra-section.advice {
+            border-left-color: var(--advice-color);
+        }
+
+        .extra-header {
+            background-color: var(--shopping-color);
+            color: white;
+            padding: 15px 20px;
+            font-size: 1.15em;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .extra-section.advice .extra-header {
+            background-color: var(--advice-color);
+        }
+
+        .extra-content {
+            padding: 20px;
+            color: #555;
+            white-space: pre-wrap;
+            font-size: 0.95em;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .extra-content h3 {
+            color: var(--primary);
+            margin-top: 15px;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+
+        .extra-content h4 {
+            color: #555;
+            margin-top: 12px;
+            margin-bottom: 6px;
+            font-size: 0.95em;
+        }
+
+        .extra-content ul {
+            padding-left: 20px;
+            margin: 8px 0;
+        }
+
+        .extra-content li {
+            margin-bottom: 4px;
+        }
+
+        .extra-content strong {
+            color: var(--primary);
+        }
+
+        /* --- Modo Edición --- */
+        [contenteditable="true"] {
+            background-color: var(--edit-bg);
+            border: 2px dashed var(--secondary);
+            border-radius: 6px;
+            padding: 10px;
+            outline: none;
+            min-height: 50px;
+            transition: background 0.3s;
+        }
+
+        [contenteditable="true"]:focus {
+            background-color: #fff;
+            border-style: solid;
+        }
+
+        .editing-indicator {
+            font-size: 0.8em;
+            color: #e67e22;
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        /* --- Texto crudo --- */
+        .raw-text {
+            white-space: pre-wrap;
+            font-family: monospace;
+            font-size: 0.85em;
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 6px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .toggle-raw {
+            font-size: 0.9em;
+            color: #888;
+            cursor: pointer;
+            text-decoration: underline;
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--secondary);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .hidden { display: none !important; }
+
+        @media (max-width: 600px) {
+            .controls-panel { flex-direction: column; align-items: stretch; }
+            .filter-group { justify-content: space-between; }
+            .meal-header { flex-direction: column; align-items: flex-start; }
+            .day-header { font-size: 1.05em; }
+            .tab-btn { padding: 8px 12px; font-size: 0.85em; }
+        }
+
+        @media print {
+            .upload-section, .controls-panel, .toggle-raw, .meal-actions, .btn, .tabs { display: none !important; }
+            .day-block, details.day-details, .extra-section { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+            .meal-content { display: block !important; }
+            .tab-content { display: block !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🍎 Estructurador de Planes Dietéticos</h1>
+        <p>Carga tu PDF, filtra por comida, edita y consulta las secciones adicionales.</p>
+    </header>
+
+    <div class="upload-section">
+        <label for="pdf-upload" class="btn">📄 Seleccionar PDF</label>
+        <input type="file" id="pdf-upload" accept=".pdf">
+        <button id="btn-toggle-view" class="btn btn-secondary hidden">📋 Modo compacto</button>
+        <button id="btn-export" class="btn btn-secondary hidden">💾 Exportar JSON</button>
+        <button id="btn-print" class="btn btn-secondary hidden">🖨️ Imprimir</button>
+        <button id="btn-reset" class="btn btn-danger hidden">🔄 Reiniciar</button>
+        <div id="status"></div>
+        <div id="debug-info"></div>
+        <div class="spinner" id="spinner"></div>
+    </div>
+
+    <div class="controls-panel" id="controls-panel">
+        <div class="filter-group">
+            <label for="filter-day">Día:</label>
+            <select id="filter-day">
+                <option value="all">Todos</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="filter-meal">Comida:</label>
+            <select id="filter-meal">
+                <option value="all">Todas</option>
+                <option value="desayuno">Desayuno</option>
+                <option value="tentempie">Tentempié</option>
+                <option value="comida">Comida</option>
+                <option value="merienda">Merienda</option>
+                <option value="cena">Cena</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="search-text">Buscar:</label>
+            <input type="text" id="search-text" placeholder="Ej: pollo, arroz...">
+        </div>
+    </div>
+
+    <!-- Pestañas -->
+    <div class="tabs hidden" id="tabs">
+        <button class="tab-btn active" data-tab="plan">📅 Plan Semanal</button>
+        <button class="tab-btn" data-tab="shopping">🛒 Lista de la Compra</button>
+        <button class="tab-btn" data-tab="advice">💡 Consejos y Patologías</button>
+        <button class="tab-btn" data-tab="allergens">⚠️ Alérgenos</button>
+    </div>
+
+    <div id="output"></div>
+    
+    <!-- Contenedores de pestañas -->
+    <div id="tab-plan" class="tab-content active"></div>
+    <div id="tab-shopping" class="tab-content"></div>
+    <div id="tab-advice" class="tab-content"></div>
+    <div id="tab-allergens" class="tab-content"></div>
+</div>
+
+<script>
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+    const fileInput = document.getElementById('pdf-upload');
+    const statusDiv = document.getElementById('status');
+    const debugInfo = document.getElementById('debug-info');
+    const outputDiv = document.getElementById('output');
+    const spinner = document.getElementById('spinner');
+    const controlsPanel = document.getElementById('controls-panel');
+    const filterDay = document.getElementById('filter-day');
+    const filterMeal = document.getElementById('filter-meal');
+    const searchText = document.getElementById('search-text');
+    const btnExport = document.getElementById('btn-export');
+    const btnPrint = document.getElementById('btn-print');
+    const btnReset = document.getElementById('btn-reset');
+    const btnToggleView = document.getElementById('btn-toggle-view');
+    const tabsDiv = document.getElementById('tabs');
+
+    const STORAGE_KEY = 'diet_plan_data_v5';
+
+    const DIAS_SEMANA = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
+    const MEAL_ORDER = ['desayuno', 'tentempie', 'comida', 'merienda', 'cena'];
+    const MEAL_NAMES = {
+        desayuno: 'Desayuno',
+        tentempie: 'Tentempié',
+        comida: 'Comida',
+        merienda: 'Merienda',
+        cena: 'Cena'
+    };
+
+    let currentData = null;
+    let rawTextGlobal = '';
+    let compactMode = false;
+
+    function getTodayName() {
+        const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        return days[new Date().getDay()];
+    }
+
+    function getOrderedDays() {
+        const today = getTodayName();
+        const todayIndex = DIAS_SEMANA.indexOf(today);
+        if (todayIndex === -1) return [...DIAS_SEMANA];
+        return [
+            ...DIAS_SEMANA.slice(todayIndex),
+            ...DIAS_SEMANA.slice(0, todayIndex)
+        ];
+    }
+
+    // --- Carga inicial ---
+    window.addEventListener('DOMContentLoaded', () => {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            try {
+                const parsed = JSON.parse(saved);
+                currentData = parsed.data;
+                rawTextGlobal = parsed.rawText || '';
+                compactMode = parsed.compactMode || false;
+                statusDiv.textContent = 'Datos recuperados de la sesión anterior.';
+                renderAll();
+                showControls();
+                updateViewToggleButton();
+            } catch (e) {
+                console.warn('Error recuperando datos:', e);
+            }
+        }
+    });
+
+    // --- Carga de PDF ---
+    fileInput.addEventListener('change', async (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        outputDiv.innerHTML = '';
+        outputDiv.style.display = 'none';
+        controlsPanel.classList.remove('active');
+        debugInfo.classList.remove('active');
+        tabsDiv.classList.add('hidden');
+        statusDiv.textContent = 'Leyendo PDF...';
+        spinner.style.display = 'block';
+
+        try {
+            const arrayBuffer = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+            
+            statusDiv.textContent = `PDF cargado (${pdf.numPages} páginas). Extrayendo texto...`;
+            
+            let fullText = '';
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const textContent = await page.getTextContent();
+                let pageText = '';
+                let lastY = null;
+                textContent.items.forEach(item => {
+                    if (lastY !== null && Math.abs(item.transform[5] - lastY) > 5) {
+                        pageText += '\n';
+                    } else if (lastY !== null) {
+                        pageText += ' ';
+                    }
+                    pageText += item.str;
+                    lastY = item.transform[5];
+                });
+                fullText += `\n--- PÁGINA ${i} ---\n${pageText}\n`;
+            }
+
+            rawTextGlobal = fullText;
+            statusDiv.textContent = 'Procesando estructura...';
+            
+            const result = parseFullDocument(fullText);
+            currentData = result;
+            
+            const daysFound = Object.keys(currentData.plan || {});
+            debugInfo.textContent = `Días: ${daysFound.join(', ') || 'ninguno'} | Compra: ${currentData.shopping ? 'sí' : 'no'} | Consejos: ${currentData.advice ? 'sí' : 'no'} | Alérgenos: ${currentData.allergens ? 'sí' : 'no'}`;
+            debugInfo.classList.add('active');
+            
+            if (daysFound.length === 0) {
+                statusDiv.textContent = '⚠️ No se detectaron días. Revisa el texto crudo.';
+                outputDiv.style.display = 'block';
+                outputDiv.innerHTML = `<div class="raw-text" style="display:block">${escapeHtml(fullText)}</div>`;
+            } else {
+                saveToStorage();
+                renderAll();
+                showControls();
+                statusDiv.textContent = `✅ Completado. ${daysFound.length} días detectados.`;
+            }
+            
+            spinner.style.display = 'none';
+
+        } catch (error) {
+            console.error(error);
+            statusDiv.textContent = '❌ Error: ' + error.message;
+            spinner.style.display = 'none';
+        }
+    });
+
+    function cleanHtml(text) {
+        let cleaned = text.replace(/<[^>]+>/g, ' ');
+        cleaned = cleaned.replace(/&nbsp;/g, ' ');
+        cleaned = cleaned.replace(/&amp;/g, '&');
+        cleaned = cleaned.replace(/&lt;/g, '<');
+        cleaned = cleaned.replace(/&gt;/g, '>');
+        cleaned = cleaned.replace(/[ \t]+/g, ' ');
+        cleaned = cleaned.replace(/\n\s*\n/g, '\n');
+        return cleaned;
+    }
+
+    // --- Parser principal ---
+    function parseFullDocument(text) {
+        const cleanText = cleanHtml(text);
+        const result = {
+            plan: {},
+            shopping: '',
+            advice: '',
+            allergens: ''
+        };
+
+        // 1. Detectar el final del plan semanal (cuando empieza "LISTA DE LA COMPRA" o "RECOMENDACIONES PATOLOGÍAS")
+        const shoppingStart = cleanText.search(/LISTA\s+DE\s+LA\s+COMPRA/i);
+        const adviceStart = cleanText.search(/RECOMENDACIONES\s+PATOLOGÍAS/i);
+        const allergensStart = cleanText.search(/RESUMEN\s+DE\s+GRUPOS\s+DE\s+ALÉRGENOS/i);
+        
+        // El plan semanal va desde el inicio hasta el primero de estos marcadores
+        let planEnd = cleanText.length;
+        [shoppingStart, adviceStart, allergensStart].forEach(idx => {
+            if (idx !== -1 && idx < planEnd) planEnd = idx;
+        });
+
+        // 2. Parsear el plan semanal
+        const planText = cleanText.substring(0, planEnd);
+        result.plan = parseWeeklyPlan(planText);
+
+        // 3. Extraer Lista de la Compra
+        if (shoppingStart !== -1) {
+            const shoppingEnd = adviceStart !== -1 && adviceStart > shoppingStart 
+                ? adviceStart 
+                : (allergensStart !== -1 && allergensStart > shoppingStart ? allergensStart : cleanText.length);
+            let shoppingText = cleanText.substring(shoppingStart, shoppingEnd);
+            // Quitar el encabezado "LISTA DE LA COMPRA"
+            shoppingText = shoppingText.replace(/^LISTA\s+DE\s+LA\s+COMPRA\s*/i, '').trim();
+            result.shopping = shoppingText;
+        }
+
+        // 4. Extraer Consejos / Patologías
+        if (adviceStart !== -1) {
+            const adviceEnd = allergensStart !== -1 && allergensStart > adviceStart 
+                ? allergensStart 
+                : cleanText.length;
+            let adviceText = cleanText.substring(adviceStart, adviceEnd);
+            adviceText = adviceText.replace(/^RECOMENDACIONES\s+PATOLOGÍAS\s*/i, '').trim();
+            result.advice = adviceText;
+        }
+
+        // 5. Extraer Alérgenos
+        if (allergensStart !== -1) {
+            let allergensText = cleanText.substring(allergensStart);
+            allergensText = allergensText.replace(/^RESUMEN\s+DE\s+GRUPOS\s+DE\s+ALÉRGENOS\s+ALIMENTARIOS\s+POR\s+DÍA\s*/i, '').trim();
+            result.allergens = allergensText;
+        }
+
+        return result;
+    }
+
+    // --- Parser del plan semanal ---
+    function parseWeeklyPlan(text) {
+        const data = {};
+        
+        // Estrategia mejorada: buscar cada día como TÍTULO DE SECCIÓN
+        // Los días aparecen como "Lunes", "Martes", etc., seguidos de contenido
+        // Vamos a buscar cada día y guardar TODAS las posiciones, luego filtrar
+        
+        let dayPositions = [];
+        DIAS_SEMANA.forEach(dia => {
+            // Buscar el día como palabra completa, opcionalmente seguido de espacio/nueva línea
+            const regex = new RegExp(`\\b${dia}\\b`, 'gi');
+            let match;
+            while ((match = regex.exec(text)) !== null) {
+                dayPositions.push({ day: dia, index: match.index });
+            }
+        });
+
+        dayPositions.sort((a, b) => a.index - b.index);
+
+        // Filtrar posiciones: queremos las que están después de la página 2 (donde empieza el plan real)
+        const page3Index = text.indexOf('--- PÁGINA 3 ---');
+        let realPositions = dayPositions.filter(p => p.index > (page3Index !== -1 ? page3Index : 0));
+        
+        if (realPositions.length === 0) {
+            realPositions = dayPositions;
+        }
+
+        // Eliminar duplicados: si dos posiciones del mismo día están a menos de 200 caracteres, es el mismo día
+        let uniquePositions = [];
+        realPositions.forEach((curr) => {
+            const last = uniquePositions[uniquePositions.length - 1];
+            if (last && last.day === curr.day && (curr.index - last.index) < 200) {
+                // Duplicado cercano, ignorar
+                return;
+            }
+            uniquePositions.push(curr);
+        });
+
+        // También eliminar días duplicados no consecutivos (si el mismo día aparece dos veces en el documento)
+        // Nos quedamos con la primera aparición de cada día después del inicio del plan real
+        let seenDays = new Set();
+        let finalPositions = [];
+        uniquePositions.forEach(p => {
+            if (!seenDays.has(p.day)) {
+                seenDays.add(p.day);
+                finalPositions.push(p);
+            }
+        });
+
+        // Ordenar por posición en el texto
+        finalPositions.sort((a, b) => a.index - b.index);
+
+        // Extraer contenido entre días
+        for (let i = 0; i < finalPositions.length; i++) {
+            const currentDay = finalPositions[i].day;
+            const startIndex = finalPositions[i].index;
+            const endIndex = (i + 1 < finalPositions.length) 
+                ? finalPositions[i + 1].index 
+                : text.length;
+            
+            let dayText = text.substring(startIndex, endIndex);
+            // Quitar el nombre del día del inicio
+            dayText = dayText.replace(new RegExp(`^${currentDay}\\s*`, 'i'), '').trim();
+            
+            const meals = parseMealsFromDay(dayText);
+            
+            if (Object.keys(meals).length > 0) {
+                data[currentDay] = meals;
+            }
+        }
+
+        return data;
+    }
+
+    function parseMealsFromDay(dayText) {
+        const meals = {};
+        
+        const mealKeywords = [
+            { id: 'desayuno', patterns: [/\bDesayuno\b/gi] },
+            { id: 'tentempie', patterns: [/\bTentempie\s*1?\b/gi, /\bTentempié\s*1?\b/gi, /\bMedia\s+Mañana\b/gi] },
+            { id: 'comida', patterns: [/\bComida\b/gi] },
+            { id: 'merienda', patterns: [/\bMerienda\s*1?\b/gi] },
+            { id: 'cena', patterns: [/\bCena\b/gi] }
+        ];
+
+        let matches = [];
+        
+        mealKeywords.forEach(meal => {
+            meal.patterns.forEach(pattern => {
+                let match;
+                pattern.lastIndex = 0;
+                while ((match = pattern.exec(dayText)) !== null) {
+                    matches.push({
+                        id: meal.id,
+                        text: match[0],
+                        index: match.index,
+                        length: match[0].length
+                    });
+                    if (match[0].length === 0) break;
+                }
+            });
+        });
+
+        matches.sort((a, b) => a.index - b.index);
+
+        // Eliminar duplicados (mismo tipo de comida a menos de 30 caracteres)
+        let filteredMatches = [];
+        matches.forEach((curr) => {
+            const last = filteredMatches[filteredMatches.length - 1];
+            if (last && last.id === curr.id && (curr.index - last.index) < 30) return;
+            filteredMatches.push(curr);
+        });
+
+        for (let i = 0; i < filteredMatches.length; i++) {
+            const mealInfo = filteredMatches[i];
+            const startIndex = mealInfo.index + mealInfo.length;
+            const endIndex = (i + 1 < filteredMatches.length) 
+                ? filteredMatches[i + 1].index 
+                : dayText.length;
+            
+            let content = dayText.substring(startIndex, endIndex).trim();
+            content = content.replace(/\s+/g, ' ').trim();
+            
+            if (content.length > 0) {
+                meals[mealInfo.id] = {
+                    title: mealInfo.text.trim(),
+                    content: content
+                };
+            }
+        }
+
+        return meals;
+    }
+
+    function saveToStorage() {
+        if (!currentData) return;
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify({
+                data: currentData,
+                rawText: rawTextGlobal,
+                compactMode: compactMode
+            }));
+        } catch (e) {
+            console.warn('Error guardando:', e);
+        }
+    }
+
+    function showControls() {
+        controlsPanel.classList.add('active');
+        btnExport.classList.remove('hidden');
+        btnPrint.classList.remove('hidden');
+        btnReset.classList.remove('hidden');
+        btnToggleView.classList.remove('hidden');
+        tabsDiv.classList.remove('hidden');
+        
+        filterDay.innerHTML = '<option value="all">Todos</option>';
+        getOrderedDays().forEach(d => {
+            if (currentData && currentData.plan && currentData.plan[d]) {
+                const opt = document.createElement('option');
+                opt.value = d;
+                opt.textContent = d + (d === getTodayName() ? ' (hoy)' : '');
+                filterDay.appendChild(opt);
+            }
+        });
+    }
+
+    function updateViewToggleButton() {
+        btnToggleView.textContent = compactMode ? '📖 Modo lectura' : '📋 Modo compacto';
+    }
+
+    btnToggleView.addEventListener('click', () => {
+        compactMode = !compactMode;
+        updateViewToggleButton();
+        renderAll();
+        saveToStorage();
+    });
+
+    // --- Renderizar todo ---
+    function renderAll() {
+        renderPlan();
+        renderShopping();
+        renderAdvice();
+        renderAllergens();
+    }
+
+    // --- Renderizar plan semanal ---
+    function renderPlan() {
+        const tabPlan = document.getElementById('tab-plan');
+        tabPlan.innerHTML = '';
+        outputDiv.style.display = 'block';
+
+        if (!currentData || !currentData.plan || Object.keys(currentData.plan).length === 0) {
+            tabPlan.innerHTML = '<p>No hay plan semanal para mostrar.</p>';
+            return;
+        }
+
+        const orderedDays = getOrderedDays().filter(d => currentData.plan[d]);
+        const today = getTodayName();
+        const currentMealFilter = filterMeal.value;
+        const currentDayFilter = filterDay.value;
+
+        const forceExpanded = (currentMealFilter !== 'all') || (currentDayFilter !== 'all');
+        const useCompact = compactMode && !forceExpanded;
+
+        orderedDays.forEach(day => {
+            const dayData = currentData.plan[day];
+            const isToday = (day === today);
+            
+            if (useCompact) {
+                const dayDetails = document.createElement('details');
+                dayDetails.className = 'day-details' + (isToday ? ' today' : '');
+                dayDetails.dataset.day = day;
+                if (isToday) dayDetails.setAttribute('open', '');
+                
+                const summary = document.createElement('summary');
+                summary.className = 'day-summary';
+                summary.innerHTML = `<span>${day}${isToday ? ' <span class="today-badge">Hoy</span>' : ''}</span>`;
+                dayDetails.appendChild(summary);
+                
+                MEAL_ORDER.forEach(mealId => {
+                    if (dayData[mealId]) {
+                        dayDetails.appendChild(createMealBlock(day, mealId, dayData[mealId], 'plan'));
+                    }
+                });
+                
+                tabPlan.appendChild(dayDetails);
+            } else {
+                const dayBlock = document.createElement('div');
+                dayBlock.className = 'day-block' + (isToday ? ' today' : '');
+                dayBlock.dataset.day = day;
+                
+                const header = document.createElement('div');
+                header.className = 'day-header';
+                header.innerHTML = `<span>${day}${isToday ? ' <span class="today-badge">Hoy</span>' : ''}</span>`;
+                dayBlock.appendChild(header);
+                
+                MEAL_ORDER.forEach(mealId => {
+                    if (dayData[mealId]) {
+                        dayBlock.appendChild(createMealBlock(day, mealId, dayData[mealId], 'plan'));
+                    }
+                });
+                
+                tabPlan.appendChild(dayBlock);
+            }
+        });
+
+        applyFilters();
+    }
+
+    // --- Renderizar Lista de la Compra ---
+    function renderShopping() {
+        const tabShopping = document.getElementById('tab-shopping');
+        tabShopping.innerHTML = '';
+
+        if (!currentData || !currentData.shopping) {
+            tabShopping.innerHTML = '<p>No se encontró la Lista de la Compra en el PDF.</p>';
+            return;
+        }
+
+        const section = document.createElement('div');
+        section.className = 'extra-section';
+        
+        const header = document.createElement('div');
+        header.className = 'extra-header';
+        header.textContent = '🛒 Lista de la Compra';
+        section.appendChild(header);
+        
+        const content = document.createElement('div');
+        content.className = 'extra-content';
+        content.innerHTML = formatExtraContent(currentData.shopping);
+        section.appendChild(content);
+        
+        tabShopping.appendChild(section);
+    }
+
+    // --- Renderizar Consejos ---
+    function renderAdvice() {
+        const tabAdvice = document.getElementById('tab-advice');
+        tabAdvice.innerHTML = '';
+
+        if (!currentData || !currentData.advice) {
+            tabAdvice.innerHTML = '<p>No se encontraron consejos o patologías en el PDF.</p>';
+            return;
+        }
+
+        // Dividir por las secciones conocidas
+        const adviceText = currentData.advice;
+        const sections = [
+            { title: '🍼 Intolerancia a la Lactosa', pattern: /INTOLERANCIA\s+A\s+LA\s+LACTOSA/i },
+            { title: '💨 Meteorismo o Flatulencia', pattern: /METEORISMO\s+O\s+FLATULENCIA/i },
+            { title: '🔥 Reflujo Gastroesofágico', pattern: /REFLUJO\s+GASTROESOFÁGICO/i },
+            { title: '🌾 Sensibilidad al Gluten No Celiaca', pattern: /SENSIBILIDAD\s+AL\s+GLUTEN\s+NO\s+CELIACA/i },
+            { title: '⚖️ Reducir Grasa Corporal', pattern: /REDUCIR\s+GRASA\s+CORPORAL/i }
+        ];
+
+        let foundAny = false;
+        let allSections = [];
+
+        // Buscar todas las posiciones de las secciones
+        sections.forEach(sec => {
+            const match = adviceText.match(sec.pattern);
+            if (match) {
+                allSections.push({ title: sec.title, index: match.index });
+            }
+        });
+
+        // Ordenar por posición
+        allSections.sort((a, b) => a.index - b.index);
+
+        if (allSections.length > 0) {
+            foundAny = true;
+            // Extraer el contenido entre secciones
+            for (let i = 0; i < allSections.length; i++) {
+                const start = allSections[i].index;
+                const end = (i + 1 < allSections.length) ? allSections[i + 1].index : adviceText.length;
+                let sectionContent = adviceText.substring(start, end);
+                
+                // Quitar el título de la sección del contenido
+                sectionContent = sectionContent.replace(sections.find(s => s.title === allSections[i].title).pattern, '').trim();
+                
+                const section = document.createElement('div');
+                section.className = 'extra-section advice';
+                
+                const header = document.createElement('div');
+                header.className = 'extra-header';
+                header.textContent = allSections[i].title;
+                section.appendChild(header);
+                
+                const content = document.createElement('div');
+                content.className = 'extra-content';
+                content.innerHTML = formatExtraContent(sectionContent);
+                section.appendChild(content);
+                
+                tabAdvice.appendChild(section);
+            }
+        }
+
+        if (!foundAny) {
+            // Mostrar todo el texto como un bloque único
+            const section = document.createElement('div');
+            section.className = 'extra-section advice';
+            
+            const header = document.createElement('div');
+            header.className = 'extra-header';
+            header.textContent = '💡 Consejos y Patologías';
+            section.appendChild(header);
+            
+            const content = document.createElement('div');
+            content.className = 'extra-content';
+            content.innerHTML = formatExtraContent(adviceText);
+            section.appendChild(content);
+            
+            tabAdvice.appendChild(section);
+        }
+    }
+
+    // --- Renderizar Alérgenos ---
+    function renderAllergens() {
+        const tabAllergens = document.getElementById('tab-allergens');
+        tabAllergens.innerHTML = '';
+
+        if (!currentData || !currentData.allergens) {
+            tabAllergens.innerHTML = '<p>No se encontró el resumen de alérgenos en el PDF.</p>';
+            return;
+        }
+
+        const section = document.createElement('div');
+        section.className = 'extra-section';
+        
+        const header = document.createElement('div');
+        header.className = 'extra-header';
+        header.textContent = '⚠️ Resumen de Alérgenos por Día';
+        section.appendChild(header);
+        
+        const content = document.createElement('div');
+        content.className = 'extra-content';
+        content.innerHTML = formatExtraContent(currentData.allergens);
+        section.appendChild(content);
+        
+        tabAllergens.appendChild(section);
+    }
+
+    // --- Formatear contenido de secciones extra ---
+    function formatExtraContent(text) {
+        if (!text) return '<p><em>Sin contenido</em></p>';
+        
+        // Detectar listas (líneas que empiezan con - o •)
+        const lines = text.split(/\n/);
+        let html = '';
+        let inList = false;
+        
+        lines.forEach(line => {
+            const trimmed = line.trim();
+            if (!trimmed) {
+                if (inList) { html += '</ul>'; inList = false; }
+                html += '<br>';
+                return;
+            }
+            
+            if (trimmed.match(/^[-•*]\s/)) {
+                if (!inList) { html += '<ul>'; inList = true; }
+                html += `<li>${escapeHtml(trimmed.replace(/^[-•*]\s/, ''))}</li>`;
+            } else if (trimmed.match(/^[A-ZÁÉÍÓÚÑ\s]+$/) && trimmed.length > 5 && trimmed.length < 80) {
+                // Parece un título en mayúsculas
+                if (inList) { html += '</ul>'; inList = false; }
+                html += `<h3>${escapeHtml(trimmed)}</h3>`;
+            } else if (trimmed.match(/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ\s]+:$/)) {
+                // Parece un subtítulo con dos puntos
+                if (inList) { html += '</ul>'; inList = false; }
+                html += `<h4>${escapeHtml(trimmed)}</h4>`;
+            } else {
+                if (inList) { html += '</ul>'; inList = false; }
+                // Detectar palabras en negrita con ** o similar
+                let formatted = escapeHtml(trimmed);
+                formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+                html += `<p>${formatted}</p>`;
+            }
+        });
+        
+        if (inList) html += '</ul>';
+        
+        return html || `<p>${escapeHtml(text)}</p>`;
+    }
+
+    function createMealBlock(day, mealId, meal, source) {
+        const block = document.createElement('div');
+        block.className = 'meal-block';
+        block.dataset.day = day;
+        block.dataset.meal = mealId;
+        block.dataset.source = source;
+        
+        const header = document.createElement('div');
+        header.className = 'meal-header';
+        
+        const title = document.createElement('div');
+        title.className = 'meal-title';
+        title.textContent = meal.title || MEAL_NAMES[mealId];
+        header.appendChild(title);
+        
+        const actionsDiv = document.createElement('div');
+        actionsDiv.className = 'meal-actions';
+        
+        const editBtn = document.createElement('button');
+        editBtn.className = 'btn btn-small';
+        editBtn.textContent = '✏️ Editar';
+        editBtn.onclick = () => toggleEditMode(block, day, mealId, source);
+        
+        actionsDiv.appendChild(editBtn);
+        header.appendChild(actionsDiv);
+        
+        block.appendChild(header);
+        
+        const content = document.createElement('div');
+        content.className = 'meal-content';
+        content.innerHTML = formatMealContent(meal.content);
+        
+        block.appendChild(content);
+        
+        return block;
+    }
+
+    function formatMealContent(content) {
+        if (!content) return '<p><em>Sin contenido</em></p>';
+        
+        let contentHtml = '';
+        const upperContent = content.toUpperCase();
+        const ingredientesIndex = upperContent.indexOf('INGREDIENTES');
+        const recetaIndex = upperContent.indexOf('RECETA');
+        
+        if (ingredientesIndex !== -1 && recetaIndex !== -1 && recetaIndex > ingredientesIndex) {
+            const beforeIng = content.substring(0, ingredientesIndex).trim();
+            const ingText = content.substring(ingredientesIndex, recetaIndex).trim();
+            const recetaText = content.substring(recetaIndex).trim();
+            
+            if (beforeIng) contentHtml += `<p>${escapeHtml(beforeIng)}</p>`;
+            contentHtml += `<div class="ingredients-list"><strong>${escapeHtml(ingText)}</strong></div>`;
+            contentHtml += `<div class="recipe-text">${escapeHtml(recetaText)}</div>`;
+        } else if (ingredientesIndex !== -1) {
+            const beforeIng = content.substring(0, ingredientesIndex).trim();
+            const ingText = content.substring(ingredientesIndex).trim();
+            if (beforeIng) contentHtml += `<p>${escapeHtml(beforeIng)}</p>`;
+            contentHtml += `<div class="ingredients-list"><strong>${escapeHtml(ingText)}</strong></div>`;
+        } else if (recetaIndex !== -1) {
+            const beforeRec = content.substring(0, recetaIndex).trim();
+            const recetaText = content.substring(recetaIndex).trim();
+            if (beforeRec) contentHtml += `<p>${escapeHtml(beforeRec)}</p>`;
+            contentHtml += `<div class="recipe-text">${escapeHtml(recetaText)}</div>`;
+        } else {
+            contentHtml = `<p>${escapeHtml(content)}</p>`;
+        }
+        return contentHtml;
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    function toggleEditMode(block, day, mealId, source) {
+        const mealContent = block.querySelector('.meal-content');
+        const editBtn = block.querySelector('.meal-actions .btn');
+        const isEditing = mealContent.getAttribute('contenteditable') === 'true';
+        
+        if (!isEditing) {
+            mealContent.setAttribute('contenteditable', 'true');
+            mealContent.focus();
+            editBtn.textContent = '💾 Guardar';
+            editBtn.classList.add('btn-secondary');
+            
+            const indicator = document.createElement('span');
+            indicator.className = 'editing-indicator';
+            indicator.textContent = '✏️ Editando...';
+            mealContent.parentNode.insertBefore(indicator, mealContent);
+        } else {
+            mealContent.setAttribute('contenteditable', 'false');
+            editBtn.textContent = '✏️ Editar';
+            editBtn.classList.remove('btn-secondary');
+            
+            const indicator = block.querySelector('.editing-indicator');
+            if (indicator) indicator.remove();
+            
+            const newContent = mealContent.innerText.trim();
+            
+            if (currentData[source] && currentData[source][day] && currentData[source][day][mealId]) {
+                currentData[source][day][mealId].content = newContent;
+                saveToStorage();
+            }
+            
+            mealContent.innerHTML = formatMealContent(newContent);
+        }
+    }
+
+    // --- Filtros ---
+    function applyFilters() {
+        const dayFilterVal = filterDay.value;
+        const mealFilterVal = filterMeal.value;
+        const searchFilter = searchText.value.toLowerCase().trim();
+        
+        // Si hay filtros activos, forzar modo expandido
+        const forceExpanded = (mealFilterVal !== 'all') || (dayFilterVal !== 'all');
+        
+        if (forceExpanded && compactMode) {
+            const wasCompact = compactMode;
+            compactMode = false;
+            renderPlan();
+            compactMode = wasCompact;
+        }
+        
+        document.querySelectorAll('#tab-plan .day-block, #tab-plan .day-details').forEach(dayEl => {
+            const dayName = dayEl.dataset.day;
+            let dayVisible = (dayFilterVal === 'all' || dayFilterVal === dayName);
+            
+            let anyMealVisible = false;
+            
+            dayEl.querySelectorAll('.meal-block').forEach(mealEl => {
+                const mealType = mealEl.dataset.meal;
+                const content = mealEl.querySelector('.meal-content').innerText.toLowerCase();
+                
+                const mealMatch = (mealFilterVal === 'all' || mealFilterVal === mealType);
+                const searchMatch = (!searchFilter || content.includes(searchFilter));
+                
+                const visible = mealMatch && searchMatch;
+                
+                if (visible) {
+                    mealEl.classList.remove('hidden');
+                    anyMealVisible = true;
+                } else {
+                    mealEl.classList.add('hidden');
+                }
+            });
+            
+            if (dayVisible && anyMealVisible) {
+                dayEl.classList.remove('hidden');
+            } else {
+                dayEl.classList.add('hidden');
+            }
+        });
+    }
+
+    filterDay.addEventListener('change', () => {
+        if (filterDay.value !== 'all' || filterMeal.value !== 'all') {
+            const wasCompact = compactMode;
+            compactMode = false;
+            renderPlan();
+            compactMode = wasCompact;
+        } else {
+            renderPlan();
+        }
+    });
+    
+    filterMeal.addEventListener('change', () => {
+        if (filterDay.value !== 'all' || filterMeal.value !== 'all') {
+            const wasCompact = compactMode;
+            compactMode = false;
+            renderPlan();
+            compactMode = wasCompact;
+        } else {
+            renderPlan();
+        }
+    });
+    
+    searchText.addEventListener('input', applyFilters);
+
+    // --- Pestañas ---
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            
+            btn.classList.add('active');
+            document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+        });
+    });
+
+    // --- Exportar JSON ---
+    btnExport.addEventListener('click', () => {
+        if (!currentData) return;
+        const dataStr = JSON.stringify({ data: currentData, rawText: rawTextGlobal }, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'plan-dietetico.json';
+        a.click();
+        URL.revokeObjectURL(url);
+    });
+
+    // --- Imprimir ---
+    btnPrint.addEventListener('click', () => {
+        document.querySelectorAll('details').forEach(d => d.setAttribute('open', ''));
+        window.print();
+    });
+
+    // --- Reiniciar ---
+    btnReset.addEventListener('click', () => {
+        if (confirm('¿Estás seguro de que quieres borrar todos los datos?')) {
+            localStorage.removeItem(STORAGE_KEY);
+            currentData = null;
+            rawTextGlobal = '';
+            outputDiv.innerHTML = '';
+            outputDiv.style.display = 'none';
+            controlsPanel.classList.remove('active');
+            debugInfo.classList.remove('active');
+            tabsDiv.classList.add('hidden');
+            btnExport.classList.add('hidden');
+            btnPrint.classList.add('hidden');
+            btnReset.classList.add('hidden');
+            btnToggleView.classList.add('hidden');
+            statusDiv.textContent = '';
+            fileInput.value = '';
+            document.getElementById('tab-plan').innerHTML = '';
+            document.getElementById('tab-shopping').innerHTML = '';
+            document.getElementById('tab-advice').innerHTML = '';
+            document.getElementById('tab-allergens').innerHTML = '';
+        }
+    });
+
+</script>
+
+</body>
+</html>

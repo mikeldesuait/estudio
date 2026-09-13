@@ -1,0 +1,14 @@
+{
+  "asignaturas": [
+    {
+      "id": "dieta",
+      "nombre": "Dieta",
+      "codigo": "DIET-01",
+      "creditos": 0,
+      "icono": "🥗",
+      "curso": "0",
+      "semestre": "0",
+      "path": "dieta/"
+    }
+  ]
+}
