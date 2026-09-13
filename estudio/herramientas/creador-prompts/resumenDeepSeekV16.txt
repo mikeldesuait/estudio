@@ -1,0 +1,349 @@
+================================================================================
+PROYECTO: PROMPTMAKER · UNED
+Resumen completo del estado del proyecto hasta la versión 16
+================================================================================
+
+================================================================================
+1. QUÉ ES ESTE PROYECTO
+================================================================================
+
+PromptMaker · UNED es una aplicación web de un solo archivo HTML que permite:
+
+1. Subir un PDF (o TXT) de un libro de estudio universitario.
+2. Enviar ese libro a la API de DeepSeek para que la IA lo analice.
+3. Obtener el esqueleto del libro (lista de temas y epígrafes) en texto plano.
+4. Generar resúmenes de cada epígrafe, uno a uno, en formato fijo.
+5. Montar HTMLs interactivos con esos resúmenes, usando una plantilla fija.
+6. Descargar esos HTMLs al PC, individualmente o en un ZIP.
+
+La aplicación se ejecuta en el navegador. No necesita servidor propio.
+La API Key de DeepSeek se guarda en localStorage del navegador.
+
+================================================================================
+2. ARQUITECTURA Y FLUJO
+================================================================================
+
+FASE 1 · Configuración
+   - El usuario introduce su API Key de DeepSeek.
+   - Elige modalidad: Tipo Test o Desarrollo.
+   - Sube el PDF del libro.
+
+FASE 2 · Extracción del PDF
+   - La app usa pdf.js para extraer el texto del PDF.
+   - El texto se guarda en memoria (estado.libroTexto).
+   - No se envía nada a la API todavía.
+
+FASE 3 · Generar esqueleto (1 petición a la API)
+   - La app envía el libro completo a DeepSeek con un prompt que pide
+     SOLO el índice jerárquico en texto plano.
+   - DeepSeek devuelve algo como:
+        1. Título del tema 1
+        1.1. Título del epígrafe 1.1
+        1.1.1. Título del subepígrafe 1.1.1
+        2. Título del tema 2
+        ...
+   - La app parsea esa respuesta y construye un árbol de temas.
+   - Se muestran los temas en la pestaña "Esqueleto".
+   - Se lee el campo usage de la API para mostrar el coste real.
+
+FASE 4 · Generación masiva (1 petición por epígrafe)
+   - El usuario pulsa "Empezar".
+   - La app recorre todos los epígrafes, uno a uno, en orden.
+   - Para cada epígrafe, envía a la API:
+        [system] + [libro] + [asistente "Entendido"] + [esqueleto] + [orden]
+   - El prefijo (system + libro + esqueleto) es IDÉNTICO en cada petición,
+     lo que activa la caché de DeepSeek y reduce el coste drásticamente.
+   - DeepSeek devuelve el contenido del epígrafe en texto plano.
+   - La app lo guarda en localStorage.
+
+FASE 5 · Montaje del HTML
+   - Cuando un tema tiene todos sus epígrafes generados, la app:
+        a) Monta el HTML del tema usando la plantilla fija (CSS_ESTUDIO).
+        b) Lo guarda en la biblioteca.
+        c) Lo descarga automáticamente al PC.
+   - El HTML final tiene siempre el mismo diseño.
+   - El nombre del archivo incluye el nombre del libro para no colisionar.
+
+FASE 6 · Descarga
+   - HTMLs individuales: se descargan automáticamente al completar cada tema.
+   - ZIP: botón para descargar todos los HTMLs del libro en un ZIP.
+   - JSON: botón para exportar la biblioteca completa.
+
+================================================================================
+3. PROMPTS FIJOS (NO CAMBIAR)
+================================================================================
+
+El proyecto tiene tres prompts clave. Los tres están en el código de la app.
+
+--------------------------------------------------------------------------------
+PROMPT 1 · ESQUELETO (pide la lista de temas)
+--------------------------------------------------------------------------------
+
+Devuélveme la estructura jerárquica del libro que te he dado, en texto plano.
+
+FORMATO: una línea por cada epígrafe, con este patrón exacto:
+1. Título del tema 1
+1.1. Título del epígrafe 1.1
+1.1.1. Título del subepígrafe 1.1.1
+2. Título del tema 2
+...
+
+REGLAS:
+- Empieza con el número, luego un punto, luego un espacio, luego el título.
+- Un tema es "1. ", un epígrafe es "1.1. ", un subepígrafe es "1.1.1. ".
+- NO uses negritas, ni markdown, ni almohadillas (#), ni guiones.
+- NO añadas introducción, ni conclusión, ni comentarios.
+- Empieza DIRECTAMENTE con la primera línea "1. ...".
+- Devuelve SOLO el listado, sin nada más.
+- NO incluyas secciones de "Bibliografía", "Referencias" ni "Obras generales".
+- IMPORTANTE: si un tema NO tiene subepígrafes, devuélvelo igualmente.
+  No lo omitas.
+
+--------------------------------------------------------------------------------
+PROMPT 2 · CONTENIDO POR EPÍGRAFE (modalidad TEST)
+--------------------------------------------------------------------------------
+
+Ahora genera el contenido del epígrafe [NUM]: "[TITULO]".
+
+FORMATO DE SALIDA (texto plano, sin HTML, sin markdown):
+
+📖 PARA ENTENDERLO
+[Texto redactado con tus propias palabras, en 2-4 párrafos.]
+
+🔑 GRÁBATELO
+- [Concepto 1]: [definición literal]
+- [Concepto 2]: [definición literal]
+
+🎯 TE LA VAN A PREGUNTAR
+- [Advertencia 1]
+- [Advertencia 2]
+
+REGLAS:
+- NO generes HTML.
+- NO uses etiquetas < >.
+- Solo texto plano con las etiquetas 📖 🔑 🎯 como separadores.
+- Extensión: proporcional al epígrafe original del libro.
+
+--------------------------------------------------------------------------------
+PROMPT 3 · CONTENIDO POR EPÍGRAFE (modalidad DESARROLLO)
+--------------------------------------------------------------------------------
+
+Ahora genera el contenido del epígrafe [NUM]: "[TITULO]".
+
+FORMATO DE SALIDA (texto plano, sin HTML, sin markdown):
+
+📖 PARA ENTENDERLO
+[Texto redactado.]
+
+🔑 GRÁBATELO
+- [Concepto 1]: [definición]
+
+🗂️ ASÍ LO ESCRIBO
+Guion:
+1. [Introducción]
+2. [Apartado]
+3. [Conclusión]
+
+Imprescindibles:
+- [Concepto]
+
+REGLAS:
+- NO generes HTML.
+- NO uses etiquetas < >.
+- Solo texto plano con las etiquetas 📖 🔑 🗂️ como separadores.
+- Extensión: proporcional al epígrafe original del libro.
+
+================================================================================
+4. PRECIOS DE DEEPSEEK (V4-FLASH)
+================================================================================
+
+Modelo: deepseek-chat (V4-Flash)
+
+Precios por millón de tokens:
+
+  Entrada sin caché:  $0.15 USD
+  Entrada con caché:  $0.003 USD (50 veces más barato)
+  Salida:             $0.60 USD
+
+Horario valle (más barato):
+  - Sábado y domingo: todo el día
+  - Días laborables: evitar 01:00-04:00 y 06:00-10:00 (hora española)
+
+Cálculo aproximado para un libro de 700.000 tokens:
+  - Esqueleto (1 petición, libro completo):  ~$0.10
+  - Cada epígrafe (con caché):               ~$0.001
+  - 200 epígrafes:                           ~$0.20
+  - TOTAL:                                   ~$0.30
+
+================================================================================
+5. ESTRUCTURA DEL ESTADO (localStorage)
+================================================================================
+
+La app guarda su estado en localStorage bajo la clave 'uned_v16'.
+
+Estructura:
+{
+    esqueleto: [],           // Array de temas con subs anidados
+    esqueletoTexto: '',      // Texto crudo del esqueleto
+    epigrafes: {},           // { "1.1": { contenido: "...", estado: "listo" } }
+    biblioteca: [],          // [{ titulo, html, fecha }]
+    libroNombre: '',         // Nombre del archivo PDF
+    modalidad: 'test'        // 'test' o 'desarrollo'
+}
+
+También se guarda:
+  - 'deepseek_api_key': la API Key
+  - 'deepseek_modo_demo': '1' si el modo demo está activo
+
+================================================================================
+6. HISTORIA DE VERSIONES
+================================================================================
+
+v1-v4   → Experimentos iniciales con generación de HTML completo
+v5      → Esqueleto primero, contenido por epígrafe
+v6      → Esqueleto en texto plano (no JSON)
+v7      → Contexto base unificado (system + libro + assistant)
+v8      → Separación de contexto fijo y contexto con esqueleto
+v9      → localStorage optimizado (no guardar el libro)
+v10     → Filtro de bibliografía + panel de consumo global
+v11     → Generación masiva del libro completo
+v12     → Exportación a EPUB (falló)
+v13     → Arreglo del EPUB (sigue fallando)
+v14     → Quitado el EPUB + estimación previa (mala)
+v15     → Estimación real con usage + temas sin subepígrafes + descarga auto
+v16     → Nombre de archivo con nombre del libro + descarga al completar tema
+
+================================================================================
+7. BUGS CONOCIDOS Y SOLUCIONES
+================================================================================
+
+BUG 1 · El libro se perdía al cerrar el navegador
+   - Causa: localStorage tiene límite de 5 MB.
+   - Solución actual: descargar los HTMLs al PC.
+   - Solución pendiente: usar IndexedDB (sin límite práctico).
+
+BUG 2 · El EPUB no se generaba
+   - Causa: la librería epub-gen-memory no cargaba o no se exponía.
+   - Solución: eliminado el EPUB en v14.
+
+BUG 3 · Los temas sin subepígrafes no se generaban
+   - Causa: la función listaCompletaEpigrafes() solo recorría tema.subs.
+   - Solución: en v15 se detecta si un tema tiene subs. Si no, se trata
+     el tema raíz como un epígrafe único.
+
+BUG 4 · La lista de temas no se refrescaba durante la generación
+   - Causa: renderEsqueleto() solo se llamaba al final.
+   - Solución: en v15 se llama cada 3-5 epígrafes.
+
+BUG 5 · Los HTMLs se llamaban todos igual
+   - Causa: el nombre era "Tema 1.html", "Tema 2.html", etc.
+   - Solución: en v16 el nombre incluye el nombre del libro:
+     "Derecho Procesal - Tema 1.html".
+
+BUG 6 · La descarga automática no funcionaba durante la generación
+   - Causa: solo se descargaba al pulsar "Montar HTML".
+   - Solución: en v16 se descarga automáticamente cuando un tema se completa.
+
+BUG 7 · La estimación previa era imprecisa
+   - Causa: usaba la fórmula "caracteres ÷ 4".
+   - Solución: en v15 se lee el campo usage de la API (tokens exactos).
+
+BUG 8 · Los temas sin subepígrafes aparecían como "Sin empezar"
+   - Causa: el contador solo miraba los subs.
+   - Solución: en v15 se cuenta el tema raíz como 1 epígrafe si no tiene subs.
+
+================================================================================
+8. CÓMO CONTINUAR EL PROYECTO
+================================================================================
+
+Si el chat se queda sin espacio, abre uno nuevo y di:
+
+  "Tengo un proyecto llamado PromptMaker · UNED que es una aplicación
+   HTML para generar resúmenes de libros con DeepSeek. Estamos en la
+   versión 16. ¿Puedes revisar el archivo adjunto y ayudarme con X?"
+
+Donde X es lo que quieras hacer:
+
+  - Añadir IndexedDB para no perder el libro al cerrar el navegador.
+  - Añadir una barra de progreso visual por tema.
+  - Añadir la opción de editar epígrafes manualmente antes de montar el HTML.
+  - Añadir exportación a PDF además de HTML.
+  - Añadir la opción de reanudar la generación si se interrumpe.
+  - Añadir una vista previa del coste antes de empezar cada tema.
+  - Integrar la app en Ubuntu como servicio local (Node.js + systemd).
+  - Cualquier otra mejora que se te ocurra.
+
+IMPORTANTE: adjunta el archivo HTML de la v16 al nuevo chat para que
+la IA pueda ver el código actual.
+
+================================================================================
+9. DECISIONES DE DISEÑO CLAVE
+================================================================================
+
+1. NO usar EPUB. Se descartó por problemas técnicos. Los HTMLs
+   individuales son suficientes.
+
+2. NO usar Chat Prefix Completion. Se probó y fallaba. La generación
+   masiva con contexto idéntico es más fiable.
+
+3. SÍ usar caché de contexto. El prefijo (system + libro + esqueleto)
+   es idéntico en cada petición de epígrafe, lo que activa la caché
+   de DeepSeek y reduce el coste ~50 veces.
+
+4. SÍ usar temperatura 0. Para que el diseño del HTML no varíe entre
+   temas.
+
+5. SÍ descargar automáticamente. Para que el usuario no pierda nada
+   al cerrar el navegador.
+
+6. SÍ incluir el nombre del libro en los archivos. Para poder procesar
+   varios libros a la vez sin que se pisen.
+
+7. NO guardar el libro en localStorage. Por el límite de 5 MB. El libro
+   se pierde al cerrar el navegador, pero los resúmenes ya generados
+   se conservan (si caben).
+
+8. NO modificar la modalidad una vez empezada la generación. Si se cambia
+   a mitad, los epígrafes nuevos salen con el formato nuevo y los viejos
+   se quedan como estaban (mezcla).
+
+================================================================================
+10. ARCHIVOS GENERADOS
+================================================================================
+
+La aplicación es un único archivo HTML: PromptMakerV16.html
+
+Los archivos que genera son:
+  - HTMLs individuales: "NombreDelLibro - Tema X.html"
+  - ZIP: "NombreDelLibro.zip"
+  - JSON: "biblioteca_uned.json" (exportación manual)
+
+Los HTMLs descargados tienen:
+  - CSS fijo (CSS_ESTUDIO) con diseño de estudio.
+  - Estructura fija: índice desplegable, idea central, epígrafes con
+    bloques de colores, preguntas test y de desarrollo.
+  - Modo oscuro con botón flotante.
+  - JavaScript para desplegar respuestas.
+
+================================================================================
+11. REFERENCIAS ÚTILES
+================================================================================
+
+- API de DeepSeek: https://api.deepseek.com/chat/completions
+- Modelo recomendado: deepseek-chat (V4-Flash)
+- Documentación: https://api-docs.deepseek.com/
+- pdf.js: https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js
+- JSZip: https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js
+- Panel de consumo DeepSeek: https://platform.deepseek.com/usage
+
+================================================================================
+12. CONTACTO Y CONTEXTO
+================================================================================
+
+Usuario: Miguel, estudiante de la UNED.
+Objetivo: generar resúmenes de estudio de libros de Derecho.
+Libros procesados: Derecho Procesal (en curso), Derecho Administrativo.
+
+================================================================================
+FIN DEL RESUMEN
+================================================================================

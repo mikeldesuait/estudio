@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1. Presentación. Derecho procesal: la comprensión de la justicia</title>
+<style>
+body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; max-width: 950px; margin: 30px auto; padding: 20px; background: #fbf9f5; color: #2a2622; line-height: 1.85; font-size: 17px; }
+h1 { font-size: 30px; color: #2a2622; border-bottom: 4px solid #8b6f47; padding-bottom: 14px; }
+h2 { font-size: 23px; color: #6b4f2f; margin-top: 40px; border-left: 5px solid #8b6f47; padding-left: 16px; }
+h3 { font-size: 21px; color: #4a3520; margin-top: 30px; }
+h4 { font-size: 18px; color: #4a3520; margin-top: 24px; }
+strong { color: #4a3520; }
+ul { padding-left: 24px; }
+li { margin-bottom: 6px; }
+blockquote { background: #f5ede0; padding: 14px 22px; border-left: 5px solid #c9a876; margin: 18px 0; border-radius: 4px; font-style: italic; color: #4a3520; }
+hr { border: none; border-top: 2px dashed #d4c4a8; margin: 34px 0; }
+.indice { background: #f5ede0; border-radius: 10px; margin-bottom: 34px; overflow: hidden; border-left: 5px solid #8b6f47; }
+.indice details { border: none; }
+.indice summary { cursor: pointer; padding: 16px 24px; font-weight: 700; font-size: 18px; color: #6b4f2f; list-style: none; user-select: none; display: flex; align-items: center; justify-content: space-between; }
+.indice summary::-webkit-details-marker { display: none; }
+.indice summary::after { content: "▸"; font-size: 20px; transition: transform 0.2s; margin-left: 10px; color: #8b6f47; }
+.indice details[open] summary::after { transform: rotate(90deg); }
+.indice summary:hover { background: #ede0c8; }
+.indice .indice-content { padding: 0 24px 20px 24px; }
+.indice ul { list-style: none; padding-left: 0; margin: 0; }
+.indice li { padding: 3px 0; }
+.indice li.sub { padding-left: 20px; }
+.indice li.subsub { padding-left: 40px; }
+.indice a { color: #6b4f2f; text-decoration: none; }
+.indice a:hover { text-decoration: underline; color: #8b6f47; }
+.idea-central { background: #f5ede0; padding: 22px 28px; border-radius: 12px; margin: 20px 0 40px 0; border-left: 6px solid #8b6f47; }
+.idea-central h2 { margin-top: 0; border-left: none; padding-left: 0; }
+main { background: #ffffff; padding: 30px 36px; border-radius: 10px; box-shadow: 0 2px 20px rgba(139, 111, 71, 0.08); border: 1px solid #e8dfd0; }
+section[id^="ep-"] { scroll-margin-top: 20px; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px dashed #e0d5c0; }
+section[id^="ep-"]:last-of-type { border-bottom: none; }
+.bloque-resumen { background: #fbfaf7; border-left: 4px solid #8b6f47; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.bloque-resumen p { margin-bottom: 10px; }
+.bloque-resumen p:last-child { margin-bottom: 0; }
+.etiqueta-resumen { display: inline-block; background: #8b6f47; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-clave { background: #fdf6e3; border-left: 5px solid #d4a017; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.etiqueta-clave { display: inline-block; background: #d4a017; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-clave ul { list-style: none; padding-left: 0; }
+.bloque-clave li { padding: 8px 0 8px 30px; position: relative; border-bottom: 1px dashed #ead9a8; }
+.bloque-clave li:last-child { border-bottom: none; }
+.bloque-clave li::before { content: "🔑"; position: absolute; left: 0; font-size: 16px; }
+.bloque-clave li strong { color: #6b4f2f; }
+.bloque-pregunta { background: #eef6fb; border-left: 5px solid #3a7ac0; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.etiqueta-pregunta { display: inline-block; background: #3a7ac0; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-guion { background: #f0f7ee; border-left: 5px solid #4a8c3a; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.etiqueta-guion { display: inline-block; background: #4a8c3a; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-guion ol { padding-left: 22px; }
+.bloque-guion li { margin-bottom: 8px; }
+.modo-btn { position: fixed; top: 16px; right: 16px; padding: 8px 18px; border: none; border-radius: 30px; cursor: pointer; font-weight: 600; background: #8b6f47; color: #fff; font-size: 14px; z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.modo-btn:hover { background: #6b4f2f; }
+.dark-mode { background: #1a1815; color: #e8dfd0; }
+.dark-mode main { background: #252220; border-color: #3a352f; box-shadow: none; }
+.dark-mode h1 { color: #e8dfd0; border-bottom-color: #c9a876; }
+.dark-mode h2 { color: #d4a017; border-left-color: #c9a876; }
+.dark-mode h3 { color: #c9a876; }
+.dark-mode h4 { color: #c9a876; }
+.dark-mode strong { color: #d4a017; }
+.dark-mode blockquote { background: #2f2b26; border-left-color: #c9a876; color: #e8dfd0; }
+.dark-mode hr { border-top-color: #3a352f; }
+.dark-mode .indice { background: #2f2b26; border-left-color: #c9a876; }
+.dark-mode .indice summary { color: #d4a017; }
+.dark-mode .indice summary:hover { background: #3a352f; }
+.dark-mode .indice a { color: #d4a017; }
+.dark-mode .indice summary::after { color: #c9a876; }
+.dark-mode .idea-central { background: #2f2b26; border-left-color: #c9a876; }
+.dark-mode section[id^="ep-"] { border-bottom-color: #3a352f; }
+.dark-mode .bloque-resumen { background: #2a2622; border-left-color: #c9a876; }
+.dark-mode .bloque-clave { background: #2f2b26; border-left-color: #d4a017; }
+.dark-mode .bloque-clave li { border-bottom-color: #3a352f; }
+.dark-mode .bloque-clave li strong { color: #d4a017; }
+.dark-mode .bloque-pregunta { background: #222c36; border-left-color: #5a9ad0; }
+.dark-mode .bloque-guion { background: #222c1e; border-left-color: #6ab858; }
+.dark-mode .modo-btn { background: #c9a876; color: #1a1815; }
+</style>
+</head>
+<body>
+
+<button class="modo-btn" onclick="toggleModo()">🌓 Modo</button>
+
+<h1>1. Presentación. Derecho procesal: la comprensión de la justicia</h1>
+
+<div class="indice">
+<details open>
+<summary>📑 Índice del tema</summary>
+<div class="indice-content">
+<ul>
+<li><em>Sin subepígrafes</em></li>
+</ul>
+</div>
+</details>
+</div>
+
+<main>
+
+<section id="ep-1"><h3>1. Presentación. Derecho procesal: la comprensión de la justicia</h3><div class="bloque-resumen"><span class="etiqueta-resumen">📖 PARA ENTENDERLO</span><p>La presentación de este manual de Introducción al Derecho Procesal, escrita por Manuel Díaz Martínez, catedrático de Derecho Procesal de la UNED, sirve como pórtico de entrada a una disciplina esencial para el ejercicio de la mayor parte de las salidas profesionales de los Grados en los que se imparte. Su ubicación cronológica al inicio de los estudios de Grado en Derecho no es casual, sino metodológicamente premeditada: su orientación formativa es esencial como primera base de conocimiento jurídico, indispensable no solo para comprender después la propia disciplina procesal, sino también todo el ordenamiento jurídico en su conjunto.</p><p>La obra es iniciática en el mundo del Derecho en general y del Derecho procesal en particular, pero no por dirigirse a principiantes deja de ser científicamente profunda. En sus páginas se encuentra, de forma armónica y ordenada, el concepto, naturaleza, fundamento y funciones de las grandes instituciones del Estado comprometidas con la Justicia: el Poder Judicial, el Ministerio Fiscal, el Tribunal Constitucional y el Tribunal del Jurado. Junto a ellas, se estudian los principios de la Jurisdicción en todos sus órdenes jurisdiccionales, los tipos de procesos y procedimientos existentes en cada uno de ellos (civil, penal, contencioso-administrativo y laboral), así como las principales herramientas de los juzgadores y justiciables insertadas en esos procesos para alcanzar, conforme a las reglas del juego procesal, el valor Justicia: principalmente los actos de alegación y comunicación, y las distintas resoluciones judiciales emitidas tanto por Jueces y Magistrados (providencias, autos y sentencias) como por Letrados de la Administración de Justicia (diligencias y decretos).</p><p>La obra se divide en cinco grandes partes. La primera parte, "Derecho procesal", se destina al concepto, fuentes y regulación de esta imprescindible rama del ordenamiento jurídico. La segunda parte, "Jurisdicción", integra los temas nucleares: el fundamento de la Jurisdicción; su concepto y funciones; la competencia con sus criterios de atribución y tratamiento procesal; el monopolio estatal de la Jurisdicción con sus principios de exclusividad y unidad jurisdiccional; la independencia de los Jueces y Magistrados; el derecho al Juez legal; la organización del Poder Judicial; los Tribunales; la extensión y límites de la Jurisdicción; los profesionales de la Jurisdicción (Jueces y Magistrados); los profesionales colaboradores (Letrados de la Administración de Justicia, Policía Judicial, Funcionarios al servicio de la Administración de Justicia, Abogados, Procuradores y Graduados sociales); el Ministerio Fiscal; el Tribunal Constitucional y el Tribunal del Jurado.</p><p>La tercera parte, "Tutela judicial efectiva y derechos fundamentales del artículo 24.2 de la Constitución", incorpora el análisis de los derechos fundamentales de derecho procesal: el derecho a la tutela judicial efectiva (con la asistencia jurídica gratuita) y, en su reverso, el derecho de defensa, con todo el conjunto de derechos que adornan la celebración de los procesos judiciales: los derechos a ser informado de la acusación, a utilizar los medios de prueba pertinentes para defenderse, a la presunción de inocencia, a no declarar contra uno mismo, a no confesarse culpable, así como a un proceso público sin dilaciones indebidas y con todas las garantías. La cuarta parte, "El proceso", se dedica a los principios del proceso, su estructura, las clases de procesos, los actos procesales, sus clases, los actos de comunicación y la resolución final del Órgano Judicial: la Sentencia. Por último, la quinta parte, "Derecho paraprocesal", se ocupa de explicar dos mecanismos por excelencia de resolución de controversias en vía no jurisdiccional y en paralelo al proceso judicial: la mediación y el arbitraje.</p><p>Tres son los grandes conceptos de esta Introducción al Derecho procesal: Jurisdicción, con el estudio del Poder Judicial, su concepto, principios, extensión, límites y atributos esenciales; Acción, con el análisis del derecho a la tutela judicial efectiva, el derecho de defensa y los restantes derechos procesales de naturaleza fundamental; y Proceso, con la comprensión de los tipos de procesos y procedimientos que integran nuestro ecosistema procesal en todos los órdenes jurisdiccionales: civil, penal, contencioso-administrativo y social o laboral. A esta materia siguen otras asignaturas posteriores (Derecho procesal civil. Parte General, Derecho procesal civil. Parte Especial y Derecho procesal penal), elaboradas por los mismos autores en idéntica editorial, en las que se entra ya al detalle de los procesos ordinarios y especiales que integran nuestra Jurisdicción civil y penal.</p></div><div class="bloque-clave"><span class="etiqueta-clave">🔑 GRÁBATELO</span><ul><li><strong>Derecho procesal</strong> — rama del ordenamiento jurídico público destinada al estudio de la Jurisdicción, la Acción y el Proceso.</li><li><strong>Trípode conceptual</strong> — los tres grandes conceptos de la disciplina son Jurisdicción, Acción y Proceso.</li><li><strong>Estructura de la obra</strong> — cinco partes (Derecho procesal, Jurisdicción, Tutela judicial efectiva y derechos fundamentales, Proceso y Derecho paraprocesal).</li><li><strong>Instituciones estatales de la Justicia</strong> — Poder Judicial, Ministerio Fiscal, Tribunal Constitucional y Tribunal del Jurado.</li><li><strong>Órdenes jurisdiccionales</strong> — civil, penal, contencioso-administrativo y social o laboral.</li><li><strong>Resoluciones judiciales</strong> — providencias, autos y sentencias (de Jueces y Magistrados); diligencias y decretos (de Letrados de la Administración de Justicia).</li><li><strong>Derecho paraprocesal</strong> — mecanismos de resolución de controversias en vía no jurisdiccional (mediación y arbitraje).</li></ul></div><div class="bloque-guion"><span class="etiqueta-guion">🗂️ ASÍ LO ESCRIBO</span><p><strong>Guion:</strong></p><ol><li>Introducción: la presentación sitúa la asignatura como materia esencial e iniciática al comienzo del Grado en Derecho, destacando su carácter formativo y su profundidad científica.</li><li>Descripción del contenido: se detallan las cinco partes de la obra (Derecho procesal, Jurisdicción, Tutela judicial efectiva y derechos fundamentales, Proceso y Derecho paraprocesal), con las instituciones y conceptos que integra cada una.</li><li>Conclusión: se subrayan los tres grandes conceptos vertebradores (Jurisdicción, Acción y Proceso) y se remite a las asignaturas posteriores de Derecho procesal civil y penal.</li></ol><p><strong>Imprescindibles:</strong></p><ul><li>Trípode conceptual: Jurisdicción, Acción y Proceso.</li><li>Las cinco partes de la obra.</li><li>Las grandes instituciones del Estado comprometidas con la Justicia.</li><li>Los cuatro órdenes jurisdiccionales.</li><li>La finalidad formativa e iniciática de la asignatura.</li></ul></div></section>
+
+</main>
+
+<script>
+function toggleModo(){document.body.classList.toggle("dark-mode");var b=document.querySelector(".modo-btn");b.textContent=document.body.classList.contains("dark-mode")?"☀️ Modo claro":"🌓 Modo";}
+document.addEventListener("click",function(e){var a=e.target.closest(".indice a");if(!a)return;var h=a.getAttribute("href");if(!h||h.indexOf("#")!==0)return;e.preventDefault();var t=document.getElementById(h.substring(1));if(t){var d=document.querySelector(".indice details");if(d)d.removeAttribute("open");t.scrollIntoView({behavior:"smooth",block:"start"});}});
+</script>
+</body>
+</html>

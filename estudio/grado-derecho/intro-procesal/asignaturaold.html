@@ -22,7 +22,7 @@
         .tema-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; transition: var(--transition); }
         .tema-item:hover { background: var(--bg-hover); border-color: var(--accent); }
         .tema-info { display: flex; align-items: center; gap: 12px; }
-        .tema-numero { background: var(--bg-accent); color: var(--accent); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; flex-shrink: 0; }
+        .tema-numero { background: var(--bg-accent); color: var(--accent); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
         .tema-titulo { font-weight: 500; }
         .tema-progreso { display: flex; align-items: center; gap: 12px; color: var(--text-secondary); }
         .temas-list { display: flex; flex-direction: column; gap: 8px; }
@@ -59,9 +59,9 @@
 <body>
     <div class="container" style="padding-top:80px; max-width:900px; margin:0 auto;">
         <div class="area-header">
-            <button class="btn-volver" id="btnVolver">← Volver a las asignaturas</button>
-            <h1 id="tituloAsignatura">📋 Introducción al Derecho Procesal</h1>
-            <p id="subtituloAsignatura" style="color:var(--text-secondary);">Código: 66021044 | 4 ECTS</p>
+            <button class="btn-volver" onclick="window.location.href='/estudio/?nivel=asignaturas&area=grado-derecho&curso=1&semestre=1'">← Volver a las asignaturas</button>
+            <h1>📋 Introducción al Derecho Procesal</h1>
+            <p style="color:var(--text-secondary);">Código: 66021044 | 4 ECTS</p>
         </div>
         
         <div class="card">
@@ -99,33 +99,11 @@
     </div>
     
     <script>
-        let ASIGNATURA_KEY = '';
-
-        // Botón volver: conserva los parámetros de la URL actual
-        (function configurarVolver() {
-            const params = new URLSearchParams(window.location.search);
-            const area = params.get('area') || 'grado-derecho';
-            const curso = params.get('curso') || '1';
-            const semestre = params.get('semestre') || '1';
-            document.getElementById('btnVolver').onclick = () => {
-                window.location.href = `/estudio/?nivel=asignaturas&area=${area}&curso=${curso}&semestre=${semestre}`;
-            };
-        })();
+        const ASIGNATURA_KEY = 'intro-procesal';
 
         fetch('config.json')
             .then(response => response.json())
             .then(data => {
-                ASIGNATURA_KEY = data.id;
-
-                // Actualizar cabecera con los datos del config
-                const icono = data.icon || '📋';
-                document.getElementById('tituloAsignatura').textContent = `${icono} ${data.nombre}`;
-                document.title = data.nombre;
-                const partes = [];
-                if (data.codigo) partes.push('Código: ' + data.codigo);
-                if (data.creditos) partes.push(data.creditos + ' ECTS');
-                document.getElementById('subtituloAsignatura').textContent = partes.join(' | ');
-
                 const container = document.getElementById('temasContainer');
                 const temas = data.temas || [];
                 
@@ -139,25 +117,23 @@
                     const temaId = t.id || 'tema' + (index + 1);
                     const numTema = index + 1;
                     const titulo = t.titulo || 'Tema ' + numTema;
-                    const archivo = t.archivo || 'tema.html';
                     const key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
                     const progreso = parseInt(localStorage.getItem(key)) || 0;
-                    const rutaTema = `temas/${temaId}/${archivo}`;
                     
                     html += `
                         <div class="tema-item" style="flex-wrap: wrap; gap: 8px;">
-                            <div class="tema-info" onclick="window.location.href='${rutaTema}'" style="cursor: pointer; flex: 1;">
+                            <div class="tema-info" onclick="window.location.href='temas/${temaId}/tema.html'" style="cursor: pointer; flex: 1;">
                                 <span class="tema-numero">${numTema}</span>
                                 <span class="tema-titulo">${titulo}</span>
                             </div>
                             <div class="tema-progreso">
                                 <span class="progreso-texto" id="progreso_${temaId}">${progreso}%</span>
                                 <div class="progreso-botones">
-                                    <button onclick="cambiarProgreso('${temaId}', -10)" title="-10%" aria-label="Restar 10 por ciento">−</button>
-                                    <button onclick="cambiarProgreso('${temaId}', 10)" title="+10%" aria-label="Sumar 10 por ciento">+</button>
-                                    <button onclick="cambiarProgreso('${temaId}', 25)" title="+25%" aria-label="Sumar 25 por ciento">+25</button>
-                                    <button onclick="cambiarProgreso('${temaId}', 50)" title="50%" aria-label="Poner al 50 por ciento">50</button>
-                                    <button onclick="cambiarProgreso('${temaId}', 100)" title="100%" aria-label="Poner al 100 por ciento">100</button>
+                                    <button onclick="cambiarProgreso('${temaId}', -10)" title="-10%">−</button>
+                                    <button onclick="cambiarProgreso('${temaId}', 10)" title="+10%">+</button>
+                                    <button onclick="cambiarProgreso('${temaId}', 25)" title="+25%">+25</button>
+                                    <button onclick="cambiarProgreso('${temaId}', 50)" title="50%">50</button>
+                                    <button onclick="cambiarProgreso('${temaId}', 100)" title="100%">100</button>
                                 </div>
                             </div>
                         </div>
