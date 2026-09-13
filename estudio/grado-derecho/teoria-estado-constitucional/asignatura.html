@@ -167,15 +167,6 @@
                 `;
                 console.error('Error cargando temas:', error);
             });
-                html += '</div>';
-                container.innerHTML = html;
-            })
-            .catch(error => {
-                document.getElementById('temasContainer').innerHTML = `
-                    <p style="color:var(--text-secondary);">Error al cargar los temas: ${error.message}</p>
-                `;
-                console.error('Error cargando temas:', error);
-            });
 
         function cambiarProgreso(temaId, cambio) {
             const key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;

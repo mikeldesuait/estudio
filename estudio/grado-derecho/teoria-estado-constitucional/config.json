@@ -1,45 +1,55 @@
 {
   "id": "teoria-estado-constitucional",
-  "nombre": "Teoria Estado Constitucional",
+  "nombre": "Teoría Estado Constitucional",
   "codigo": "66021038",
   "creditos": 6,
   "caracter": "FORMACIÓN BÁSICA",
   "icon": "🏛️",
-  "temas": [
+  "libros": [
     {
-      "id": "tema1",
-      "titulo": "Tema 1 - Caracteres generales del constitucionalismo histórico español",
-      "archivo": "che_ocr - 1. Caracteres generales del constitucionalismo histórico español.html"
+      "id": "che",
+      "titulo": "Constitucionalismo Histórico Español",
+      "autor": "Antonio Torres del Moral",
+      "temas": [
+        { "id": "che-tema1", "titulo": "Tema 1 - Caracteres generales del constitucionalismo histórico español", "archivo": "temas/che/tema1/che_ocr - 1. Caracteres generales del constitucionalismo histórico español.html" },
+        { "id": "che-tema2", "titulo": "Tema 2 - Inicio del régimen constitucional español", "archivo": "temas/che/tema2/che_ocr - 2. Inicio del régimen constitucional español.html" },
+        { "id": "che-tema3", "titulo": "Tema 3 - Período isabelino", "archivo": "temas/che/tema3/che_ocr - 3. Período isabelino.html" },
+        { "id": "che-tema4", "titulo": "Tema 4 - Sexenio revolucionario", "archivo": "temas/che/tema4/che_ocr - 4. Sexenio revolucionario.html" },
+        { "id": "che-tema5", "titulo": "Tema 5 - La Restauración y su crisis", "archivo": "temas/che/tema5/che_ocr - 5. La Restauración y su crisis.html" },
+        { "id": "che-tema6", "titulo": "Tema 6 - Régimen de la II República", "archivo": "temas/che/tema6/che_ocr - 6. Régimen de la II República.html" },
+        { "id": "che-tema7", "titulo": "Tema 7 - Régimen político franquista", "archivo": "temas/che/tema7/che_ocr - 7. Régimen político franquista.html" }
+      ]
     },
     {
-      "id": "tema2",
-      "titulo": "Tema 2 - Inicio del régimen constitucional español",
-      "archivo": "che_ocr - 2. Inicio del régimen constitucional español.html"
-    },
-    {
-      "id": "tema3",
-      "titulo": "Tema 3 - Período isabelino",
-      "archivo": "che_ocr - 3. Período isabelino.html"
-    },
-    {
-      "id": "tema4",
-      "titulo": "Tema 4 - Sexenio revolucionario",
-      "archivo": "che_ocr - 4. Sexenio revolucionario.html"
-    },
-    {
-      "id": "tema5",
-      "titulo": "Tema 5 - La Restauración y su crisis",
-      "archivo": "che_ocr - 5. La Restauración y su crisis.html"
-    },
-    {
-      "id": "tema6",
-      "titulo": "Tema 6 - Régimen de la II República",
-      "archivo": "che_ocr - 6. Régimen de la II República.html"
-    },
-    {
-      "id": "tema7",
-      "titulo": "Tema 7 - Régimen político franquista",
-      "archivo": "che_ocr - 7. Régimen político franquista.html"
+      "id": "constitucional1",
+      "titulo": "Teoría del Estado Constitucional",
+      "autor": "Varios autores",
+      "temas": [
+        { "id": "c1-tema1", "titulo": "Tema 1 - El Estado: Origen y Elementos", "archivo": "temas/constitucional1/tema1/constitucional1_ocr - 1. El Estado_ Origen y Elementos.html" },
+        { "id": "c1-tema2", "titulo": "Tema 2 - Del Estado Absoluto al Estado Constitucional", "archivo": "temas/constitucional1/tema2/constitucional1_ocr - 2. Del Estado Absoluto al Estado Constitucional.html" },
+        { "id": "c1-tema3", "titulo": "Tema 3 - El Estado Social y Democrático de Derecho", "archivo": "temas/constitucional1/tema3/constitucional1_ocr - 3. El Estado Social y Democrático de Derecho.html" },
+        { "id": "c1-tema4", "titulo": "Tema 4 - Concepto de Constitución", "archivo": "temas/constitucional1/tema4/constitucional1_ocr - 4. Concepto de Constitución.html" },
+        { "id": "c1-tema5", "titulo": "Tema 5 - Fuentes del Derecho Constitucional. Interpretación. Tipología de las Constituciones", "archivo": "temas/constitucional1/tema5/constitucional1_ocr - 5. Fuentes del Derecho Constitucional. Interpretación. Tipología de las Consti.html" },
+        { "id": "c1-tema6", "titulo": "Tema 6 - Control de la Supremacía de la Constitución (I): El Instituto de la Reforma", "archivo": "temas/constitucional1/tema6/constitucional1_ocr - 6. Control de la Supremacía de la Constitución (I)_ El Instituto de la Reforma.html" },
+        { "id": "c1-tema7", "titulo": "Tema 7 - Control de la Supremacía de la Constitución (II): La Jurisdicción Constitucional", "archivo": "temas/constitucional1/tema7/constitucional1_ocr - 7. Control de la Supremacía de la Constitución (II)_ La Jurisdicción Constituc.html" },
+        { "id": "c1-tema8", "titulo": "Tema 8 - Derechos y Libertades (I): Evolución Histórica, Fundamento, Naturaleza", "archivo": "temas/constitucional1/tema8/constitucional1_ocr - 8. Derechos y Libertades (I)_ Evolución Histórica, Fundamento, Naturaleza.html" },
+        { "id": "c1-tema9", "titulo": "Tema 9 - Derechos y Libertades (II): Clasificación de los Derechos. Garantías", "archivo": "temas/constitucional1/tema9/constitucional1_ocr - 9. Derechos y Libertades (II)_ Clasificación de los Derechos. Garantías.html" },
+        { "id": "c1-tema10", "titulo": "Tema 10 - Órganos y funciones del Estado", "archivo": "temas/constitucional1/tema10/constitucional1_ocr - 10. Órganos y funciones del Estado.html" },
+        { "id": "c1-tema11", "titulo": "Tema 11 - Tipología de las Formas Políticas", "archivo": "temas/constitucional1/tema11/constitucional1_ocr - 11. Tipología de las Formas Políticas.html" },
+        { "id": "c1-tema12", "titulo": "Tema 12 - Formas de la Jefatura del Estado", "archivo": "temas/constitucional1/tema12/constitucional1_ocr - 12. Formas de la Jefatura del Estado.html" },
+        { "id": "c1-tema13", "titulo": "Tema 13 - Formas Territoriales del Estado", "archivo": "temas/constitucional1/tema13/constitucional1_ocr - 13. Formas Territoriales del Estado.html" },
+        { "id": "c1-tema14", "titulo": "Tema 14 - Democracia (I): Soberanía Popular, Representación y Pluralismo", "archivo": "temas/constitucional1/tema14/constitucional1_ocr - 14. Democracia (I)_ Soberanía Popular, Representación y Pluralismo.html" },
+        { "id": "c1-tema15", "titulo": "Tema 15 - Democracia (II): Sistemas Electorales", "archivo": "temas/constitucional1/tema15/constitucional1_ocr - 15. Democracia (II)_ Sistemas Electorales.html" },
+        { "id": "c1-tema16", "titulo": "Tema 16 - Democracia (III): Democracia Representativa y Democracia de Partidos", "archivo": "temas/constitucional1/tema16/constitucional1_ocr - 16. Democracia (III)_ Democracia Representativa y Democracia de Partidos.html" },
+        { "id": "c1-tema17", "titulo": "Tema 17 - Democracia (IV): Democracia y Autocracia", "archivo": "temas/constitucional1/tema17/constitucional1_ocr - 17. Democracia (IV)_ Democracia y Autocracia.html" },
+        { "id": "c1-tema18", "titulo": "Tema 18 - El Parlamento (I): Derecho Parlamentario, Estructura Cameral. Organización", "archivo": "temas/constitucional1/tema18/constitucional1_ocr - 18. El Parlamento (I)_ Derecho Parlamentario, Estructura Cameral. Organización.html" },
+        { "id": "c1-tema19", "titulo": "Tema 19 - El Parlamento (II): Funcionamiento de las Cámaras. Los Grupos Parlamentarios", "archivo": "temas/constitucional1/tema19/constitucional1_ocr - 19. El Parlamento (II)_ Funcionamiento de las Cámaras. Los Grupos Parlamentari.html" },
+        { "id": "c1-tema20", "titulo": "Tema 20 - El Parlamento (III): Funciones Representativa, Legislativa, Presupuestaria", "archivo": "temas/constitucional1/tema20/constitucional1_ocr - 20. El Parlamento (III)_ Funciones Representativa, Legislativa, Presupuestaria.html" },
+        { "id": "c1-tema21", "titulo": "Tema 21 - El Gobierno y sus Relaciones con el Parlamento (I): Los Sistemas de Gobierno", "archivo": "temas/constitucional1/tema21/constitucional1_ocr - 21. El Gobierno y sus Relaciones con el Parlamento (I)_ Los Sistemas de Gobier.html" },
+        { "id": "c1-tema22", "titulo": "Tema 22 - El Gobierno y sus Relaciones con el Parlamento (II): Referencia Especial", "archivo": "temas/constitucional1/tema22/constitucional1_ocr - 22. El Gobierno y sus Relaciones con el Parlamento (II)_ Referencia Especial a.html" },
+        { "id": "c1-tema23", "titulo": "Tema 23 - El Poder Judicial", "archivo": "temas/constitucional1/tema23/constitucional1_ocr - 23. El Poder Judicial.html" },
+        { "id": "c1-tema24", "titulo": "Tema 24 - El Estado Supranacional e Internacionalmente Integrado. La Unión Europea", "archivo": "temas/constitucional1/tema24/constitucional1_ocr - 24. El Estado Supranacional e Internacionalmente Integrado. La Unión Europea.html" }
+      ]
     }
   ]
 }
