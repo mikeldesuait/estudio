@@ -6,6 +6,80 @@
   "caracter": "OBLIGATORIAS",
   "icon": "📋",
   "temas": [
-    { "id": "tema1", "titulo": "Tema 1 - Introducción" }
+    {
+      "id": "tema1",
+      "titulo": "Tema 1 - Consideraciones previas: una Constitución que ya cumple 45 años",
+      "archivo": "derechoconstitucional - 1. Consideraciones previas_ una Constitución que ya cumple 45 años.html"
+    },
+    {
+      "id": "tema2",
+      "titulo": "Tema 2 - La Constitución democrática como norma suprema. I",
+      "archivo": "derechoconstitucional - 2. La Constitución democrática como norma suprema. I.html"
+    },
+    {
+      "id": "tema3",
+      "titulo": "Tema 3 - La Constitución democrática como norma suprema. II",
+      "archivo": "derechoconstitucional - 3. La Constitución democrática como norma suprema. II.html"
+    },
+    {
+      "id": "tema4",
+      "titulo": "Tema 4 - Poder constituyente y reforma constitucional",
+      "archivo": "derechoconstitucional - 4. Poder constituyente y reforma constitucional.html"
+    },
+    {
+      "id": "tema5",
+      "titulo": "Tema 5 - La defensa de la Constitución a través de la jurisdicción constitucional",
+      "archivo": "derechoconstitucional - 5. La defensa de la Constitución a través de la jurisdicción constitucional..html"
+    },
+    {
+      "id": "tema6",
+      "titulo": "Tema 6 - El sistema de fuentes que instaura la Constitución española de 1978",
+      "archivo": "derechoconstitucional - 6. El sistema de fuentes que instaura la Constitución española de 1978.html"
+    },
+    {
+      "id": "tema7",
+      "titulo": "Tema 7 - La ley",
+      "archivo": "derechoconstitucional - 7. La ley.html"
+    },
+    {
+      "id": "tema8",
+      "titulo": "Tema 8 - La ley orgánica",
+      "archivo": "derechoconstitucional - 8. La ley orgánica.html"
+    },
+    {
+      "id": "tema9",
+      "titulo": "Tema 9 - La potestad legislativa del Gobierno: el Decreto-ley y el Decreto Legislativo",
+      "archivo": "derechoconstitucional - 9. La potestad legislativa del Gobierno_ el Decreto-ley y el Decreto Legisla.html"
+    },
+    {
+      "id": "tema10",
+      "titulo": "Tema 10 - El Reglamento",
+      "archivo": "derechoconstitucional - 10. El Reglamento.html"
+    },
+    {
+      "id": "tema11",
+      "titulo": "Tema 11 - Los Tratados Internacionales",
+      "archivo": "derechoconstitucional - 11. Los Tratados Internacionales.html"
+    },
+    {
+      "id": "tema12",
+      "titulo": "Tema 12 - Las Fuentes del Derecho de la Unión Europea. I",
+      "archivo": "derechoconstitucional - 12. Las Fuentes del Derecho de la Unión Europea. I.html"
+    },
+    {
+      "id": "tema13",
+      "titulo": "Tema 13 - Las Fuentes del Derecho de la Unión Europea. II",
+      "archivo": "derechoconstitucional - 13. Las Fuentes del Derecho de la Unión Europea. II.html"
+    },
+    {
+      "id": "tema14",
+      "titulo": "Tema 14 - Incidencia en el sistema de fuentes del Estado Autonómico. Autonomía legislativa",
+      "archivo": "derechoconstitucional - 14. Incidencia en el sistema de fuentes del Estado Autonómico. Autonomía leg.html"
+    },
+    {
+      "id": "tema15",
+      "titulo": "Tema 15 - Historia Constitucional Española",
+      "archivo": "derechoconstitucional - 15. Historia Constitucional Española.html"
+    }
   ]
 }
