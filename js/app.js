@@ -167,6 +167,25 @@ function mostrarDashboard(main) {
         localStorage.setItem('escritorio_elementos', JSON.stringify(elementos));
     }
     
+    // Detectar áreas nuevas y añadirlas al escritorio automáticamente
+    if (elementos.areas) {
+        const areasEnEscritorio = new Set(elementos.areas.map(a => a.areaId));
+        areas.forEach((a, i) => {
+            if (!areasEnEscritorio.has(a.id)) {
+                elementos.areas.push({
+                    id: 'area-' + a.id,
+                    tipo: 'area',
+                    areaId: a.id,
+                    x: 20 + (i % 5) * 170,
+                    y: 20,
+                    w: 160,
+                    h: 50
+                });
+            }
+        });
+        localStorage.setItem('escritorio_elementos', JSON.stringify(elementos));
+    }
+    
     window._escritorio = elementos;
     window._areas = areas;
     window._colors = {

@@ -20,7 +20,8 @@ function cargarAreas() {
         { id: 'grado-derecho', path: 'estudio/grado-derecho/' },
         { id: 'pnl', path: 'estudio/pnl/' },
         { id: 'herramientas', path: 'estudio/herramientas/' },
-        { id: 'networking', path: 'estudio/networking/' }
+        { id: 'networking', path: 'estudio/networking/' },
+        { id: 'dieta', path: 'estudio/dieta/' }
     ];
     let cargadas = 0;
     listaAreas.forEach(item => {
@@ -172,7 +173,8 @@ function mostrarDashboard(main) {
         'grado-derecho': '#3b82f6',
         'pnl': '#9b59b6',
         'herramientas': '#8b5cf6',
-        'networking': '#00b4d8'
+        'networking': '#00b4d8',
+        'dieta': '#e67e22'
     };
     
     let html = `
@@ -1190,8 +1192,8 @@ async function mostrarAreas(main) {
         const total = asig.length;
         const pct = total > 0 ? Math.round((ap/total)*100) : 0;
         
-        if (area.id === 'herramientas' || area.id === 'networking' || area.id === 'pnl') {
-            const color = area.id === 'herramientas' ? '#8b5cf6' : area.id === 'networking' ? '#00b4d8' : '#9b59b6';
+        if (area.id === 'herramientas' || area.id === 'networking' || area.id === 'pnl' || area.id === 'dieta') {
+            const color = area.id === 'herramientas' ? '#8b5cf6' : area.id === 'networking' ? '#00b4d8' : area.id === 'dieta' ? '#e67e22' : '#9b59b6';
             html += `<div class="area-card" onclick="navegar('asignaturas','${area.id}')" style="border:2px dashed ${color};">
                 <div class="icon">${area.icon || '📚'}</div>
                 <div class="nombre">${area.nombre}</div>
@@ -1259,7 +1261,7 @@ async function mostrarSemestres(main, areaId, cursoId) {
 async function mostrarAsignaturas(main, areaId, cursoId, semestreId) {
     const area = areas.find(a => a.id === areaId);
     if (!area) return;
-    const esH = (areaId === 'herramientas' || areaId === 'networking' || areaId === 'pnl');
+    const esH = (areaId === 'herramientas' || areaId === 'networking' || areaId === 'pnl' || areaId === 'dieta');
     let asig = await getAsignaturas(areaId);
     if (!esH) asig = asig.filter(a => a.curso == cursoId && a.semestre == semestreId);
     let html = `<div class="area-header"><button class="btn btn-outline" onclick="navegar('${esH ? 'areas' : 'semestres'}','${areaId}'${esH ? '' : ",'"+cursoId+"'"})"><i class="fas fa-arrow-left"></i> Volver</button><h1>${area.icon || '📚'} ${area.nombre}</h1></div><div class="asignaturas-grid">`;
