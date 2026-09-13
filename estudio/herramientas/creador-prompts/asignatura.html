@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>PromptMaker · UNED v14 (sin EPUB, con estimación)</title>
+<title>PromptMaker · UNED v16</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #0d1a2b; color: #e0e8f0; min-height: 100vh; padding: 20px; }
@@ -105,7 +106,6 @@ input[type="text"], input[type="password"] { font-family: 'Segoe UI', sans-serif
 .finalizado-box { background: #1a3a2a; border: 1px solid #2a6a4a; border-radius: 12px; padding: 16px 20px; margin-top: 14px; display: none; }
 .finalizado-box.visible { display: block; }
 .finalizado-box .titulo { font-size: 16px; font-weight: 700; color: #6ad89a; margin-bottom: 8px; }
-/* ===== ESTIMACIÓN ===== */
 .estimacion-box { background: #1a1a0d; border: 1px solid #6a5a1a; border-radius: 12px; padding: 16px 20px; margin-top: 14px; display: none; }
 .estimacion-box.visible { display: block; }
 .estimacion-box .titulo { font-size: 15px; font-weight: 700; color: #d8c88a; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
@@ -123,12 +123,11 @@ input[type="text"], input[type="password"] { font-family: 'Segoe UI', sans-serif
 <body>
 
 <div class="app">
-<h1>⚡ PromptMaker · UNED v14</h1>
-<div class="subhead">Esqueleto → Estimación de coste → Generación masiva → HTMLs</div>
+<h1>⚡ PromptMaker · UNED v16</h1>
+<div class="subhead">Esqueleto → Estimación real → Generación con descarga automática → HTMLs + ZIP</div>
 
 <div class="demo-banner" id="demoBanner">🧪 MODO DEMO ACTIVO · No se llama a la API</div>
 
-<!-- BARRA DE CONSUMO GLOBAL -->
 <div class="consumo-bar" id="consumoBar">
   <div class="item"><span class="label">Caché</span><span class="value" id="barCache">0</span></div>
   <div class="sep">|</div>
@@ -150,7 +149,6 @@ input[type="text"], input[type="password"] { font-family: 'Segoe UI', sans-serif
 <button data-tab="tab-biblioteca">📦 Biblioteca</button>
 </div>
 
-<!-- CONFIGURACIÓN -->
 <div id="tab-config" class="tab-content active">
   <div class="card">
     <div class="card-title"><span class="step-badge">Paso 1</span> API Key de DeepSeek</div>
@@ -175,26 +173,6 @@ input[type="text"], input[type="password"] { font-family: 'Segoe UI', sans-serif
     <input type="file" id="pdfInput" accept=".pdf,.txt" />
     <div class="field-hint" id="pdfStatus">📎 Selecciona el archivo del libro.</div>
     <div class="progress-bar" id="pdfProgress" style="display:none;"><div class="fill" id="pdfProgressFill" style="width:0%"></div></div>
-
-    <!-- ESTIMACIÓN ANTES DEL ESQUELETO -->
-    <div class="estimacion-box" id="estimacionPrevia">
-      <div class="titulo">💰 Estimación de coste del esqueleto</div>
-      <div class="estimacion-grid">
-        <div class="estimacion-item">
-          <div class="label">Caracteres del libro</div>
-          <div class="value" id="estCaracteres">0</div>
-        </div>
-        <div class="estimacion-item">
-          <div class="label">Tokens estimados</div>
-          <div class="value" id="estTokens">0</div>
-        </div>
-        <div class="estimacion-item">
-          <div class="label">Coste esqueleto</div>
-          <div class="value" id="estCosteEsqueleto">$0.0000</div>
-        </div>
-      </div>
-      <div class="estimacion-nota">Estimación basada en el modelo Flash en horario valle. El coste real puede variar ligeramente.</div>
-    </div>
   </div>
 
   <div class="card" style="border-color: #3a6a8a;">
@@ -212,38 +190,31 @@ input[type="text"], input[type="password"] { font-family: 'Segoe UI', sans-serif
         <button type="button" class="btn btn-secondary" id="cerrarRawBtn">Cerrar</button>
       </div>
     </div>
+    <div class="estimacion-box" id="estimacionReal">
+      <div class="titulo">💰 Coste real del esqueleto (datos de DeepSeek)</div>
+      <div class="estimacion-grid">
+        <div class="estimacion-item">
+          <div class="label">Tokens reales del libro</div>
+          <div class="value" id="estTokensReales">0</div>
+        </div>
+        <div class="estimacion-item">
+          <div class="label">Coste de subida</div>
+          <div class="value" id="estCosteSubida">$0.0000</div>
+        </div>
+        <div class="estimacion-item">
+          <div class="label">Coste total del esqueleto</div>
+          <div class="value" id="estCosteEsqueletoReal">$0.0000</div>
+        </div>
+      </div>
+      <div class="estimacion-nota">Datos exactos devueltos por la API en el campo usage.prompt_tokens.</div>
+    </div>
   </div>
 </div>
 
-<!-- ESQUELETO -->
 <div id="tab-esqueleto" class="tab-content">
-  <!-- ESTIMACIÓN POST-ESQUELETO -->
-  <div class="estimacion-box" id="estimacionPostEsqueleto">
-    <div class="titulo">💰 Estimación de coste de generación de resúmenes</div>
-    <div class="estimacion-grid">
-      <div class="estimacion-item">
-        <div class="label">Temas detectados</div>
-        <div class="value" id="estTemas">0</div>
-      </div>
-      <div class="estimacion-item">
-        <div class="label">Epígrafes totales</div>
-        <div class="value" id="estEpigrafes">0</div>
-      </div>
-      <div class="estimacion-item">
-        <div class="label">Coste por epígrafe</div>
-        <div class="value" id="estCosteEpigrafe">~$0.0007</div>
-      </div>
-      <div class="estimacion-item">
-        <div class="label">Coste total estimado</div>
-        <div class="value" id="estCosteTotal">$0.0000</div>
-      </div>
-    </div>
-    <div class="estimacion-nota">Estimación basada en el modelo Flash en horario valle, con el libro en caché. El coste real puede variar ligeramente.</div>
-  </div>
-
   <div class="masivo-box" id="masivoBox" style="display:none;">
     <div class="titulo">🚀 Generar libro completo</div>
-    <div class="subtitulo">Recorre todos los temas y epígrafes del libro, uno por uno, en orden.</div>
+    <div class="subtitulo">Recorre todos los temas y epígrafes del libro, uno por uno, en orden. Al completar cada tema, se monta y descarga automáticamente.</div>
     <div class="actions">
       <button type="button" class="btn btn-success btn-grande" id="empezarMasivoBtn">▶️ Empezar</button>
       <button type="button" class="btn btn-warning" id="pausarMasivoBtn" style="display:none;">⏸️ Pausar</button>
@@ -257,8 +228,8 @@ input[type="text"], input[type="password"] { font-family: 'Segoe UI', sans-serif
     <div class="finalizado-box" id="masivoFinalizado">
       <div class="titulo">✅ Libro completo generado</div>
       <div class="actions">
-        <button type="button" class="btn btn-purple btn-grande" id="montarTodosBtn">🔨 Montar todos los HTMLs</button>
-        <button type="button" class="btn btn-secondary" id="descargarTodosBtn">📦 Descargar todos</button>
+        <button type="button" class="btn btn-success btn-grande" id="descargarZipBtn">📦 Descargar ZIP</button>
+        <button type="button" class="btn btn-secondary" id="descargarTodosBtn">📥 Descargar todos (uno a uno)</button>
       </div>
     </div>
   </div>
@@ -269,7 +240,6 @@ input[type="text"], input[type="password"] { font-family: 'Segoe UI', sans-serif
   </div>
 </div>
 
-<!-- CONTENIDO -->
 <div id="tab-contenido" class="tab-content">
   <div class="card">
     <div class="card-title">📝 Contenido por epígrafe</div>
@@ -277,12 +247,11 @@ input[type="text"], input[type="password"] { font-family: 'Segoe UI', sans-serif
     <div id="listaEpigrafes" style="margin-top:14px;"><div class="empty-msg">📭 Selecciona un tema.</div></div>
     <div class="actions" style="margin-top:14px;">
       <button type="button" class="btn btn-success" id="generarTodosEpigrafesBtn" disabled>🎨 Generar todos los epígrafes pendientes del tema</button>
-      <button type="button" class="btn btn-purple" id="montarHtmlBtn" disabled>🔨 Montar HTML del tema</button>
+      <button type="button" class="btn btn-purple" id="montarHtmlBtn" disabled>🔨 Montar HTML y descargar del tema</button>
     </div>
   </div>
 </div>
 
-<!-- PREVISUALIZACIÓN -->
 <div id="tab-preview" class="tab-content">
   <div class="card">
     <div class="card-title" id="previewTitle">🖼️ Previsualización</div>
@@ -303,12 +272,12 @@ input[type="text"], input[type="password"] { font-family: 'Segoe UI', sans-serif
   </div>
 </div>
 
-<!-- BIBLIOTECA -->
 <div id="tab-biblioteca" class="tab-content">
   <div class="card">
     <div class="card-title">📦 Biblioteca <span class="badge-count" id="libCount">0</span></div>
     <div id="bibliotecaContainer"><div class="empty-msg">📭 No hay HTMLs guardados.</div></div>
     <div class="actions" style="margin-top:14px;">
+      <button type="button" class="btn btn-success" id="descargarZipBibliotecaBtn">📦 Descargar ZIP</button>
       <button type="button" class="btn btn-warning" id="exportarBtn">📤 Exportar JSON</button>
       <button type="button" class="btn btn-secondary" id="importarBtn">📥 Importar JSON</button>
       <button type="button" class="btn btn-danger" id="vaciarBtn">🗑️ Vaciar</button>
@@ -399,13 +368,10 @@ var CSS_ESTUDIO = [
 '.dark-mode .modo-btn { background: #c9a876; color: #1a1815; }'
 ].join('\n');
 
-// ============================================================
-//  PRECIOS DE REFERENCIA (DeepSeek V4-Flash, horario valle)
-// ============================================================
 var PRECIOS = {
-  entradaSinCache: 0.15 / 1000000,   // $0.15 por millón
-  entradaConCache: 0.003 / 1000000,  // $0.003 por millón
-  salida: 0.60 / 1000000             // $0.60 por millón
+  entradaSinCache: 0.15 / 1000000,
+  entradaConCache: 0.003 / 1000000,
+  salida: 0.60 / 1000000
 };
 
 var RE_BIBLIOGRAFIA = /bibliograf|referencias\s+bibliogr|fuentes\s+bibliogr|obras\s+generales/i;
@@ -426,7 +392,8 @@ function getOrdenEsqueleto() {
 '- NO añadas introducción, ni conclusión, ni comentarios.\n' +
 '- Empieza DIRECTAMENTE con la primera línea "1. ...".\n' +
 '- Devuelve SOLO el listado, sin nada más.\n' +
-'- NO incluyas secciones de "Bibliografía", "Referencias" ni "Obras generales" (ni sus subapartados). Omítelas por completo.';
+'- NO incluyas secciones de "Bibliografía", "Referencias" ni "Obras generales" (ni sus subapartados). Omítelas por completo.\n' +
+'- IMPORTANTE: si un tema NO tiene subepígrafes, devuélvelo igualmente como una línea "1. Título del tema". No lo omitas.';
 }
 
 function getOrdenContenido(modalidad, numEpigrafe, tituloEpigrafe) {
@@ -454,6 +421,7 @@ var estado = {
     biblioteca: [],
     usage: { cache: 0, nuevos: 0, salida: 0, coste: 0, costeTotal: 0 },
     ultimaRespuesta: '',
+    temasDescargados: {},  // { "1": true, "2": true } para no repetir descargas
     masivo: {
         activo: false,
         pausado: false,
@@ -480,62 +448,12 @@ function escapeHtml(s) {
 }
 
 // ============================================================
-//  ESTIMACIÓN DE COSTE
+//  NOMBRE DE ARCHIVO CON NOMBRE DEL LIBRO
 // ============================================================
-function estimarTokens(caracteres) {
-    // Aproximación: 1 token ≈ 4 caracteres en español
-    return Math.ceil(caracteres / 4);
-}
-
-function actualizarEstimacionPrevia() {
-    if (!estado.libroTexto) {
-        $('estimacionPrevia').classList.remove('visible');
-        return;
-    }
-    var caracteres = estado.libroTexto.length;
-    var tokens = estimarTokens(caracteres);
-    var coste = tokens * PRECIOS.entradaSinCache;
-
-    $('estCaracteres').textContent = caracteres.toLocaleString();
-    $('estTokens').textContent = tokens.toLocaleString();
-    $('estCosteEsqueleto').textContent = '$' + coste.toFixed(4);
-    $('estimacionPrevia').classList.add('visible');
-}
-
-function contarEpigrafesTotales() {
-    var total = 0;
-    estado.esqueleto.forEach(function(tema) {
-        (tema.subs || []).forEach(function(sub) {
-            if (!esBibliografia(sub.titulo)) total++;
-            (sub.subs || []).forEach(function(ss) {
-                if (!esBibliografia(ss.titulo)) total++;
-            });
-        });
-    });
-    return total;
-}
-
-function actualizarEstimacionPostEsqueleto() {
-    if (estado.esqueleto.length === 0) {
-        $('estimacionPostEsqueleto').classList.remove('visible');
-        return;
-    }
-    var totalEpigrafes = contarEpigrafesTotales();
-    // Estimación por epígrafe:
-    // - Entrada: ~200 tokens nuevos (la orden) + el libro en caché (no cuenta)
-    // - Salida: ~1000 tokens
-    var entradaPorEpigrafe = 200;
-    var salidaPorEpigrafe = 1000;
-    var costePorEpigrafe =
-        (entradaPorEpigrafe * PRECIOS.entradaSinCache) +
-        (salidaPorEpigrafe * PRECIOS.salida);
-    var costeTotal = totalEpigrafes * costePorEpigrafe;
-
-    $('estTemas').textContent = estado.esqueleto.length;
-    $('estEpigrafes').textContent = totalEpigrafes;
-    $('estCosteEpigrafe').textContent = '~$' + costePorEpigrafe.toFixed(4);
-    $('estCosteTotal').textContent = '$' + costeTotal.toFixed(4);
-    $('estimacionPostEsqueleto').classList.add('visible');
+function nombreArchivoConLibro(titulo) {
+    var nombreLibro = (estado.libroNombre || 'Libro_UNED').replace(/\.(pdf|txt)$/i, '').trim();
+    var nombre = nombreLibro + ' - ' + titulo;
+    return sanitizeNombre(nombre);
 }
 
 async function llamarDeepSeek(mensajes) {
@@ -545,11 +463,11 @@ async function llamarDeepSeek(mensajes) {
         if (ultimo.indexOf('estructura jerárquica') !== -1) {
             estado.usage = { cache: 150000, nuevos: 50, salida: 500, coste: 0.0006, costeTotal: estado.usage.costeTotal + 0.0006 };
             actualizarPanelUso();
-            return '1. Aproximación al reglamento\n1.1. Noción\n1.2. Delimitación\n2. El ejercicio\n2.1. El objeto\n2.2. La reserva de ley';
+            return { contenido: '1. Aproximación al reglamento\n1.1. Noción\n1.2. Delimitación\n2. El ejercicio\n2.1. El objeto\n2.2. La reserva de ley', usage: { prompt_tokens: 150000, prompt_cache_hit_tokens: 0, prompt_cache_miss_tokens: 150000, completion_tokens: 500 } };
         }
         estado.usage = { cache: 150000, nuevos: 30, salida: 800, coste: 0.0008, costeTotal: estado.usage.costeTotal + 0.0008 };
         actualizarPanelUso();
-        return '📖 PARA ENTENDERLO\nContenido de ejemplo del epígrafe en modo demo.\n\n🔑 GRÁBATELO\n- Concepto clave 1: definición.\n- Concepto clave 2: definición.\n\n🎯 TE LA VAN A PREGUNTAR\n- Advertencia 1.\n- Advertencia 2.';
+        return { contenido: '📖 PARA ENTENDERLO\nContenido de ejemplo del epígrafe en modo demo.\n\n🔑 GRÁBATELO\n- Concepto clave 1: definición.\n- Concepto clave 2: definición.\n\n🎯 TE LA VAN A PREGUNTAR\n- Advertencia 1.\n- Advertencia 2.', usage: {} };
     }
 
     if (!estado.apiKey) throw new Error('Falta la API Key.');
@@ -584,7 +502,7 @@ async function llamarDeepSeek(mensajes) {
     var contenido = data.choices[0].message.content;
     estado.ultimaRespuesta = contenido;
     $('verRespuestaBtn').disabled = false;
-    return contenido;
+    return { contenido: contenido, usage: u };
 }
 
 function actualizarPanelUso() {
@@ -658,19 +576,29 @@ function parsearEsqueleto(texto) {
 async function generarEsqueleto() {
     estado.contextoFijo = construirContextoFijo();
     var mensajes = estado.contextoFijo.concat([{ role: 'user', content: getOrdenEsqueleto() }]);
-    var respuesta = await llamarDeepSeek(mensajes);
-    estado.esqueletoTexto = respuesta;
+    var res = await llamarDeepSeek(mensajes);
+    estado.esqueletoTexto = res.contenido;
     estado.contextoConEsqueleto = estado.contextoFijo.concat([
         { role: 'user', content: getOrdenEsqueleto() },
-        { role: 'assistant', content: respuesta }
+        { role: 'assistant', content: res.contenido }
     ]);
-    return parsearEsqueleto(respuesta);
+    var u = res.usage || {};
+    var tokensEntrada = u.prompt_tokens || 0;
+    var costeSubida = (u.prompt_cache_miss_tokens || 0) * PRECIOS.entradaSinCache
+                    + (u.prompt_cache_hit_tokens || 0) * PRECIOS.entradaConCache;
+    var costeSalida = (u.completion_tokens || 0) * PRECIOS.salida;
+    $('estTokensReales').textContent = tokensEntrada.toLocaleString();
+    $('estCosteSubida').textContent = '$' + costeSubida.toFixed(4);
+    $('estCosteEsqueletoReal').textContent = '$' + (costeSubida + costeSalida).toFixed(4);
+    $('estimacionReal').classList.add('visible');
+    return parsearEsqueleto(res.contenido);
 }
 
 async function generarContenidoEpigrafe(num, titulo) {
     var contexto = estado.contextoConEsqueleto || estado.contextoFijo || construirContextoFijo();
     var mensajes = contexto.concat([{ role: 'user', content: getOrdenContenido(estado.modalidad, num, titulo) }]);
-    return await llamarDeepSeek(mensajes);
+    var res = await llamarDeepSeek(mensajes);
+    return res.contenido;
 }
 
 function parsearContenido(texto) {
@@ -752,15 +680,95 @@ function montarHTML(tema) {
     var titulo = tema.num + '. ' + tema.titulo;
     var indiceHTML = generarIndiceHTML(tema);
     var epigrafesHTML = '';
+
+    var tieneSubs = tema.subs && tema.subs.length > 0;
+    if (!tieneSubs) {
+        epigrafesHTML = generarBloqueEpigrafe(tema.num, tema.titulo, 1);
+    } else {
+        (tema.subs || []).forEach(function(sub) {
+            if (esBibliografia(sub.titulo)) return;
+            epigrafesHTML += generarBloqueEpigrafe(sub.num, sub.titulo, 1);
+            (sub.subs || []).forEach(function(ss) {
+                if (esBibliografia(ss.titulo)) return;
+                epigrafesHTML += generarBloqueEpigrafe(ss.num, ss.titulo, 2);
+            });
+        });
+    }
+
+    return '<!DOCTYPE html>\n<html lang="es">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>' + escapeHtml(titulo) + '</title>\n<style>\n' + CSS_ESTUDIO + '\n</style>\n</head>\n<body>\n\n<button class="modo-btn" onclick="toggleModo()">🌓 Modo</button>\n\n<h1>' + escapeHtml(titulo) + '</h1>\n\n<div class="indice">\n<details open>\n<summary>📑 Índice del tema</summary>\n<div class="indice-content">\n<ul>\n' + (indiceHTML || '<li><em>Sin subepígrafes</em></li>') + '\n</ul>\n</div>\n</details>\n</div>\n\n<main>\n\n' + epigrafesHTML + '\n\n</main>\n\n<script>\nfunction toggleModo(){document.body.classList.toggle("dark-mode");var b=document.querySelector(".modo-btn");b.textContent=document.body.classList.contains("dark-mode")?"☀️ Modo claro":"🌓 Modo";}\ndocument.addEventListener("click",function(e){var a=e.target.closest(".indice a");if(!a)return;var h=a.getAttribute("href");if(!h||h.indexOf("#")!==0)return;e.preventDefault();var t=document.getElementById(h.substring(1));if(t){var d=document.querySelector(".indice details");if(d)d.removeAttribute("open");t.scrollIntoView({behavior:"smooth",block:"start"});}});\n<\/script>\n</body>\n</html>';
+}
+
+// ============================================================
+//  COMPROBAR SI UN TEMA ESTÁ COMPLETO Y DESCARGARLO
+// ============================================================
+function temaEstaCompleto(tema) {
+    var tieneSubs = tema.subs && tema.subs.length > 0;
+    if (!tieneSubs) {
+        var ep = estado.epigrafes[tema.num];
+        return ep && ep.contenido;
+    }
+    var completo = true;
     (tema.subs || []).forEach(function(sub) {
         if (esBibliografia(sub.titulo)) return;
-        epigrafesHTML += generarBloqueEpigrafe(sub.num, sub.titulo, 1);
+        var ep = estado.epigrafes[sub.num];
+        if (!ep || !ep.contenido) completo = false;
         (sub.subs || []).forEach(function(ss) {
             if (esBibliografia(ss.titulo)) return;
-            epigrafesHTML += generarBloqueEpigrafe(ss.num, ss.titulo, 2);
+            var ep2 = estado.epigrafes[ss.num];
+            if (!ep2 || !ep2.contenido) completo = false;
         });
     });
-    return '<!DOCTYPE html>\n<html lang="es">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>' + escapeHtml(titulo) + '</title>\n<style>\n' + CSS_ESTUDIO + '\n</style>\n</head>\n<body>\n\n<button class="modo-btn" onclick="toggleModo()">🌓 Modo</button>\n\n<h1>' + escapeHtml(titulo) + '</h1>\n\n<div class="indice">\n<details open>\n<summary>📑 Índice del tema</summary>\n<div class="indice-content">\n<ul>\n' + indiceHTML + '\n</ul>\n</div>\n</details>\n</div>\n\n<main>\n\n' + epigrafesHTML + '\n\n</main>\n\n<script>\nfunction toggleModo(){document.body.classList.toggle("dark-mode");var b=document.querySelector(".modo-btn");b.textContent=document.body.classList.contains("dark-mode")?"☀️ Modo claro":"🌓 Modo";}\ndocument.addEventListener("click",function(e){var a=e.target.closest(".indice a");if(!a)return;var h=a.getAttribute("href");if(!h||h.indexOf("#")!==0)return;e.preventDefault();var t=document.getElementById(h.substring(1));if(t){var d=document.querySelector(".indice details");if(d)d.removeAttribute("open");t.scrollIntoView({behavior:"smooth",block:"start"});}});\n<\/script>\n</body>\n</html>';
+    return completo;
+}
+
+function montarYDescargarTema(tema) {
+    var html = montarHTML(tema);
+    var titulo = tema.num + '. ' + tema.titulo;
+    // Guardar en biblioteca
+    var existe = estado.biblioteca.some(function(b) { return b.titulo === titulo; });
+    if (!existe) {
+        estado.biblioteca.push({ titulo: titulo, html: html, fecha: new Date().toISOString() });
+    } else {
+        estado.biblioteca = estado.biblioteca.map(function(b) {
+            if (b.titulo === titulo) return { titulo: titulo, html: html, fecha: new Date().toISOString() };
+            return b;
+        });
+    }
+    guardarEstado();
+    renderBiblioteca();
+    // Descargar automáticamente con nombre del libro + tema
+    var nombreArchivo = nombreArchivoConLibro(titulo);
+    descargarArchivo(html, nombreArchivo, 'html');
+    estado.temasDescargados[tema.num] = true;
+}
+
+function listaCompletaEpigrafes() {
+    var lista = [];
+    estado.esqueleto.forEach(function(tema) {
+        var tieneSubs = tema.subs && tema.subs.length > 0;
+        if (!tieneSubs) {
+            if (!esBibliografia(tema.titulo)) {
+                lista.push({ num: tema.num, titulo: tema.titulo, temaPadreNum: tema.num });
+            }
+        } else {
+            (tema.subs || []).forEach(function(sub) {
+                if (!esBibliografia(sub.titulo)) lista.push({ num: sub.num, titulo: sub.titulo, temaPadreNum: tema.num });
+                (sub.subs || []).forEach(function(ss) {
+                    if (!esBibliografia(ss.titulo)) lista.push({ num: ss.num, titulo: ss.titulo, temaPadreNum: tema.num });
+                });
+            });
+        }
+    });
+    return lista;
+}
+
+function contarCompletados() {
+    var lista = listaCompletaEpigrafes();
+    var completados = 0;
+    lista.forEach(function(ep) {
+        if (estado.epigrafes[ep.num] && estado.epigrafes[ep.num].contenido) completados++;
+    });
+    return { total: lista.length, completados: completados };
 }
 
 function renderEsqueleto() {
@@ -775,16 +783,22 @@ function renderEsqueleto() {
     var html = '';
     estado.esqueleto.forEach(function(tema, idx) {
         var numEp = 0, gen = 0;
-        (tema.subs || []).forEach(function(s) {
-            if (esBibliografia(s.titulo)) return;
-            numEp++;
-            if (estado.epigrafes[s.num] && estado.epigrafes[s.num].contenido) gen++;
-            (s.subs || []).forEach(function(ss) {
-                if (esBibliografia(ss.titulo)) return;
+        var tieneSubs = tema.subs && tema.subs.length > 0;
+        if (!tieneSubs) {
+            numEp = 1;
+            if (estado.epigrafes[tema.num] && estado.epigrafes[tema.num].contenido) gen = 1;
+        } else {
+            (tema.subs || []).forEach(function(s) {
+                if (esBibliografia(s.titulo)) return;
                 numEp++;
-                if (estado.epigrafes[ss.num] && estado.epigrafes[ss.num].contenido) gen++;
+                if (estado.epigrafes[s.num] && estado.epigrafes[s.num].contenido) gen++;
+                (s.subs || []).forEach(function(ss) {
+                    if (esBibliografia(ss.titulo)) return;
+                    numEp++;
+                    if (estado.epigrafes[ss.num] && estado.epigrafes[ss.num].contenido) gen++;
+                });
             });
-        });
+        }
         var estadoTxt = gen === 0 ? '⚪ Sin empezar' : (gen === numEp ? '✅ Completo' : '⏳ ' + gen + '/' + numEp);
         var estadoCls = gen === numEp && numEp > 0 ? 'listo' : (gen > 0 ? 'generando' : '');
         html += '<div class="tema-item">' +
@@ -831,10 +845,15 @@ function renderContenido() {
             '<div class="acciones">' + boton + '</div>' +
         '</div>';
     }
-    (tema.subs || []).forEach(function(sub) {
-        renderEp(sub.num, sub.titulo, 1);
-        (sub.subs || []).forEach(function(ss) { renderEp(ss.num, ss.titulo, 2); });
-    });
+    var tieneSubs = tema.subs && tema.subs.length > 0;
+    if (!tieneSubs) {
+        renderEp(tema.num, tema.titulo, 0);
+    } else {
+        (tema.subs || []).forEach(function(sub) {
+            renderEp(sub.num, sub.titulo, 1);
+            (sub.subs || []).forEach(function(ss) { renderEp(ss.num, ss.titulo, 2); });
+        });
+    }
     cont.innerHTML = html || '<div class="empty-msg">📭 Este tema no tiene epígrafes.</div>';
     $('generarTodosEpigrafesBtn').disabled = (listos === total);
     $('montarHtmlBtn').disabled = (listos === 0);
@@ -864,28 +883,6 @@ function renderBiblioteca() {
     cont.innerHTML = html;
 }
 
-function listaCompletaEpigrafes() {
-    var lista = [];
-    estado.esqueleto.forEach(function(tema) {
-        (tema.subs || []).forEach(function(sub) {
-            if (!esBibliografia(sub.titulo)) lista.push({num: sub.num, titulo: sub.titulo});
-            (sub.subs || []).forEach(function(ss) {
-                if (!esBibliografia(ss.titulo)) lista.push({num: ss.num, titulo: ss.titulo});
-            });
-        });
-    });
-    return lista;
-}
-
-function contarCompletados() {
-    var lista = listaCompletaEpigrafes();
-    var completados = 0;
-    lista.forEach(function(ep) {
-        if (estado.epigrafes[ep.num] && estado.epigrafes[ep.num].contenido) completados++;
-    });
-    return { total: lista.length, completados: completados };
-}
-
 function actualizarProgresoMasivo() {
     var c = contarCompletados();
     var pct = c.total > 0 ? (c.completados / c.total) * 100 : 0;
@@ -899,6 +896,7 @@ async function ejecutarMasivo() {
     estado.masivo.activo = true;
     estado.masivo.pausado = false;
     estado.masivo.cancelado = false;
+    estado.temasDescargados = {};
 
     $('empezarMasivoBtn').style.display = 'none';
     $('pausarMasivoBtn').style.display = 'inline-flex';
@@ -908,6 +906,7 @@ async function ejecutarMasivo() {
     $('masivoFinalizado').classList.remove('visible');
 
     var lista = listaCompletaEpigrafes();
+    var contadorRefresco = 0;
 
     for (var i = 0; i < lista.length; i++) {
         if (estado.masivo.cancelado) break;
@@ -935,6 +934,19 @@ async function ejecutarMasivo() {
             guardarEstado();
         }
         actualizarProgresoMasivo();
+
+        // Comprobar si el tema padre está completo y descargarlo
+        var temaPadre = estado.esqueleto.find(function(t) { return t.num === ep.temaPadreNum; });
+        if (temaPadre && temaEstaCompleto(temaPadre) && !estado.temasDescargados[temaPadre.num]) {
+            montarYDescargarTema(temaPadre);
+            showToast('📥 Descargado: ' + temaPadre.num + '. ' + temaPadre.titulo, 2000);
+        }
+
+        contadorRefresco++;
+        if (contadorRefresco % 3 === 0) {
+            renderEsqueleto();
+            renderContenido();
+        }
     }
 
     estado.masivo.activo = false;
@@ -964,6 +976,7 @@ window.__abrirTema = function(idx) {
 window.__generarEpigrafe = async function(num) {
     var titulo = '';
     estado.esqueleto.forEach(function(t) {
+        if (t.num === num) titulo = t.titulo;
         (t.subs || []).forEach(function(s) {
             if (s.num === num) titulo = s.titulo;
             (s.subs || []).forEach(function(ss) { if (ss.num === num) titulo = ss.titulo; });
@@ -996,13 +1009,26 @@ window.__verEpigrafe = function(num) {
     if (!ep || !ep.contenido) return;
     alert(ep.contenido);
 };
+
 window.__montarTema = function(idx) {
     var tema = estado.esqueleto[idx];
     var html = montarHTML(tema);
     var titulo = tema.num + '. ' + tema.titulo;
-    estado.biblioteca.push({ titulo: titulo, html: html, fecha: new Date().toISOString() });
+    var existe = estado.biblioteca.some(function(b) { return b.titulo === titulo; });
+    if (!existe) {
+        estado.biblioteca.push({ titulo: titulo, html: html, fecha: new Date().toISOString() });
+    } else {
+        estado.biblioteca = estado.biblioteca.map(function(b) {
+            if (b.titulo === titulo) return { titulo: titulo, html: html, fecha: new Date().toISOString() };
+            return b;
+        });
+    }
     guardarEstado();
     renderBiblioteca();
+    // Descargar con nombre del libro + tema
+    var nombreArchivo = nombreArchivoConLibro(titulo);
+    descargarArchivo(html, nombreArchivo, 'html');
+    // Preview
     $('previewEmpty').style.display = 'none';
     $('previewBox').style.display = 'block';
     $('previewTitle').textContent = '🖼️ ' + titulo;
@@ -1010,8 +1036,9 @@ window.__montarTema = function(idx) {
     window.__htmlActual = html;
     window.__tituloActual = titulo;
     cambiarTab('tab-preview');
-    showToast('🔨 HTML montado', 2000);
+    showToast('🔨 HTML montado y descargado', 2000);
 };
+
 window.__verBiblioteca = function(idx) {
     var item = estado.biblioteca[idx];
     $('previewEmpty').style.display = 'none';
@@ -1023,7 +1050,9 @@ window.__verBiblioteca = function(idx) {
     cambiarTab('tab-preview');
 };
 window.__descargarBiblioteca = function(idx) {
-    descargarArchivo(estado.biblioteca[idx].html, sanitizeNombre(estado.biblioteca[idx].titulo), 'html');
+    var item = estado.biblioteca[idx];
+    var nombreArchivo = nombreArchivoConLibro(item.titulo);
+    descargarArchivo(item.html, nombreArchivo, 'html');
 };
 window.__borrarBiblioteca = function(idx) {
     if (!confirm('¿Borrar este HTML?')) return;
@@ -1031,6 +1060,35 @@ window.__borrarBiblioteca = function(idx) {
     guardarEstado();
     renderBiblioteca();
 };
+
+async function descargarZIP() {
+    if (estado.biblioteca.length === 0) {
+        showToast('📭 No hay HTMLs en la biblioteca.', 3000);
+        return;
+    }
+    showToast('📦 Generando ZIP…', 2000);
+    try {
+        var zip = new JSZip();
+        estado.biblioteca.forEach(function(item) {
+            var nombre = nombreArchivoConLibro(item.titulo) + '.html';
+            zip.file(nombre, item.html);
+        });
+        var blob = await zip.generateAsync({ type: 'blob' });
+        var nombreLibro = sanitizeNombre((estado.libroNombre || 'Libro_UNED').replace(/\.(pdf|txt)$/i, ''));
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement('a');
+        a.href = url;
+        a.download = nombreLibro + '.zip';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('✅ ZIP descargado (' + estado.biblioteca.length + ' archivos)', 3000);
+    } catch (e) {
+        console.error(e);
+        showToast('❌ Error al generar ZIP: ' + e.message, 4000);
+    }
+}
 
 function guardarEstado() {
     try {
@@ -1042,14 +1100,14 @@ function guardarEstado() {
             libroNombre: estado.libroNombre,
             modalidad: estado.modalidad
         };
-        localStorage.setItem('uned_v14', JSON.stringify(data));
+        localStorage.setItem('uned_v16', JSON.stringify(data));
     } catch (e) {
         console.warn('No se pudo guardar:', e.message);
     }
 }
 function cargarEstado() {
     try {
-        var raw = localStorage.getItem('uned_v14');
+        var raw = localStorage.getItem('uned_v16');
         if (!raw) return;
         var d = JSON.parse(raw);
         estado.esqueleto = d.esqueleto || [];
@@ -1061,7 +1119,7 @@ function cargarEstado() {
     } catch (e) { console.warn(e); }
 }
 
-function sanitizeNombre(s) { return s.replace(/[<>:"/\\|?*]/g, '_').substring(0, 80); }
+function sanitizeNombre(s) { return s.replace(/[<>:"/\\|?*]/g, '_').substring(0, 100); }
 function descargarArchivo(contenido, nombre, ext) {
     var blob = new Blob([contenido], { type: 'text/html;charset=utf-8' });
     var url = URL.createObjectURL(blob);
@@ -1103,7 +1161,6 @@ $('pdfInput').addEventListener('change', async function() {
         estado.libroNombre = file.name;
         $('pdfStatus').textContent = '✅ ' + file.name + ' · ' + texto.length.toLocaleString() + ' caracteres.';
         $('generarEsqueletoBtn').disabled = false;
-        actualizarEstimacionPrevia();
         showToast('✅ Libro cargado', 1500);
     } catch (e) {
         $('pdfStatus').textContent = '❌ ' + e.message;
@@ -1118,14 +1175,13 @@ $('generarEsqueletoBtn').addEventListener('click', async function() {
     try {
         var datos = await generarEsqueleto();
         if (datos.length === 0) {
-            showToast('⚠️ No se detectaron epígrafes. Pulsa "Ver última respuesta".', 4000);
+            showToast('⚠️ No se detectaron epígrafes.', 4000);
             $('rawViewer').classList.add('visible');
             $('rawResponse').value = estado.ultimaRespuesta;
         } else {
             estado.esqueleto = datos;
             guardarEstado();
             renderEsqueleto();
-            actualizarEstimacionPostEsqueleto();
             cambiarTab('tab-esqueleto');
             showToast('✅ ' + datos.length + ' temas detectados.', 4000);
         }
@@ -1146,22 +1202,27 @@ $('resetBtn').addEventListener('click', function() {
     estado.contextoFijo = null; estado.contextoConEsqueleto = null;
     estado.epigrafes = {}; estado.biblioteca = []; estado.temaActualIdx = null;
     estado.usage = { cache: 0, nuevos: 0, salida: 0, coste: 0, costeTotal: 0 };
-    localStorage.removeItem('uned_v14');
+    estado.temasDescargados = {};
+    localStorage.removeItem('uned_v16');
     renderEsqueleto(); renderContenido(); renderBiblioteca();
     actualizarPanelUso();
     $('masivoFinalizado').classList.remove('visible');
-    $('estimacionPrevia').classList.remove('visible');
-    $('estimacionPostEsqueleto').classList.remove('visible');
+    $('estimacionReal').classList.remove('visible');
     showToast('⟳ Reiniciado', 1500);
 });
 $('generarTodosEpigrafesBtn').addEventListener('click', async function() {
     if (estado.temaActualIdx === null) return;
     var tema = estado.esqueleto[estado.temaActualIdx];
     var lista = [];
-    (tema.subs || []).forEach(function(s) {
-        if (!esBibliografia(s.titulo)) lista.push({num: s.num, titulo: s.titulo});
-        (s.subs || []).forEach(function(ss) { if (!esBibliografia(ss.titulo)) lista.push({num: ss.num, titulo: ss.titulo}); });
-    });
+    var tieneSubs = tema.subs && tema.subs.length > 0;
+    if (!tieneSubs) {
+        lista.push({num: tema.num, titulo: tema.titulo});
+    } else {
+        (tema.subs || []).forEach(function(s) {
+            if (!esBibliografia(s.titulo)) lista.push({num: s.num, titulo: s.titulo});
+            (s.subs || []).forEach(function(ss) { if (!esBibliografia(ss.titulo)) lista.push({num: ss.num, titulo: ss.titulo}); });
+        });
+    }
     this.disabled = true;
     for (var i = 0; i < lista.length; i++) {
         var ep = lista[i];
@@ -1169,6 +1230,10 @@ $('generarTodosEpigrafesBtn').addEventListener('click', async function() {
         await window.__generarEpigrafe(ep.num);
     }
     this.disabled = false;
+    // Descargar el tema al terminar
+    if (temaEstaCompleto(tema)) {
+        montarYDescargarTema(tema);
+    }
     showToast('✅ Generación del tema completa', 2000);
 });
 $('montarHtmlBtn').addEventListener('click', function() {
@@ -1187,34 +1252,22 @@ $('pausarMasivoBtn').addEventListener('click', function() {
     showToast(estado.masivo.pausado ? '⏸️ Pausado' : '▶️ Reanudado', 1500);
 });
 $('cancelarMasivoBtn').addEventListener('click', function() {
-    if (!confirm('¿Cancelar la generación? Se conservan los epígrafes ya generados.')) return;
+    if (!confirm('¿Cancelar la generación?')) return;
     estado.masivo.cancelado = true;
     estado.masivo.pausado = false;
-});
-$('montarTodosBtn').addEventListener('click', function() {
-    if (!confirm('¿Montar el HTML de todos los temas del libro?')) return;
-    estado.esqueleto.forEach(function(tema, idx) {
-        var html = montarHTML(tema);
-        var titulo = tema.num + '. ' + tema.titulo;
-        var existe = estado.biblioteca.some(function(b) { return b.titulo === titulo; });
-        if (!existe) {
-            estado.biblioteca.push({ titulo: titulo, html: html, fecha: new Date().toISOString() });
-        }
-    });
-    guardarEstado();
-    renderBiblioteca();
-    showToast('✅ ' + estado.esqueleto.length + ' HTMLs montados', 2500);
-    cambiarTab('tab-biblioteca');
 });
 $('descargarTodosBtn').addEventListener('click', function() {
     if (estado.biblioteca.length === 0) { showToast('📭 Nada que descargar', 2000); return; }
     estado.biblioteca.forEach(function(item, i) {
         setTimeout(function() {
-            descargarArchivo(item.html, sanitizeNombre(item.titulo), 'html');
+            var nombreArchivo = nombreArchivoConLibro(item.titulo);
+            descargarArchivo(item.html, nombreArchivo, 'html');
         }, i * 300);
     });
     showToast('📦 Descargando ' + estado.biblioteca.length + ' archivos…', 3000);
 });
+$('descargarZipBtn').addEventListener('click', descargarZIP);
+$('descargarZipBibliotecaBtn').addEventListener('click', descargarZIP);
 
 $('copiarHtmlBtn').addEventListener('click', function() {
     if (!window.__htmlActual) return;
@@ -1222,7 +1275,8 @@ $('copiarHtmlBtn').addEventListener('click', function() {
 });
 $('descargarHtmlBtn').addEventListener('click', function() {
     if (!window.__htmlActual) return;
-    descargarArchivo(window.__htmlActual, sanitizeNombre(window.__tituloActual || 'tema'), 'html');
+    var nombreArchivo = nombreArchivoConLibro(window.__tituloActual || 'tema');
+    descargarArchivo(window.__htmlActual, nombreArchivo, 'html');
 });
 $('ejecutarHtmlBtn').addEventListener('click', function() {
     if (!window.__htmlActual) return;
@@ -1279,8 +1333,6 @@ document.querySelectorAll('.tabs button').forEach(function(btn) {
     renderEsqueleto(); renderContenido(); renderBiblioteca();
     actualizarPanelUso();
     actualizarProgresoMasivo();
-    actualizarEstimacionPrevia();
-    actualizarEstimacionPostEsqueleto();
 })();
 
 })();
