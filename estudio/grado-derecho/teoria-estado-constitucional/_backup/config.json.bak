@@ -1,0 +1,11 @@
+{
+  "id": "teoria-estado-constitucional",
+  "nombre": "Teoria Estado Constitucional",
+  "codigo": "66021038",
+  "creditos": 6,
+  "caracter": "FORMACIÓN BÁSICA",
+  "icon": "🏛️",
+  "temas": [
+    { "id": "tema1", "titulo": "Tema 1 - Introducción" }
+  ]
+}

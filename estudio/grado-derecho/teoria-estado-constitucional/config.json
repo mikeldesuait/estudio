@@ -6,6 +6,40 @@
   "caracter": "FORMACIÓN BÁSICA",
   "icon": "🏛️",
   "temas": [
-    { "id": "tema1", "titulo": "Tema 1 - Introducción" }
+    {
+      "id": "tema1",
+      "titulo": "Tema 1 - Caracteres generales del constitucionalismo histórico español",
+      "archivo": "che_ocr - 1. Caracteres generales del constitucionalismo histórico español.html"
+    },
+    {
+      "id": "tema2",
+      "titulo": "Tema 2 - Inicio del régimen constitucional español",
+      "archivo": "che_ocr - 2. Inicio del régimen constitucional español.html"
+    },
+    {
+      "id": "tema3",
+      "titulo": "Tema 3 - Período isabelino",
+      "archivo": "che_ocr - 3. Período isabelino.html"
+    },
+    {
+      "id": "tema4",
+      "titulo": "Tema 4 - Sexenio revolucionario",
+      "archivo": "che_ocr - 4. Sexenio revolucionario.html"
+    },
+    {
+      "id": "tema5",
+      "titulo": "Tema 5 - La Restauración y su crisis",
+      "archivo": "che_ocr - 5. La Restauración y su crisis.html"
+    },
+    {
+      "id": "tema6",
+      "titulo": "Tema 6 - Régimen de la II República",
+      "archivo": "che_ocr - 6. Régimen de la II República.html"
+    },
+    {
+      "id": "tema7",
+      "titulo": "Tema 7 - Régimen político franquista",
+      "archivo": "che_ocr - 7. Régimen político franquista.html"
+    }
   ]
 }
