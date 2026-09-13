@@ -32,152 +32,25 @@
             line-height: 1.6;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 15px;
-            position: relative;
-        }
-
-        h1 { color: var(--primary); margin-bottom: 5px; font-size: 1.6em; }
-        header p { color: #7f8c8d; margin-top: 0; font-size: 0.9em; }
-
+        header { text-align: center; margin-bottom: 25px; }
+        h1 { color: var(--primary); margin-bottom: 10px; }
         .container { max-width: 1000px; margin: 0 auto; }
 
-        /* --- Botón flotante de menú --- */
-        .menu-toggle {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            z-index: 1000;
-            background: var(--primary);
-            color: white;
-            border: none;
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            font-size: 20px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.2s, background 0.3s;
-        }
-
-        .menu-toggle:hover {
-            background: #1a252f;
-            transform: scale(1.05);
-        }
-
-        .menu-toggle.active {
-            background: var(--secondary);
-        }
-
-        /* --- Panel de menú desplegable --- */
-        .menu-panel {
-            position: fixed;
-            top: 70px;
-            right: 15px;
-            z-index: 999;
+        /* --- Sección de Carga --- */
+        .upload-section {
             background: var(--card-bg);
+            padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-            padding: 15px;
-            width: 300px;
-            max-width: calc(100vw - 30px);
-            transform: translateY(-20px);
-            opacity: 0;
-            pointer-events: none;
-            transition: transform 0.3s, opacity 0.3s;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: center;
+            margin-bottom: 20px;
+            border: 2px dashed var(--border);
+            transition: border-color 0.3s;
         }
 
-        .menu-panel.active {
-            transform: translateY(0);
-            opacity: 1;
-            pointer-events: auto;
-        }
+        .upload-section:hover { border-color: var(--secondary); }
+        input[type="file"] { display: none; }
 
-        .menu-panel h3 {
-            margin: 0 0 12px 0;
-            color: var(--primary);
-            font-size: 0.95em;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 8px;
-        }
-
-        .menu-panel .menu-item {
-            display: block;
-            width: 100%;
-            text-align: left;
-            padding: 10px 12px;
-            margin-bottom: 5px;
-            border: none;
-            background: transparent;
-            color: var(--text);
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9em;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-
-        .menu-panel .menu-item:hover {
-            background: var(--hover-bg);
-        }
-
-        .menu-panel .menu-item.primary {
-            background: var(--secondary);
-            color: white;
-        }
-
-        .menu-panel .menu-item.primary:hover {
-            background: #219150;
-        }
-
-        .menu-panel .menu-item.danger {
-            color: #e74c3c;
-        }
-
-        .menu-panel .menu-item.danger:hover {
-            background: #fee;
-        }
-
-        .menu-panel .menu-item:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        .menu-panel .menu-divider {
-            height: 1px;
-            background: var(--border);
-            margin: 8px 0;
-        }
-
-        .menu-panel .menu-info {
-            font-size: 0.8em;
-            color: #7f8c8d;
-            padding: 5px 12px;
-            line-height: 1.4;
-        }
-
-        .menu-panel .menu-info strong {
-            color: var(--primary);
-        }
-
-        /* --- Overlay para cerrar el menú al hacer clic fuera --- */
-        .menu-overlay {
-            position: fixed;
-            inset: 0;
-            z-index: 998;
-            background: transparent;
-            display: none;
-        }
-
-        .menu-overlay.active { display: block; }
-
-        /* --- Resto de estilos (igual que antes) --- */
         .btn {
             background-color: var(--secondary);
             color: white;
@@ -204,7 +77,6 @@
             font-weight: bold;
             color: var(--primary);
             min-height: 20px;
-            font-size: 0.9em;
         }
 
         #debug-info {
@@ -219,6 +91,7 @@
 
         #debug-info.active { display: block; }
 
+        /* --- Panel de Filtros --- */
         .controls-panel {
             background: var(--card-bg);
             padding: 15px 20px;
@@ -258,6 +131,7 @@
 
         #output { display: none; }
 
+        /* --- Pestañas principales --- */
         .tabs {
             display: flex;
             gap: 5px;
@@ -286,6 +160,7 @@
         .tab-content { display: none; }
         .tab-content.active { display: block; }
 
+        /* --- Día expandido --- */
         .day-block {
             background: var(--card-bg);
             border-radius: 10px;
@@ -327,6 +202,7 @@
             letter-spacing: 1px;
         }
 
+        /* --- Día compacto --- */
         details.day-details {
             background: var(--card-bg);
             border-radius: 10px;
@@ -366,6 +242,7 @@
         }
         details.day-details[open] .day-summary::after { transform: rotate(180deg); }
 
+        /* --- Comidas --- */
         .meal-block {
             padding: 18px 20px;
             border-bottom: 1px solid var(--border);
@@ -431,6 +308,7 @@
             border-radius: 6px;
         }
 
+        /* --- Secciones adicionales (compra, consejos, alérgenos) --- */
         .extra-section {
             background: var(--card-bg);
             border-radius: 10px;
@@ -495,6 +373,7 @@
             color: var(--primary);
         }
 
+        /* --- Modo Edición --- */
         [contenteditable="true"] {
             background-color: var(--edit-bg);
             border: 2px dashed var(--secondary);
@@ -518,6 +397,7 @@
             display: block;
         }
 
+        /* --- Texto crudo --- */
         .raw-text {
             white-space: pre-wrap;
             font-family: monospace;
@@ -568,7 +448,7 @@
         }
 
         @media print {
-            .menu-toggle, .menu-panel, .menu-overlay, .controls-panel, .toggle-raw, .meal-actions, .btn, .tabs { display: none !important; }
+            .upload-section, .controls-panel, .toggle-raw, .meal-actions, .btn, .tabs { display: none !important; }
             .day-block, details.day-details, .extra-section { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
             .meal-content { display: block !important; }
             .tab-content { display: block !important; }
@@ -577,42 +457,24 @@
 </head>
 <body>
 
-<!-- Botón flotante de menú -->
-<button class="menu-toggle" id="menu-toggle" title="Menú">⚙️</button>
-
-<!-- Overlay para cerrar al hacer clic fuera -->
-<div class="menu-overlay" id="menu-overlay"></div>
-
-<!-- Panel de menú desplegable -->
-<div class="menu-panel" id="menu-panel">
-    <h3>⚙️ Acciones</h3>
-    
-    <button class="menu-item primary" id="menu-upload">📄 Cargar PDF</button>
-    <input type="file" id="pdf-upload" accept=".pdf" style="display:none;">
-    
-    <button class="menu-item" id="btn-toggle-view" disabled>📋 Modo compacto</button>
-    
-    <div class="menu-divider"></div>
-    
-    <button class="menu-item" id="btn-export" disabled>💾 Exportar JSON</button>
-    <button class="menu-item" id="btn-print" disabled>🖨️ Imprimir</button>
-    
-    <div class="menu-divider"></div>
-    
-    <button class="menu-item danger" id="btn-reset" disabled>🔄 Reiniciar todo</button>
-    
-    <div class="menu-info" id="menu-info" style="display:none;">
-        <strong>Estado:</strong> <span id="menu-status">Sin PDF cargado</span>
-    </div>
-</div>
-
 <div class="container">
     <header>
-        <h1>🍎 Plan Dietético</h1>
-        <p>Carga tu PDF desde el menú ⚙️</p>
+        <h1>🍎 Estructurador de Planes Dietéticos</h1>
+        <p>Carga tu PDF, filtra por comida, edita y consulta las secciones adicionales.</p>
     </header>
 
-    <!-- Panel de filtros -->
+    <div class="upload-section">
+        <label for="pdf-upload" class="btn">📄 Seleccionar PDF</label>
+        <input type="file" id="pdf-upload" accept=".pdf">
+        <button id="btn-toggle-view" class="btn btn-secondary hidden">📋 Modo compacto</button>
+        <button id="btn-export" class="btn btn-secondary hidden">💾 Exportar JSON</button>
+        <button id="btn-print" class="btn btn-secondary hidden">🖨️ Imprimir</button>
+        <button id="btn-reset" class="btn btn-danger hidden">🔄 Reiniciar</button>
+        <div id="status"></div>
+        <div id="debug-info"></div>
+        <div class="spinner" id="spinner"></div>
+    </div>
+
     <div class="controls-panel" id="controls-panel">
         <div class="filter-group">
             <label for="filter-day">Día:</label>
@@ -640,15 +502,10 @@
     <!-- Pestañas -->
     <div class="tabs hidden" id="tabs">
         <button class="tab-btn active" data-tab="plan">📅 Plan Semanal</button>
-        <button class="tab-btn" data-tab="shopping">🛒 Compra</button>
-        <button class="tab-btn" data-tab="advice">💡 Consejos</button>
+        <button class="tab-btn" data-tab="shopping">🛒 Lista de la Compra</button>
+        <button class="tab-btn" data-tab="advice">💡 Consejos y Patologías</button>
         <button class="tab-btn" data-tab="allergens">⚠️ Alérgenos</button>
     </div>
-
-    <!-- Spinner y estado (fuera del menú para que se vea) -->
-    <div class="spinner" id="spinner"></div>
-    <div id="status" style="text-align:center;"></div>
-    <div id="debug-info" style="text-align:center;"></div>
 
     <div id="output"></div>
     
@@ -661,13 +518,6 @@
 
 <script>
     pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-
-    const menuToggle = document.getElementById('menu-toggle');
-    const menuPanel = document.getElementById('menu-panel');
-    const menuOverlay = document.getElementById('menu-overlay');
-    const menuUpload = document.getElementById('menu-upload');
-    const menuStatus = document.getElementById('menu-status');
-    const menuInfo = document.getElementById('menu-info');
 
     const fileInput = document.getElementById('pdf-upload');
     const statusDiv = document.getElementById('status');
@@ -684,7 +534,7 @@
     const btnToggleView = document.getElementById('btn-toggle-view');
     const tabsDiv = document.getElementById('tabs');
 
-    const STORAGE_KEY = 'diet_plan_data_v6';
+    const STORAGE_KEY = 'diet_plan_data_v5';
 
     const DIAS_SEMANA = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
     const MEAL_ORDER = ['desayuno', 'tentempie', 'comida', 'merienda', 'cena'];
@@ -699,26 +549,6 @@
     let currentData = null;
     let rawTextGlobal = '';
     let compactMode = false;
-
-    // --- Menú desplegable ---
-    menuToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        menuPanel.classList.toggle('active');
-        menuOverlay.classList.toggle('active');
-        menuToggle.classList.toggle('active');
-        menuToggle.textContent = menuPanel.classList.contains('active') ? '✕' : '⚙️';
-    });
-
-    menuOverlay.addEventListener('click', () => {
-        menuPanel.classList.remove('active');
-        menuOverlay.classList.remove('active');
-        menuToggle.classList.remove('active');
-        menuToggle.textContent = '⚙️';
-    });
-
-    menuUpload.addEventListener('click', () => {
-        fileInput.click();
-    });
 
     function getTodayName() {
         const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
@@ -748,33 +578,16 @@
                 renderAll();
                 showControls();
                 updateViewToggleButton();
-                updateMenuStatus();
             } catch (e) {
                 console.warn('Error recuperando datos:', e);
             }
         }
     });
 
-    function updateMenuStatus() {
-        if (currentData && currentData.plan && Object.keys(currentData.plan).length > 0) {
-            const numDays = Object.keys(currentData.plan).length;
-            menuInfo.style.display = 'block';
-            menuStatus.textContent = `${numDays} días cargados`;
-        } else {
-            menuInfo.style.display = 'none';
-        }
-    }
-
     // --- Carga de PDF ---
     fileInput.addEventListener('change', async (event) => {
         const file = event.target.files[0];
         if (!file) return;
-
-        // Cerrar menú
-        menuPanel.classList.remove('active');
-        menuOverlay.classList.remove('active');
-        menuToggle.classList.remove('active');
-        menuToggle.textContent = '⚙️';
 
         outputDiv.innerHTML = '';
         outputDiv.style.display = 'none';
@@ -827,7 +640,6 @@
                 renderAll();
                 showControls();
                 statusDiv.textContent = `✅ Completado. ${daysFound.length} días detectados.`;
-                updateMenuStatus();
             }
             
             spinner.style.display = 'none';
@@ -850,6 +662,7 @@
         return cleaned;
     }
 
+    // --- Parser principal ---
     function parseFullDocument(text) {
         const cleanText = cleanHtml(text);
         const result = {
@@ -859,27 +672,33 @@
             allergens: ''
         };
 
+        // 1. Detectar el final del plan semanal (cuando empieza "LISTA DE LA COMPRA" o "RECOMENDACIONES PATOLOGÍAS")
         const shoppingStart = cleanText.search(/LISTA\s+DE\s+LA\s+COMPRA/i);
         const adviceStart = cleanText.search(/RECOMENDACIONES\s+PATOLOGÍAS/i);
         const allergensStart = cleanText.search(/RESUMEN\s+DE\s+GRUPOS\s+DE\s+ALÉRGENOS/i);
         
+        // El plan semanal va desde el inicio hasta el primero de estos marcadores
         let planEnd = cleanText.length;
         [shoppingStart, adviceStart, allergensStart].forEach(idx => {
             if (idx !== -1 && idx < planEnd) planEnd = idx;
         });
 
+        // 2. Parsear el plan semanal
         const planText = cleanText.substring(0, planEnd);
         result.plan = parseWeeklyPlan(planText);
 
+        // 3. Extraer Lista de la Compra
         if (shoppingStart !== -1) {
             const shoppingEnd = adviceStart !== -1 && adviceStart > shoppingStart 
                 ? adviceStart 
                 : (allergensStart !== -1 && allergensStart > shoppingStart ? allergensStart : cleanText.length);
             let shoppingText = cleanText.substring(shoppingStart, shoppingEnd);
+            // Quitar el encabezado "LISTA DE LA COMPRA"
             shoppingText = shoppingText.replace(/^LISTA\s+DE\s+LA\s+COMPRA\s*/i, '').trim();
             result.shopping = shoppingText;
         }
 
+        // 4. Extraer Consejos / Patologías
         if (adviceStart !== -1) {
             const adviceEnd = allergensStart !== -1 && allergensStart > adviceStart 
                 ? allergensStart 
@@ -889,6 +708,7 @@
             result.advice = adviceText;
         }
 
+        // 5. Extraer Alérgenos
         if (allergensStart !== -1) {
             let allergensText = cleanText.substring(allergensStart);
             allergensText = allergensText.replace(/^RESUMEN\s+DE\s+GRUPOS\s+DE\s+ALÉRGENOS\s+ALIMENTARIOS\s+POR\s+DÍA\s*/i, '').trim();
@@ -898,11 +718,17 @@
         return result;
     }
 
+    // --- Parser del plan semanal ---
     function parseWeeklyPlan(text) {
         const data = {};
         
+        // Estrategia mejorada: buscar cada día como TÍTULO DE SECCIÓN
+        // Los días aparecen como "Lunes", "Martes", etc., seguidos de contenido
+        // Vamos a buscar cada día y guardar TODAS las posiciones, luego filtrar
+        
         let dayPositions = [];
         DIAS_SEMANA.forEach(dia => {
+            // Buscar el día como palabra completa, opcionalmente seguido de espacio/nueva línea
             const regex = new RegExp(`\\b${dia}\\b`, 'gi');
             let match;
             while ((match = regex.exec(text)) !== null) {
@@ -912,20 +738,27 @@
 
         dayPositions.sort((a, b) => a.index - b.index);
 
+        // Filtrar posiciones: queremos las que están después de la página 2 (donde empieza el plan real)
         const page3Index = text.indexOf('--- PÁGINA 3 ---');
         let realPositions = dayPositions.filter(p => p.index > (page3Index !== -1 ? page3Index : 0));
         
-        if (realPositions.length === 0) realPositions = dayPositions;
+        if (realPositions.length === 0) {
+            realPositions = dayPositions;
+        }
 
+        // Eliminar duplicados: si dos posiciones del mismo día están a menos de 200 caracteres, es el mismo día
         let uniquePositions = [];
         realPositions.forEach((curr) => {
             const last = uniquePositions[uniquePositions.length - 1];
             if (last && last.day === curr.day && (curr.index - last.index) < 200) {
+                // Duplicado cercano, ignorar
                 return;
             }
             uniquePositions.push(curr);
         });
 
+        // También eliminar días duplicados no consecutivos (si el mismo día aparece dos veces en el documento)
+        // Nos quedamos con la primera aparición de cada día después del inicio del plan real
         let seenDays = new Set();
         let finalPositions = [];
         uniquePositions.forEach(p => {
@@ -935,8 +768,10 @@
             }
         });
 
+        // Ordenar por posición en el texto
         finalPositions.sort((a, b) => a.index - b.index);
 
+        // Extraer contenido entre días
         for (let i = 0; i < finalPositions.length; i++) {
             const currentDay = finalPositions[i].day;
             const startIndex = finalPositions[i].index;
@@ -945,6 +780,7 @@
                 : text.length;
             
             let dayText = text.substring(startIndex, endIndex);
+            // Quitar el nombre del día del inicio
             dayText = dayText.replace(new RegExp(`^${currentDay}\\s*`, 'i'), '').trim();
             
             const meals = parseMealsFromDay(dayText);
@@ -988,6 +824,7 @@
 
         matches.sort((a, b) => a.index - b.index);
 
+        // Eliminar duplicados (mismo tipo de comida a menos de 30 caracteres)
         let filteredMatches = [];
         matches.forEach((curr) => {
             const last = filteredMatches[filteredMatches.length - 1];
@@ -1031,10 +868,10 @@
 
     function showControls() {
         controlsPanel.classList.add('active');
-        btnExport.disabled = false;
-        btnPrint.disabled = false;
-        btnReset.disabled = false;
-        btnToggleView.disabled = false;
+        btnExport.classList.remove('hidden');
+        btnPrint.classList.remove('hidden');
+        btnReset.classList.remove('hidden');
+        btnToggleView.classList.remove('hidden');
         tabsDiv.classList.remove('hidden');
         
         filterDay.innerHTML = '<option value="all">Todos</option>';
@@ -1057,13 +894,9 @@
         updateViewToggleButton();
         renderAll();
         saveToStorage();
-        // Cerrar menú
-        menuPanel.classList.remove('active');
-        menuOverlay.classList.remove('active');
-        menuToggle.classList.remove('active');
-        menuToggle.textContent = '⚙️';
     });
 
+    // --- Renderizar todo ---
     function renderAll() {
         renderPlan();
         renderShopping();
@@ -1071,6 +904,7 @@
         renderAllergens();
     }
 
+    // --- Renderizar plan semanal ---
     function renderPlan() {
         const tabPlan = document.getElementById('tab-plan');
         tabPlan.innerHTML = '';
@@ -1134,6 +968,7 @@
         applyFilters();
     }
 
+    // --- Renderizar Lista de la Compra ---
     function renderShopping() {
         const tabShopping = document.getElementById('tab-shopping');
         tabShopping.innerHTML = '';
@@ -1159,6 +994,7 @@
         tabShopping.appendChild(section);
     }
 
+    // --- Renderizar Consejos ---
     function renderAdvice() {
         const tabAdvice = document.getElementById('tab-advice');
         tabAdvice.innerHTML = '';
@@ -1168,6 +1004,7 @@
             return;
         }
 
+        // Dividir por las secciones conocidas
         const adviceText = currentData.advice;
         const sections = [
             { title: '🍼 Intolerancia a la Lactosa', pattern: /INTOLERANCIA\s+A\s+LA\s+LACTOSA/i },
@@ -1180,6 +1017,7 @@
         let foundAny = false;
         let allSections = [];
 
+        // Buscar todas las posiciones de las secciones
         sections.forEach(sec => {
             const match = adviceText.match(sec.pattern);
             if (match) {
@@ -1187,15 +1025,18 @@
             }
         });
 
+        // Ordenar por posición
         allSections.sort((a, b) => a.index - b.index);
 
         if (allSections.length > 0) {
             foundAny = true;
+            // Extraer el contenido entre secciones
             for (let i = 0; i < allSections.length; i++) {
                 const start = allSections[i].index;
                 const end = (i + 1 < allSections.length) ? allSections[i + 1].index : adviceText.length;
                 let sectionContent = adviceText.substring(start, end);
                 
+                // Quitar el título de la sección del contenido
                 sectionContent = sectionContent.replace(sections.find(s => s.title === allSections[i].title).pattern, '').trim();
                 
                 const section = document.createElement('div');
@@ -1216,6 +1057,7 @@
         }
 
         if (!foundAny) {
+            // Mostrar todo el texto como un bloque único
             const section = document.createElement('div');
             section.className = 'extra-section advice';
             
@@ -1233,6 +1075,7 @@
         }
     }
 
+    // --- Renderizar Alérgenos ---
     function renderAllergens() {
         const tabAllergens = document.getElementById('tab-allergens');
         tabAllergens.innerHTML = '';
@@ -1258,9 +1101,11 @@
         tabAllergens.appendChild(section);
     }
 
+    // --- Formatear contenido de secciones extra ---
     function formatExtraContent(text) {
         if (!text) return '<p><em>Sin contenido</em></p>';
         
+        // Detectar listas (líneas que empiezan con - o •)
         const lines = text.split(/\n/);
         let html = '';
         let inList = false;
@@ -1277,13 +1122,16 @@
                 if (!inList) { html += '<ul>'; inList = true; }
                 html += `<li>${escapeHtml(trimmed.replace(/^[-•*]\s/, ''))}</li>`;
             } else if (trimmed.match(/^[A-ZÁÉÍÓÚÑ\s]+$/) && trimmed.length > 5 && trimmed.length < 80) {
+                // Parece un título en mayúsculas
                 if (inList) { html += '</ul>'; inList = false; }
                 html += `<h3>${escapeHtml(trimmed)}</h3>`;
             } else if (trimmed.match(/^[A-ZÁÉÍÓÚÑ][a-záéíóúñ\s]+:$/)) {
+                // Parece un subtítulo con dos puntos
                 if (inList) { html += '</ul>'; inList = false; }
                 html += `<h4>${escapeHtml(trimmed)}</h4>`;
             } else {
                 if (inList) { html += '</ul>'; inList = false; }
+                // Detectar palabras en negrita con ** o similar
                 let formatted = escapeHtml(trimmed);
                 formatted = formatted.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
                 html += `<p>${formatted}</p>`;
@@ -1405,11 +1253,13 @@
         }
     }
 
+    // --- Filtros ---
     function applyFilters() {
         const dayFilterVal = filterDay.value;
         const mealFilterVal = filterMeal.value;
         const searchFilter = searchText.value.toLowerCase().trim();
         
+        // Si hay filtros activos, forzar modo expandido
         const forceExpanded = (mealFilterVal !== 'all') || (dayFilterVal !== 'all');
         
         if (forceExpanded && compactMode) {
@@ -1474,6 +1324,7 @@
     
     searchText.addEventListener('input', applyFilters);
 
+    // --- Pestañas ---
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -1484,6 +1335,7 @@
         });
     });
 
+    // --- Exportar JSON ---
     btnExport.addEventListener('click', () => {
         if (!currentData) return;
         const dataStr = JSON.stringify({ data: currentData, rawText: rawTextGlobal }, null, 2);
@@ -1494,22 +1346,15 @@
         a.download = 'plan-dietetico.json';
         a.click();
         URL.revokeObjectURL(url);
-        // Cerrar menú
-        menuPanel.classList.remove('active');
-        menuOverlay.classList.remove('active');
-        menuToggle.classList.remove('active');
-        menuToggle.textContent = '⚙️';
     });
 
+    // --- Imprimir ---
     btnPrint.addEventListener('click', () => {
         document.querySelectorAll('details').forEach(d => d.setAttribute('open', ''));
         window.print();
-        menuPanel.classList.remove('active');
-        menuOverlay.classList.remove('active');
-        menuToggle.classList.remove('active');
-        menuToggle.textContent = '⚙️';
     });
 
+    // --- Reiniciar ---
     btnReset.addEventListener('click', () => {
         if (confirm('¿Estás seguro de que quieres borrar todos los datos?')) {
             localStorage.removeItem(STORAGE_KEY);
@@ -1520,22 +1365,16 @@
             controlsPanel.classList.remove('active');
             debugInfo.classList.remove('active');
             tabsDiv.classList.add('hidden');
-            btnExport.disabled = true;
-            btnPrint.disabled = true;
-            btnReset.disabled = true;
-            btnToggleView.disabled = true;
+            btnExport.classList.add('hidden');
+            btnPrint.classList.add('hidden');
+            btnReset.classList.add('hidden');
+            btnToggleView.classList.add('hidden');
             statusDiv.textContent = '';
             fileInput.value = '';
             document.getElementById('tab-plan').innerHTML = '';
             document.getElementById('tab-shopping').innerHTML = '';
             document.getElementById('tab-advice').innerHTML = '';
             document.getElementById('tab-allergens').innerHTML = '';
-            menuInfo.style.display = 'none';
-            
-            menuPanel.classList.remove('active');
-            menuOverlay.classList.remove('active');
-            menuToggle.classList.remove('active');
-            menuToggle.textContent = '⚙️';
         }
     });
 
