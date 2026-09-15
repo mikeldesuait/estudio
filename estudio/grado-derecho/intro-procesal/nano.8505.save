@@ -1,4 +1,0 @@
-cd ~/estudio
-git add .
-git commit -m "Mensaje del cambio"
-git push
