@@ -1,0 +1,262 @@
+/* ============================================================
+   AGENDA MODAL — Formulario completo
+   ============================================================ */
+
+.agenda-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn .2s ease;
+}
+.agenda-modal-overlay.show { display: flex; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.agenda-modal {
+  background: var(--bg-card, #ffffff);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  animation: slideUp .25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.agenda-modal-header {
+  padding: 18px 22px 14px;
+  background: linear-gradient(135deg, #1e1b4b, #312e81);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.agenda-modal-header h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.agenda-modal-header .close {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .15s;
+}
+.agenda-modal-header .close:hover { background: rgba(255, 255, 255, 0.25); }
+
+.agenda-modal-body {
+  padding: 20px 22px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.agenda-modal-body label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary, #718096);
+  margin-bottom: 6px;
+  margin-top: 14px;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+}
+.agenda-modal-body label:first-of-type { margin-top: 0; }
+
+.agenda-modal-body .am-opcional {
+  font-weight: 400;
+  text-transform: none;
+  color: var(--text-secondary, #718096);
+  font-style: italic;
+}
+
+.agenda-modal-body input[type="text"],
+.agenda-modal-body input[type="date"],
+.agenda-modal-body input[type="time"],
+.agenda-modal-body textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border, #e2ddd3);
+  background: var(--bg-soft, #faf7f2);
+  color: var(--text-primary, #2d3748);
+  font-family: inherit;
+  font-size: 14px;
+  box-sizing: border-box;
+  transition: all .15s;
+}
+.agenda-modal-body input:focus,
+.agenda-modal-body textarea:focus {
+  outline: none;
+  border-color: var(--accent, #6366f1);
+  background: var(--bg-card, #ffffff);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+.agenda-modal-body textarea {
+  resize: vertical;
+  min-height: 50px;
+  font-family: inherit;
+}
+
+/* ═══ Selector de tipo ═══ */
+.am-tipo-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.am-tipo-opcion {
+  cursor: pointer;
+  margin: 0 !important;
+}
+.am-tipo-opcion input {
+  display: none;
+}
+.am-tipo-card {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 12px;
+  border: 2px solid var(--border, #e2ddd3);
+  border-radius: 12px;
+  background: var(--bg-soft, #faf7f2);
+  transition: all .15s;
+  text-align: center;
+}
+.am-tipo-card i { font-size: 20px; color: var(--text-secondary, #718096); }
+.am-tipo-card strong { font-size: 12px; color: var(--text-primary, #2d3748); text-transform: none; }
+.am-tipo-card small { font-size: 10px; color: var(--text-secondary, #718096); text-transform: none; font-weight: 400; }
+.am-tipo-opcion input:checked + .am-tipo-card {
+  border-color: var(--accent, #6366f1);
+  background: rgba(99, 102, 241, 0.08);
+}
+.am-tipo-opcion input:checked + .am-tipo-card i { color: var(--accent, #6366f1); }
+
+/* ═══ Selector de días ═══ */
+.am-dias-selector {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+.am-dia {
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 2px solid var(--border, #e2ddd3);
+  background: var(--bg-soft, #faf7f2);
+  color: var(--text-secondary, #718096);
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all .15s;
+}
+.am-dia:hover { border-color: var(--accent, #6366f1); }
+.am-dia.activo {
+  background: var(--accent, #6366f1);
+  color: white;
+  border-color: var(--accent, #6366f1);
+}
+
+/* ═══ Grid de horas ═══ */
+.am-horas-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.am-horas-grid > div { min-width: 0; }
+
+/* ═══ Selector de color ═══ */
+.am-colores {
+  display: flex;
+  gap: 10px;
+  margin-top: 4px;
+}
+.am-color {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  cursor: pointer;
+  transition: all .15s;
+  padding: 0;
+}
+.am-color:hover { transform: scale(1.1); }
+.am-color.activo {
+  border-color: var(--text-primary, #2d3748);
+  transform: scale(1.15);
+}
+.am-color.amarillo { background: linear-gradient(135deg, #fff3b0, #ffe066); }
+.am-color.azul     { background: linear-gradient(135deg, #cfe8ff, #a8d0ff); }
+.am-color.verde    { background: linear-gradient(135deg, #d4f5d4, #b0e8b0); }
+.am-color.rosa     { background: linear-gradient(135deg, #ffd9e8, #ffb8d1); }
+.am-color.naranja  { background: linear-gradient(135deg, #ffddb8, #ffc180); }
+
+/* ═══ Acciones ═══ */
+.agenda-modal-acciones {
+  padding: 14px 22px 18px;
+  background: var(--bg-soft, #faf7f2);
+  border-top: 1px solid var(--border, #e2ddd3);
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+.agenda-modal-acciones button {
+  padding: 10px 18px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  font-family: inherit;
+  transition: all .15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.agenda-modal-acciones .btn-cancelar {
+  background: transparent;
+  color: var(--text-primary, #2d3748);
+  border: 1px solid var(--border, #e2ddd3);
+}
+.agenda-modal-acciones .btn-cancelar:hover { background: var(--bg-hover, #f0ebe2); }
+.agenda-modal-acciones .btn-guardar {
+  background: var(--accent, #6366f1);
+  color: white;
+}
+.agenda-modal-acciones .btn-guardar:hover {
+  background: #4f46e5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+.agenda-modal-acciones .btn-eliminar {
+  background: transparent;
+  color: #ef4444;
+  border: 1px solid #ef4444;
+  margin-right: auto;
+}
+.agenda-modal-acciones .btn-eliminar:hover {
+  background: #ef4444;
+  color: white;
+}
