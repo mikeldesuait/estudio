@@ -473,3 +473,25 @@ body.shell-activo .navbar {
   letter-spacing: .5px;
   text-transform: uppercase;
 }
+
+/* ═══ Botón de ajustes en la topbar ═══ */
+.shell-btn-ajustes {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: white;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  transition: all .15s;
+  flex-shrink: 0;
+}
+.shell-btn-ajustes:hover {
+  background: rgba(255,255,255,0.2);
+  transform: scale(1.05) rotate(45deg);
+}

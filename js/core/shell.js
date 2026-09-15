@@ -272,6 +272,10 @@ const Shell = {
       <button class="shell-btn-tema" id="shellBtnTema" title="Cambiar tema">
         <i class="fas ${iconoTema}"></i>
       </button>
+
+      <button class="shell-btn-ajustes" id="shellBtnAjustes" title="Ajustes">
+        <i class="fas fa-cog"></i>
+      </button>
     `;
   },
 
@@ -423,19 +427,32 @@ const Shell = {
     const guardado = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', guardado);
 
+    // ─── Botón de tema ───
     const btn = document.getElementById('shellBtnTema');
-    if (!btn) return;
+    if (btn && !btn.dataset.bound) {
+      btn.dataset.bound = 'true';
+      btn.addEventListener('click', () => {
+        const html = document.documentElement;
+        const actual = html.getAttribute('data-theme') || 'light';
+        const nuevo = actual === 'dark' ? 'light' : 'dark';
+        html.setAttribute('data-theme', nuevo);
+        localStorage.setItem('theme', nuevo);
 
-    btn.addEventListener('click', () => {
-      const html = document.documentElement;
-      const actual = html.getAttribute('data-theme') || 'light';
-      const nuevo = actual === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', nuevo);
-      localStorage.setItem('theme', nuevo);
+        const icono = btn.querySelector('i');
+        if (icono) icono.className = nuevo === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+      });
+    }
 
-      const icono = btn.querySelector('i');
-      if (icono) icono.className = nuevo === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
-    });
+    // ─── Botón de ajustes ───
+    const btnAjustes = document.getElementById('shellBtnAjustes');
+    if (btnAjustes && !btnAjustes.dataset.bound) {
+      btnAjustes.dataset.bound = 'true';
+      btnAjustes.addEventListener('click', () => {
+        if (window.Ajustes && typeof Ajustes.abrir === 'function') {
+          Ajustes.abrir();
+        }
+      });
+    }
   }
 };
 
