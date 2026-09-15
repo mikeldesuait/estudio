@@ -460,3 +460,16 @@ body.shell-activo .navbar {
 .marcadores-wrapper > .marcador-contenedor[style*="visible"] {
   pointer-events: auto;
 }
+
+/* ═══ Badge de versión en el brand ═══ */
+.shell-brand .shell-version {
+  font-size: 9px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.75);
+  padding: 2px 6px;
+  border-radius: 8px;
+  margin-left: 4px;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
