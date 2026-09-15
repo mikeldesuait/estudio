@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="css/shell/shell.css">
   <link rel="stylesheet" href="css/shell/pomodoro-config.css">
   <link rel="stylesheet" href="css/shell/escritorio.css">
+  <link rel="stylesheet" href="css/shell/bookmarks.css">
   <script src="https://cdn.jsdelivr.net/npm/interactjs@1.10.26/dist/interact.min.js"></script>
 </head>
 <body>
@@ -78,6 +79,7 @@
   <script src="js/widgets/progreso.js"></script>
   <script src="js/widgets/pomodoro.js"></script>
   <script src="js/core/router.js"></script>
+  <script src="js/core/bookmarks.js"></script>
   <script src="js/vistas/escritorio.js"></script>
   <script src="js/vistas/index.js"></script>
   <script src="js/core/shell.js"></script>
@@ -99,6 +101,8 @@
 
       if (nivel === 'escritorio') {
         Router.navegar('escritorio');
+        // Renderizar marcadores
+        if (window.Bookmarks) Bookmarks.render();
       } else {
         const p = {};
         if (params.get('area')) p.areaId = params.get('area');

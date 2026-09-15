@@ -1,0 +1,138 @@
+/* ============================================================
+   BOOKMARKS — Modal para añadir marcadores
+   ============================================================ */
+
+.bookmark-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 10000;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  animation: fadeIn .2s ease;
+}
+.bookmark-modal-overlay.show { display: flex; }
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.bookmark-modal {
+  background: var(--bg-card, #ffffff);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 460px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  animation: slideUp .25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+.bookmark-modal-header {
+  padding: 18px 22px 14px;
+  background: linear-gradient(135deg, #1e1b4b, #312e81);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.bookmark-modal-header h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.bookmark-modal-header .close {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  color: white;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .15s;
+}
+.bookmark-modal-header .close:hover { background: rgba(255, 255, 255, 0.25); }
+
+.bookmark-modal-body { padding: 20px 22px; }
+.bookmark-modal-body label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary, #718096);
+  margin-bottom: 6px;
+  margin-top: 14px;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+}
+.bookmark-modal-body label:first-child { margin-top: 0; }
+
+.bookmark-modal-body select {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--border, #e2ddd3);
+  background: var(--bg-soft, #faf7f2);
+  color: var(--text-primary, #2d3748);
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+  box-sizing: border-box;
+  transition: all .15s;
+}
+.bookmark-modal-body select:focus {
+  outline: none;
+  border-color: var(--accent, #6366f1);
+  background: var(--bg-card, #ffffff);
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+}
+.bookmark-modal-body select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.bookmark-modal-acciones {
+  padding: 14px 22px 18px;
+  background: var(--bg-soft, #faf7f2);
+  border-top: 1px solid var(--border, #e2ddd3);
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+.bookmark-modal-acciones button {
+  padding: 9px 18px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  font-family: inherit;
+  transition: all .15s;
+}
+.bookmark-modal-acciones .btn-cancelar {
+  background: transparent;
+  color: var(--text-primary, #2d3748);
+  border: 1px solid var(--border, #e2ddd3);
+}
+.bookmark-modal-acciones .btn-cancelar:hover { background: var(--bg-hover, #f0ebe2); }
+.bookmark-modal-acciones .btn-guardar {
+  background: var(--accent, #6366f1);
+  color: white;
+}
+.bookmark-modal-acciones .btn-guardar:hover {
+  background: #4f46e5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}

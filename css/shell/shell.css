@@ -296,3 +296,10 @@ body.shell-activo .footer,
 body.shell-activo .navbar {
   display: none;
 }
+
+/* ═══ Contenedor del iframe (asignatura) ═══ */
+.shell-contenido.asignatura-abierta {
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: #ffffff;
+}

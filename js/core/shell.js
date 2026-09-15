@@ -1,10 +1,30 @@
 /* ============================================================
-   SHELL — Navegador persistente
+   SHELL — Navegador persistente con pestañas + marcadores
    ============================================================ */
 
 const Shell = {
   montado: false,
   refs: {},
+
+  // Pestañas fijas: Escritorio + 5 áreas
+  pestanas: [
+    { id: 'escritorio',    nombre: 'Escritorio',    icono: '🏠', tipo: 'home' },
+    { id: 'grado-derecho', nombre: 'Derecho',       icono: '⚖️', tipo: 'area' },
+    { id: 'pnl',           nombre: 'PNL',           icono: '🧠', tipo: 'area' },
+    { id: 'herramientas',  nombre: 'Herramientas',  icono: '🔧', tipo: 'area' },
+    { id: 'networking',    nombre: 'Networking',    icono: '🌐', tipo: 'area' },
+    { id: 'dieta',         nombre: 'Dieta',         icono: '🥗', tipo: 'area' }
+  ],
+
+  // Pestaña activa
+  pestanaActiva: 'escritorio',
+
+  // Caché de asignaturas por área
+  asignaturasCache: {},
+
+  /* ═══════════════════════════════════════════════════════
+     MONTAJE
+     ═══════════════════════════════════════════════════════ */
 
   montar() {
     if (this.montado) return;
@@ -38,29 +58,23 @@ const Shell = {
     };
 
     this.montado = true;
+    document.body.classList.add('shell-activo');
     console.log('✅ Shell montado');
 
     this.renderTopbar();
     this.renderTabbar();
     this.renderBookmarks();
-    this.renderAddressbar('escritorio');
+    this.renderAddressbar();
     this.renderStatusbar();
     this.setContenido(
       '<div style="padding:40px;text-align:center;color:#718096;font-family:Inter,sans-serif;">' +
-      '<h2 style="margin:0 0 8px;color:#2d3748;">🎉 Shell funcionando</h2>' +
-      '<p>Esta es la zona de contenido. Aquí irá el corcho con post-its y agenda.</p>' +
-      '</div>'
+      '<i class="fas fa-spinner fa-spin"></i> Cargando...</div>'
     );
 
     this.bindTema();
 
-    // Arrancar Pomodoro
-    if (window.Progreso) {
-      window.Progreso.init();
-    }
-    if (window.Pomodoro) {
-      window.Pomodoro.init();
-    }
+    if (window.Progreso) window.Progreso.init();
+    if (window.Pomodoro) window.Pomodoro.init();
   },
 
   setContenido(html) {
@@ -84,6 +98,27 @@ const Shell = {
     const el = this.refs.statusbar && this.refs.statusbar.querySelector('#shellContexto');
     if (el) el.textContent = texto;
   },
+
+  irAtras() {
+    // Si estamos en una asignatura (iframe), volver a la vista de asignaturas del área
+    if (window.Router && Router.nivel === 'asignatura') {
+      Router.navegar('asignaturas', { areaId: Router.params.areaId });
+      return;
+    }
+    // Si estamos en temas, volver a asignaturas
+    if (window.Router && Router.nivel === 'temas') {
+      Router.navegar('asignaturas', { areaId: Router.params.areaId });
+      return;
+    }
+    // Por defecto, ir al escritorio
+    if (window.Shell && Shell.activarPestana) {
+      Shell.activarPestana('escritorio');
+    }
+  },
+
+  /* ═══════════════════════════════════════════════════════
+     TOPBAR
+     ═══════════════════════════════════════════════════════ */
 
   renderTopbar() {
     const temaGuardado = localStorage.getItem('theme') || 'light';
@@ -134,39 +169,70 @@ const Shell = {
     `;
   },
 
+  /* ═══════════════════════════════════════════════════════
+     PESTAÑAS
+     ═══════════════════════════════════════════════════════ */
+
   renderTabbar() {
-    this.refs.tabbar.innerHTML = `
-      <div class="shell-tab active">
-        <span class="favicon">🏠</span>
-        <span>Escritorio</span>
+    this.refs.tabbar.innerHTML = this.pestanas.map(p => `
+      <div class="shell-tab ${p.id === this.pestanaActiva ? 'active' : ''}"
+           data-id="${p.id}"
+           onclick="Shell.activarPestana('${p.id}')">
+        <span class="favicon">${p.icono}</span>
+        <span>${p.nombre}</span>
       </div>
-      <button class="shell-tab-add" title="Nueva pestaña">
-        <i class="fas fa-plus"></i>
-      </button>
-    `;
+    `).join('');
   },
 
-  renderBookmarks() {
-    this.refs.bookmarks.innerHTML = `
-      <span class="etiqueta"><i class="fas fa-star"></i> Marcadores:</span>
-      <div class="shell-marcador add">
-        <i class="fas fa-plus"></i> Añadir marcador
-      </div>
-    `;
+  async activarPestana(id) {
+    if (this.pestanaActiva === id) return;
+
+    this.pestanaActiva = id;
+    this.renderTabbar();
+
+    // Actualizar marcadores según la nueva pestaña
+    if (window.Bookmarks && typeof Bookmarks.render === 'function') {
+      Bookmarks.render();
+    }
+
+    // Navegar según el tipo
+    const p = this.pestanas.find(x => x.id === id);
+    if (!p) return;
+
+    if (p.tipo === 'home') {
+      Router.navegar('escritorio');
+    } else if (p.tipo === 'area') {
+      Router.navegar('asignaturas', { areaId: id });
+    }
   },
 
-  renderAddressbar(rutaInicial) {
+  /* ═══════════════════════════════════════════════════════
+     MARCADORES (asignaturas del área activa)
+     ═══════════════════════════════════════════════════════ */
+
+  async renderBookmarks() {
+    // Delegar en el módulo Bookmarks
+    if (window.Bookmarks && typeof Bookmarks.render === 'function') {
+      Bookmarks.render();
+    }
+  },
+
+  /* ═══════════════════════════════════════════════════════
+     BARRA DE DIRECCIÓN + STATUS
+     ═══════════════════════════════════════════════════════ */
+
+  renderAddressbar() {
     this.refs.addressbar.innerHTML = `
-      <button title="Atrás" disabled><i class="fas fa-arrow-left"></i></button>
+      <button title="Atrás" onclick="Shell.irAtras()"><i class="fas fa-arrow-left"></i></button>
       <button title="Adelante" disabled><i class="fas fa-arrow-right"></i></button>
-      <button title="Recargar"><i class="fas fa-redo"></i></button>
-      <button title="Inicio"><i class="fas fa-home"></i></button>
+      <button title="Recargar" onclick="Router.navegar(Router.nivel, Router.params)"><i class="fas fa-redo"></i></button>
+      <button title="Inicio" onclick="Shell.activarPestana('escritorio')"><i class="fas fa-home"></i></button>
       <div class="url">
         <i class="fas fa-lock icono"></i>
         <div class="ruta">
           <span class="nivel">estudio</span>
           <span class="sep">›</span>
-          <span class="nivel" style="color:var(--text-primary);font-weight:500;">${rutaInicial}</span>
+          <span class="nivel" style="color:var(--text-primary);font-weight:500;">Escritorio</span>
         </div>
       </div>
       <button title="Marcar"><i class="fas fa-star"></i></button>
@@ -186,8 +252,11 @@ const Shell = {
     `;
   },
 
+  /* ═══════════════════════════════════════════════════════
+     TEMA
+     ═══════════════════════════════════════════════════════ */
+
   bindTema() {
-    // Aplicar tema guardado al cargar
     const guardado = localStorage.getItem('theme') || 'light';
     document.documentElement.setAttribute('data-theme', guardado);
 
@@ -209,7 +278,7 @@ const Shell = {
 
 window.Shell = Shell;
 
-/* ─── Reforzar shell-activo (por si algo lo quita) ─── */
+/* ─── Reforzar shell-activo ─── */
 setInterval(() => {
   if (!document.body.classList.contains('shell-activo')) {
     document.body.classList.add('shell-activo');
