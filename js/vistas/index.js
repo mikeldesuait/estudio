@@ -48,6 +48,9 @@ const Vistas = {
      ═══════════════════════════════════════════════════════ */
 
   renderEscritorio(main) {
+    if (window.Escritorio && typeof Escritorio.render === 'function') {
+      return Escritorio.render(main);
+    }
     main.innerHTML = `
       <div style="padding:40px;text-align:center;font-family:Inter,sans-serif;">
         <h2 style="color:#2d3748;margin:0 0 8px;">🏠 Escritorio</h2>
