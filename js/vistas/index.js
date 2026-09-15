@@ -4,8 +4,19 @@
 
 const Vistas = {
   async render(nivel, params) {
-    const main = document.getElementById('shellContenido');
-    if (!main) return;
+    const main = window.Shell
+      ? Shell.getContenedorActual()
+      : document.getElementById('shellContenido');
+
+    if (!main) {
+      console.error('❌ No hay contenedor para la pestaña activa');
+      return;
+    }
+
+    // Si vamos a la raíz (escritorio/asignaturas), ocultar marcadores abiertos
+    if (window.Shell && (nivel === 'escritorio' || nivel === 'asignaturas' || nivel === 'areas')) {
+      Shell.volverARaiz();
+    }
 
     // Quitar modo asignatura si estaba activo
     main.classList.remove('asignatura-abierta');
@@ -159,16 +170,54 @@ const Vistas = {
     const urlAsignatura = window.url('estudio/' + params.areaId + '/' + path + 'asignatura.html');
 
     // Ajustar el contenedor para que el iframe llene todo
-    main.classList.add('asignatura-abierta');
+    // ya no se usa
 
+    // Crear el iframe
     main.innerHTML = `
       <div style="width:100%;height:100%;padding:0;margin:0;background:#ffffff;">
-        <iframe src="${urlAsignatura}"
+        <iframe id="iframeAsignatura"
                 style="width:100%;height:100%;border:none;display:block;"
                 title="Asignatura">
         </iframe>
       </div>
     `;
+
+    const iframe = document.getElementById('iframeAsignatura');
+    if (!iframe) return;
+
+    // Escuchar cuando el iframe termine de cargar
+    iframe.addEventListener('load', () => {
+      try {
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        if (!doc || !doc.head) return;
+
+        // NOTA: no inyectamos <base> porque rompe los enlaces internos
+        // de la asignatura. Los CSS rotos se arreglarán en los propios HTMLs.
+
+        // Inyectar estilos base para que se vea coherente
+        if (!doc.querySelector('style[data-shell-inject]')) {
+          const style = doc.createElement('style');
+          style.setAttribute('data-shell-inject', 'true');
+          style.textContent = `
+            body {
+              background: #ffffff;
+              color: #2d3748;
+              font-family: 'Inter', sans-serif;
+              margin: 0;
+              padding: 24px;
+            }
+            a { color: #6366f1; }
+            h1, h2, h3 { color: #1e293b; }
+          `;
+          doc.head.appendChild(style);
+        }
+      } catch (e) {
+        console.warn('No se pudo ajustar el iframe:', e);
+      }
+    });
+
+    // Cargar el HTML del asignatura
+    iframe.src = urlAsignatura;
   },
 
   /* ═══════════════════════════════════════════════════════

@@ -8,15 +8,47 @@ const Router = {
   params: {},
 
   navegar(nivel, params = {}) {
+    // Guardar HTML actual antes de navegar
+    if (window.Shell && typeof Shell.guardarHTMLActual === 'function') {
+      Shell.guardarHTMLActual();
+    }
+
     this.nivel = nivel;
     this.params = params;
     this.actualizarRuta(nivel, params);
     this.actualizarContexto(nivel, params);
 
+    if (window.Shell && typeof Shell.registrarNavegacion === 'function') {
+      Shell.registrarNavegacion(nivel, params);
+    }
+
+    // Notificar al Shell para que guarde el estado de la pestaña activa
+    if (window.Shell && typeof Shell.registrarNavegacion === 'function') {
+      Shell.registrarNavegacion(nivel, params);
+    }
+
     if (window.Vistas && typeof Vistas.render === 'function') {
       Vistas.render(nivel, params);
     } else {
       Shell.setContenido('<div style="padding:40px;text-align:center;color:#718096;">Vista: ' + nivel + '</div>');
+    }
+  },
+
+  navegarSinHistorial(nivel, params = {}) {
+    this.nivel = nivel;
+    this.params = params;
+    this.actualizarRuta(nivel, params);
+    this.actualizarContexto(nivel, params);
+
+    // Intentar restaurar HTML cacheado
+    if (window.Shell && typeof Shell.restaurarHTML === 'function') {
+      const restaurado = Shell.restaurarHTML();
+      if (restaurado) return;
+    }
+
+    // Si no hay cache, re-renderizar
+    if (window.Vistas && typeof Vistas.render === 'function') {
+      Vistas.render(nivel, params);
     }
   },
 

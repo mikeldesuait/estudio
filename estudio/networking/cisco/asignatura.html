@@ -7,19 +7,19 @@
 
   <style>
     :root{
-      --bg:#0b1020;
-      --panel:#121a33;
-      --text:#e8ecff;
-      --muted:#aab3e6;
-      --accent:#6ea8fe;
-      --ok:#38d996;
-      --bad:#ff5c77;
-      --warn:#ffd166;
-      --line:#253057;
+      --bg:#faf7f2;
+      --panel:#ffffff;
+      --text:#2d3748;
+      --muted:#718096;
+      --accent:#6366f1;
+      --ok:#10b981;
+      --bad:#ef4444;
+      --warn:#f59e0b;
+      --line:#e2ddd3;
       --radius:14px;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --shadow: 0 4px 16px rgba(0,0,0,.08);
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
+      --sans: 'Inter', ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Noto Sans", "Helvetica Neue", sans-serif;
     }
 
     *{box-sizing:border-box}
@@ -27,15 +27,12 @@
       margin:0;
       font-family:var(--sans);
       color:var(--text);
-      background:
-        radial-gradient(1200px 600px at 30% -10%, rgba(110,168,254,.18), transparent 60%),
-        radial-gradient(900px 450px at 90% 10%, rgba(56,217,150,.10), transparent 60%),
-        var(--bg);
+      background: var(--bg);
     }
 
     header{
       position:sticky; top:0; z-index:10;
-      background: rgba(11,16,32,.92);
+      background: rgba(255,255,255,.95);
       border-bottom:1px solid var(--line);
       backdrop-filter: blur(10px);
     }
@@ -45,7 +42,7 @@
     .spacer{ flex:1; }
 
     .card{
-      background: rgba(18,26,51,.75);
+      background: var(--panel);
       border:1px solid var(--line);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
@@ -62,7 +59,7 @@
 
     button{
       border:1px solid var(--line);
-      background: rgba(18,26,51,.9);
+      background: var(--panel);
       color:var(--text);
       padding:10px 12px;
       border-radius:12px;
@@ -89,7 +86,7 @@
       padding:12px 12px;
       border-radius:14px;
       border:1px solid var(--line);
-      background: rgba(15,22,48,.65);
+      background: var(--bg);
       cursor:pointer;
     }
     .opt:hover{ border-color: rgba(110,168,254,.55); }
@@ -109,7 +106,7 @@
       border-radius:999px;
       overflow:hidden;
       border:1px solid var(--line);
-      background: rgba(15,22,48,.95);
+      background: var(--line);
     }
     .bar > div{
       height:100%;
@@ -123,7 +120,7 @@
       padding:10px 12px;
       border-radius:14px;
       border:1px solid var(--line);
-      background: rgba(15,22,48,.75);
+      background: var(--bg);
     }
     .kpi .t{ font-size:11px; color:var(--muted); }
     .kpi .v{ font-size:18px; font-weight:900; margin-top:4px; }
@@ -131,7 +128,7 @@
     .toast{
       position:fixed; left:50%; transform:translateX(-50%);
       bottom:14px; opacity:0; pointer-events:none; transition:.2s;
-      background: rgba(18,26,51,.92);
+      background: var(--panel);
       border:1px solid var(--line);
       padding:10px 12px;
       border-radius:999px;
@@ -146,14 +143,14 @@
       border: 1px solid var(--line);
       border-radius: 14px;
       overflow: hidden;
-      background: rgba(15,22,48,.55);
+      background: var(--bg);
     }
   .qmedia{
   margin: 10px 0 14px;
   border: 1px solid var(--line);
   border-radius: 14px;
   overflow: hidden;
-  background: rgba(15,22,48,.55);
+  background: var(--bg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -182,7 +179,7 @@
       padding:12px 12px;
       border-radius:14px;
       border:1px solid var(--line);
-      background: rgba(15,22,48,.65);
+      background: var(--bg);
     }
     .dropRow.correct{ border-color: rgba(56,217,150,.85); background: rgba(56,217,150,.10); }
     .dropRow.wrong{ border-color: rgba(255,92,119,.85); background: rgba(255,92,119,.10); }
@@ -210,7 +207,7 @@
       padding:12px;
       border-radius:14px;
       border:1px solid var(--line);
-      background: rgba(15,22,48,.65);
+      background: var(--bg);
     }
     .matchItem.draggable{ cursor:grab; }
     .matchItem.selected{ border-color: rgba(110,168,254,.85); box-shadow: 0 0 0 2px rgba(110,168,254,.15) inset; }
@@ -220,7 +217,7 @@
       padding:12px;
       border-radius:14px;
       border:1px dashed rgba(37,48,87,.9);
-      background: rgba(15,22,48,.45);
+      background: var(--bg);
     }
     .matchZone.over{ border-color: rgba(110,168,254,.85); }
     .matchZone .zText{ color:var(--text); opacity:.95; }

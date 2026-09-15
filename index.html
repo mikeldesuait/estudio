@@ -6,12 +6,12 @@
   <title>📚 Estudio Personal</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/styles.css">
-  <link rel="stylesheet" href="css/themes.css">
-  <link rel="stylesheet" href="css/shell/shell.css">
-  <link rel="stylesheet" href="css/shell/pomodoro-config.css">
-  <link rel="stylesheet" href="css/shell/escritorio.css">
-  <link rel="stylesheet" href="css/shell/bookmarks.css">
+  <link rel="stylesheet" href="/estudio/css/styles.css">
+  <link rel="stylesheet" href="/estudio/css/themes.css">
+  <link rel="stylesheet" href="/estudio/css/shell/shell.css">
+  <link rel="stylesheet" href="/estudio/css/shell/pomodoro-config.css">
+  <link rel="stylesheet" href="/estudio/css/shell/escritorio.css">
+  <link rel="stylesheet" href="/estudio/css/shell/bookmarks.css">
   <script src="https://cdn.jsdelivr.net/npm/interactjs@1.10.26/dist/interact.min.js"></script>
 </head>
 <body>
@@ -29,10 +29,11 @@
       const path = window.location.pathname;
       let base = '';
 
-      if (path.startsWith('/estudio/') || path === '/estudio') {
-        if (window.location.hostname.endsWith('.github.io')) {
-          base = '/estudio';
-        }
+      // Si estamos en localhost y servimos desde ~/ con la app en /estudio/
+      // Si estamos en GitHub Pages y el repo se llama "estudio"
+      // En ambos casos la BASE debe ser "/estudio"
+      if (path.startsWith('/estudio/')) {
+        base = '/estudio';
       }
 
       window.BASE = base;
@@ -76,13 +77,13 @@
   <!-- ═══════════════════════════════════════════════════════
        Módulos del shell
        ═══════════════════════════════════════════════════════ -->
-  <script src="js/widgets/progreso.js"></script>
-  <script src="js/widgets/pomodoro.js"></script>
-  <script src="js/core/router.js"></script>
-  <script src="js/core/bookmarks.js"></script>
-  <script src="js/vistas/escritorio.js"></script>
-  <script src="js/vistas/index.js"></script>
-  <script src="js/core/shell.js"></script>
+  <script src="/estudio/js/widgets/progreso.js"></script>
+  <script src="/estudio/js/widgets/pomodoro.js"></script>
+  <script src="/estudio/js/core/router.js"></script>
+  <script src="/estudio/js/core/bookmarks.js"></script>
+  <script src="/estudio/js/vistas/escritorio.js"></script>
+  <script src="/estudio/js/vistas/index.js"></script>
+  <script src="/estudio/js/core/shell.js"></script>
 
   <!-- ═══════════════════════════════════════════════════════
        Arranque: montar shell + ir al escritorio

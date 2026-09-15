@@ -303,3 +303,160 @@ body.shell-activo .navbar {
   overflow: hidden !important;
   background: #ffffff;
 }
+
+
+
+
+/* Pestaña activa siempre encima */
+.shell-contenido-pestana.shell-activa {
+  visibility: visible !important;
+  pointer-events: auto !important;
+  z-index: 10 !important;
+}
+
+/* Pestañas inactivas siempre detrás */
+.shell-contenido-pestana.shell-inactiva {
+  visibility: hidden !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+/* Sub-vistas dentro de cada pestaña */
+.pestana-root {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  overflow: auto !important;
+  z-index: 1 !important;
+}
+
+.marcador-contenedor {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  overflow: auto !important;
+  z-index: 2 !important;
+}
+
+/* Por defecto todas ocultas */
+.shell-contenido-pestana:not(.shell-activa) {
+  visibility: hidden !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   CONTENEDORES DE PESTAÑA — encapsulados, sin desbordar
+   ═══════════════════════════════════════════════════════════════ */
+
+/* El contenedor padre de TODAS las pestañas */
+.shell-contenidos {
+  position: relative !important;
+  overflow: hidden !important;      /* NADA se sale de aquí */
+  flex: 1 !important;
+  min-height: 0 !important;          /* Permite que flex no crezca */
+  z-index: 1 !important;
+}
+
+/* Cada pestaña */
+.shell-contenido-pestana {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+  background: var(--bg-soft, #faf7f2);
+  z-index: 1 !important;
+}
+
+/* Pestaña activa por encima */
+.shell-contenido-pestana.shell-activa {
+  visibility: visible !important;
+  pointer-events: auto !important;
+  z-index: 2 !important;
+}
+
+/* Pestaña inactiva oculta */
+.shell-contenido-pestana.shell-inactiva {
+  visibility: hidden !important;
+  pointer-events: none !important;
+  z-index: 1 !important;
+}
+
+/* Raíz dentro de la pestaña */
+.pestana-root {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  overflow: auto !important;
+  z-index: 1 !important;
+  background: var(--bg-soft, #faf7f2);
+}
+
+/* Wrapper de marcadores */
+.marcadores-wrapper {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  overflow: hidden !important;
+  z-index: 1 !important;
+}
+
+/* Cada marcador abierto */
+.marcador-contenedor {
+  position: absolute !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  overflow: hidden !important;
+  background: #ffffff;
+  z-index: 1 !important;
+}
+
+.marcador-contenedor iframe {
+  width: 100% !important;
+  height: 100% !important;
+  border: none !important;
+  display: block !important;
+  background: #ffffff;
+}
+
+/* La topbar, tabbar y demás siempre por encima */
+.shell-topbar,
+.shell-tabbar,
+.shell-bookmarks,
+.shell-addressbar,
+.shell-statusbar {
+  position: relative !important;
+  z-index: 100 !important;
+}
+
+/* ═══ FIX: iframes inactivos NO interceptan clics ═══ */
+.marcador-contenedor[style*="hidden"] iframe {
+  pointer-events: none !important;
+}
+.pestana-root[style*="hidden"] {
+  pointer-events: none !important;
+}
+
+/* ═══ FIX: marcadores-wrapper no bloquea clics cuando no hay marcador ═══ */
+.marcadores-wrapper {
+  pointer-events: none;
+}
+
+.marcadores-wrapper > .marcador-contenedor[style*="visible"] {
+  pointer-events: auto;
+}

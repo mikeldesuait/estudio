@@ -106,15 +106,25 @@ const Bookmarks = {
     if (lista.length === 0) {
       html += '<span style="font-size:11px;color:var(--text-secondary);font-style:italic;margin-right:8px;">Sin marcadores en esta área</span>';
     } else {
-      html += lista.map(m => `
-        <div class="shell-marcador"
-             title="${m.nombre} (clic derecho para eliminar)"
-             onclick="Bookmarks.irA('${m.areaId}', '${m.asignaturaId}')"
-             oncontextmenu="event.preventDefault(); Bookmarks.eliminarConConfirm('${m.id}')">
-          <span class="favicon">${m.icono}</span>
-          <span>${m.nombre}</span>
-        </div>
-      `).join('');
+      const marcadorActivo = (window.Shell && Shell.marcadorActivo && Shell.marcadorActivo[pestanaActiva]) || null;
+
+      html += lista.map(m => {
+        const clave = m.areaId + '::' + m.asignaturaId;
+        const estaActivo = marcadorActivo === clave;
+        const estaAbierto = window.Shell && Shell.marcadoresAbiertos && 
+                           Shell.marcadoresAbiertos[pestanaActiva] && 
+                           Shell.marcadoresAbiertos[pestanaActiva][clave];
+
+        return `
+          <div class="shell-marcador ${estaActivo ? 'activo' : ''} ${estaAbierto ? 'abierto' : ''}"
+               title="${m.nombre} (clic derecho para eliminar)"
+               onclick="Bookmarks.irA('${m.areaId}', '${m.asignaturaId}')"
+               oncontextmenu="event.preventDefault(); Bookmarks.eliminarConConfirm('${m.id}')">
+            <span class="favicon">${m.icono}</span>
+            <span>${m.nombre}</span>
+          </div>
+        `;
+      }).join('');
     }
 
     html += `
@@ -131,9 +141,26 @@ const Bookmarks = {
      ═══════════════════════════════════════════════════════ */
 
   async irA(areaId, asignaturaId) {
-    // Navegar al iframe de la asignatura
-    if (window.Router && window.Router.navegar) {
-      Router.navegar('asignatura', { areaId, asignaturaId });
+    // Si el marcador ya estaba abierto, solo activarlo
+    // Si no, abrirlo (crea su propio iframe persistente)
+    if (window.Shell && typeof Shell.abrirMarcador === 'function') {
+      // Guardar el path en cache antes de abrir
+      if (!Shell._asignaturasCache) Shell._asignaturasCache = {};
+      if (!Shell._asignaturasCache[areaId]) {
+        await this.cargarAsignaturas(areaId);
+        Shell._asignaturasCache[areaId] = this.asignaturasCache[areaId] || [];
+      }
+
+      Shell.abrirMarcador(areaId, asignaturaId);
+
+      // Actualizar breadcrumb
+      if (window.Router) {
+        const nombreAsig = Router.nombreAsignatura(areaId, asignaturaId) || asignaturaId;
+        Router.actualizarRuta('asignatura', { areaId, asignaturaId });
+        Router.actualizarContexto('asignatura', { areaId, asignaturaId });
+        Router.nivel = 'asignatura';
+        Router.params = { areaId, asignaturaId };
+      }
     }
   },
 
