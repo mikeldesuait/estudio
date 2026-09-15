@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Test Shell + Router</title>
+  <title>Estudio Personal</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
@@ -17,36 +17,30 @@
   </main>
 
   <script>
-    /* ─── BASE detectada desde el <script> actual, NO desde location ─── */
     (function() {
-      // En local servimos desde la raíz de ~/estudio → BASE = ''
-      // En GitHub Pages servimos desde /estudio/ → BASE = '/estudio'
-      // Detectamos por la ruta del propio script (que sabemos que existe)
-      const scripts = document.querySelectorAll('script[src]');
+      const path = window.location.pathname;
       let base = '';
 
-      for (const s of scripts) {
-        const src = s.getAttribute('src');
-        if (src && src.startsWith('js/')) {
-          // Calculamos la base a partir de la URL absoluta del script
-          const scriptUrl = new URL(src, window.location.href);
-          base = scriptUrl.pathname.replace(/\/js\/.*$/, '');
-          break;
+      if (path.startsWith('/estudio/') || path === '/estudio') {
+        if (window.location.hostname.endsWith('.github.io')) {
+          base = '/estudio';
         }
       }
 
       window.BASE = base;
+      console.log('🌐 Host:', window.location.hostname);
+      console.log('🌐 Path:', path);
       console.log('🌐 BASE detectada:', window.BASE || '(raíz)');
     })();
 
-    /* ─── Helper: construir URL absoluta desde la base ─── */
     window.url = function(ruta) {
-      ruta = ruta.replace(/^\//, ''); // quitar / inicial
+      ruta = ruta.replace(/^\//, '');
       const base = window.BASE || '';
       return base + '/' + ruta;
     };
+  </script>
 
-    /* ─── Cargar áreas ─── */
+  <script>
     window.AREAS = [];
     const LISTA_AREAS = [
       { id: 'grado-derecho' },
@@ -75,7 +69,6 @@
     document.addEventListener('DOMContentLoaded', () => {
       Shell.montar();
 
-      // Detectar si venimos de una URL con ?nivel=...
       const params = new URLSearchParams(window.location.search);
       const nivel = params.get('nivel') || 'escritorio';
 
