@@ -20,6 +20,9 @@ const Escritorio = {
   // Vista actual de la agenda
   agendaVista: 'dia',   // 'dia' | 'semana' | 'mes'
 
+  // Contador de z-index (para que el último clicado quede arriba)
+  zIndexActual: 100,
+
   // Fecha "ancla" para navegar en semana/mes
   agendaFecha: new Date(),
 
@@ -323,8 +326,9 @@ const Escritorio = {
     const posStyle = p.pos
       ? `position:absolute; left:${p.pos.x}px; top:${p.pos.y}px; width:${p.pos.w}px; height:${p.pos.h}px; transform:none; margin:0;`
       : '';
+    const zStyle = p.z ? `z-index:${p.z};` : '';
     return `
-      <div class="postit ${p.color} elemento-con-menu" data-id="${p.id}" style="${posStyle}">
+      <div class="postit ${p.color} elemento-con-menu" data-id="${p.id}" style="${posStyle}${zStyle}">
         ${this.renderMenuFlotante(p.id)}
         <div class="titulo">${cat.icono} ${cat.nombre}</div>
         <div class="texto" contenteditable="true"
@@ -338,18 +342,28 @@ const Escritorio = {
   añadirPostit() {
     const postits = this.cargarPostits();
     const colorAleatorio = this.colores[Math.floor(Math.random() * this.colores.length)];
+
+    // Nuevo z-index por encima de todos
+    this.zIndexActual++;
+    const nuevoZ = this.zIndexActual;
+
     const nuevo = {
       id: 'n' + Date.now(),
       color: colorAleatorio,
       texto: '',
-      fecha: 'hoy'
+      fecha: 'hoy',
+      z: nuevoZ
     };
     postits.push(nuevo);
     this.guardarPostits(postits);
 
     const contenedor = document.getElementById('zonaNotas');
     const botonAdd = contenedor.querySelector('.postit.add');
-    botonAdd.insertAdjacentHTML('beforebegin', this.renderPostit(nuevo));
+    if (botonAdd) {
+      botonAdd.insertAdjacentHTML('beforebegin', this.renderPostit(nuevo));
+    } else {
+      contenedor.insertAdjacentHTML('beforeend', this.renderPostit(nuevo));
+    }
 
     const nuevoEl = contenedor.querySelector(`[data-id="${nuevo.id}"] .texto`);
     if (nuevoEl) nuevoEl.focus();
@@ -362,7 +376,6 @@ const Escritorio = {
   añadirPostitDesdeBarra() {
     // Verificar que estamos en el escritorio
     if (window.Router && Router.nivel !== 'escritorio') {
-      // Si no estamos en escritorio, ir primero
       if (window.Shell && Shell.activarPestana) {
         Shell.activarPestana('escritorio');
       }
@@ -373,17 +386,21 @@ const Escritorio = {
     const postits = this.cargarPostits();
     const colorAleatorio = this.colores[Math.floor(Math.random() * this.colores.length)];
 
-    // Posición aleatoria dentro del corcho (evitando solapamientos excesivos)
-    const corcho = document.getElementById('escritorioCorcho');
-    let posX = 60 + Math.floor(Math.random() * 300);
-    let posY = 60 + Math.floor(Math.random() * 200);
+    // Nuevo z-index por encima de todos
+    this.zIndexActual++;
+    const nuevoZ = this.zIndexActual;
+
+    // Posición aleatoria dentro del corcho
+    const posX = 60 + Math.floor(Math.random() * 300);
+    const posY = 60 + Math.floor(Math.random() * 200);
 
     const nueva = {
       id: 'n' + Date.now(),
       color: colorAleatorio,
       texto: '',
       fecha: 'hoy',
-      pos: { x: posX, y: posY, w: 200, h: 180 }
+      pos: { x: posX, y: posY, w: 200, h: 180 },
+      z: nuevoZ
     };
 
     postits.push(nueva);
@@ -400,7 +417,6 @@ const Escritorio = {
       if (nuevoEl) nuevoEl.focus();
     }, 100);
 
-    // Toast de confirmación
     if (window.Ajustes && Ajustes.toast) {
       Ajustes.toast('📌 Nota añadida');
     }
@@ -420,6 +436,28 @@ const Escritorio = {
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
       .replace(/>/g, '&gt;');
+  },
+
+  /**
+   * Trae un post-it al frente (le da el mayor z-index)
+   */
+  traerAlFrente(id) {
+    this.zIndexActual++;
+    const nuevoZ = this.zIndexActual;
+
+    // Actualizar en localStorage
+    const postits = this.cargarPostits();
+    const p = postits.find(x => x.id === id);
+    if (p) {
+      p.z = nuevoZ;
+      this.guardarPostits(postits);
+    }
+
+    // Actualizar en el DOM
+    const el = document.querySelector(`.postit[data-id="${id}"]`);
+    if (el) {
+      el.style.zIndex = nuevoZ;
+    }
   },
 
   /* ═══════════════════════════════════════════════════════
@@ -888,6 +926,19 @@ const Escritorio = {
 };
 
 window.Escritorio = Escritorio;
+
+/* ═══════════════════════════════════════════════════════════════
+   Listener global: al hacer clic en un post-it, traerlo al frente
+   ═══════════════════════════════════════════════════════════════ */
+document.addEventListener('mousedown', (e) => {
+  const postit = e.target.closest('.postit[data-id]');
+  if (postit && !postit.classList.contains('add')) {
+    const id = postit.dataset.id;
+    if (window.Escritorio && Escritorio.traerAlFrente) {
+      Escritorio.traerAlFrente(id);
+    }
+  }
+}, true);  // capture=true para que se ejecute antes que otros
 
 /* ═══════════════════════════════════════════════════════════════
    Cerrar menús al clicar fuera

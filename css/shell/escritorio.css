@@ -1048,3 +1048,27 @@
     0 4px 12px rgba(0,0,0,0.15),
     0 0 0 1px rgba(0,0,0,0.05);
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   POST-ITS — Comportamiento z-index (el clicado va al frente)
+   ═══════════════════════════════════════════════════════════════ */
+
+/* Transición suave de z-index */
+.postit {
+  transition: transform .2s, box-shadow .2s;
+}
+
+/* Al hacer hover, el post-it sube ligeramente */
+.postit:hover {
+  z-index: 500 !important;
+}
+
+/* Al estar editando, siempre arriba */
+.postit.editando {
+  z-index: 1000 !important;
+}
+
+/* Al hacer focus en el texto */
+.postit .texto:focus {
+  outline: none;
+}
