@@ -183,3 +183,74 @@
   height: 100%;
   border: none;
 }
+
+/* ═══ Botón ✕ para eliminar marcador (visible al hover) ═══ */
+
+.shell-marcador {
+  position: relative;
+  padding-right: 8px;
+}
+
+.shell-marcador .marcador-del {
+  display: none;
+  background: rgba(239, 68, 68, 0.1);
+  border: none;
+  color: #ef4444;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 9px;
+  align-items: center;
+  justify-content: center;
+  margin-left: 4px;
+  padding: 0;
+  flex-shrink: 0;
+  transition: all .15s;
+}
+
+.shell-marcador:hover .marcador-del {
+  display: inline-flex;
+}
+
+.shell-marcador .marcador-del:hover {
+  background: #ef4444;
+  color: white;
+  transform: scale(1.1);
+}
+
+.shell-marcador.activo .marcador-del {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.shell-marcador.activo .marcador-del:hover {
+  background: white;
+  color: #ef4444;
+}
+
+/* En móvil/táctil, siempre visible */
+@media (max-width: 768px), (hover: none) {
+  .shell-marcador .marcador-del {
+    display: inline-flex;
+  }
+}
+
+/* Estado "pressing" durante la pulsación larga */
+.shell-marcador.pressing {
+  animation: pressingMarcador .5s ease-in-out infinite;
+  background: rgba(239, 68, 68, 0.15) !important;
+}
+
+@keyframes pressingMarcador {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Truncar nombre si es muy largo */
+.shell-marcador .nombre-marcador {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 140px;
+}

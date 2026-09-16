@@ -117,11 +117,17 @@ const Bookmarks = {
 
         return `
           <div class="shell-marcador ${estaActivo ? 'activo' : ''} ${estaAbierto ? 'abierto' : ''}"
-               title="${m.nombre} (clic derecho para eliminar)"
+               title="${m.nombre} · clic para abrir · clic derecho o pulsación larga para eliminar"
+               data-id="${m.id}"
                onclick="Bookmarks.irA('${m.areaId}', '${m.asignaturaId}')"
                oncontextmenu="event.preventDefault(); Bookmarks.eliminarConConfirm('${m.id}')">
             <span class="favicon">${m.icono}</span>
-            <span>${m.nombre}</span>
+            <span class="nombre-marcador">${m.nombre}</span>
+            <button class="marcador-del"
+                    onclick="event.stopPropagation(); Bookmarks.eliminarConConfirm('${m.id}')"
+                    title="Eliminar marcador">
+              <i class="fas fa-times"></i>
+            </button>
           </div>
         `;
       }).join('');
@@ -134,6 +140,61 @@ const Bookmarks = {
     `;
 
     contenedor.innerHTML = html;
+
+    // Activar pulsación larga en cada marcador (para táctil)
+    this.activarPulsacionLargaMarcadores();
+  },
+
+  /**
+   * Activa la pulsación larga (500ms) en cada marcador para eliminar
+   * Útil en tablets/táctil donde no hay clic derecho
+   */
+  activarPulsacionLargaMarcadores() {
+    const marcadores = document.querySelectorAll('.shell-marcador[data-id]');
+
+    marcadores.forEach(marcador => {
+      let timer = null;
+      let activado = false;
+
+      const empezar = (e) => {
+        // No activar si fue en el botón ✕
+        if (e.target.closest('.marcador-del')) return;
+
+        activado = false;
+        marcador.classList.add('pressing');
+
+        timer = setTimeout(() => {
+          activado = true;
+          marcador.classList.remove('pressing');
+          const id = marcador.dataset.id;
+          this.eliminarConConfirm(id);
+        }, 600);  // 600ms de pulsación larga
+      };
+
+      const cancelar = () => {
+        if (timer) {
+          clearTimeout(timer);
+          timer = null;
+        }
+        marcador.classList.remove('pressing');
+      };
+
+      marcador.addEventListener('mousedown', empezar);
+      marcador.addEventListener('touchstart', empezar, { passive: true });
+      marcador.addEventListener('mouseup', cancelar);
+      marcador.addEventListener('mouseleave', cancelar);
+      marcador.addEventListener('touchend', cancelar);
+      marcador.addEventListener('touchcancel', cancelar);
+
+      // Prevenir que la pulsación larga abra el marcador
+      marcador.addEventListener('click', (e) => {
+        if (activado) {
+          e.preventDefault();
+          e.stopPropagation();
+          activado = false;
+        }
+      });
+    });
   },
 
   /* ═══════════════════════════════════════════════════════

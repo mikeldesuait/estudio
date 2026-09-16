@@ -3,6 +3,8 @@
    ============================================================ */
 
 const Vistas = {
+  // Filtro actual: 'matriculadas' | 'todas'
+  filtroAsignaturas: 'matriculadas',
   async render(nivel, params) {
     const main = window.Shell
       ? Shell.getContenedorActual()
@@ -104,45 +106,98 @@ const Vistas = {
     try {
       const r = await fetch(window.url('estudio/' + params.areaId + '/asignaturas.json'));
       const data = await r.json();
-      // Detectar si el área es de tipo "herramienta"
-      // (curso 0, semestre 0, sin matriculada) o un grado normal
       const todas = data.asignaturas || [];
-      const esHerramienta = todas.every(a => a.curso === '0' && a.semestre === '0');
-      
-      // En grados → solo matriculadas. En herramientas → todas.
-      const asignaturas = esHerramienta 
-        ? todas 
-        : todas.filter(a => a.matriculada === true);
+
+      // Detectar si es área tipo "herramienta" (curso 0, semestre 0)
+      const esHerramienta = todas.length > 0 && todas.every(a => a.curso === '0' && a.semestre === '0');
+
+      // Aplicar filtro
+      let asignaturas;
+      if (esHerramienta) {
+        asignaturas = todas;
+      } else if (this.filtroAsignaturas === 'todas') {
+        asignaturas = todas;
+      } else {
+        asignaturas = todas.filter(a => a.matriculada === true);
+      }
 
       const nombreArea = window.Router ? Router.nombreArea(params.areaId) : params.areaId;
+      const totalMatriculadas = todas.filter(a => a.matriculada === true).length;
+      const totalTodas = todas.length;
 
       let html = '<div style="padding:24px;font-family:Inter,sans-serif;">';
-      html += `<h1 style="font-size:24px;margin:0 0 20px;">${nombreArea}</h1>`;
+
+      // ─── Cabecera con filtro ───
+      html += '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;">';
+      html += '<h1 style="font-size:24px;margin:0;">' + nombreArea + '</h1>';
+
+      // Mostrar filtro solo si hay diferencia entre matriculadas y todas
+      if (!esHerramienta && totalTodas > totalMatriculadas) {
+        html += '<div class="filtro-asignaturas">';
+        html += '<button class="filtro-btn ' + (this.filtroAsignaturas === 'matriculadas' ? 'activo' : '') + '" ';
+        html += 'onclick="Vistas.cambiarFiltro(\'matriculadas\')">';
+        html += '<i class="fas fa-check-circle"></i> Matriculadas <span class="filtro-count">' + totalMatriculadas + '</span>';
+        html += '</button>';
+        html += '<button class="filtro-btn ' + (this.filtroAsignaturas === 'todas' ? 'activo' : '') + '" ';
+        html += 'onclick="Vistas.cambiarFiltro(\'todas\')">';
+        html += '<i class="fas fa-book"></i> Todas <span class="filtro-count">' + totalTodas + '</span>';
+        html += '</button>';
+        html += '</div>';
+      }
+
+      html += '</div>';
 
       if (asignaturas.length === 0) {
-        html += '<p style="color:#718096;">No hay asignaturas matriculadas.</p>';
+        html += '<p style="color:#718096;">No hay asignaturas para mostrar.</p>';
       } else {
         html += '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;">';
         asignaturas.forEach(a => {
-          const aprobada = localStorage.getItem(`aprobada_${params.areaId}_${a.id}`) === 'true';
-          html += `
-            <div onclick="Router.navegar('asignatura', {areaId:'${params.areaId}', asignaturaId:'${a.id}'})"
-                 style="background:#fff;border:1px solid #e2ddd3;border-left:4px solid ${aprobada ? '#10b981' : '#3b82f6'};border-radius:8px;padding:14px;cursor:pointer;transition:all .15s;"
-                 onmouseover="this.style.transform='translateX(3px)';this.style.boxShadow='0 4px 12px rgba(0,0,0,0.08)'"
-                 onmouseout="this.style.transform='';this.style.boxShadow=''">
-              <div style="font-size:20px;margin-bottom:6px;">${a.icon || '📚'}</div>
-              <div style="font-weight:600;color:#2d3748;font-size:14px;margin-bottom:4px;">${a.nombre}</div>
-              <div style="font-size:11px;color:#718096;">${a.codigo || ''}${aprobada ? ' · ✅ Aprobada' : ''}</div>
-            </div>
-          `;
+          const aprobada = localStorage.getItem('aprobada_' + params.areaId + '_' + a.id) === 'true';
+          const matriculada = a.matriculada === true;
+
+          // Estilos según matriculada o no
+          let estilo = 'background:#fff;border:1px solid #e2ddd3;';
+          let colorBorde = aprobada ? '#10b981' : (matriculada ? '#3b82f6' : '#cbd5e0');
+          let opacidad = matriculada ? '1' : '0.7';
+
+          estilo += 'border-left:4px solid ' + colorBorde + ';';
+          estilo += 'border-radius:8px;padding:14px;cursor:pointer;transition:all .15s;opacity:' + opacidad + ';';
+
+          html += '<div onclick="Router.navegar(\'asignatura\', {areaId:\'' + params.areaId + '\', asignaturaId:\'' + a.id + '\'})" ';
+          html += 'style="' + estilo + '" ';
+          html += 'onmouseover="this.style.transform=\'translateX(3px)\';this.style.boxShadow=\'0 4px 12px rgba(0,0,0,0.08)\';this.style.opacity=\'1\'" ';
+          html += 'onmouseout="this.style.transform=\'\';this.style.boxShadow=\'\';this.style.opacity=\'' + opacidad + '\'">';
+
+          html += '<div style="font-size:20px;margin-bottom:6px;">' + (a.icon || '📚') + '</div>';
+          html += '<div style="font-weight:600;color:#2d3748;font-size:14px;margin-bottom:4px;">' + a.nombre + '</div>';
+          html += '<div style="font-size:11px;color:#718096;">' + (a.codigo || '') + (aprobada ? ' · ✅ Aprobada' : '') + '</div>';
+
+          // Etiqueta "no matriculada"
+          if (!matriculada && !esHerramienta) {
+            html += '<div style="margin-top:6px;display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;background:#f0ebe2;color:#718096;padding:2px 6px;border-radius:4px;">No matriculada</div>';
+          }
+
+          html += '</div>';
         });
         html += '</div>';
       }
 
       html += '</div>';
       main.innerHTML = html;
+
     } catch (e) {
       main.innerHTML = '<div style="padding:24px;color:#ef4444;">Error cargando asignaturas: ' + e.message + '</div>';
+    }
+  },
+
+  cambiarFiltro(filtro) {
+    this.filtroAsignaturas = filtro;
+    // Re-renderizar la vista actual
+    if (window.Router && Router.nivel === 'asignaturas') {
+      this.renderAsignaturas(
+        document.querySelector('.shell-contenido-pestana.shell-activa .pestana-root'),
+        Router.params
+      );
     }
   },
 

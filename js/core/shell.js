@@ -233,7 +233,7 @@ const Shell = {
       <div class="shell-brand">
         <span class="logo">📚</span>
         <span>Estudio</span>
-        <span class="shell-version">v1</span>
+        <span class="shell-version">v1.1</span>
       </div>
 
       <div class="shell-pomodoro">
