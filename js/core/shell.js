@@ -402,7 +402,9 @@ const Shell = {
           <span class="nivel" style="color:var(--text-primary);font-weight:500;">Escritorio</span>
         </div>
       </div>
-      <button title="Marcar"><i class="fas fa-star"></i></button>
+      <button class="btn-add-nota" title="Nueva nota" onclick="Escritorio.añadirPostitDesdeBarra()">
+        <i class="fas fa-plus"></i> Nota
+      </button>
       <button title="Menú"><i class="fas fa-ellipsis-vertical"></i></button>
     `;
   },

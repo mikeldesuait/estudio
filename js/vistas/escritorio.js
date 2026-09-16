@@ -47,10 +47,6 @@ const Escritorio = {
       <div class="escritorio-corcho" id="escritorioCorcho">
         <div class="zona-notas" id="zonaNotas">
           ${postits.map(p => this.renderPostit(p)).join('')}
-          <div class="postit add" onclick="Escritorio.añadirPostit()">
-            <i class="fas fa-plus"></i>
-            <span>Nueva nota</span>
-          </div>
         </div>
 
         <div class="elemento-escritorio agenda elemento-con-menu" id="agendaDia"
@@ -357,6 +353,57 @@ const Escritorio = {
 
     const nuevoEl = contenedor.querySelector(`[data-id="${nuevo.id}"] .texto`);
     if (nuevoEl) nuevoEl.focus();
+  },
+
+  /**
+   * Añade un post-it desde la barra de dirección
+   * Coloca la nota en una posición visible del corcho
+   */
+  añadirPostitDesdeBarra() {
+    // Verificar que estamos en el escritorio
+    if (window.Router && Router.nivel !== 'escritorio') {
+      // Si no estamos en escritorio, ir primero
+      if (window.Shell && Shell.activarPestana) {
+        Shell.activarPestana('escritorio');
+      }
+      setTimeout(() => this.añadirPostitDesdeBarra(), 300);
+      return;
+    }
+
+    const postits = this.cargarPostits();
+    const colorAleatorio = this.colores[Math.floor(Math.random() * this.colores.length)];
+
+    // Posición aleatoria dentro del corcho (evitando solapamientos excesivos)
+    const corcho = document.getElementById('escritorioCorcho');
+    let posX = 60 + Math.floor(Math.random() * 300);
+    let posY = 60 + Math.floor(Math.random() * 200);
+
+    const nueva = {
+      id: 'n' + Date.now(),
+      color: colorAleatorio,
+      texto: '',
+      fecha: 'hoy',
+      pos: { x: posX, y: posY, w: 200, h: 180 }
+    };
+
+    postits.push(nueva);
+    this.guardarPostits(postits);
+
+    // Re-renderizar el escritorio
+    if (window.Vistas && Vistas.render) {
+      Vistas.render('escritorio', {});
+    }
+
+    // Focus en el nuevo post-it
+    setTimeout(() => {
+      const nuevoEl = document.querySelector(`.postit[data-id="${nueva.id}"] .texto`);
+      if (nuevoEl) nuevoEl.focus();
+    }, 100);
+
+    // Toast de confirmación
+    if (window.Ajustes && Ajustes.toast) {
+      Ajustes.toast('📌 Nota añadida');
+    }
   },
 
   guardarTexto(id, texto) {
