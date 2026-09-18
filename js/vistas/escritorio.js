@@ -4,7 +4,7 @@
    ============================================================ */
 
 const Escritorio = {
-  colores: ['amarillo', 'azul', 'verde', 'rosa', 'naranja'],
+  colores: ['amarillo', 'azul', 'verde', 'rosa', 'naranja', 'morado'],
 
   categorias: {
     amarillo: { icono: '📌', nombre: 'Recordatorio' },
@@ -80,6 +80,21 @@ const Escritorio = {
      ═══════════════════════════════════════════════════════ */
 
   renderMenuFlotante(id) {
+    const esPostit = id !== 'agenda';
+    const colorSelector = esPostit ? `
+        <button class="btn-color" onclick="Escritorio.abrirSelectorColor(event, '${id}')">
+          <i class="fas fa-palette"></i> <span>Color</span>
+        </button>
+        <div class="menu-colores" id="colores-${id}">
+          <button onclick="Escritorio.cambiarColor(event, '${id}', 'amarillo')" class="color-opt amarillo" title="Amarillo"></button>
+          <button onclick="Escritorio.cambiarColor(event, '${id}', 'azul')" class="color-opt azul" title="Azul"></button>
+          <button onclick="Escritorio.cambiarColor(event, '${id}', 'verde')" class="color-opt verde" title="Verde"></button>
+          <button onclick="Escritorio.cambiarColor(event, '${id}', 'rosa')" class="color-opt rosa" title="Rosa"></button>
+          <button onclick="Escritorio.cambiarColor(event, '${id}', 'naranja')" class="color-opt naranja" title="Naranja"></button>
+          <button onclick="Escritorio.cambiarColor(event, '${id}', 'morado')" class="color-opt morado" title="Morado"></button>
+        </div>
+    ` : '';
+
     return `
       <button class="menu-flotante-btn" onclick="Escritorio.toggleMenu(event, '${id}')" title="Opciones">
         <i class="fas fa-ellipsis-vertical"></i>
@@ -88,12 +103,58 @@ const Escritorio = {
         <button class="btn-editar" onclick="Escritorio.toggleEditar(event, '${id}')">
           <i class="fas fa-arrows-alt"></i> <span>Editar</span>
         </button>
+        ${colorSelector}
         <div class="separador"></div>
         <button class="eliminar" onclick="Escritorio.eliminarElemento(event, '${id}')">
           <i class="fas fa-trash"></i> <span>Eliminar</span>
         </button>
       </div>
     `;
+  },
+
+  /**
+   * Abre/cierra el submenú de colores
+   */
+  abrirSelectorColor(event, id) {
+    event.stopPropagation();
+    const selector = document.getElementById('colores-' + id);
+    if (selector) {
+      selector.classList.toggle('show');
+    }
+  },
+
+  /**
+   * Abre/cierra el submenú de colores
+   */
+  /**
+   * Cambia el color de un post-it
+   */
+  cambiarColor(event, id, color) {
+    event.stopPropagation();
+
+    // Actualizar en localStorage
+    const postits = this.cargarPostits();
+    const p = postits.find(x => x.id === id);
+    if (p) {
+      p.color = color;
+      this.guardarPostits(postits);
+    }
+
+    // Actualizar en el DOM
+    const el = document.querySelector(`.postit[data-id="${id}"]`);
+    if (el) {
+      // Quitar clases de color anteriores
+      this.colores.forEach(c => el.classList.remove(c));
+      // Añadir nueva clase
+      el.classList.add(color);
+    }
+
+    // Cerrar todos los menús
+    this.cerrarTodosLosMenus();
+
+    if (window.Ajustes && Ajustes.toast) {
+      Ajustes.toast('🎨 Color cambiado');
+    }
   },
 
   toggleMenu(event, id) {
@@ -113,6 +174,7 @@ const Escritorio = {
 
   cerrarTodosLosMenus() {
     document.querySelectorAll('.menu-flotante.show').forEach(m => m.classList.remove('show'));
+    document.querySelectorAll('.menu-colores.show').forEach(m => m.classList.remove('show'));
   },
 
   toggleEditar(event, id) {
@@ -322,7 +384,6 @@ const Escritorio = {
   },
 
   renderPostit(p) {
-    const cat = this.categorias[p.color] || this.categorias.amarillo;
     const posStyle = p.pos
       ? `position:absolute; left:${p.pos.x}px; top:${p.pos.y}px; width:${p.pos.w}px; height:${p.pos.h}px; transform:none; margin:0;`
       : '';
@@ -330,7 +391,6 @@ const Escritorio = {
     return `
       <div class="postit ${p.color} elemento-con-menu" data-id="${p.id}" style="${posStyle}${zStyle}">
         ${this.renderMenuFlotante(p.id)}
-        <div class="titulo">${cat.icono} ${cat.nombre}</div>
         <div class="texto" contenteditable="true"
              onblur="Escritorio.guardarTexto('${p.id}', this.textContent)"
              onkeydown="if(event.key==='Escape')this.blur()">${this.escapar(p.texto)}</div>

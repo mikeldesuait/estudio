@@ -90,7 +90,7 @@
   position: relative;
   width: 200px;
   height: 180px;
-  padding: 16px 14px 12px 14px;
+  padding: 14px 14px 12px 14px;
   font-family: 'Inter', sans-serif;
   font-size: 13px;
   color: #2d3748;
@@ -140,6 +140,7 @@
 .postit.verde { background: linear-gradient(180deg, #d4f5d4 0%, #b0e8b0 100%); }
 .postit.rosa { background: linear-gradient(180deg, #ffd9e8 0%, #ffb8d1 100%); }
 .postit.naranja { background: linear-gradient(180deg, #ffddb8 0%, #ffc180 100%); }
+.postit.morado { background: linear-gradient(180deg, #e0d4ff 0%, #c9b6ff 100%); }
 
 .postit .titulo {
   font-size: 11px;
@@ -151,12 +152,13 @@
 }
 .postit .texto {
   flex: 1;
-  font-size: 12.5px;
-  line-height: 1.45;
+  font-size: 13.5px;
+  line-height: 1.5;
   font-weight: 500;
   word-break: break-word;
   overflow-y: auto;
   outline: none;
+  padding-top: 4px;
 }
 .postit .texto:focus {
   background: rgba(255,255,255,0.5);
@@ -1072,3 +1074,116 @@
 .postit .texto:focus {
   outline: none;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ═══════════════════════════════════════════════════════════════
+   SELECTOR DE COLOR (reset limpio)
+   ═══════════════════════════════════════════════════════════════ */
+
+.menu-colores {
+  display: none;
+  gap: 6px;
+  padding: 8px 4px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  width: 100%;
+}
+
+.menu-colores.show {
+  display: flex;
+}
+
+/* El botón de color dentro del menú (que abre el selector) */
+.menu-flotante .btn-color {
+  width: 100%;
+}
+
+/* Los círculos de color — MÁXIMA prioridad */
+button.color-opt,
+.menu-flotante button.color-opt,
+.menu-colores button.color-opt {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  min-height: 18px;
+  max-width: 18px;
+  max-height: 18px;
+  padding: 0;
+  border: 1.5px solid rgba(0, 0, 0, 0.12);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform .15s, box-shadow .15s;
+  flex: 0 0 18px;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: #ccc;
+  box-sizing: border-box;
+  display: inline-block;
+  text-align: center;
+}
+
+button.color-opt:hover {
+  transform: scale(1.3);
+  border-color: rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+}
+
+button.color-opt.amarillo { background: linear-gradient(135deg, #ffe066, #fff3b0); }
+button.color-opt.azul     { background: linear-gradient(135deg, #a8d0ff, #cfe8ff); }
+button.color-opt.verde    { background: linear-gradient(135deg, #b0e8b0, #d4f5d4); }
+button.color-opt.rosa     { background: linear-gradient(135deg, #ffb8d1, #ffd9e8); }
+button.color-opt.naranja  { background: linear-gradient(135deg, #ffc180, #ffddb8); }
+button.color-opt.morado   { background: linear-gradient(135deg, #c9b6ff, #e0d4ff); }
