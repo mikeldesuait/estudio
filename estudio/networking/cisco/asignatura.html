@@ -1,6 +1,29 @@
 <!doctype html>
 <html lang="es">
 <head>
+<script>
+/* ============================================================
+   NAVEGACION SEGURA - Solo intercepta navegaciones del shell
+   ============================================================ */
+(function() {
+  window.navegarSeguro = function(url) {
+    // Si la URL es absoluta y apunta al shell, avisar al padre
+    if (typeof url === 'string' && url.startsWith('/estudio/')) {
+      if (window.parent !== window) {
+        try {
+          window.parent.postMessage({ tipo: 'navegacion-iframe', url: url }, '*');
+          return;
+        } catch (e) {
+          console.warn('No se pudo comunicar con el padre:', e);
+        }
+      }
+    }
+    // Navegacion normal (relativa o absoluta externa)
+    window.location.href = url;
+  };
+})();
+</script>
+
   <meta charset="utf-8"/>
   <meta name="viewport" content="width=device-width,initial-scale=1"/>
   <title>Cisco Exam Trainer</title>

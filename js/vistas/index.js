@@ -206,73 +206,16 @@ const Vistas = {
      ═══════════════════════════════════════════════════════ */
 
   async renderAsignatura(main, params) {
-    // Buscar el path de la asignatura
-    let path = '';
-    try {
-      const rAsig = await fetch(window.url('estudio/' + params.areaId + '/asignaturas.json'));
-      const dataAsig = await rAsig.json();
-      const asig = (dataAsig.asignaturas || []).find(a => a.id === params.asignaturaId);
-      if (asig && asig.path) path = asig.path;
-    } catch (e) {
-      console.warn('No se pudo cargar la asignatura:', e);
+    // DESACTIVADO: ahora las asignaturas se abren como marcadores persistentes
+    // con Shell.abrirMarcador(). Este método queda solo por compatibilidad.
+    // Si alguien llega aquí, redirigimos al sistema nuevo.
+    
+    if (window.Shell && typeof Shell.abrirMarcador === 'function') {
+      Shell.abrirMarcador(params.areaId, params.asignaturaId);
+    } else {
+      // Fallback muy raro
+      main.innerHTML = '<div style="padding:40px;text-align:center;color:#ef4444;">Error: Shell.abrirMarcador no disponible</div>';
     }
-
-    if (!path) {
-      main.innerHTML = '<div style="padding:40px;text-align:center;color:#ef4444;">No se encontró la asignatura</div>';
-      return;
-    }
-
-    const urlAsignatura = window.url('estudio/' + params.areaId + '/' + path + 'asignatura.html');
-
-    // Ajustar el contenedor para que el iframe llene todo
-    // ya no se usa
-
-    // Crear el iframe
-    main.innerHTML = `
-      <div style="width:100%;height:100%;padding:0;margin:0;background:#ffffff;">
-        <iframe id="iframeAsignatura"
-                style="width:100%;height:100%;border:none;display:block;"
-                title="Asignatura">
-        </iframe>
-      </div>
-    `;
-
-    const iframe = document.getElementById('iframeAsignatura');
-    if (!iframe) return;
-
-    // Escuchar cuando el iframe termine de cargar
-    iframe.addEventListener('load', () => {
-      try {
-        const doc = iframe.contentDocument || iframe.contentWindow.document;
-        if (!doc || !doc.head) return;
-
-        // NOTA: no inyectamos <base> porque rompe los enlaces internos
-        // de la asignatura. Los CSS rotos se arreglarán en los propios HTMLs.
-
-        // Inyectar estilos base para que se vea coherente
-        if (!doc.querySelector('style[data-shell-inject]')) {
-          const style = doc.createElement('style');
-          style.setAttribute('data-shell-inject', 'true');
-          style.textContent = `
-            body {
-              background: #ffffff;
-              color: #2d3748;
-              font-family: 'Inter', sans-serif;
-              margin: 0;
-              padding: 24px;
-            }
-            a { color: #6366f1; }
-            h1, h2, h3 { color: #1e293b; }
-          `;
-          doc.head.appendChild(style);
-        }
-      } catch (e) {
-        console.warn('No se pudo ajustar el iframe:', e);
-      }
-    });
-
-    // Cargar el HTML del asignatura
-    iframe.src = urlAsignatura;
   },
 
   /* ═══════════════════════════════════════════════════════

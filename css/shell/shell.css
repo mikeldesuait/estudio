@@ -207,56 +207,6 @@
   background: rgba(99,102,241,0.12);
 }
 
-/* ═══ 4. ADDRESSBAR ═══ */
-.shell-addressbar {
-  background: var(--bg-card, #ffffff);
-  padding: 6px 12px;
-  display: flex; align-items: center; gap: 8px;
-  border-bottom: 1px solid var(--border, #e2ddd3);
-  flex-shrink: 0; height: 40px;
-}
-.shell-addressbar button {
-  background: none; border: none;
-  color: var(--text-secondary, #718096);
-  width: 28px; height: 28px;
-  border-radius: 6px; cursor: pointer;
-  font-size: 12px;
-  display: flex; align-items: center; justify-content: center;
-}
-.shell-addressbar button:hover {
-  background: var(--bg-hover, #f0ebe2);
-  color: var(--text-primary, #2d3748);
-}
-.shell-addressbar .url {
-  flex: 1;
-  background: var(--bg-soft, #faf7f2);
-  border: 1px solid var(--border, #e2ddd3);
-  border-radius: 20px;
-  padding: 5px 14px;
-  font-size: 12px;
-  color: var(--text-secondary, #718096);
-  display: flex; align-items: center; gap: 8px;
-}
-.shell-addressbar .url .icono { color: #10b981; font-size: 11px; }
-.shell-addressbar .url .ruta {
-  display: flex; align-items: center; gap: 4px;
-  flex-wrap: nowrap;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.shell-addressbar .url .ruta .nivel {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.shell-addressbar .url .ruta .sep { color: rgba(0,0,0,0.2); font-size: 10px; }
-.shell-addressbar .url .ruta .nivel { cursor: pointer; }
-.shell-addressbar .url .ruta .nivel:hover {
-  color: var(--accent, #6366f1);
-  text-decoration: underline;
-}
 
 /* ═══ 5. CONTENIDO ═══ */
 .shell-contenido {
@@ -419,7 +369,7 @@ body.shell-activo .navbar {
   left: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
-  overflow: hidden !important;
+  overflow: auto !important;
   z-index: 1 !important;
 }
 
@@ -430,7 +380,7 @@ body.shell-activo .navbar {
   left: 0 !important;
   right: 0 !important;
   bottom: 0 !important;
-  overflow: hidden !important;
+  overflow: auto !important;
   background: #ffffff;
   z-index: 1 !important;
 }
@@ -510,9 +460,7 @@ body.shell-activo .navbar {
 
 
 
-.shell-addressbar .btn-add-nota i {
-  font-size: 11px;
-}
+
 
 /* El botón + Nota siempre muestra el texto, incluso en móvil */
 
@@ -565,13 +513,232 @@ button.btn-add-nota i {
 }
 
 /* El campo de URL: que se contraiga lo máximo posible */
-.shell-addressbar .url {
-  flex: 1 1 0% !important;
-  min-width: 0 !important;
-  overflow: hidden !important;
-}
+
 
 /* Los botones ← → ↻ 🏠 y ⋮ que NO se contraigan */
 .shell-addressbar > button:not(.btn-add-nota) {
   flex: 0 0 auto !important;
+}
+
+/* ═══ Botón "Ir al punto" (📍) ═══ */
+
+
+
+
+
+
+/* ═══════════════════════════════════════════════════════════════
+   BOTONES DE NAVEGACIÓN EN EL TOPBAR
+   ═══════════════════════════════════════════════════════════════ */
+
+.shell-nav-buttons {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 8px;
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  margin-left: 8px;
+}
+
+.shell-nav-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all .15s;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.shell-nav-btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.25);
+  transform: scale(1.05);
+}
+
+.shell-nav-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+/* Botón de la chincheta */
+.shell-btn-punto {
+  background: rgba(251, 191, 36, 0.2);
+  border-color: rgba(251, 191, 36, 0.4);
+  color: #fbbf24;
+  position: relative;
+}
+
+.shell-btn-punto:hover:not(:disabled) {
+  background: rgba(251, 191, 36, 0.35);
+  color: #fbbf24;
+}
+
+/* Cuando hay un punto guardado, se ve más brillante */
+.shell-btn-punto.tiene-punto {
+  background: rgba(251, 191, 36, 0.4);
+  border-color: #fbbf24;
+  color: #fbbf24;
+}
+
+.shell-btn-punto.tiene-punto::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 8px;
+  height: 8px;
+  background: #fbbf24;
+  border: 2px solid #1e1b4b;
+  border-radius: 50%;
+  animation: pulsePunto 2s infinite;
+}
+
+@keyframes pulsePunto {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.2); }
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MODAL DE LA CHINCHETA
+   ═══════════════════════════════════════════════════════════════ */
+
+.nav-punto-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 10001;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  animation: navFadeIn .2s ease;
+}
+
+.nav-punto-overlay.show { display: flex; }
+
+@keyframes navFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.nav-punto-modal {
+  background: #ffffff;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 460px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  overflow: hidden;
+  animation: navSlideUp .25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes navSlideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.nav-punto-header {
+  padding: 18px 22px 14px;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #1e1b4b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-punto-header h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.nav-punto-close {
+  background: rgba(0, 0, 0, 0.1);
+  border: none;
+  color: #1e1b4b;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-punto-close:hover { background: rgba(0, 0, 0, 0.2); }
+
+.nav-punto-body {
+  padding: 20px 22px;
+  color: #2d3748;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.nav-punto-body strong { color: #1e1b4b; }
+
+.punto-item {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #f7fafc;
+  border: 1px solid #e2e8f0;
+  margin-bottom: 6px;
+  cursor: pointer;
+  transition: all .15s;
+}
+
+.punto-item:hover {
+  background: #fef3c7;
+  border-color: #fbbf24;
+  transform: translateX(2px);
+}
+
+.nav-punto-footer {
+  padding: 14px 22px 18px;
+  background: #f7fafc;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+}
+
+.nav-punto-accion {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  font-weight: 700;
+  font-size: 12px;
+  transition: all .15s;
+}
+
+.nav-punto-accion.primary { background: #6366f1; color: white; }
+.nav-punto-accion.primary:hover { background: #4f46e5; }
+.nav-punto-accion.secondary {
+  background: transparent;
+  color: #2d3748;
+  border: 1px solid #e2e8f0;
+}
+.nav-punto-accion.secondary:hover { background: #f0ebe2; }
+.nav-punto-accion.danger {
+  background: transparent;
+  color: #ef4444;
+  border: 1px solid #ef4444;
+  margin-right: auto;
+}
+.nav-punto-accion.danger:hover { background: #ef4444; color: white; }
+
+.shell-btn-punto.tiene-punto-otro {
+  background: rgba(251, 191, 36, 0.15);
+  border-color: rgba(251, 191, 36, 0.3);
+  color: rgba(251, 191, 36, 0.7);
 }

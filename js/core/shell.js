@@ -65,8 +65,6 @@ const Shell = {
       <div class="shell">
         <div class="shell-topbar" id="shellTopbar"></div>
         <div class="shell-tabbar" id="shellTabbar"></div>
-        <div class="shell-bookmarks" id="shellBookmarks"></div>
-        <div class="shell-addressbar" id="shellAddressbar"></div>
         <div class="shell-contenidos" id="shellContenidos"></div>
         <div class="shell-statusbar" id="shellStatusbar"></div>
       </div>
@@ -75,8 +73,6 @@ const Shell = {
     this.refs = {
       topbar: document.getElementById('shellTopbar'),
       tabbar: document.getElementById('shellTabbar'),
-      bookmarks: document.getElementById('shellBookmarks'),
-      addressbar: document.getElementById('shellAddressbar'),
       contenidos: document.getElementById('shellContenidos'),
       statusbar: document.getElementById('shellStatusbar')
     };
@@ -94,9 +90,14 @@ const Shell = {
 
     this.renderTopbar();
     this.renderTabbar();
-    this.renderBookmarks();
-    this.renderAddressbar();
     this.renderStatusbar();
+
+    // Registrar vista inicial en el historial
+    setTimeout(() => {
+      if (window.Navegacion) {
+        Navegacion.registrar({ tipo: 'shell', nivel: 'escritorio' });
+      }
+    }, 100);
     this.setContenido(
       '<div style="padding:40px;text-align:center;color:#718096;font-family:Inter,sans-serif;">' +
       '<i class="fas fa-spinner fa-spin"></i> Cargando...</div>'
@@ -106,6 +107,8 @@ const Shell = {
 
     if (window.Progreso) window.Progreso.init();
     if (window.Pomodoro) window.Pomodoro.init();
+    if (window.Navegacion) window.Navegacion.init();
+    if (window.Navegacion) window.Navegacion.init();
   },
 
   crearContenedoresPestanas() {
@@ -188,16 +191,6 @@ const Shell = {
     return false;
   },
 
-  setRuta(niveles) {
-    const ruta = niveles.map((n, i) => {
-      if (i === niveles.length - 1) {
-        return '<span class="nivel" style="color:var(--text-primary);font-weight:500;">' + n + '</span>';
-      }
-      return '<span class="nivel">' + n + '</span>';
-    }).join('<span class="sep">›</span>');
-    const url = this.refs.addressbar && this.refs.addressbar.querySelector('.ruta');
-    if (url) url.innerHTML = ruta;
-  },
 
   setContexto(texto) {
     const el = this.refs.statusbar && this.refs.statusbar.querySelector('#shellContexto');
@@ -233,7 +226,7 @@ const Shell = {
       <div class="shell-brand">
         <span class="logo">📚</span>
         <span>Estudio</span>
-        <span class="shell-version">v1.1</span>
+        <span class="shell-version">v1.2</span>
       </div>
 
       <div class="shell-pomodoro">
@@ -269,6 +262,18 @@ const Shell = {
         <div class="pct">0%</div>
       </div>
 
+      <div class="shell-nav-buttons">
+        <button class="shell-nav-btn" id="shellBtnAtras" title="Atrás" disabled>
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <button class="shell-nav-btn" id="shellBtnAdelante" title="Adelante" disabled>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+        <button class="shell-nav-btn shell-btn-punto" id="shellBtnPunto" title="Marcar punto" disabled>
+          <i class="fas fa-thumbtack"></i>
+        </button>
+      </div>
+
       <button class="shell-btn-tema" id="shellBtnTema" title="Cambiar tema">
         <i class="fas ${iconoTema}"></i>
       </button>
@@ -295,20 +300,31 @@ const Shell = {
   },
 
   async activarPestana(id) {
-    // ─── CASO ESPECIAL: clicas la pestaña YA activa → volver a la raíz ───
+    // ─── CASO 1: clicas la pestaña YA activa → volver a la raíz ───
     if (this.pestanaActiva === id) {
-      // Si estamos en un marcador o vista interna, volver a la raíz
       const p = this.pestanas.find(x => x.id === id);
+      
+      // Cerrar marcadores abiertos de esta pestaña
+      if (this.marcadoresAbiertos[id]) {
+        Object.keys(this.marcadoresAbiertos[id]).forEach(clave => {
+          this.cerrarMarcadorSilencioso(id, clave);
+        });
+        this.marcadoresAbiertos[id] = {};
+        this.marcadorActivo[id] = null;
+      }
+
+      // Ir a la raíz del área
       if (p && p.tipo === 'area') {
-        // Volver a la raíz del área (lista de asignaturas)
         Router.navegar('asignaturas', { areaId: id });
       } else if (p && p.tipo === 'home') {
-        // Escritorio → ya está en el escritorio, no hacer nada
+        Router.navegar('escritorio');
       }
       return;
     }
 
-    // 1. Guardar el estado de la pestaña que abandonamos
+    // ─── CASO 2: cambias a otra pestaña ───
+    
+    // Guardar estado de la pestaña que abandonamos
     if (window.Router) {
       this.estadosPestanas[this.pestanaActiva] = {
         nivel: Router.nivel,
@@ -317,29 +333,24 @@ const Shell = {
       this.guardarEstados();
     }
 
-    // 2. Cambiar la pestaña activa
+    // Cambiar la pestaña activa
     this.pestanaActiva = id;
     localStorage.setItem('shell_pestana_activa', id);
     this.renderTabbar();
-
-    // 3. Mostrar el contenedor de esta pestaña (SIN destruir contenido)
     this.mostrarPestana(id);
 
-    // 4. Actualizar marcadores
-    if (window.Bookmarks && typeof Bookmarks.render === 'function') {
-      Bookmarks.render();
+    // Actualizar botones de navegación
+    if (window.Navegacion) {
+      Navegacion.actualizarBotones();
     }
 
-    // 5. La pestaña SIEMPRE va a la raíz del área (o al escritorio)
+    // Navegar según el tipo
     const p = this.pestanas.find(x => x.id === id);
     if (!p) return;
 
     if (p.tipo === 'home') {
-      // Escritorio siempre va al escritorio
       Router.navegar('escritorio');
     } else if (p.tipo === 'area') {
-      // Área → siempre a la raíz (lista de asignaturas)
-      // PERO antes, resaltar el marcador activo si había uno
       Router.navegar('asignaturas', { areaId: id });
     }
   },
@@ -379,10 +390,7 @@ const Shell = {
 
   async renderBookmarks() {
     // Delegar en el módulo Bookmarks
-    if (window.Bookmarks && typeof Bookmarks.render === 'function') {
-      Bookmarks.render();
-    }
-  },
+      },
 
   /* ═══════════════════════════════════════════════════════
      BARRA DE DIRECCIÓN + STATUS
@@ -394,6 +402,9 @@ const Shell = {
       <button title="Adelante" onclick="Shell.irAdelante()" disabled><i class="fas fa-arrow-right"></i></button>
       <button title="Recargar" onclick="Router.navegar(Router.nivel, Router.params)"><i class="fas fa-redo"></i></button>
       <button title="Inicio" onclick="Shell.activarPestana('escritorio')"><i class="fas fa-home"></i></button>
+      <button class="btn-ir-punto" id="shellBtnIrPunto" title="Volver al punto donde lo dejaste" style="display:none;">
+        <i class="fas fa-map-marker-alt"></i> <span id="shellIrPuntoPct">0%</span>
+      </button>
       <div class="url">
         <i class="fas fa-lock icono"></i>
         <div class="ruta">
@@ -471,89 +482,13 @@ Shell.cargarEstados = function() {
   }
 };
 
-Shell.registrarNavegacion = function(nivel, params) {
-  const pestana = this.pestanaActiva;
+// Shell.registrarNavegacion eliminado (ahora lo hace Navegacion)
 
-  // Inicializar historial de la pestaña si no existe
-  if (!this.historiales[pestana]) {
-    this.historiales[pestana] = { entradas: [], indice: -1 };
-  }
 
-  const hist = this.historiales[pestana];
 
-  // Ignorar si es la misma vista que ya estamos viendo
-  const actual = hist.entradas[hist.indice];
-  if (actual && actual.nivel === nivel && JSON.stringify(actual.params) === JSON.stringify(params)) {
-    return;
-  }
 
-  // Cortar el "futuro" si estamos en medio del historial (como un navegador)
-  if (hist.indice < hist.entradas.length - 1) {
-    hist.entradas = hist.entradas.slice(0, hist.indice + 1);
-  }
 
-  // Añadir nueva entrada
-  hist.entradas.push({ nivel, params: { ...params } });
-  hist.indice = hist.entradas.length - 1;
 
-  // Guardar estado actual (compatibilidad)
-  this.estadosPestanas[pestana] = { nivel, params: { ...params } };
-  this.guardarEstados();
-  this.guardarHistoriales();
-
-  // Actualizar botones ← →
-  this.actualizarBotonesNavegacion();
-};
-
-Shell.actualizarBotonesNavegacion = function() {
-  const hist = this.historiales[this.pestanaActiva];
-  const btnAtras = this.refs.addressbar && this.refs.addressbar.querySelector('button[title="Atrás"]');
-  const btnAdelante = this.refs.addressbar && this.refs.addressbar.querySelector('button[title="Adelante"]');
-
-  if (!hist) {
-    if (btnAtras) btnAtras.disabled = true;
-    if (btnAdelante) btnAdelante.disabled = true;
-    return;
-  }
-
-  if (btnAtras) btnAtras.disabled = hist.indice <= 0;
-  if (btnAdelante) btnAdelante.disabled = hist.indice >= hist.entradas.length - 1;
-};
-
-Shell.irAtras = function() {
-  const hist = this.historiales[this.pestanaActiva];
-  if (!hist || hist.indice <= 0) return;
-
-  hist.indice--;
-  const entrada = hist.entradas[hist.indice];
-
-  // Cargar la entrada SIN añadirla al historial
-  Router.navegarSinHistorial(entrada.nivel, entrada.params);
-
-  this.actualizarBotonesNavegacion();
-  this.estadosPestanas[this.pestanaActiva] = {
-    nivel: entrada.nivel,
-    params: { ...entrada.params }
-  };
-  this.guardarEstados();
-};
-
-Shell.irAdelante = function() {
-  const hist = this.historiales[this.pestanaActiva];
-  if (!hist || hist.indice >= hist.entradas.length - 1) return;
-
-  hist.indice++;
-  const entrada = hist.entradas[hist.indice];
-
-  Router.navegarSinHistorial(entrada.nivel, entrada.params);
-
-  this.actualizarBotonesNavegacion();
-  this.estadosPestanas[this.pestanaActiva] = {
-    nivel: entrada.nivel,
-    params: { ...entrada.params }
-  };
-  this.guardarEstados();
-};
 
 Shell.guardarHistoriales = function() {
   try {
@@ -620,47 +555,109 @@ Shell.cerrarMarcadorSilencioso = function(pestana, clave) {
 Shell.abrirMarcador = function(areaId, asignaturaId) {
   const pestana = this.pestanaActiva;
 
-  // Inicializar estructuras si no existen
+  // Inicializar estructuras
   if (!this.marcadoresAbiertos[pestana]) this.marcadoresAbiertos[pestana] = {};
   if (!this.marcadorActivo[pestana]) this.marcadorActivo[pestana] = null;
 
   const clave = areaId + '::' + asignaturaId;
 
-  // ¿Ya estaba abierto? → solo activarlo
+  // Si ya está abierto, solo activarlo
   if (this.marcadoresAbiertos[pestana][clave]) {
     this.tocarLRU(pestana, clave);
-  this.activarMarcador(pestana, clave);
-  this.aplicarLRU(pestana);
+    this.activarMarcador(pestana, clave);
     return;
   }
 
-  // Crear contenedor nuevo para este marcador
+  // Cerrar todos los marcadores anteriores de esta pestaña
+  // (sistema simple: solo 1 iframe por pestaña)
+  Object.keys(this.marcadoresAbiertos[pestana] || {}).forEach(claveVieja => {
+    this.cerrarMarcadorSilencioso(pestana, claveVieja);
+  });
+
+  // Resetear el estado de la pestaña
+  this.marcadoresAbiertos[pestana] = {};
+  this.marcadorActivo[pestana] = null;
+
   const contenedor = this.getContenedorPestana(pestana);
   if (!contenedor) return;
 
-  // El contenedor de la pestaña tiene múltiples "sub-vistas": raíz + cada marcador abierto
-  // Aseguramos que existe el wrapper
+  // Asegurar wrapper
   let wrapper = contenedor.querySelector('.marcadores-wrapper');
   if (!wrapper) {
     wrapper = document.createElement('div');
     wrapper.className = 'marcadores-wrapper';
-    wrapper.style.cssText = 'position:absolute;inset:0;';
+    wrapper.style.cssText = 'position:absolute;top:0;left:0;right:0;bottom:0;overflow:auto;z-index:1;pointer-events:none;display:none;';
     contenedor.appendChild(wrapper);
   }
 
-  // Añadir un contenedor para este marcador (oculto)
+  // Crear el div del marcador
   const div = document.createElement('div');
   div.className = 'marcador-contenedor';
   div.dataset.clave = clave;
-  div.style.cssText = 'position:absolute;inset:0;visibility:hidden;';
-  div.innerHTML = '<iframe style="width:100%;height:100%;border:none;display:block;" ' +
-                  'src="' + window.url('estudio/' + areaId + '/' + this.pathDeAsignatura(areaId, asignaturaId)) + '"></iframe>';
+  div.style.cssText = 'position:absolute;top:0;left:0;right:0;bottom:0;visibility:hidden;pointer-events:none;z-index:1;overflow:auto;';
+
+  var urlIframe = window.url('estudio/' + areaId + '/' + this.pathDeAsignatura(areaId, asignaturaId));
+  urlIframe += '?t=' + Date.now();
+
+  var iframeId = 'iframe-' + areaId + '-' + asignaturaId + '-' + Date.now();
+  div.innerHTML = '<iframe id="' + iframeId + '" style="width:100%;height:100%;border:none;display:block;background:#fff;" ' +
+                  'src="' + urlIframe + '"></iframe>';
+
   wrapper.appendChild(div);
 
   this.marcadoresAbiertos[pestana][clave] = true;
-  this.activarMarcador(pestana, clave);
+  this.tocarLRU(pestana, clave);
 
-  // Guardar en localStorage para persistencia
+  // Restaurar posición y observar scroll
+  setTimeout(function() {
+    var iframeEl = document.getElementById(iframeId);
+    if (iframeEl && window.Lectura) {
+      var posGuardada = Lectura.obtener(iframeEl.src);
+      var mostrarToast = !!(posGuardada && (posGuardada.scrollPx > 50 || posGuardada.scrollPct > 0.05));
+      Lectura.restaurarYObservar(iframeEl, mostrarToast);
+    }
+    
+    // Enganchar el iframe al sistema de navegación
+    if (iframeEl && window.Navegacion) {
+      Navegacion.engancharIframe(iframeEl);
+    }
+
+    // Interceptar enlaces "Volver a las asignaturas" dentro del iframe
+    if (iframeEl) {
+      iframeEl.addEventListener('load', function() {
+        try {
+          var doc = iframeEl.contentDocument;
+          if (!doc) return;
+
+          // Interceptar todos los enlaces
+          doc.querySelectorAll('a').forEach(function(a) {
+            var texto = a.textContent.toLowerCase();
+            var href = a.getAttribute('href') || '';
+
+            // Si es un "volver" o apunta al index
+            if (texto.includes('volver') || href.includes('index.html') || href.includes('nivel=asignaturas')) {
+              // Prevenir navegación
+              a.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                // Volver a la lista de asignaturas del shell
+                if (window.Shell && window.Router) {
+                  Router.navegar('asignaturas', { areaId: areaId });
+                  // Actualizar botones
+                  if (window.Navegacion) Navegacion.actualizarBotones();
+                }
+              });
+            }
+          });
+        } catch (e) {
+          console.warn('No se pudieron interceptar enlaces del iframe:', e);
+        }
+      });
+    }
+  }, 50);
+
+  this.activarMarcador(pestana, clave);
   this.guardarMarcadoresAbiertos();
 };
 
@@ -714,6 +711,20 @@ Shell.activarMarcador = function(pestana, clave) {
   if (window.Bookmarks) Bookmarks.render();
 
   this.guardarMarcadoresAbiertos();
+
+  // Restaurar posición de lectura (si hay alguna guardada)
+  var contenedorLectura = this.getContenedorPestana(pestana);
+  if (contenedorLectura) {
+    var iframeLectura = contenedorLectura.querySelector('.marcador-contenedor[data-clave="' + clave + '"] iframe');
+    if (iframeLectura && window.Lectura) {
+      setTimeout(function() {
+        var posGuardada = Lectura.obtener(iframeLectura.src);
+        if (posGuardada && (posGuardada.scrollPx > 50 || posGuardada.scrollPct > 0.05)) {
+          Lectura.restaurar(iframeLectura);
+        }
+      }, 100);
+    }
+  }
 };
 
 Shell.volverARaiz = function() {
@@ -855,6 +866,8 @@ Shell.limpiarIframesHuerfanos = function() {
   });
 };
 
+
+
 window.Shell = Shell;
 
 /* ─── Reforzar shell-activo ─── */
@@ -863,3 +876,56 @@ setInterval(() => {
     document.body.classList.add('shell-activo');
   }
 }, 500);
+
+
+/* ═══════════════════════════════════════════════════════════════
+   Actualizar botón 📍 Ir al punto cada 2 segundos
+   ═══════════════════════════════════════════════════════════════ */
+setInterval(function() {
+  if (window.Shell && Shell.montado && typeof Shell.actualizarBotonIrPunto === 'function') {
+    Shell.actualizarBotonIrPunto();
+  }
+}, 2000);
+
+/* ============================================================
+   NAVEGACION DESDE IFRAMES
+   Solo procesa URLs que apunten al shell (/estudio/...)
+   ============================================================ */
+window.addEventListener('message', function(event) {
+  if (!event.data || event.data.tipo !== 'navegacion-iframe') return;
+
+  const url = event.data.url;
+  console.log('📩 Navegacion desde iframe:', url);
+
+  // Solo procesar URLs absolutas que apunten al shell
+  if (typeof url !== 'string' || !url.startsWith('/estudio/')) {
+    console.log('   → ignorada (no es del shell)');
+    return;
+  }
+
+  try {
+    const u = new URL(url, window.location.origin);
+    const params = new URLSearchParams(u.search);
+    const nivel = params.get('nivel');
+
+    if (nivel === 'asignaturas') {
+      const areaId = params.get('area');
+      if (areaId && window.Router) {
+        Router.navegar('asignaturas', { areaId: areaId });
+        if (window.Navegacion) Navegacion.actualizarBotones();
+      }
+      return;
+    }
+
+    if (nivel) {
+      const p = {};
+      if (params.get('area')) p.areaId = params.get('area');
+      if (params.get('curso')) p.cursoId = params.get('curso');
+      if (params.get('semestre')) p.semestreId = params.get('semestre');
+      if (params.get('asignatura')) p.asignaturaId = params.get('asignatura');
+      if (window.Router) Router.navegar(nivel, p);
+    }
+  } catch (e) {
+    console.warn('Error al procesar navegacion del iframe:', e);
+  }
+});

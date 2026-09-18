@@ -19,13 +19,10 @@ const Router = {
     this.actualizarContexto(nivel, params);
 
     if (window.Shell && typeof Shell.registrarNavegacion === 'function') {
-      Shell.registrarNavegacion(nivel, params);
+      // Shell.registrarNavegacion eliminado
     }
 
-    // Notificar al Shell para que guarde el estado de la pestaña activa
-    if (window.Shell && typeof Shell.registrarNavegacion === 'function') {
-      Shell.registrarNavegacion(nivel, params);
-    }
+// Ya no se registra en Shell (ahora lo hace Navegacion)
 
     if (window.Vistas && typeof Vistas.render === 'function') {
       Vistas.render(nivel, params);
@@ -53,33 +50,9 @@ const Router = {
   },
 
   actualizarRuta(nivel, params) {
-    const niveles = ['estudio'];
-
-    if (nivel === 'escritorio') {
-      niveles.push('Escritorio');
-    } else if (nivel === 'areas') {
-      niveles.push('Áreas');
-    } else if (nivel === 'cursos') {
-      niveles.push(this.nombreArea(params.areaId) || 'Área');
-      niveles.push('Cursos');
-    } else if (nivel === 'semestres') {
-      niveles.push(this.nombreArea(params.areaId) || 'Área');
-      niveles.push('Curso ' + params.cursoId);
-      niveles.push('Semestres');
-    } else if (nivel === 'asignaturas') {
-      niveles.push(this.nombreArea(params.areaId) || 'Área');
-      niveles.push('Asignaturas');
-    } else if (nivel === 'temas') {
-      niveles.push(this.nombreArea(params.areaId) || 'Área');
-      niveles.push(this.nombreAsignatura(params.areaId, params.asignaturaId) || 'Asignatura');
-      niveles.push('Temas');
-    } else if (nivel === 'tema') {
-      niveles.push(this.nombreAsignatura(params.areaId, params.asignaturaId) || 'Asignatura');
-      niveles.push(params.temaId || 'Tema');
-    }
-
-    Shell.setRuta(niveles);
+    // La barra de dirección ya no existe, así que no hacemos nada
   },
+
 
   actualizarContexto(nivel, params) {
     const textos = {

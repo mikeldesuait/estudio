@@ -1,6 +1,29 @@
 <!DOCTYPE html>
 <html>
 <head>
+<script>
+/* ============================================================
+   NAVEGACION SEGURA - Solo intercepta navegaciones del shell
+   ============================================================ */
+(function() {
+  window.navegarSeguro = function(url) {
+    // Si la URL es absoluta y apunta al shell, avisar al padre
+    if (typeof url === 'string' && url.startsWith('/estudio/')) {
+      if (window.parent !== window) {
+        try {
+          window.parent.postMessage({ tipo: 'navegacion-iframe', url: url }, '*');
+          return;
+        } catch (e) {
+          console.warn('No se pudo comunicar con el padre:', e);
+        }
+      }
+    }
+    // Navegacion normal (relativa o absoluta externa)
+    window.location.href = url;
+  };
+})();
+</script>
+
     <meta charset="UTF-8">
     <title>Practitioner · PNL</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
@@ -57,7 +80,7 @@
 <body>
     <div class="container" style="padding-top:80px; max-width:900px; margin:0 auto;">
         <div class="area-header">
-            <button class="btn-volver" onclick="window.location.href='/estudio/?nivel=asignaturas&area=pnl&curso=0&semestre=0'">← Volver a PNL</button>
+            <button class="btn-volver" onclick="navegarSeguro('/estudio/?nivel=asignaturas&area=pnl&curso=0&semestre=0')">← Volver a PNL</button>
             <h1>🧠 Practitioner</h1>
             <p style="color:var(--text-secondary);">Código: PNL-PRAC | 40 ECTS</p>
         </div>
@@ -119,7 +142,7 @@
 
                     html += `
                         <div class="tema-item">
-                            <div class="tema-info" onclick="window.location.href='temas/${temaId}/PNL${numTema}.html'">
+                            <div class="tema-info" onclick="navegarSeguro('temas/${temaId}/PNL${numTema}.html')">
                                 <span class="tema-numero">${numTema}</span>
                                 <span class="tema-titulo">${titulo}</span>
                             </div>
