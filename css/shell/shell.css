@@ -849,3 +849,54 @@ button.btn-add-nota i {
     display: none;
   }
 }
+
+/* ═══ Botón + Nota en el topbar ═══ */
+.shell-btn-add-nota {
+  background: #6366f1;
+  color: white;
+  border: 1px solid #6366f1;
+  padding: 4px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all .15s;
+  flex-shrink: 0;
+  height: 30px;
+  margin-left: 6px;
+  white-space: nowrap;
+}
+
+.shell-btn-add-nota:hover {
+  background: #4f46e5;
+  border-color: #4f46e5;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+}
+
+.shell-btn-add-nota i {
+  font-size: 10px;
+}
+
+/* Responsive: solo icono en pantallas estrechas */
+@media (max-width: 900px) {
+  .shell-btn-add-nota {
+    padding: 4px 8px;
+  }
+  .shell-btn-add-nota span {
+    display: none;
+  }
+  .shell-btn-add-nota i {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 650px) {
+  .shell-btn-add-nota {
+    display: none;
+  }
+}

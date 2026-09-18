@@ -272,6 +272,9 @@ const Shell = {
         <button class="shell-nav-btn shell-btn-punto" id="shellBtnPunto" title="Marcar punto" disabled>
           <i class="fas fa-thumbtack"></i>
         </button>
+        <button class="shell-btn-add-nota" id="shellBtnAddNota" title="Nueva nota">
+          <i class="fas fa-plus"></i> <span>Nota</span>
+        </button>
       </div>
 
       <button class="shell-btn-tema" id="shellBtnTema" title="Cambiar tema">
@@ -463,6 +466,19 @@ const Shell = {
       btnAjustes.addEventListener('click', () => {
         if (window.Ajustes && typeof Ajustes.abrir === 'function') {
           Ajustes.abrir();
+        }
+      });
+    }
+
+    // ─── Botón + Nota ───
+    const btnAddNota = document.getElementById('shellBtnAddNota');
+    if (btnAddNota && !btnAddNota.dataset.bound) {
+      btnAddNota.dataset.bound = 'true';
+      btnAddNota.addEventListener('click', () => {
+        if (window.Escritorio && typeof Escritorio.añadirPostitDesdeBarra === 'function') {
+          Escritorio.añadirPostitDesdeBarra();
+        } else {
+          console.warn('Escritorio.añadirPostitDesdeBarra no disponible');
         }
       });
     }
