@@ -274,7 +274,7 @@ body {
     <script>
 const ASIGNATURA_KEY = 'derecho-administrativo-iv';
 
-fetch('config.json')
+fetch('config.json?t=' + Date.now())
   .then(function(response) { return response.json(); })
   .then(function(data) {
     var container = document.getElementById('temasContainer');

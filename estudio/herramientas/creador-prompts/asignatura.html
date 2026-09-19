@@ -1,1056 +1,1883 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<script>
-/* ============================================================
-   NAVEGACION SEGURA - Solo intercepta navegaciones del shell
-   ============================================================ */
-(function() {
-  window.navegarSeguro = function(url) {
-    // Si la URL es absoluta y apunta al shell, avisar al padre
-    if (typeof url === 'string' && url.startsWith('/estudio/')) {
-      if (window.parent !== window) {
-        try {
-          window.parent.postMessage({ tipo: 'navegacion-iframe', url: url }, '*');
-          return;
-        } catch (e) {
-          console.warn('No se pudo comunicar con el padre:', e);
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>PromptMaker · UNED</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-      }
-    }
-    // Navegacion normal (relativa o absoluta externa)
-    window.location.href = url;
-  };
-})();
-</script>
 
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>PromptMaker · UNED v16</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<style>
-:root {
-  --bg: #faf7f2;
-  --bg-card: #ffffff;
-  --bg-soft: #f5f0e8;
-  --text-primary: #2d3748;
-  --text-secondary: #718096;
-  --border: #e2ddd3;
-  --accent: #6366f1;
-  --accent-soft: rgba(99, 102, 241, 0.1);
-}
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: var(--bg);
-  color: var(--text-primary);
-  line-height: 1.6;
-  padding: 32px 20px;
-}
-.asignatura-container { max-width: 1100px; margin: 0 auto; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #0d1a2b;
+            color: #e0e8f0;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-/* Botón volver */
-.btn-volver {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 8px 14px; background: transparent;
-  border: 1px solid var(--border); border-radius: 8px;
-  color: var(--text-secondary); font-size: 13px; font-weight: 600;
-  font-family: inherit; cursor: pointer; margin-bottom: 24px;
-  transition: all .15s;
-}
-.btn-volver:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+        .app {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
 
-/* Header */
-.asig-header { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
-.asig-titulo {
-  font-size: 36px; font-weight: 800; color: var(--text-primary);
-  display: flex; align-items: center; gap: 14px; margin-bottom: 8px;
-  letter-spacing: -0.5px;
-}
-.asig-titulo .icono { font-size: 40px; }
-.asig-meta {
-  display: flex; align-items: center; gap: 12px;
-  font-size: 14px; color: var(--text-secondary); flex-wrap: wrap;
-}
-.asig-meta .codigo {
-  font-family: 'SF Mono', Menlo, monospace; background: var(--bg-soft);
-  padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;
-}
+        h1 {
+            font-size: 26px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 4px;
+        }
 
-/* Sección */
-.seccion { margin-bottom: 40px; }
-.seccion-titulo {
-  font-size: 20px; font-weight: 700; color: var(--text-primary);
-  margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
-}
-.seccion-titulo .badge {
-  font-size: 12px; font-weight: 700;
-  background: var(--accent-soft); color: var(--accent);
-  padding: 3px 10px; border-radius: 12px;
-}
+        .subhead {
+            color: #8a9bb8;
+            font-size: 14px;
+            margin-bottom: 24px;
+            border-left: 3px solid #2a5a8a;
+            padding-left: 16px;
+        }
 
-/* Materiales (PDFs) */
-.materiales-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 12px;
-}
-.material-card {
-  display: flex; align-items: center; gap: 14px; padding: 16px;
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 12px; cursor: pointer; transition: all .15s;
-  text-decoration: none; color: inherit;
-}
-.material-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
-  border-color: var(--accent);
-}
-.material-icon { font-size: 28px; flex-shrink: 0; }
-.material-info { flex: 1; min-width: 0; }
-.material-nombre { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
-.material-tipo {
-  font-size: 11px; color: var(--text-secondary);
-  font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
-}
+        .tabs {
+            display: flex;
+            gap: 4px;
+            background: #0f1f33;
+            border-radius: 12px;
+            padding: 4px;
+            margin-bottom: 24px;
+            border: 1px solid #1e3450;
+            flex-wrap: wrap;
+        }
 
-/* Grid de temas */
-.temas-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 14px;
-}
-.tema-card {
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: 12px; padding: 16px; cursor: pointer;
-  transition: all .15s; display: flex; flex-direction: column; gap: 12px;
-  position: relative; overflow: hidden;
-}
-.tema-card::before {
-  content: ''; position: absolute; top: 0; left: 0;
-  width: 4px; height: 100%; background: var(--accent);
-  opacity: 0; transition: opacity .15s;
-}
-.tema-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
-  border-color: var(--accent);
-}
-.tema-card:hover::before { opacity: 1; }
-.tema-card-header {
-  display: flex; align-items: flex-start; gap: 10px;
-}
-.tema-numero {
-  display: inline-flex; align-items: center; justify-content: center;
-  width: 32px; height: 32px; background: var(--accent-soft);
-  color: var(--accent); border-radius: 8px;
-  font-size: 13px; font-weight: 800; flex-shrink: 0;
-}
-.tema-titulo {
-  font-size: 13px; font-weight: 600; color: var(--text-primary);
-  line-height: 1.4; flex: 1;
-}
-.tema-footer {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 10px; margin-top: auto;
-}
-.tema-progreso {
-  flex: 1; display: flex; align-items: center; gap: 8px;
-}
-.tema-progreso .track {
-  flex: 1; height: 6px; background: var(--bg-soft);
-  border-radius: 3px; overflow: hidden;
-}
-.tema-progreso .fill {
-  height: 100%;
-  background: linear-gradient(90deg, var(--accent), #8b5cf6);
-  border-radius: 3px; transition: width .3s;
-}
-.tema-progreso .pct {
-  font-size: 11px; font-weight: 700; color: var(--text-secondary);
-  min-width: 32px; text-align: right;
-}
-.tema-controles { display: flex; align-items: center; gap: 3px; }
-.tema-controles button {
-  width: 22px; height: 22px; border: 1px solid var(--border);
-  background: var(--bg-card); color: var(--text-secondary);
-  border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 700;
-  display: flex; align-items: center; justify-content: center;
-  transition: all .15s; padding: 0;
-}
-.tema-controles button:hover {
-  background: var(--accent); color: white; border-color: var(--accent);
-}
-.tema-controles .separador {
-  width: 1px; height: 14px; background: var(--border); margin: 0 3px;
-}
-.tema-controles .quick {
-  font-size: 9px; width: auto; padding: 0 5px; height: 20px;
-}
+        .tabs button {
+            flex: 1;
+            min-width: 60px;
+            padding: 12px 8px;
+            border: none;
+            border-radius: 9px;
+            background: transparent;
+            color: #8a9bb8;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
 
-/* Libros (para Teoría del Estado) */
-.libro-bloque {
-  margin-bottom: 36px;
-  padding-bottom: 24px;
-  border-bottom: 1px solid var(--border);
-}
-.libro-bloque:last-child { border-bottom: none; margin-bottom: 0; }
-.libro-header { margin-bottom: 16px; }
-.libro-titulo {
-  font-size: 18px; font-weight: 800;
-  color: var(--text-primary);
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 4px;
-}
-.libro-autor {
-  font-size: 13px; color: var(--text-secondary); font-style: italic;
-  margin-left: 28px;
-}
-.loading-temas {
-  grid-column: 1/-1;
-  text-align: center; padding: 40px;
-  color: var(--text-secondary);
-}
-.loading-temas i { font-size: 24px; display: block; margin-bottom: 10px; }
+        .tabs button.active {
+            background: #1a3d66;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(20, 80, 180, 0.3);
+        }
 
-/* Responsive */
-@media (max-width: 640px) {
-  body { padding: 20px 12px; }
-  .asig-titulo { font-size: 26px; }
-  .asig-titulo .icono { font-size: 30px; }
-  .temas-grid { grid-template-columns: 1fr; }
-  .materiales-grid { grid-template-columns: 1fr; }
-}
-</style>
+        .tabs button:hover:not(.active) {
+            color: #c8d8f0;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: #0f1f33;
+            border-radius: 16px;
+            padding: 20px 22px;
+            margin-bottom: 18px;
+            border: 1px solid #1e3450;
+        }
+
+        .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #b0c8e8;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .btn-group .opt {
+            padding: 8px 18px;
+            border: 2px solid #1e3450;
+            border-radius: 30px;
+            background: transparent;
+            color: #b0c8e8;
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-group .opt:hover {
+            border-color: #3a6a9a;
+        }
+
+        .btn-group .opt.active {
+            background: #1a3d66;
+            border-color: #2a6aaa;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(20, 80, 180, 0.25);
+        }
+
+        .check-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 4px;
+        }
+
+        .check-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #b0c8e8;
+            cursor: pointer;
+        }
+
+        .check-group input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #2a6aaa;
+            cursor: pointer;
+        }
+
+        textarea,
+        input[type="text"] {
+            width: 100%;
+            background: #091220;
+            border: 1px solid #1e3450;
+            border-radius: 12px;
+            padding: 14px 16px;
+            font-size: 14px;
+            line-height: 1.7;
+            color: #d6e2f5;
+            font-family: 'Consolas', 'Monaco', monospace;
+            resize: vertical;
+            transition: 0.15s;
+        }
+
+        textarea:focus,
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #3a7ac0;
+            box-shadow: 0 0 0 3px rgba(40, 100, 200, 0.15);
+        }
+
+        textarea.texto-tema {
+            min-height: 180px;
+            font-size: 13px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        textarea.prompt-output {
+            min-height: 300px;
+            font-size: 13px;
+        }
+
+        textarea.html-input {
+            min-height: 200px;
+            font-size: 13px;
+        }
+
+        textarea.resumen-input {
+            min-height: 250px;
+            font-size: 13px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        input[type="text"] {
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 15px;
+            min-height: 46px;
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .btn {
+            padding: 10px 22px;
+            border: none;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #1a4a7a;
+            color: #fff;
+            box-shadow: 0 4px 14px rgba(20, 80, 180, 0.3);
+        }
+
+        .btn-primary:hover {
+            background: #2a5a9a;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #1a2a44;
+            color: #b0c8e8;
+            border: 1px solid #2a4a6a;
+        }
+
+        .btn-secondary:hover {
+            background: #2a3a5e;
+        }
+
+        .btn-success {
+            background: #1a6a4a;
+            color: #fff;
+        }
+
+        .btn-success:hover {
+            background: #2a7a5a;
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: #6a2a2a;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            background: #8a3a3a;
+        }
+
+        .btn-warning {
+            background: #6a5a1a;
+            color: #fff;
+        }
+
+        .btn-warning:hover {
+            background: #8a7a2a;
+        }
+
+        .btn-purple {
+            background: #4a2a7a;
+            color: #fff;
+        }
+
+        .btn-purple:hover {
+            background: #5a3a9a;
+            transform: translateY(-1px);
+        }
+
+        .badge-count {
+            background: #1a3d66;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            color: #b0c8e8;
+        }
+
+        .field-hint {
+            font-size: 12px;
+            color: #6a8aaa;
+            margin-top: 4px;
+        }
+
+        .step-badge {
+            display: inline-block;
+            background: #2a5a8a;
+            color: #fff;
+            border-radius: 30px;
+            padding: 2px 14px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-right: 8px;
+        }
+
+        .library-item {
+            background: #091220;
+            border-radius: 10px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            border: 1px solid #1a2a44;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .library-item .info .title {
+            font-weight: 600;
+            font-size: 14px;
+            color: #e0e8f0;
+        }
+
+        .library-item .info .meta {
+            font-size: 12px;
+            color: #6a8aaa;
+        }
+
+        .library-item .actions-lib {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .library-item .actions-lib .btn {
+            padding: 5px 12px;
+            font-size: 12px;
+        }
+
+        .empty-library {
+            color: #6a8aaa;
+            text-align: center;
+            padding: 30px 20px;
+            font-size: 14px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a3d66;
+            color: #fff;
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 999;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .flow-steps {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .flow-steps .step {
+            background: #0f1f33;
+            border: 1px solid #1e3450;
+            border-radius: 30px;
+            padding: 6px 18px;
+            font-size: 13px;
+            color: #8a9bb8;
+        }
+
+        .flow-steps .step.active {
+            background: #1a3d66;
+            border-color: #2a6aaa;
+            color: #fff;
+        }
+
+        @media (max-width: 700px) {
+            body {
+                padding: 10px;
+            }
+            .card {
+                padding: 14px 12px;
+            }
+            .btn-group .opt {
+                padding: 6px 12px;
+                font-size: 12px;
+            }
+            .btn {
+                padding: 8px 14px;
+                font-size: 12px;
+            }
+            .tabs button {
+                font-size: 10px;
+                padding: 10px 4px;
+                min-width: 50px;
+            }
+            .library-item {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .library-item .actions-lib {
+                justify-content: flex-start;
+            }
+            .flow-steps .step {
+                font-size: 11px;
+                padding: 4px 12px;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a1520;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #2a4a6a;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3a5a7a;
+        }
+    </style>
 </head>
 <body>
-    <div class="asignatura-container">
-        <button class="btn-volver" onclick="navegarSeguro('/estudio/?nivel=areas')">
-            <i class="fas fa-arrow-left"></i> Volver a las asignaturas
-        </button>
 
-        <div class="asig-header">
-            <h1 class="asig-titulo">
-                <span class="icono">⚡</span>
-                <span>PromptMaker · UNED v16</span>
-            </h1>
-            <div class="asig-meta">
-                
-            </div>
-        </div>
+<div class="app">
 
-        
-
-        <div class="seccion">
-            <div class="seccion-titulo">
-                <i class="fas fa-list"></i> Temas
-                <span class="badge" id="temasCount">...</span>
-            </div>
-            <div id="temasContainer" class="temas-grid">
-                <div class="loading-temas">
-                    <i class="fas fa-spinner fa-spin"></i>
-                    Cargando temas...
-                </div>
-            </div>
-        </div>
+    <h1>⚡ PromptMaker · UNED</h1>
+    <div class="subhead">
+        Paso 1: Genera el resumen · Paso 2: Convierte a HTML interactivo · Paso 3: Descarga
     </div>
 
-    <script>
-const ASIGNATURA_KEY = 'creador-prompts';
+    <div class="flow-steps">
+        <span class="step active">1️⃣ Generar Resumen</span>
+        <span class="step">2️⃣ Generar HTML</span>
+        <span class="step">3️⃣ Descargar HTML</span>
+        <span class="step">📚 Biblioteca</span>
+    </div>
 
-fetch('config.json')
-  .then(function(response) { return response.json(); })
-  .then(function(data) {
-    var container = document.getElementById('temasContainer');
-    var countEl = document.getElementById('temasCount');
-    var totalTemas = 0;
+    <div class="tabs">
+        <button class="active" data-tab="tab-prompt">📝 Paso 1</button>
+        <button data-tab="tab-html">🎨 Paso 2</button>
+        <button data-tab="tab-download">📥 Paso 3</button>
+        <button data-tab="tab-library">📚 Biblioteca</button>
+    </div>
 
-    // Detectar formato
-    if (data.libros && data.libros.length > 0) {
-      // Formato LIBROS
-      data.libros.forEach(function(libro) { totalTemas += (libro.temas || []).length; });
-      countEl.textContent = totalTemas;
+    <!-- ========================================================== -->
+    <!-- TAB 1: GENERAR PROMPT (Paso 1)                             -->
+    <!-- ========================================================== -->
+    <div id="tab-prompt" class="tab-content active">
 
-      var html = '';
-      data.libros.forEach(function(libro) {
-        html += '<div class="libro-bloque">';
-        html += '<div class="libro-header">';
-        html += '<div class="libro-titulo"><i class="fas fa-book-open" style="color:var(--accent);"></i> ' + libro.titulo + '</div>';
-        if (libro.autor) {
-          html += '<div class="libro-autor">' + libro.autor + '</div>';
-        }
-        html += '</div>';
-        html += '<div class="temas-grid">';
+        <div class="card">
+            <div class="card-title"><span class="step-badge">Paso 1</span> Configuración del resumen</div>
+            <div class="btn-group" id="modalidadGroup">
+                <button class="opt active" data-value="test">📝 Tipo Test</button>
+                <button class="opt" data-value="desarrollo">📖 Desarrollo</button>
+                <button class="opt" data-value="mixto">🧩 Mixto</button>
+            </div>
+            <div class="btn-group" style="margin-top:10px;" id="nivelGroup">
+                <button class="opt" data-value="rapido">⚡ Rápido</button>
+                <button class="opt active" data-value="estudio">📚 Estudio</button>
+                <button class="opt" data-value="intensivo">🔥 Intensivo</button>
+            </div>
+            <div class="check-group" style="margin-top:10px;">
+                <label><input type="checkbox" id="optChecklist" checked /> Checklist de epígrafes</label>
+                <label><input type="checkbox" id="optPrioridad" checked /> Prioridades (🔴🟡🟢)</label>
+            </div>
+        </div>
 
-        (libro.temas || []).forEach(function(t, index) {
-          var temaId = t.id || 'tema' + (index + 1);
-          var numTema = index + 1;
-          var titulo = t.titulo || 'Tema ' + numTema;
-          var archivo = t.archivo || 'tema.html';
-          // Si el archivo no tiene path, añadirlo
-          if (archivo.indexOf('/') === -1) {
-            archivo = 'temas/' + temaId + '/' + archivo;
-          }
-          var key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
-          var progreso = parseInt(localStorage.getItem(key)) || 0;
+        <div class="card">
+            <div class="card-title"><span class="step-badge">Paso 1</span> Texto del tema (desde el PDF)</div>
+            <textarea class="texto-tema" id="textoTema" placeholder="Pega aquí el texto del tema copiado del PDF..."></textarea>
+            <div class="field-hint">📎 Este texto se fusionará con el prompt.</div>
+        </div>
 
-          html += '<div class="tema-card" data-tema-id="' + temaId + '" data-archivo="' + archivo + '">'
-            + '<div class="tema-card-header">'
-            +   '<span class="tema-numero">' + numTema + '</span>'
-            +   '<span class="tema-titulo">' + titulo + '</span>'
-            + '</div>'
-            + '<div class="tema-footer">'
-            +   '<div class="tema-progreso">'
-            +     '<div class="track"><div class="fill" id="fill_' + temaId + '" style="width:' + progreso + '%"></div></div>'
-            +     '<span class="pct" id="progreso_' + temaId + '">' + progreso + '%</span>'
-            +   '</div>'
-            +   '<div class="tema-controles">'
-            +     '<button onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, -10)" data-tid="' + temaId + '" title="-10%">−</button>'
-            +     '<button onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 10)" data-tid="' + temaId + '" title="+10%">+</button>'
-            +     '<span class="separador"></span>'
-            +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 25)" data-tid="' + temaId + '" title="+25%">25</button>'
-            +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 50)" data-tid="' + temaId + '" title="50%">50</button>'
-            +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 100)" data-tid="' + temaId + '" title="100%">100</button>'
-            +   '</div>'
-            + '</div>'
-            + '</div>';
-        });
+        <div class="card" style="border-color: #3a6a8a;">
+            <div class="card-title"><span class="step-badge">Paso 1</span> Prompt para DeepSeek (resumen)</div>
+            <textarea class="prompt-output" id="promptOutput" readonly>Selecciona opciones y pega el texto del tema...</textarea>
+            <div class="actions">
+                <button class="btn btn-purple" id="fusionarPromptBtn">🔗 Fusionar</button>
+                <button class="btn btn-primary" id="copiarPromptBtn">📋 Copiar</button>
+                <button class="btn btn-secondary" id="reiniciarPromptBtn">⟳ Reiniciar</button>
+            </div>
+        </div>
 
-        html += '</div>';
-        html += '</div>';
-      });
-      container.innerHTML = html;
+        <div class="card" style="border-color: #2a5a3a; background: #0d1f2a;">
+            <div style="font-size:13px; color:#8aabaa;">
+                💡 <strong>Paso 1:</strong> Copia el prompt y pégalo en DeepSeek. DeepSeek te devolverá el <strong>resumen en texto</strong>. Luego ve al <strong>Paso 2</strong>.
+            </div>
+        </div>
 
-    } else if (data.temas && data.temas.length > 0) {
-      // Formato TEMAS
-      totalTemas = data.temas.length;
-      countEl.textContent = totalTemas;
+    </div>
 
-      var html = '';
-      data.temas.forEach(function(t, index) {
-        var temaId = t.id || 'tema' + (index + 1);
-        var numTema = index + 1;
-        var titulo = t.titulo || 'Tema ' + numTema;
-        var archivo = t.archivo || 'tema.html';
-        // Si el archivo no tiene path, añadirlo
-        if (archivo.indexOf('/') === -1) {
-          archivo = 'temas/' + temaId + '/' + archivo;
-        }
-        var key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
-        var progreso = parseInt(localStorage.getItem(key)) || 0;
+    <!-- ========================================================== -->
+    <!-- TAB 2: GENERAR HTML (Paso 2)                              -->
+    <!-- ========================================================== -->
+    <div id="tab-html" class="tab-content">
 
-        html += '<div class="tema-card" data-tema-id="' + temaId + '" data-archivo="' + archivo + '">'
-          + '<div class="tema-card-header">'
-          +   '<span class="tema-numero">' + numTema + '</span>'
-          +   '<span class="tema-titulo">' + titulo + '</span>'
-          + '</div>'
-          + '<div class="tema-footer">'
-          +   '<div class="tema-progreso">'
-          +     '<div class="track"><div class="fill" id="fill_' + temaId + '" style="width:' + progreso + '%"></div></div>'
-          +     '<span class="pct" id="progreso_' + temaId + '">' + progreso + '%</span>'
-          +   '</div>'
-          +   '<div class="tema-controles">'
-          +     '<button onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, -10)" data-tid="' + temaId + '" title="-10%">−</button>'
-          +     '<button onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 10)" data-tid="' + temaId + '" title="+10%">+</button>'
-          +     '<span class="separador"></span>'
-          +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 25)" data-tid="' + temaId + '" title="+25%">25</button>'
-          +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 50)" data-tid="' + temaId + '" title="50%">50</button>'
-          +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 100)" data-tid="' + temaId + '" title="100%">100</button>'
-          +   '</div>'
-          + '</div>'
-          + '</div>';
-      });
-      container.innerHTML = html;
+        <div class="card">
+            <div class="card-title"><span class="step-badge">Paso 2</span> Resumen de DeepSeek</div>
+            <textarea class="resumen-input" id="resumenInput" placeholder="Pega aquí el resumen que te ha dado DeepSeek en el Paso 1..."></textarea>
+            <div class="field-hint">📄 Este es el resumen en texto que DeepSeek te devolvió.</div>
+        </div>
 
-    } else {
-      container.innerHTML = '<p style="grid-column:1/-1; color:var(--text-secondary);">No hay contenido cargado.</p>';
-      countEl.textContent = '0';
-      return;
+        <div class="card">
+            <div class="card-title"><span class="step-badge">Paso 2</span> Prompt para DeepSeek (HTML interactivo)</div>
+            <textarea class="prompt-output" id="htmlPromptOutput" readonly>Primero pega el resumen arriba y haz clic en "Generar prompt para HTML"...</textarea>
+            <div class="actions">
+                <button class="btn btn-purple" id="generarHtmlPromptBtn">🎨 Generar prompt para HTML</button>
+                <button class="btn btn-primary" id="copiarHtmlPromptBtn">📋 Copiar</button>
+            </div>
+        </div>
+
+        <div class="card" style="border-color: #2a5a3a; background: #0d1f2a;">
+            <div style="font-size:13px; color:#8aabaa;">
+                💡 <strong>Paso 2:</strong> Copia el prompt y pégalo en DeepSeek. DeepSeek te devolverá <strong>SOLO el código HTML</strong> con preguntas interactivas (respuestas ocultas). Luego ve al <strong>Paso 3</strong>.
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- TAB 3: DESCARGAR HTML (Paso 3)                            -->
+    <!-- ========================================================== -->
+    <div id="tab-download" class="tab-content">
+
+        <div class="card">
+            <div class="card-title"><span class="step-badge">Paso 3</span> HTML de DeepSeek</div>
+            <textarea class="html-input" id="htmlInput" placeholder="Pega aquí el HTML que te ha devuelto DeepSeek en el Paso 2 (debe empezar con &lt;!DOCTYPE html&gt;)..."></textarea>
+            <div class="field-hint">🔧 DeepSeek devuelve el HTML con preguntas interactivas. Cópialo y pégalo aquí.</div>
+        </div>
+
+        <div class="card">
+            <div class="card-title"><span class="step-badge">Paso 3</span> Título del tema</div>
+            <input type="text" id="tituloTema" placeholder="Ej: Tema 1: El Derecho administrativo" />
+        </div>
+
+        <div class="card">
+            <div class="card-title"><span class="step-badge">Paso 3</span> Vista previa</div>
+            <textarea class="prompt-output" id="htmlOutput" readonly style="min-height: 100px;">Pega el HTML de DeepSeek y pon el título para descargar...</textarea>
+            <div class="actions">
+                <button class="btn btn-success" id="descargarHtmlBtn">📥 Descargar .html</button>
+                <button class="btn btn-primary" id="copiarHtmlBtn">📋 Copiar código</button>
+                <button class="btn btn-secondary" id="limpiarHtmlBtn">🗑️ Limpiar</button>
+            </div>
+        </div>
+
+        <div class="card" style="border-color: #2a5a3a; background: #0d1f2a;">
+            <div style="font-size:13px; color:#8aabaa;">
+                💡 <strong>Paso 3:</strong> El HTML se descarga directamente. Incluye: <strong>Idea central</strong> + <strong>Resumen detallado</strong> + <strong>Preguntas interactivas</strong> (respuestas ocultas con botón "Mostrar respuesta") + <strong>Modo claro/oscuro</strong> + <strong>Índice</strong>.
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- TAB 4: BIBLIOTECA                                          -->
+    <!-- ========================================================== -->
+    <div id="tab-library" class="tab-content">
+
+        <div class="card">
+            <div class="card-title">
+                📚 Mis resúmenes
+                <span class="badge-count" id="libCount">0</span>
+            </div>
+            <div id="libraryContainer">
+                <div class="empty-library">📭 No tienes resúmenes guardados.</div>
+            </div>
+            <div class="actions" style="margin-top: 14px;">
+                <button class="btn btn-warning" id="exportarLibBtn">📤 Exportar</button>
+                <button class="btn btn-secondary" id="importarLibBtn">📥 Importar</button>
+                <button class="btn btn-danger" id="vaciarLibBtn" style="background:#4a1a1a;">🗑️ Vaciar</button>
+            </div>
+            <input type="file" id="importFileInput" accept=".json" style="display:none;" />
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ========================================================== -->
+<!-- TOAST                                                     -->
+<!-- ========================================================== -->
+<div id="toast" class="toast"></div>
+
+<script>
+    (function() {
+
+        // ============================================================
+        // CSS COMPLETO PARA INCLUIR EN EL PROMPT DEL PASO 2
+        // ============================================================
+
+        const CSS_ESTUDIO = `
+/* ===== ESTILO ÚNICO PARA RESÚMENES UNED ===== */
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    max-width: 950px;
+    margin: 30px auto;
+    padding: 20px;
+    background: #f5f7fa;
+    color: #1a1a2e;
+    line-height: 1.8;
+    font-size: 17px;
+}
+h1 {
+    font-size: 30px;
+    color: #0a1628;
+    border-bottom: 4px solid #1a3d66;
+    padding-bottom: 14px;
+}
+h2 {
+    font-size: 23px;
+    color: #1a3d66;
+    margin-top: 32px;
+    border-left: 4px solid #1a3d66;
+    padding-left: 16px;
+}
+h3 {
+    font-size: 20px;
+    color: #2a4a7a;
+    margin-top: 26px;
+}
+h4 {
+    font-size: 18px;
+    color: #3a5a8a;
+    margin-top: 20px;
+}
+strong {
+    color: #0a2a4a;
+}
+ul {
+    padding-left: 24px;
+}
+li {
+    margin-bottom: 6px;
+}
+blockquote {
+    background: #e8edf4;
+    padding: 12px 20px;
+    border-left: 4px solid #1a3d66;
+    margin: 16px 0;
+    border-radius: 4px;
+}
+hr {
+    border: none;
+    border-top: 2px solid #d0d8e4;
+    margin: 28px 0;
+}
+.indice {
+    background: #e8edf4;
+    padding: 16px 24px;
+    border-radius: 10px;
+    margin-bottom: 30px;
+}
+.indice ul {
+    list-style: none;
+    padding-left: 0;
+}
+.indice li {
+    padding: 3px 0;
+}
+.indice li.h1 {
+    font-weight: 600;
+}
+.indice li.h2 {
+    padding-left: 20px;
+    font-weight: 400;
+}
+.indice a {
+    color: #1a3d66;
+    text-decoration: none;
+}
+.indice a:hover {
+    text-decoration: underline;
+}
+.idea-central {
+    background: #e0e8f4;
+    padding: 18px 24px;
+    border-radius: 12px;
+    margin: 20px 0 30px 0;
+    border-left: 5px solid #1a3d66;
+}
+.idea-central h2 {
+    margin-top: 0;
+    border-left: none;
+    padding-left: 0;
+}
+.modo-btn {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    padding: 8px 18px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    background: #1a3d66;
+    color: #fff;
+    font-size: 14px;
+    z-index: 999;
+}
+.modo-btn:hover {
+    background: #2a5a8a;
+}
+.dark-mode {
+    background: #0d1a2b;
+    color: #d6e2f5;
+}
+.dark-mode h1 {
+    color: #b0c8e8;
+    border-bottom-color: #2a5a8a;
+}
+.dark-mode h2 {
+    color: #8ab0e0;
+    border-left-color: #2a5a8a;
+}
+.dark-mode h3 {
+    color: #6a9ac0;
+}
+.dark-mode h4 {
+    color: #5a8aaa;
+}
+.dark-mode strong {
+    color: #c8ddf0;
+}
+.dark-mode blockquote {
+    background: #142a44;
+    border-left-color: #2a5a8a;
+}
+.dark-mode .indice {
+    background: #142a44;
+}
+.dark-mode .indice a {
+    color: #8ab0e0;
+}
+.dark-mode .idea-central {
+    background: #142a44;
+    border-left-color: #2a5a8a;
+}
+.dark-mode hr {
+    border-top-color: #2a4a6a;
+}
+@media (max-width: 768px) {
+    body {
+        font-size: 16px;
+        padding: 14px;
     }
-
-    // Añadir el onclick a cada tema-card
-    container.querySelectorAll('.tema-card').forEach(function(card) {
-      card.addEventListener('click', function() {
-        var archivo = card.dataset.archivo;
-        navegarSeguro(archivo);
-      });
-    });
-  })
-  .catch(function(error) {
-    document.getElementById('temasContainer').innerHTML =
-      '<p style="grid-column:1/-1; color:#ef4444;">Error al cargar los temas: ' + error.message + '</p>';
-    console.error('Error cargando temas:', error);
-  });
-
-function cambiarProgreso(temaId, cambio) {
-  var key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
-  var actual = parseInt(localStorage.getItem(key)) || 0;
-  var nuevo = Math.max(0, Math.min(100, actual + cambio));
-  localStorage.setItem(key, nuevo.toString());
-  var elPct = document.getElementById('progreso_' + temaId);
-  if (elPct) elPct.textContent = nuevo + '%';
-  var elFill = document.getElementById('fill_' + temaId);
-  if (elFill) elFill.style.width = nuevo + '%';
-  mostrarToast('📊 Progreso: ' + nuevo + '%');
-}
-
-function mostrarToast(mensaje) {
-  var toast = document.getElementById('toast-progreso');
-  if (!toast) {
-    toast = document.createElement('div');
-    toast.id = 'toast-progreso';
-    toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#6366f1;color:white;padding:10px 24px;border-radius:30px;font-weight:600;font-size:14px;box-shadow:0 4px 20px rgba(0,0,0,0.3);opacity:0;transition:opacity 0.3s ease;z-index:9999;';
-    document.body.appendChild(toast);
-  }
-  toast.textContent = mensaje;
-  toast.style.opacity = '1';
-  clearTimeout(toast._timer);
-  toast._timer = setTimeout(function() { toast.style.opacity = '0'; }, 2000);
-}
-</script>
-</body>
-</html>';
-}
-
-// ============================================================
-//  COMPROBAR SI UN TEMA ESTÁ COMPLETO Y DESCARGARLO
-// ============================================================
-function temaEstaCompleto(tema) {
-    var tieneSubs = tema.subs && tema.subs.length > 0;
-    if (!tieneSubs) {
-        var ep = estado.epigrafes[tema.num];
-        return ep && ep.contenido;
+    h1 {
+        font-size: 25px;
     }
-    var completo = true;
-    (tema.subs || []).forEach(function(sub) {
-        if (esBibliografia(sub.titulo)) return;
-        var ep = estado.epigrafes[sub.num];
-        if (!ep || !ep.contenido) completo = false;
-        (sub.subs || []).forEach(function(ss) {
-            if (esBibliografia(ss.titulo)) return;
-            var ep2 = estado.epigrafes[ss.num];
-            if (!ep2 || !ep2.contenido) completo = false;
-        });
-    });
-    return completo;
-}
-
-function montarYDescargarTema(tema) {
-    var html = montarHTML(tema);
-    var titulo = tema.num + '. ' + tema.titulo;
-    // Guardar en biblioteca
-    var existe = estado.biblioteca.some(function(b) { return b.titulo === titulo; });
-    if (!existe) {
-        estado.biblioteca.push({ titulo: titulo, html: html, fecha: new Date().toISOString() });
-    } else {
-        estado.biblioteca = estado.biblioteca.map(function(b) {
-            if (b.titulo === titulo) return { titulo: titulo, html: html, fecha: new Date().toISOString() };
-            return b;
-        });
+    h2 {
+        font-size: 21px;
     }
-    guardarEstado();
-    renderBiblioteca();
-    // Descargar automáticamente con nombre del libro + tema
-    var nombreArchivo = nombreArchivoConLibro(titulo);
-    descargarArchivo(html, nombreArchivo, 'html');
-    estado.temasDescargados[tema.num] = true;
 }
 
-function listaCompletaEpigrafes() {
-    var lista = [];
-    estado.esqueleto.forEach(function(tema) {
-        var tieneSubs = tema.subs && tema.subs.length > 0;
-        if (!tieneSubs) {
-            if (!esBibliografia(tema.titulo)) {
-                lista.push({ num: tema.num, titulo: tema.titulo, temaPadreNum: tema.num });
+/* ===== ESTILOS PARA PREGUNTAS INTERACTIVAS ===== */
+.pregunta {
+    background: #f0f4fa;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 16px;
+    border: 1px solid #d0d8e4;
+}
+.dark-mode .pregunta {
+    background: #142a44;
+    border-color: #2a4a6a;
+}
+.pregunta .enunciado {
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+.pregunta .opciones {
+    list-style: none;
+    padding-left: 8px;
+}
+.pregunta .opciones li {
+    margin-bottom: 4px;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+.pregunta .opciones li.correcta {
+    background: #d4edda;
+    color: #155724;
+    border-left: 4px solid #28a745;
+}
+.dark-mode .pregunta .opciones li.correcta {
+    background: #1a4a3a;
+    color: #8fdfb0;
+    border-left-color: #2ecc71;
+}
+.pregunta .respuesta-oculta {
+    display: none;
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: #e8f0fe;
+    border-radius: 8px;
+    border-left: 4px solid #1a3d66;
+}
+.dark-mode .pregunta .respuesta-oculta {
+    background: #1a3050;
+    border-left-color: #2a5a8a;
+}
+.pregunta .respuesta-oculta.visible {
+    display: block;
+}
+.pregunta .btn-respuesta {
+    margin-top: 10px;
+    padding: 6px 18px;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 13px;
+    background: #1a3d66;
+    color: #fff;
+    transition: 0.2s;
+}
+.pregunta .btn-respuesta:hover {
+    background: #2a5a8a;
+}
+.dark-mode .pregunta .btn-respuesta {
+    background: #2a5a8a;
+}
+.dark-mode .pregunta .btn-respuesta:hover {
+    background: #3a7aaa;
+}
+.pregunta .trampa {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #6a4a2a;
+    font-style: italic;
+}
+.dark-mode .pregunta .trampa {
+    color: #c8a878;
+}
+.pregunta-desarrollo .esquema-oculto {
+    display: none;
+    margin-top: 12px;
+    padding: 12px 16px;
+    background: #e8f0fe;
+    border-radius: 8px;
+    border-left: 4px solid #1a3d66;
+}
+.dark-mode .pregunta-desarrollo .esquema-oculto {
+    background: #1a3050;
+    border-left-color: #2a5a8a;
+}
+.pregunta-desarrollo .esquema-oculto.visible {
+    display: block;
+}`;
+
+        // ============================================================
+        // PLANTILLAS DE PROMPT PARA EL PASO 1 (Generar resumen)
+        // ============================================================
+
+        function getPromptResumen(modalidad, nivel) {
+            const opciones = {
+                checklist: document.getElementById('optChecklist').checked,
+                prioridad: document.getElementById('optPrioridad').checked
+            };
+
+            let extra = '';
+            if (opciones.checklist) extra += '\n- Incluir checklist de epígrafes procesados (solo para verificación interna, NO en el HTML final).';
+            if (opciones.prioridad) extra += '\n- Marcar epígrafes con prioridad (🔴🟡🟢) solo para verificación interna, NO en el HTML final.';
+
+            let base = '';
+
+            if (modalidad === 'test') {
+                if (nivel === 'rapido') {
+                    base = `# PROMPT PARA DEEPSEEK · TIPO TEST · NIVEL RÁPIDO
+
+## Rol
+Actúa como un profesor universitario experto en Derecho Administrativo y en la preparación de materiales de estudio para exámenes tipo test.
+
+## Instrucción principal
+Te proporcionaré el texto de un tema académico. Deberás generar un **resumen de estudio** que:
+
+1. **Sintetice y condense** el contenido original, eliminando repeticiones, ejemplos excesivos y desarrollos secundarios.
+2. **Mantenga TODOS los conceptos, definiciones, argumentos y referencias importantes** que puedan ser preguntados en el examen.
+3. **Respete la estructura del original** (epígrafes y subepígrafes).
+4. **Incluya definiciones literales** (frases textuales del manual) solo para los conceptos más importantes y que tengan una redacción especialmente relevante para el examen.
+5. **Reduzca la extensión original de forma significativa**, pero sin que el estudiante pierda información sustancial. El resumen debe ser un **verdadero resumen**, no una transcripción.
+
+## Formato de salida obligatorio
+
+### 1. IDEA CENTRAL (5 minutos)
+Un párrafo de 5-6 líneas que resuma TODO el tema.
+
+---
+
+### 2. RESUMEN POR EPÍGRAFES
+**CADA epígrafe y subepígrafe** debe incluir:
+
+**Epígrafe X.X. [Nombre]**
+- **Resumen:** (Síntesis del contenido: idea principal, argumentos esenciales, ejemplos clave).
+- **Definiciones literales:** (Solo las frases textuales más importantes, copiadas tal cual).
+- **Matiz a recordar:** (Palabra clave que puede ser cambiada en una pregunta trampa).
+
+*(ESTA ESTRUCTURA DEBE REPETIRSE PARA CADA EPÍGRAFE Y SUBEPÍGRAFE. NO TE SALTES NINGUNO.)*
+
+---
+
+### 3. PREGUNTAS TIPO TEST
+**5 preguntas** con 4 opciones cada una. Para cada pregunta:
+- Enunciado extraído de una idea clave del texto.
+- Opción A
+- Opción B
+- Opción C
+- Opción D
+- **Respuesta correcta:** Indicada (letra y texto).
+- **Trampa identificada:** Explicación.
+
+---
+
+### 4. PREGUNTAS DE RESERVA
+**2 preguntas** muy difíciles (trampas muy sutiles).
+
+---
+
+## REGLAS DE ORO
+1. **Equilibrio:** Ni copiar todo ni omitir lo importante. Síntesis con sustancia.
+2. **Literalidad selectiva:** Solo las definiciones más relevantes se copian textualmente.
+3. **No inventes:** Todo debe salir del texto proporcionado.
+4. **Numeración completa:** Respeta TODOS los epígrafes.
+
+---
+
+## TEXTO A ANALIZAR`;
+                } else if (nivel === 'estudio') {
+                    base = `# PROMPT PARA DEEPSEEK · TIPO TEST · NIVEL ESTUDIO
+
+## Rol
+Actúa como un profesor universitario experto en Derecho Administrativo y en la preparación de materiales de estudio para exámenes tipo test.
+
+## Instrucción principal
+Te proporcionaré el texto de un tema académico. Deberás generar un **resumen de estudio** que:
+
+1. **Sintetice y condense** el contenido original, eliminando repeticiones, ejemplos excesivos y desarrollos secundarios.
+2. **Mantenga TODOS los conceptos, definiciones, argumentos y referencias importantes** que puedan ser preguntados en el examen.
+3. **Respete la estructura del original** (epígrafes y subepígrafes).
+4. **Incluya definiciones literales** (frases textuales del manual) solo para los conceptos más importantes y que tengan una redacción especialmente relevante para el examen.
+5. **Reduzca la extensión original de forma significativa**, pero sin que el estudiante pierda información sustancial. El resumen debe ser un **verdadero resumen**, no una transcripción.
+
+## Formato de salida obligatorio
+
+### 1. IDEA CENTRAL (5 minutos)
+Un párrafo de 5-6 líneas que resuma TODO el tema.
+
+---
+
+### 2. RESUMEN POR EPÍGRAFES
+**CADA epígrafe y subepígrafe** debe incluir:
+
+**Epígrafe X.X. [Nombre]**
+- **Resumen:** (Síntesis del contenido: idea principal, argumentos esenciales, ejemplos clave).
+- **Definiciones literales:** (Solo las frases textuales más importantes, copiadas tal cual).
+- **Matiz a recordar:** (Palabra clave que puede ser cambiada en una pregunta trampa).
+
+*(ESTA ESTRUCTURA DEBE REPETIRSE PARA CADA EPÍGRAFE Y SUBEPÍGRAFE. NO TE SALTES NINGUNO.)*
+
+---
+
+### 3. PREGUNTAS TIPO TEST
+**10 preguntas** con 4 opciones cada una. Para cada pregunta:
+- Enunciado
+- Opción A
+- Opción B
+- Opción C
+- Opción D
+- **Respuesta correcta:** Indicada.
+- **Trampa identificada:** Explicación.
+
+---
+
+### 4. PREGUNTAS DE RESERVA
+**2 preguntas** muy difíciles.
+
+---
+
+## REGLAS DE ORO
+1. **Equilibrio:** Ni copiar todo ni omitir lo importante.
+2. **Literalidad selectiva:** Solo las definiciones más relevantes.
+3. **No inventes.**
+4. **Numeración completa.**
+
+---
+
+## TEXTO A ANALIZAR`;
+                } else { // intensivo
+                    base = `# PROMPT PARA DEEPSEEK · TIPO TEST · NIVEL INTENSIVO
+
+## Rol
+Actúa como un profesor universitario experto en Derecho Administrativo y en la preparación de materiales de estudio para exámenes tipo test.
+
+## Instrucción principal
+Te proporcionaré el texto de un tema académico. Deberás generar un **resumen de estudio** que:
+
+1. **Sintetice y condense** el contenido original, eliminando repeticiones, ejemplos excesivos y desarrollos secundarios.
+2. **Mantenga TODOS los conceptos, definiciones, argumentos y referencias importantes** que puedan ser preguntados en el examen.
+3. **Respete la estructura del original** (epígrafes y subepígrafes).
+4. **Incluya definiciones literales** (frases textuales del manual) solo para los conceptos más importantes y que tengan una redacción especialmente relevante para el examen.
+5. **Reduzca la extensión original de forma significativa**, pero sin que el estudiante pierda información sustancial. El resumen debe ser un **verdadero resumen**, no una transcripción.
+
+## Formato de salida obligatorio
+
+### 1. IDEA CENTRAL (5 minutos)
+Un párrafo de 5-6 líneas que resuma TODO el tema.
+
+---
+
+### 2. RESUMEN POR EPÍGRAFES
+**CADA epígrafe y subepígrafe** debe incluir:
+
+**Epígrafe X.X. [Nombre]**
+- **Resumen:** (Síntesis del contenido: idea principal, argumentos esenciales, ejemplos clave).
+- **Definiciones literales:** (Solo las frases textuales más importantes, copiadas tal cual).
+- **Matiz a recordar:** (Palabra clave que puede ser cambiada en una pregunta trampa).
+
+*(ESTA ESTRUCTURA DEBE REPETIRSE PARA CADA EPÍGRAFE Y SUBEPÍGRAFE. NO TE SALTES NINGUNO.)*
+
+---
+
+### 3. PREGUNTAS TIPO TEST
+**15 preguntas** con 4 opciones cada una. Para cada pregunta:
+- Enunciado
+- Opción A
+- Opción B
+- Opción C
+- Opción D
+- **Respuesta correcta:** Indicada.
+- **Trampa identificada:** Explicación.
+
+---
+
+### 4. PREGUNTAS DE RESERVA
+**3 preguntas** muy difíciles.
+
+---
+
+## REGLAS DE ORO
+1. **Equilibrio:** Ni copiar todo ni omitir lo importante.
+2. **Literalidad selectiva:** Solo las definiciones más relevantes.
+3. **No inventes.**
+4. **Numeración completa.**
+
+---
+
+## TEXTO A ANALIZAR`;
+                }
+
+            // ---- DESARROLLO ----
+            } else if (modalidad === 'desarrollo') {
+                if (nivel === 'rapido') {
+                    base = `# PROMPT PARA DEEPSEEK · DESARROLLO · NIVEL RÁPIDO
+
+## Rol
+Actúa como un profesor universitario experto en Derecho Administrativo y en la preparación de materiales de estudio para exámenes de desarrollo.
+
+## Instrucción principal
+Te proporcionaré el texto de un tema académico. Deberás generar un **resumen conceptual** que:
+
+1. **Sintetice y condense** el contenido original, eliminando repeticiones y ejemplos excesivos.
+2. **Mantenga TODOS los conceptos, argumentos y referencias importantes** para poder desarrollar una pregunta de examen.
+3. **Respete la estructura del original** (epígrafes y subepígrafes).
+4. **Explique las ideas con claridad**, para que el estudiante las entienda y pueda desarrollarlas por escrito.
+5. **No copie definiciones literales** (no es necesario para desarrollo), sino que **conceptualice** las ideas con sus propias palabras.
+6. **Reduzca la extensión original de forma significativa**, pero sin que el estudiante pierda la capacidad de entender y explicar el tema.
+
+## Formato de salida obligatorio
+
+### 1. IDEA CENTRAL (5 minutos)
+Un párrafo de 5-6 líneas que resuma TODO el tema.
+
+---
+
+### 2. RESUMEN POR EPÍGRAFES
+**CADA epígrafe y subepígrafe** debe incluir:
+
+**Epígrafe X.X. [Nombre]**
+- **Concepto clave:** (Explicación clara y sintética de la idea principal).
+- **Argumentos del autor:** (Lista de los argumentos esenciales).
+- **Conexiones:** (Cómo se relaciona este epígrafe con otros).
+
+*(ESTA ESTRUCTURA DEBE REPETIRSE PARA CADA EPÍGRAFE Y SUBEPÍGRAFE. NO TE SALTES NINGUNO.)*
+
+---
+
+### 3. PREGUNTAS DE DESARROLLO
+**3 preguntas** de desarrollo. Para cada pregunta:
+- Enunciado.
+- **Esquema de respuesta:** (3-4 puntos).
+- **Conceptos clave:** (Lista).
+
+---
+
+### 4. PREGUNTAS DE RESERVA
+**2 preguntas** muy difíciles.
+
+---
+
+## REGLAS DE ORO
+1. **Equilibrio:** Síntesis con sustancia.
+2. **Conceptualización:** No copies definiciones literales.
+3. **Fidelidad al texto.**
+4. **Numeración completa.**
+
+---
+
+## TEXTO A ANALIZAR`;
+                } else if (nivel === 'estudio') {
+                    base = `# PROMPT PARA DEEPSEEK · DESARROLLO · NIVEL ESTUDIO
+
+## Rol
+Actúa como un profesor universitario experto en Derecho Administrativo y en la preparación de materiales de estudio para exámenes de desarrollo.
+
+## Instrucción principal
+Te proporcionaré el texto de un tema académico. Deberás generar un **resumen conceptual** que:
+
+1. **Sintetice y condense** el contenido original, eliminando repeticiones y ejemplos excesivos.
+2. **Mantenga TODOS los conceptos, argumentos y referencias importantes** para poder desarrollar una pregunta de examen.
+3. **Respete la estructura del original** (epígrafes y subepígrafes).
+4. **Explique las ideas con claridad**, para que el estudiante las entienda y pueda desarrollarlas por escrito.
+5. **No copie definiciones literales** (no es necesario para desarrollo), sino que **conceptualice** las ideas con sus propias palabras.
+6. **Reduzca la extensión original de forma significativa**, pero sin que el estudiante pierda la capacidad de entender y explicar el tema.
+
+## Formato de salida obligatorio
+
+### 1. IDEA CENTRAL (5 minutos)
+Un párrafo de 5-6 líneas que resuma TODO el tema.
+
+---
+
+### 2. RESUMEN POR EPÍGRAFES
+**CADA epígrafe y subepígrafe** debe incluir:
+
+**Epígrafe X.X. [Nombre]**
+- **Concepto clave:** (Explicación clara y sintética de la idea principal).
+- **Argumentos del autor:** (Lista de los argumentos esenciales).
+- **Conexiones:** (Cómo se relaciona este epígrafe con otros).
+
+*(ESTA ESTRUCTURA DEBE REPETIRSE PARA CADA EPÍGRAFE Y SUBEPÍGRAFE. NO TE SALTES NINGUNO.)*
+
+---
+
+### 3. MINI-RESÚMEN POR EPÍGRAFE (Para repaso rápido)
+**Epígrafe 1.1:** [Idea central en 1-2 líneas]
+... *(todos los epígrafes)*
+
+---
+
+### 4. PREGUNTAS DE DESARROLLO
+**5 preguntas** de desarrollo. Para cada pregunta:
+- Enunciado.
+- **Esquema de respuesta:** (5-6 puntos).
+- **Conceptos clave:** (Lista).
+
+---
+
+### 5. PREGUNTAS DE RESERVA
+**2 preguntas** muy difíciles.
+
+---
+
+## REGLAS DE ORO
+1. **Equilibrio:** Síntesis con sustancia.
+2. **Conceptualización:** No copies definiciones literales.
+3. **Fidelidad al texto.**
+4. **Numeración completa.**
+
+---
+
+## TEXTO A ANALIZAR`;
+                } else { // intensivo
+                    base = `# PROMPT PARA DEEPSEEK · DESARROLLO · NIVEL INTENSIVO
+
+## Rol
+Actúa como un profesor universitario experto en Derecho Administrativo y en la preparación de materiales de estudio para exámenes de desarrollo.
+
+## Instrucción principal
+Te proporcionaré el texto de un tema académico. Deberás generar un **resumen conceptual** que:
+
+1. **Sintetice y condense** el contenido original, eliminando repeticiones y ejemplos excesivos.
+2. **Mantenga TODOS los conceptos, argumentos y referencias importantes** para poder desarrollar una pregunta de examen.
+3. **Respete la estructura del original** (epígrafes y subepígrafes).
+4. **Explique las ideas con claridad**, para que el estudiante las entienda y pueda desarrollarlas por escrito.
+5. **No copie definiciones literales** (no es necesario para desarrollo), sino que **conceptualice** las ideas con sus propias palabras.
+6. **Reduzca la extensión original de forma significativa**, pero sin que el estudiante pierda la capacidad de entender y explicar el tema.
+
+## Formato de salida obligatorio
+
+### 1. IDEA CENTRAL (5 minutos)
+Un párrafo de 5-6 líneas que resuma TODO el tema.
+
+---
+
+### 2. RESUMEN POR EPÍGRAFES
+**CADA epígrafe y subepígrafe** debe incluir:
+
+**Epígrafe X.X. [Nombre]**
+- **Concepto clave:** (Explicación clara y sintética de la idea principal).
+- **Argumentos del autor:** (Lista de los argumentos esenciales).
+- **Conexiones:** (Cómo se relaciona este epígrafe con otros).
+
+*(ESTA ESTRUCTURA DEBE REPETIRSE PARA CADA EPÍGRAFE Y SUBEPÍGRAFE. NO TE SALTES NINGUNO.)*
+
+---
+
+### 3. MINI-RESÚMEN POR EPÍGRAFE (Para repaso rápido)
+**Epígrafe 1.1:** [Idea central en 1-2 líneas]
+... *(todos los epígrafes)*
+
+---
+
+### 4. PREGUNTAS DE DESARROLLO
+**7 preguntas** de desarrollo que obliguen a conectar epígrafes de diferentes partes del texto. Para cada pregunta:
+- Enunciado.
+- **Esquema de respuesta:** (5-7 puntos).
+- **Conceptos clave:** (Lista).
+
+---
+
+### 5. PREGUNTAS DE RESERVA
+**3 preguntas** muy difíciles (que conecten 3 o más epígrafes).
+
+---
+
+## REGLAS DE ORO
+1. **Equilibrio:** Síntesis con sustancia.
+2. **Conceptualización:** No copies definiciones literales.
+3. **Fidelidad al texto.**
+4. **Numeración completa.**
+
+---
+
+## TEXTO A ANALIZAR`;
+                }
+
+            // ---- MIXTO ----
+            } else {
+                if (nivel === 'rapido') {
+                    base = `# PROMPT PARA DEEPSEEK · MIXTO · NIVEL RÁPIDO
+
+## Rol
+Actúa como un profesor universitario experto en Derecho Administrativo y en la preparación de materiales de estudio para exámenes mixtos.
+
+## Instrucción principal
+Te proporcionaré el texto de un tema académico. Deberás generar un **resumen de estudio** que:
+
+1. **Sintetice y condense** el contenido original.
+2. **Mantenga TODOS los conceptos, definiciones, argumentos y referencias importantes** para ambas modalidades.
+3. **Respete la estructura del original** (epígrafes y subepígrafes).
+4. **Incluya definiciones literales** (solo las más importantes, para tipo test) y **explicaciones conceptuales** (para desarrollo).
+5. **Reduzca la extensión original de forma significativa**, pero sin que el estudiante pierda información sustancial.
+
+## Formato de salida obligatorio
+
+### 1. IDEA CENTRAL (5 minutos)
+Un párrafo de 5-6 líneas.
+
+---
+
+### 2. RESUMEN POR EPÍGRAFES
+**CADA epígrafe y subepígrafe** debe incluir:
+
+**Epígrafe X.X. [Nombre]**
+- **Resumen:** (Síntesis del contenido).
+- **Definiciones literales:** (Solo las frases más importantes, para tipo test).
+- **Concepto clave para desarrollar:** (Explicación de la idea principal, para desarrollo).
+
+---
+
+### 3. PREGUNTAS TIPO TEST: 5 preguntas + 2 reserva (con trampas)
+### 4. PREGUNTAS DE DESARROLLO: 3 preguntas + 2 reserva (con esquema)
+
+---
+
+## REGLAS DE ORO
+1. **Equilibrio:** Síntesis con sustancia.
+2. **Literalidad selectiva.**
+3. **Claridad conceptual.**
+4. **Numeración completa.**
+
+---
+
+## TEXTO A ANALIZAR`;
+                } else if (nivel === 'estudio') {
+                    base = `# PROMPT PARA DEEPSEEK · MIXTO · NIVEL ESTUDIO
+
+## Rol
+Actúa como un profesor universitario experto en Derecho Administrativo y en la preparación de materiales de estudio para exámenes mixtos.
+
+## Instrucción principal
+Te proporcionaré el texto de un tema académico. Deberás generar un **resumen de estudio** que:
+
+1. **Sintetice y condense** el contenido original.
+2. **Mantenga TODOS los conceptos, definiciones, argumentos y referencias importantes** para ambas modalidades.
+3. **Respete la estructura del original** (epígrafes y subepígrafes).
+4. **Incluya definiciones literales** (solo las más importantes, para tipo test) y **explicaciones conceptuales** (para desarrollo).
+5. **Reduzca la extensión original de forma significativa**, pero sin que el estudiante pierda información sustancial.
+
+## Formato de salida obligatorio
+
+### 1. IDEA CENTRAL (5 minutos)
+Un párrafo de 5-6 líneas.
+
+---
+
+### 2. RESUMEN POR EPÍGRAFES
+**CADA epígrafe y subepígrafe** debe incluir:
+
+**Epígrafe X.X. [Nombre]**
+- **Resumen:** (Síntesis del contenido).
+- **Definiciones literales:** (Solo las frases más importantes, para tipo test).
+- **Concepto clave para desarrollar:** (Explicación de la idea principal, para desarrollo).
+- **Matiz a recordar:** (Para detectar trampas en test).
+- **Argumentos clave:** (Para desarrollo).
+
+---
+
+### 3. MINI-RESÚMEN POR EPÍGRAFE (Para repaso rápido)
+**Epígrafe 1.1:** [Idea central en 1-2 líneas]
+... *(todos los epígrafes)*
+
+---
+
+### 4. PREGUNTAS TIPO TEST: 10 preguntas + 2 reserva (con trampas)
+### 5. PREGUNTAS DE DESARROLLO: 5 preguntas + 2 reserva (con esquema)
+
+---
+
+## REGLAS DE ORO
+1. **Equilibrio:** Síntesis con sustancia.
+2. **Literalidad selectiva.**
+3. **Claridad conceptual.**
+4. **Numeración completa.**
+
+---
+
+## TEXTO A ANALIZAR`;
+                } else { // intensivo
+                    base = `# PROMPT PARA DEEPSEEK · MIXTO · NIVEL INTENSIVO
+
+## Rol
+Actúa como un profesor universitario experto en Derecho Administrativo y en la preparación de materiales de estudio para exámenes mixtos.
+
+## Instrucción principal
+Te proporcionaré el texto de un tema académico. Deberás generar un **resumen de estudio** que:
+
+1. **Sintetice y condense** el contenido original.
+2. **Mantenga TODOS los conceptos, definiciones, argumentos y referencias importantes** para ambas modalidades.
+3. **Respete la estructura del original** (epígrafes y subepígrafes).
+4. **Incluya definiciones literales** (solo las más importantes, para tipo test) y **explicaciones conceptuales** (para desarrollo).
+5. **Reduzca la extensión original de forma significativa**, pero sin que el estudiante pierda información sustancial.
+
+## Formato de salida obligatorio
+
+### 1. IDEA CENTRAL (5 minutos)
+Un párrafo de 5-6 líneas.
+
+---
+
+### 2. RESUMEN POR EPÍGRAFES
+**CADA epígrafe y subepígrafe** debe incluir:
+
+**Epígrafe X.X. [Nombre]**
+- **Resumen:** (Síntesis del contenido).
+- **Definiciones literales:** (Solo las frases más importantes, para tipo test).
+- **Concepto clave para desarrollar:** (Explicación de la idea principal, para desarrollo).
+- **Matiz a recordar:** (Para detectar trampas en test).
+- **Argumentos clave:** (Para desarrollo).
+
+---
+
+### 3. MINI-RESÚMEN POR EPÍGRAFE (Para repaso rápido)
+**Epígrafe 1.1:** [Idea central en 1-2 líneas]
+... *(todos los epígrafes)*
+
+---
+
+### 4. PREGUNTAS TIPO TEST: 15 preguntas + 3 reserva (con trampas muy sutiles)
+### 5. PREGUNTAS DE DESARROLLO: 7 preguntas + 3 reserva (que conecten 3 o más epígrafes)
+
+---
+
+## REGLAS DE ORO
+1. **Equilibrio:** Síntesis con sustancia.
+2. **Literalidad selectiva.**
+3. **Claridad conceptual.**
+4. **Numeración completa.**
+
+---
+
+## TEXTO A ANALIZAR`;
+                }
             }
-        } else {
-            (tema.subs || []).forEach(function(sub) {
-                if (!esBibliografia(sub.titulo)) lista.push({ num: sub.num, titulo: sub.titulo, temaPadreNum: tema.num });
-                (sub.subs || []).forEach(function(ss) {
-                    if (!esBibliografia(ss.titulo)) lista.push({ num: ss.num, titulo: ss.titulo, temaPadreNum: tema.num });
-                });
-            });
-        }
-    });
-    return lista;
-}
 
-function contarCompletados() {
-    var lista = listaCompletaEpigrafes();
-    var completados = 0;
-    lista.forEach(function(ep) {
-        if (estado.epigrafes[ep.num] && estado.epigrafes[ep.num].contenido) completados++;
-    });
-    return { total: lista.length, completados: completados };
-}
+            if (extra) {
+                base += '\n\n## OPCIONES EXTRA\n' + extra;
+            }
 
-function renderEsqueleto() {
-    var cont = $('listaEsqueleto');
-    $('temasCount').textContent = estado.esqueleto.length;
-    if (estado.esqueleto.length === 0) {
-        cont.innerHTML = '<div class="empty-msg">📭 Aún no hay esqueleto.</div>';
-        $('masivoBox').style.display = 'none';
-        return;
-    }
-    $('masivoBox').style.display = 'block';
-    var html = '';
-    estado.esqueleto.forEach(function(tema, idx) {
-        var numEp = 0, gen = 0;
-        var tieneSubs = tema.subs && tema.subs.length > 0;
-        if (!tieneSubs) {
-            numEp = 1;
-            if (estado.epigrafes[tema.num] && estado.epigrafes[tema.num].contenido) gen = 1;
-        } else {
-            (tema.subs || []).forEach(function(s) {
-                if (esBibliografia(s.titulo)) return;
-                numEp++;
-                if (estado.epigrafes[s.num] && estado.epigrafes[s.num].contenido) gen++;
-                (s.subs || []).forEach(function(ss) {
-                    if (esBibliografia(ss.titulo)) return;
-                    numEp++;
-                    if (estado.epigrafes[ss.num] && estado.epigrafes[ss.num].contenido) gen++;
-                });
-            });
-        }
-        var estadoTxt = gen === 0 ? '⚪ Sin empezar' : (gen === numEp ? '✅ Completo' : '⏳ ' + gen + '/' + numEp);
-        var estadoCls = gen === numEp && numEp > 0 ? 'listo' : (gen > 0 ? 'generando' : '');
-        html += '<div class="tema-item">' +
-            '<div class="info">' +
-                '<div class="titulo">' + escapeHtml(tema.num + '. ' + tema.titulo) + '</div>' +
-                '<div class="estado ' + estadoCls + '">' + estadoTxt + '</div>' +
-            '</div>' +
-            '<div class="acciones">' +
-                '<button type="button" class="btn btn-primary" onclick="window.__abrirTema(' + idx + ')">📝 Abrir</button>' +
-            '</div>' +
-        '</div>';
-    });
-    cont.innerHTML = html;
-}
-
-function renderContenido() {
-    var cont = $('listaEpigrafes');
-    if (estado.temaActualIdx === null) {
-        cont.innerHTML = '<div class="empty-msg">📭 Selecciona un tema.</div>';
-        $('generarTodosEpigrafesBtn').disabled = true;
-        $('montarHtmlBtn').disabled = true;
-        return;
-    }
-    var tema = estado.esqueleto[estado.temaActualIdx];
-    $('contenidoHint').textContent = 'Tema: ' + tema.num + '. ' + tema.titulo;
-    var html = '';
-    var total = 0, listos = 0;
-    function renderEp(num, titulo, nivel) {
-        if (esBibliografia(titulo)) return;
-        total++;
-        var ep = estado.epigrafes[num];
-        var tiene = ep && ep.contenido;
-        if (tiene) listos++;
-        var estadoTxt = tiene ? '✅ Listo' : (ep && ep.estado === 'generando' ? '⏳ Generando' : (ep && ep.estado === 'error' ? '❌ Error' : '⚪ Pendiente'));
-        var estadoCls = tiene ? 'listo' : (ep && ep.estado === 'generando' ? 'generando' : (ep && ep.estado === 'error' ? 'error' : 'pendiente'));
-        var claseNivel = nivel === 1 ? 'sub' : (nivel === 2 ? 'subsub' : '');
-        var boton = tiene
-            ? '<button type="button" class="btn btn-secondary" onclick="window.__verEpigrafe(\'' + num + '\')">👁️</button><button type="button" class="btn btn-secondary" onclick="window.__regenerarEpigrafe(\'' + num + '\')">🔄</button>'
-            : '<button type="button" class="btn btn-success" onclick="window.__generarEpigrafe(\'' + num + '\')">🎨 Generar</button>';
-        html += '<div class="epigrafe-item ' + claseNivel + '">' +
-            '<span class="num">' + escapeHtml(num) + '</span>' +
-            '<span class="titulo">' + escapeHtml(titulo) + '</span>' +
-            '<span class="estado ' + estadoCls + '">' + estadoTxt + '</span>' +
-            '<div class="acciones">' + boton + '</div>' +
-        '</div>';
-    }
-    var tieneSubs = tema.subs && tema.subs.length > 0;
-    if (!tieneSubs) {
-        renderEp(tema.num, tema.titulo, 0);
-    } else {
-        (tema.subs || []).forEach(function(sub) {
-            renderEp(sub.num, sub.titulo, 1);
-            (sub.subs || []).forEach(function(ss) { renderEp(ss.num, ss.titulo, 2); });
-        });
-    }
-    cont.innerHTML = html || '<div class="empty-msg">📭 Este tema no tiene epígrafes.</div>';
-    $('generarTodosEpigrafesBtn').disabled = (listos === total);
-    $('montarHtmlBtn').disabled = (listos === 0);
-}
-
-function renderBiblioteca() {
-    var cont = $('bibliotecaContainer');
-    $('libCount').textContent = estado.biblioteca.length;
-    if (estado.biblioteca.length === 0) {
-        cont.innerHTML = '<div class="empty-msg">📭 No hay HTMLs guardados.</div>';
-        return;
-    }
-    var html = '';
-    estado.biblioteca.forEach(function(item, idx) {
-        html += '<div class="tema-item">' +
-            '<div class="info">' +
-                '<div class="titulo">' + escapeHtml(item.titulo) + '</div>' +
-                '<div class="estado listo">✅ ' + new Date(item.fecha).toLocaleString() + '</div>' +
-            '</div>' +
-            '<div class="acciones">' +
-                '<button type="button" class="btn btn-primary" onclick="window.__verBiblioteca(' + idx + ')">👁️</button>' +
-                '<button type="button" class="btn btn-secondary" onclick="window.__descargarBiblioteca(' + idx + ')">📥</button>' +
-                '<button type="button" class="btn btn-danger" onclick="window.__borrarBiblioteca(' + idx + ')">🗑️</button>' +
-            '</div>' +
-        '</div>';
-    });
-    cont.innerHTML = html;
-}
-
-function actualizarProgresoMasivo() {
-    var c = contarCompletados();
-    var pct = c.total > 0 ? (c.completados / c.total) * 100 : 0;
-    $('masivoProgressFill').style.width = pct.toFixed(1) + '%';
-    $('masivoInfoTexto').textContent = c.completados + ' / ' + c.total + ' epígrafes (' + pct.toFixed(1) + '%)';
-    $('masivoInfoEpigrafe').textContent = estado.masivo.epigrafeActual ? 'Generando: ' + estado.masivo.epigrafeActual : '';
-}
-
-async function ejecutarMasivo() {
-    if (estado.masivo.activo) return;
-    estado.masivo.activo = true;
-    estado.masivo.pausado = false;
-    estado.masivo.cancelado = false;
-    estado.temasDescargados = {};
-
-    $('empezarMasivoBtn').style.display = 'none';
-    $('pausarMasivoBtn').style.display = 'inline-flex';
-    $('cancelarMasivoBtn').style.display = 'inline-flex';
-    $('masivoProgress').style.display = 'block';
-    $('masivoInfo').style.display = 'flex';
-    $('masivoFinalizado').classList.remove('visible');
-
-    var lista = listaCompletaEpigrafes();
-    var contadorRefresco = 0;
-
-    for (var i = 0; i < lista.length; i++) {
-        if (estado.masivo.cancelado) break;
-        while (estado.masivo.pausado) {
-            await new Promise(function(r) { setTimeout(r, 500); });
-            if (estado.masivo.cancelado) break;
-        }
-        if (estado.masivo.cancelado) break;
-
-        var ep = lista[i];
-        if (estado.epigrafes[ep.num] && estado.epigrafes[ep.num].contenido) continue;
-
-        estado.masivo.epigrafeActual = ep.num + '. ' + ep.titulo;
-        actualizarProgresoMasivo();
-
-        estado.epigrafes[ep.num] = estado.epigrafes[ep.num] || {};
-        estado.epigrafes[ep.num].estado = 'generando';
-
-        try {
-            var contenido = await generarContenidoEpigrafe(ep.num, ep.titulo);
-            estado.epigrafes[ep.num] = { contenido: contenido, estado: 'listo' };
-            guardarEstado();
-        } catch (e) {
-            estado.epigrafes[ep.num] = { estado: 'error', error: e.message };
-            guardarEstado();
-        }
-        actualizarProgresoMasivo();
-
-        // Comprobar si el tema padre está completo y descargarlo
-        var temaPadre = estado.esqueleto.find(function(t) { return t.num === ep.temaPadreNum; });
-        if (temaPadre && temaEstaCompleto(temaPadre) && !estado.temasDescargados[temaPadre.num]) {
-            montarYDescargarTema(temaPadre);
-            showToast('📥 Descargado: ' + temaPadre.num + '. ' + temaPadre.titulo, 2000);
+            return base;
         }
 
-        contadorRefresco++;
-        if (contadorRefresco % 3 === 0) {
-            renderEsqueleto();
-            renderContenido();
+        // ============================================================
+        // PROMPT PARA EL PASO 2 (Generar HTML interactivo)
+        // ============================================================
+
+        function getPromptHTML(resumen) {
+            if (!resumen || resumen.trim() === '') {
+                return '⚠️ Primero pega el resumen en el campo superior y haz clic en "Generar prompt para HTML".';
+            }
+
+            return `# PROMPT PARA DEEPSEEK · GENERACIÓN DE HTML FINAL · PREGUNTAS INTERACTIVAS
+
+## Rol
+Actúa como un diseñador de materiales de estudio y experto en HTML/CSS/JavaScript.
+
+## Instrucción principal
+Te proporciono un resumen académico detallado. Deberás **generar ÚNICAMENTE el código HTML** de ese resumen, formateado para estudiar en tablet de 10", sin ningún texto adicional, sin explicaciones, sin bloques de código markdown.
+
+## Formato de salida exigido
+**DEVUELVE ÚNICAMENTE EL CÓDIGO HTML.** Comienza con \`<!DOCTYPE html>\` y termina con \`</html>\`.
+
+## Estructura obligatoria del HTML
+1. **Idea central (5 minutos):** Destacada visualmente (con fondo y borde).
+2. **Resumen por epígrafes:** Cada epígrafe con resumen extenso, definiciones literales y matices (según corresponda a la modalidad).
+3. **Preguntas tipo test:** Con **respuestas ocultas inicialmente**. Cada pregunta debe tener un botón "Mostrar respuesta" que, al hacer clic, revele:
+   - La opción correcta (resaltada en verde).
+   - La trampa identificada (explicando por qué las otras opciones son incorrectas).
+4. **Preguntas de desarrollo:** Con **esquemas de respuesta ocultos inicialmente**. Cada pregunta debe tener un botón "Mostrar esquema" que revele el esquema de respuesta.
+5. **Índice** al principio con enlaces a cada epígrafe.
+6. **Botón de modo claro/oscuro** (con JavaScript para alternar).
+
+## Elementos que NO deben aparecer en el HTML final
+- ❌ Checklist de epígrafes procesados.
+- ❌ Prioridades (🔴🟡🟢).
+- ❌ Instrucciones del prompt.
+- ❌ Texto adicional fuera del HTML.
+
+## Comportamiento interactivo
+- Las respuestas correctas y las trampas deben estar **ocultas inicialmente**.
+- Cada pregunta tendrá un botón **"Mostrar respuesta"** que, al hacer clic, mostrará la respuesta correcta y la trampa.
+- El botón debe cambiar a **"Ocultar respuesta"** al hacer clic de nuevo.
+- Las preguntas de desarrollo tendrán un botón **"Mostrar esquema"** similar.
+
+## CSS OBLIGATORIO
+Usa EXACTAMENTE el CSS que te proporciono a continuación:
+
+\`\`\`css
+${CSS_ESTUDIO}
+\`\`\`
+
+## RESUMEN A CONVERTIR EN HTML
+
+${resumen}`;
         }
-    }
 
-    estado.masivo.activo = false;
-    estado.masivo.epigrafeActual = '';
-    $('empezarMasivoBtn').style.display = 'inline-flex';
-    $('pausarMasivoBtn').style.display = 'none';
-    $('cancelarMasivoBtn').style.display = 'none';
+        // ============================================================
+        // ELEMENTOS DOM
+        // ============================================================
 
-    renderEsqueleto();
-    renderContenido();
-    actualizarProgresoMasivo();
+        const modalidadBtns = document.querySelectorAll('#modalidadGroup .opt');
+        const nivelBtns = document.querySelectorAll('#nivelGroup .opt');
+        const textoTema = document.getElementById('textoTema');
+        const promptOutput = document.getElementById('promptOutput');
+        const fusionarPromptBtn = document.getElementById('fusionarPromptBtn');
+        const copiarPromptBtn = document.getElementById('copiarPromptBtn');
+        const reiniciarPromptBtn = document.getElementById('reiniciarPromptBtn');
 
-    if (estado.masivo.cancelado) {
-        showToast('⏹️ Generación cancelada', 2000);
-    } else {
-        $('masivoFinalizado').classList.add('visible');
-        showToast('✅ Libro completo generado', 3000);
-    }
-}
+        const resumenInput = document.getElementById('resumenInput');
+        const htmlPromptOutput = document.getElementById('htmlPromptOutput');
+        const generarHtmlPromptBtn = document.getElementById('generarHtmlPromptBtn');
+        const copiarHtmlPromptBtn = document.getElementById('copiarHtmlPromptBtn');
 
-window.__abrirTema = function(idx) {
-    estado.temaActualIdx = idx;
-    renderContenido();
-    cambiarTab('tab-contenido');
-};
+        const htmlInput = document.getElementById('htmlInput');
+        const tituloTema = document.getElementById('tituloTema');
+        const htmlOutput = document.getElementById('htmlOutput');
+        const descargarHtmlBtn = document.getElementById('descargarHtmlBtn');
+        const copiarHtmlBtn = document.getElementById('copiarHtmlBtn');
+        const limpiarHtmlBtn = document.getElementById('limpiarHtmlBtn');
 
-window.__generarEpigrafe = async function(num) {
-    var titulo = '';
-    estado.esqueleto.forEach(function(t) {
-        if (t.num === num) titulo = t.titulo;
-        (t.subs || []).forEach(function(s) {
-            if (s.num === num) titulo = s.titulo;
-            (s.subs || []).forEach(function(ss) { if (ss.num === num) titulo = ss.titulo; });
-        });
-    });
-    if (!titulo) return;
-    estado.epigrafes[num] = estado.epigrafes[num] || {};
-    estado.epigrafes[num].estado = 'generando';
-    renderContenido();
-    try {
-        var contenido = await generarContenidoEpigrafe(num, titulo);
-        estado.epigrafes[num] = { contenido: contenido, estado: 'listo' };
-        guardarEstado();
-        renderContenido();
-        renderEsqueleto();
-        showToast('✅ Epígrafe ' + num, 1500);
-    } catch (e) {
-        estado.epigrafes[num] = { estado: 'error', error: e.message };
-        renderContenido();
-        showToast('❌ ' + e.message, 4000);
-    }
-};
+        const libraryContainer = document.getElementById('libraryContainer');
+        const libCount = document.getElementById('libCount');
+        const exportarLibBtn = document.getElementById('exportarLibBtn');
+        const importarLibBtn = document.getElementById('importarLibBtn');
+        const importFileInput = document.getElementById('importFileInput');
+        const vaciarLibBtn = document.getElementById('vaciarLibBtn');
 
-window.__regenerarEpigrafe = function(num) {
-    delete estado.epigrafes[num];
-    window.__generarEpigrafe(num);
-};
-window.__verEpigrafe = function(num) {
-    var ep = estado.epigrafes[num];
-    if (!ep || !ep.contenido) return;
-    alert(ep.contenido);
-};
+        const tabBtns = document.querySelectorAll('.tabs button');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const flowSteps = document.querySelectorAll('.flow-steps .step');
 
-window.__montarTema = function(idx) {
-    var tema = estado.esqueleto[idx];
-    var html = montarHTML(tema);
-    var titulo = tema.num + '. ' + tema.titulo;
-    var existe = estado.biblioteca.some(function(b) { return b.titulo === titulo; });
-    if (!existe) {
-        estado.biblioteca.push({ titulo: titulo, html: html, fecha: new Date().toISOString() });
-    } else {
-        estado.biblioteca = estado.biblioteca.map(function(b) {
-            if (b.titulo === titulo) return { titulo: titulo, html: html, fecha: new Date().toISOString() };
-            return b;
-        });
-    }
-    guardarEstado();
-    renderBiblioteca();
-    // Descargar con nombre del libro + tema
-    var nombreArchivo = nombreArchivoConLibro(titulo);
-    descargarArchivo(html, nombreArchivo, 'html');
-    // Preview
-    $('previewEmpty').style.display = 'none';
-    $('previewBox').style.display = 'block';
-    $('previewTitle').textContent = '🖼️ ' + titulo;
-    $('previewIframe').srcdoc = html;
-    window.__htmlActual = html;
-    window.__tituloActual = titulo;
-    cambiarTab('tab-preview');
-    showToast('🔨 HTML montado y descargado', 2000);
-};
+        const toast = document.getElementById('toast');
 
-window.__verBiblioteca = function(idx) {
-    var item = estado.biblioteca[idx];
-    $('previewEmpty').style.display = 'none';
-    $('previewBox').style.display = 'block';
-    $('previewTitle').textContent = '🖼️ ' + item.titulo;
-    $('previewIframe').srcdoc = item.html;
-    window.__htmlActual = item.html;
-    window.__tituloActual = item.titulo;
-    cambiarTab('tab-preview');
-};
-window.__descargarBiblioteca = function(idx) {
-    var item = estado.biblioteca[idx];
-    var nombreArchivo = nombreArchivoConLibro(item.titulo);
-    descargarArchivo(item.html, nombreArchivo, 'html');
-};
-window.__borrarBiblioteca = function(idx) {
-    if (!confirm('¿Borrar este HTML?')) return;
-    estado.biblioteca.splice(idx, 1);
-    guardarEstado();
-    renderBiblioteca();
-};
+        // ============================================================
+        // TOAST
+        // ============================================================
 
-async function descargarZIP() {
-    if (estado.biblioteca.length === 0) {
-        showToast('📭 No hay HTMLs en la biblioteca.', 3000);
-        return;
-    }
-    showToast('📦 Generando ZIP…', 2000);
-    try {
-        var zip = new JSZip();
-        estado.biblioteca.forEach(function(item) {
-            var nombre = nombreArchivoConLibro(item.titulo) + '.html';
-            zip.file(nombre, item.html);
-        });
-        var blob = await zip.generateAsync({ type: 'blob' });
-        var nombreLibro = sanitizeNombre((estado.libroNombre || 'Libro_UNED').replace(/\.(pdf|txt)$/i, ''));
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement('a');
-        a.href = url;
-        a.download = nombreLibro + '.zip';
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        showToast('✅ ZIP descargado (' + estado.biblioteca.length + ' archivos)', 3000);
-    } catch (e) {
-        console.error(e);
-        showToast('❌ Error al generar ZIP: ' + e.message, 4000);
-    }
-}
+        let toastTimer = null;
 
-function guardarEstado() {
-    try {
-        var data = {
-            esqueleto: estado.esqueleto,
-            esqueletoTexto: estado.esqueletoTexto,
-            epigrafes: estado.epigrafes,
-            biblioteca: estado.biblioteca,
-            libroNombre: estado.libroNombre,
-            modalidad: estado.modalidad
+        function showToast(message, duration = 2000) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+
+        // ============================================================
+        // ESTADO
+        // ============================================================
+
+        let estado = {
+            modalidad: 'test',
+            nivel: 'estudio'
         };
-        localStorage.setItem('uned_v16', JSON.stringify(data));
-    } catch (e) {
-        console.warn('No se pudo guardar:', e.message);
-    }
-}
-function cargarEstado() {
-    try {
-        var raw = localStorage.getItem('uned_v16');
-        if (!raw) return;
-        var d = JSON.parse(raw);
-        estado.esqueleto = d.esqueleto || [];
-        estado.esqueletoTexto = d.esqueletoTexto || '';
-        estado.epigrafes = d.epigrafes || {};
-        estado.biblioteca = d.biblioteca || [];
-        estado.libroNombre = d.libroNombre || '';
-        estado.modalidad = d.modalidad || 'test';
-    } catch (e) { console.warn(e); }
-}
 
-function sanitizeNombre(s) { return s.replace(/[<>:"/\\|?*]/g, '_').substring(0, 100); }
-function descargarArchivo(contenido, nombre, ext) {
-    var blob = new Blob([contenido], { type: 'text/html;charset=utf-8' });
-    var url = URL.createObjectURL(blob);
-    var a = document.createElement('a');
-    a.href = url; a.download = nombre + '.' + ext;
-    document.body.appendChild(a); a.click(); document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-}
-function cambiarTab(tabId) {
-    document.querySelectorAll('.tabs button').forEach(function(b) { b.classList.toggle('active', b.dataset.tab === tabId); });
-    document.querySelectorAll('.tab-content').forEach(function(c) { c.classList.toggle('active', c.id === tabId); });
-}
+        let biblioteca = [];
 
-$('apiKey').addEventListener('input', function() {
-    estado.apiKey = this.value.trim();
-    localStorage.setItem('deepseek_api_key', estado.apiKey);
-});
-$('modoDemo').addEventListener('change', function() {
-    estado.modoDemo = this.checked;
-    localStorage.setItem('deepseek_modo_demo', this.checked ? '1' : '0');
-    $('demoBanner').classList.toggle('visible', this.checked);
-});
-document.querySelectorAll('#modalidadGroup .opt').forEach(function(btn) {
-    btn.addEventListener('click', function() {
-        document.querySelectorAll('#modalidadGroup .opt').forEach(function(b) { b.classList.remove('active'); });
-        this.classList.add('active');
-        estado.modalidad = this.dataset.value;
-        guardarEstado();
-    });
-});
-$('pdfInput').addEventListener('change', async function() {
-    var file = this.files[0];
-    if (!file) return;
-    $('pdfStatus').textContent = '⏳ Extrayendo texto…';
-    $('pdfProgress').style.display = 'block';
-    try {
-        var texto = await extraerTextoPDF(file, function(p) { $('pdfProgressFill').style.width = (p * 100).toFixed(0) + '%'; });
-        estado.libroTexto = texto;
-        estado.libroNombre = file.name;
-        $('pdfStatus').textContent = '✅ ' + file.name + ' · ' + texto.length.toLocaleString() + ' caracteres.';
-        $('generarEsqueletoBtn').disabled = false;
-        showToast('✅ Libro cargado', 1500);
-    } catch (e) {
-        $('pdfStatus').textContent = '❌ ' + e.message;
-    } finally {
-        $('pdfProgress').style.display = 'none';
-    }
-});
-$('generarEsqueletoBtn').addEventListener('click', async function() {
-    if (!estado.modoDemo && !estado.apiKey) { showToast('⚠️ API Key o modo demo', 2000); return; }
-    if (!estado.libroTexto) { showToast('⚠️ Sube un libro', 2000); return; }
-    this.disabled = true; this.textContent = '⏳ Analizando…';
-    try {
-        var datos = await generarEsqueleto();
-        if (datos.length === 0) {
-            showToast('⚠️ No se detectaron epígrafes.', 4000);
-            $('rawViewer').classList.add('visible');
-            $('rawResponse').value = estado.ultimaRespuesta;
-        } else {
-            estado.esqueleto = datos;
-            guardarEstado();
-            renderEsqueleto();
-            cambiarTab('tab-esqueleto');
-            showToast('✅ ' + datos.length + ' temas detectados.', 4000);
+        // ============================================================
+        // BIBLIOTECA
+        // ============================================================
+
+        function cargarBiblioteca() {
+            try {
+                const data = localStorage.getItem('uned_biblioteca');
+                biblioteca = data ? JSON.parse(data) : [];
+            } catch { biblioteca = []; }
+            renderBiblioteca();
         }
-    } catch (e) {
-        showToast('❌ ' + e.message, 4000);
-    } finally {
-        this.disabled = false; this.textContent = '🏗️ Generar esqueleto';
-    }
-});
-$('verRespuestaBtn').addEventListener('click', function() {
-    $('rawViewer').classList.toggle('visible');
-    $('rawResponse').value = estado.ultimaRespuesta;
-});
-$('cerrarRawBtn').addEventListener('click', function() { $('rawViewer').classList.remove('visible'); });
-$('resetBtn').addEventListener('click', function() {
-    if (!confirm('¿Reiniciar todo?')) return;
-    estado.esqueleto = []; estado.esqueletoTexto = '';
-    estado.contextoFijo = null; estado.contextoConEsqueleto = null;
-    estado.epigrafes = {}; estado.biblioteca = []; estado.temaActualIdx = null;
-    estado.usage = { cache: 0, nuevos: 0, salida: 0, coste: 0, costeTotal: 0 };
-    estado.temasDescargados = {};
-    localStorage.removeItem('uned_v16');
-    renderEsqueleto(); renderContenido(); renderBiblioteca();
-    actualizarPanelUso();
-    $('masivoFinalizado').classList.remove('visible');
-    $('estimacionReal').classList.remove('visible');
-    showToast('⟳ Reiniciado', 1500);
-});
-$('generarTodosEpigrafesBtn').addEventListener('click', async function() {
-    if (estado.temaActualIdx === null) return;
-    var tema = estado.esqueleto[estado.temaActualIdx];
-    var lista = [];
-    var tieneSubs = tema.subs && tema.subs.length > 0;
-    if (!tieneSubs) {
-        lista.push({num: tema.num, titulo: tema.titulo});
-    } else {
-        (tema.subs || []).forEach(function(s) {
-            if (!esBibliografia(s.titulo)) lista.push({num: s.num, titulo: s.titulo});
-            (s.subs || []).forEach(function(ss) { if (!esBibliografia(ss.titulo)) lista.push({num: ss.num, titulo: ss.titulo}); });
-        });
-    }
-    this.disabled = true;
-    for (var i = 0; i < lista.length; i++) {
-        var ep = lista[i];
-        if (estado.epigrafes[ep.num] && estado.epigrafes[ep.num].contenido) continue;
-        await window.__generarEpigrafe(ep.num);
-    }
-    this.disabled = false;
-    // Descargar el tema al terminar
-    if (temaEstaCompleto(tema)) {
-        montarYDescargarTema(tema);
-    }
-    showToast('✅ Generación del tema completa', 2000);
-});
-$('montarHtmlBtn').addEventListener('click', function() {
-    if (estado.temaActualIdx === null) return;
-    window.__montarTema(estado.temaActualIdx);
-});
 
-$('empezarMasivoBtn').addEventListener('click', function() {
-    if (!estado.modoDemo && !estado.apiKey) { showToast('⚠️ API Key o modo demo', 2000); return; }
-    if (estado.esqueleto.length === 0) { showToast('⚠️ No hay esqueleto', 2000); return; }
-    ejecutarMasivo();
-});
-$('pausarMasivoBtn').addEventListener('click', function() {
-    estado.masivo.pausado = !estado.masivo.pausado;
-    this.textContent = estado.masivo.pausado ? '▶️ Reanudar' : '⏸️ Pausar';
-    showToast(estado.masivo.pausado ? '⏸️ Pausado' : '▶️ Reanudado', 1500);
-});
-$('cancelarMasivoBtn').addEventListener('click', function() {
-    if (!confirm('¿Cancelar la generación?')) return;
-    estado.masivo.cancelado = true;
-    estado.masivo.pausado = false;
-});
-$('descargarTodosBtn').addEventListener('click', function() {
-    if (estado.biblioteca.length === 0) { showToast('📭 Nada que descargar', 2000); return; }
-    estado.biblioteca.forEach(function(item, i) {
-        setTimeout(function() {
-            var nombreArchivo = nombreArchivoConLibro(item.titulo);
-            descargarArchivo(item.html, nombreArchivo, 'html');
-        }, i * 300);
-    });
-    showToast('📦 Descargando ' + estado.biblioteca.length + ' archivos…', 3000);
-});
-$('descargarZipBtn').addEventListener('click', descargarZIP);
-$('descargarZipBibliotecaBtn').addEventListener('click', descargarZIP);
+        function guardarBiblioteca() {
+            localStorage.setItem('uned_biblioteca', JSON.stringify(biblioteca));
+            renderBiblioteca();
+        }
 
-$('copiarHtmlBtn').addEventListener('click', function() {
-    if (!window.__htmlActual) return;
-    navigator.clipboard.writeText(window.__htmlActual).then(function() { showToast('📋 Copiado', 1500); });
-});
-$('descargarHtmlBtn').addEventListener('click', function() {
-    if (!window.__htmlActual) return;
-    var nombreArchivo = nombreArchivoConLibro(window.__tituloActual || 'tema');
-    descargarArchivo(window.__htmlActual, nombreArchivo, 'html');
-});
-$('ejecutarHtmlBtn').addEventListener('click', function() {
-    if (!window.__htmlActual) return;
-    var blob = new Blob([window.__htmlActual], { type: 'text/html;charset=utf-8' });
-    var url = URL.createObjectURL(blob);
-    window.open(url, '_blank');
-    setTimeout(function() { URL.revokeObjectURL(url); }, 5000);
-});
-$('exportarBtn').addEventListener('click', function() {
-    descargarArchivo(JSON.stringify(estado.biblioteca, null, 2), 'biblioteca_uned', 'json');
-});
-$('importarBtn').addEventListener('click', function() { $('importFile').click(); });
-$('importFile').addEventListener('change', function() {
-    var file = this.files[0];
-    if (!file) return;
-    var reader = new FileReader();
-    reader.onload = function(ev) {
-        try {
-            var data = JSON.parse(ev.target.result);
-            if (Array.isArray(data)) {
-                estado.biblioteca = estado.biblioteca.concat(data);
-                guardarEstado(); renderBiblioteca();
-                showToast('✅ Importados ' + data.length, 2000);
+        function renderBiblioteca() {
+            if (biblioteca.length === 0) {
+                libraryContainer.innerHTML = '<div class="empty-library">📭 No tienes resúmenes guardados.</div>';
+                libCount.textContent = '0';
+                return;
             }
-        } catch (e) { showToast('❌ Error', 2000); }
-    };
-    reader.readAsText(file);
-    this.value = '';
-});
-$('vaciarBtn').addEventListener('click', function() {
-    if (!confirm('¿Vaciar biblioteca?')) return;
-    estado.biblioteca = [];
-    guardarEstado(); renderBiblioteca();
-    showToast('🗑️ Vaciada', 1500);
-});
-document.querySelectorAll('.tabs button').forEach(function(btn) {
-    btn.addEventListener('click', function() { cambiarTab(this.dataset.tab); });
-});
 
-(function init() {
-    var savedKey = localStorage.getItem('deepseek_api_key');
-    if (savedKey) { estado.apiKey = savedKey; $('apiKey').value = savedKey; }
-    var savedDemo = localStorage.getItem('deepseek_modo_demo');
-    if (savedDemo === '1') {
-        estado.modoDemo = true;
-        $('modoDemo').checked = true;
-        $('demoBanner').classList.add('visible');
-    }
-    if (window.pdfjsLib) {
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    }
-    cargarEstado();
-    document.querySelectorAll('#modalidadGroup .opt').forEach(function(b) { b.classList.toggle('active', b.dataset.value === estado.modalidad); });
-    renderEsqueleto(); renderContenido(); renderBiblioteca();
-    actualizarPanelUso();
-    actualizarProgresoMasivo();
-})();
+            let html = '';
+            biblioteca.forEach((item, index) => {
+                html += `
+                    <div class="library-item">
+                        <div class="info">
+                            <div class="title">${escapeHtml(item.titulo || 'Sin título')}</div>
+                            <div class="meta">${escapeHtml(item.modalidad || '')} · ${escapeHtml(item.nivel || '')} · ${new Date(item.fecha).toLocaleDateString()}</div>
+                        </div>
+                        <div class="actions-lib">
+                            <button class="btn btn-primary" onclick="verResumen(${index})" style="padding:5px 12px;font-size:12px;">📄 Ver</button>
+                            <button class="btn btn-success" onclick="exportarResumen(${index})" style="padding:5px 12px;font-size:12px;">📥 HTML</button>
+                            <button class="btn btn-danger" onclick="eliminarResumen(${index})" style="padding:5px 12px;font-size:12px;">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            });
+            libraryContainer.innerHTML = html;
+            libCount.textContent = biblioteca.length;
+        }
 
-})();
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        window.verResumen = function(index) {
+            const item = biblioteca[index];
+            if (!item) return;
+            htmlInput.value = item.html || '';
+            tituloTema.value = item.titulo || '';
+            htmlOutput.value = item.html ? '✅ HTML cargado correctamente' : 'Pega el HTML de DeepSeek y pon el título para descargar...';
+            cambiarTab('tab-download');
+            showToast('📄 HTML cargado en el editor', 1500);
+        };
+
+        window.exportarResumen = function(index) {
+            const item = biblioteca[index];
+            if (!item || !item.html) {
+                showToast('❌ Este resumen no tiene HTML guardado.', 2000);
+                return;
+            }
+            descargarArchivo(item.html, item.titulo || 'resumen', 'html');
+            showToast('📥 HTML descargado', 1500);
+        };
+
+        window.eliminarResumen = function(index) {
+            if (!confirm('¿Eliminar este resumen?')) return;
+            biblioteca.splice(index, 1);
+            guardarBiblioteca();
+            showToast('🗑️ Resumen eliminado', 1500);
+        };
+
+        // ============================================================
+        // FUNCIONES
+        // ============================================================
+
+        function generarPromptCompleto() {
+            const modalidad = estado.modalidad;
+            const nivel = estado.nivel;
+            const texto = textoTema.value.trim();
+
+            let plantilla = getPromptResumen(modalidad, nivel);
+
+            let completo = plantilla;
+            if (texto) {
+                completo += '\n\n' + texto;
+            } else {
+                completo += '\n\n[⚠️ No has pegado ningún texto del tema.]';
+            }
+
+            promptOutput.value = completo;
+        }
+
+        function generarPromptHTML() {
+            const resumen = resumenInput.value.trim();
+            const prompt = getPromptHTML(resumen);
+            htmlPromptOutput.value = prompt;
+            if (resumen) {
+                showToast('✅ Prompt para HTML generado', 1500);
+            } else {
+                showToast('⚠️ Primero pega el resumen', 2000);
+            }
+        }
+
+        function descargarArchivo(contenido, nombre, extension) {
+            const blob = new Blob([contenido], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${nombre}.${extension}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        function guardarEnBiblioteca(titulo, html, modalidad, nivel) {
+            let resumen = html;
+            const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+            if (bodyMatch) {
+                resumen = bodyMatch[1].replace(/<[^>]*>/g, '').trim().substring(0, 500) + '...';
+            }
+
+            biblioteca.push({
+                titulo: titulo,
+                resumen: resumen,
+                html: html,
+                modalidad: modalidad || estado.modalidad,
+                nivel: nivel || estado.nivel,
+                fecha: new Date().toISOString()
+            });
+            guardarBiblioteca();
+        }
+
+        function cambiarTab(tabId) {
+            tabBtns.forEach(b => b.classList.toggle('active', b.dataset.tab === tabId));
+            tabContents.forEach(c => c.classList.toggle('active', c.id === tabId));
+
+            const pasoMap = {
+                'tab-prompt': 0,
+                'tab-html': 1,
+                'tab-download': 2,
+                'tab-library': 3
+            };
+            const idx = pasoMap[tabId] || 0;
+            flowSteps.forEach((s, i) => {
+                s.classList.toggle('active', i === idx);
+            });
+        }
+
+        // ============================================================
+        // EVENTOS
+        // ============================================================
+
+        modalidadBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                modalidadBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                estado.modalidad = this.dataset.value;
+            });
+        });
+
+        nivelBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                nivelBtns.forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                estado.nivel = this.dataset.value;
+            });
+        });
+
+        fusionarPromptBtn.addEventListener('click', function() {
+            if (!textoTema.value.trim()) {
+                if (!confirm('⚠️ No has pegado ningún texto del tema. ¿Continuar?')) return;
+            }
+            generarPromptCompleto();
+            showToast('🔗 Prompt fusionado', 1500);
+        });
+
+        copiarPromptBtn.addEventListener('click', async function() {
+            const texto = promptOutput.value;
+            if (!texto || texto.includes('Selecciona') || texto.includes('⚠️')) {
+                showToast('⚠️ Primero haz clic en "Fusionar"', 2000);
+                return;
+            }
+            try {
+                await navigator.clipboard.writeText(texto);
+                showToast('📋 Prompt copiado', 1500);
+            } catch {
+                promptOutput.select();
+                document.execCommand('copy');
+                showToast('📋 Prompt copiado', 1500);
+            }
+        });
+
+        reiniciarPromptBtn.addEventListener('click', function() {
+            modalidadBtns.forEach(b => b.classList.toggle('active', b.dataset.value === 'test'));
+            nivelBtns.forEach(b => b.classList.toggle('active', b.dataset.value === 'estudio'));
+            estado.modalidad = 'test';
+            estado.nivel = 'estudio';
+            document.getElementById('optChecklist').checked = true;
+            document.getElementById('optPrioridad').checked = true;
+            textoTema.value = '';
+            promptOutput.value = 'Selecciona las opciones y pega el texto del tema...';
+            showToast('⟳ Reiniciado', 1500);
+        });
+
+        generarHtmlPromptBtn.addEventListener('click', function() {
+            generarPromptHTML();
+        });
+
+        copiarHtmlPromptBtn.addEventListener('click', async function() {
+            const texto = htmlPromptOutput.value;
+            if (!texto || texto.includes('Primero pega el resumen')) {
+                showToast('⚠️ Primero genera el prompt', 2000);
+                return;
+            }
+            try {
+                await navigator.clipboard.writeText(texto);
+                showToast('📋 Prompt para HTML copiado', 1500);
+            } catch {
+                htmlPromptOutput.select();
+                document.execCommand('copy');
+                showToast('📋 Prompt para HTML copiado', 1500);
+            }
+        });
+
+        descargarHtmlBtn.addEventListener('click', function() {
+            let html = htmlInput.value.trim();
+            if (!html || html.includes('Pega aquí el HTML')) {
+                showToast('⚠️ Primero pega el HTML de DeepSeek', 2000);
+                return;
+            }
+
+            const titulo = tituloTema.value.trim() || 'Resumen UNED';
+
+            const codeMatch = html.match(/```(?:html)?\s*([\s\S]*?)```/);
+            if (codeMatch) {
+                html = codeMatch[1].trim();
+            }
+
+            if (!html.includes('<html') && !html.includes('<!DOCTYPE')) {
+                showToast('⚠️ El contenido no parece HTML válido.', 3000);
+                return;
+            }
+
+            guardarEnBiblioteca(titulo, html, estado.modalidad, estado.nivel);
+            descargarArchivo(html, titulo, 'html');
+
+            htmlOutput.value = '✅ HTML descargado y guardado.';
+            showToast('📥 HTML descargado y guardado', 2000);
+        });
+
+        copiarHtmlBtn.addEventListener('click', async function() {
+            const texto = htmlInput.value.trim();
+            if (!texto || texto.includes('Pega aquí el HTML')) {
+                showToast('⚠️ Primero pega el HTML de DeepSeek', 2000);
+                return;
+            }
+            try {
+                await navigator.clipboard.writeText(texto);
+                showToast('📋 Código HTML copiado', 1500);
+            } catch {
+                htmlInput.select();
+                document.execCommand('copy');
+                showToast('📋 Código HTML copiado', 1500);
+            }
+        });
+
+        limpiarHtmlBtn.addEventListener('click', function() {
+            htmlInput.value = '';
+            tituloTema.value = '';
+            htmlOutput.value = 'Pega el HTML de DeepSeek y pon el título para descargar...';
+            showToast('🗑️ Campos limpiados', 1500);
+        });
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                cambiarTab(this.dataset.tab);
+            });
+        });
+
+        exportarLibBtn.addEventListener('click', function() {
+            if (biblioteca.length === 0) {
+                showToast('📭 No hay resúmenes guardados', 2000);
+                return;
+            }
+            const json = JSON.stringify(biblioteca, null, 2);
+            descargarArchivo(json, 'biblioteca_uned', 'json');
+            showToast('📤 Biblioteca exportada', 1500);
+        });
+
+        importarLibBtn.addEventListener('click', function() {
+            importFileInput.click();
+        });
+
+        importFileInput.addEventListener('change', function(e) {
+            const file = this.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(ev) {
+                try {
+                    const data = JSON.parse(ev.target.result);
+                    if (Array.isArray(data)) {
+                        biblioteca = biblioteca.concat(data);
+                        guardarBiblioteca();
+                        showToast(`✅ Importados ${data.length} resúmenes`, 2000);
+                    } else {
+                        showToast('❌ Formato no válido', 2000);
+                    }
+                } catch {
+                    showToast('❌ Error al leer el archivo', 2000);
+                }
+            };
+            reader.readAsText(file);
+            this.value = '';
+        });
+
+        vaciarLibBtn.addEventListener('click', function() {
+            if (!confirm('¿Eliminar TODOS los resúmenes?')) return;
+            if (!confirm('¿Seguro? No se puede deshacer.')) return;
+            biblioteca = [];
+            guardarBiblioteca();
+            showToast('🗑️ Biblioteca vaciada', 1500);
+        });
+
+        // ============================================================
+        // INICIALIZAR
+        // ============================================================
+
+        cargarBiblioteca();
+        promptOutput.value = 'Selecciona las opciones y pega el texto del tema...';
+
+    })();
 </script>
 
 </body>
