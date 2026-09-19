@@ -66,22 +66,31 @@ const Progreso = {
    * Racha de días consecutivos con minutos > 0
    */
   calcularRacha() {
-    const log = JSON.parse(localStorage.getItem('estudio_log') || '{}');
+    var log = {};
+    try {
+      log = JSON.parse(localStorage.getItem('estudio_log') || '{}');
+    } catch (e) {}
 
-    const fecha = new Date();
-    const keyHoy = this.keyFecha(fecha);
+    var fecha = new Date();
+    var keyHoy = this.keyFecha(fecha);
 
-    // Si hoy no hay minutos, empezar desde ayer
-    if (!log[keyHoy] || log[keyHoy].minutos === 0) {
+    // ¿Hoy está marcado como completo?
+    var hoyCompleto = log[keyHoy] && log[keyHoy].diaCompleto === true;
+
+    // Si hoy no está completo, empezar desde ayer
+    if (!hoyCompleto) {
       fecha.setDate(fecha.getDate() - 1);
     }
 
-    let racha = 0;
-    let seguridad = 0; // evitar bucle infinito
+    var racha = 0;
+    var seguridad = 0;
 
-    while (seguridad < 3650) { // máximo 10 años
-      const key = this.keyFecha(fecha);
-      if (log[key] && log[key].minutos > 0) {
+    while (seguridad < 3650) {
+      var key = this.keyFecha(fecha);
+      var registro = log[key];
+
+      // Un día cuenta si tiene diaCompleto = true
+      if (registro && registro.diaCompleto === true) {
         racha++;
         fecha.setDate(fecha.getDate() - 1);
         seguridad++;

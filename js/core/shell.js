@@ -226,7 +226,7 @@ const Shell = {
       <div class="shell-brand">
         <span class="logo">📚</span>
         <span>Estudio</span>
-        <span class="shell-version">v1.3</span>
+        <span class="shell-version">v1.4</span>
       </div>
 
       <div class="shell-pomodoro">
@@ -289,14 +289,165 @@ const Shell = {
      ═══════════════════════════════════════════════════════ */
 
   renderTabbar() {
-    this.refs.tabbar.innerHTML = this.pestanas.map(p => `
-      <div class="shell-tab ${p.id === this.pestanaActiva ? 'active' : ''}"
-           data-id="${p.id}"
-           onclick="Shell.activarPestana('${p.id}')">
-        <span class="favicon">${p.icono}</span>
-        <span>${p.nombre}</span>
-      </div>
-    `).join('');
+    // Leer orden guardado
+    var ordenGuardado = null;
+    try {
+      ordenGuardado = JSON.parse(localStorage.getItem('shell_orden_pestanas') || 'null');
+    } catch (e) {}
+
+    // Aplicar el orden guardado si existe
+    var pestanasOrdenadas = this.pestanas.slice();
+    if (Array.isArray(ordenGuardado) && ordenGuardado.length === this.pestanas.length) {
+      var mapa = {};
+      this.pestanas.forEach(function(p) { mapa[p.id] = p; });
+      pestanasOrdenadas = ordenGuardado.map(function(id) { return mapa[id]; }).filter(Boolean);
+    }
+
+    // Guardar el orden actual en memoria para usarlo después
+    this.pestanasOrdenadas = pestanasOrdenadas;
+
+    this.refs.tabbar.innerHTML = pestanasOrdenadas.map(function(p, idx) {
+      var esFija = p.tipo === 'home';
+      return '<div class="shell-tab ' + (p.id === Shell.pestanaActiva ? 'active' : '') + '" ' +
+             'data-id="' + p.id + '" ' +
+             'data-index="' + idx + '" ' +
+             'data-fija="' + (esFija ? 'true' : 'false') + '" ' +
+             'onclick="Shell.activarPestana(\'' + p.id + '\')">' +
+             '<span class="favicon">' + p.icono + '</span>' +
+             '<span>' + p.nombre + '</span>' +
+             '</div>';
+    }).join('');
+
+    // Activar el arrastre
+    this.activarArrastrePestanas();
+  },
+
+  /**
+   * Activa la pulsación larga + arrastre en las pestañas
+   */
+  activarArrastrePestanas() {
+    var self = this;
+    var tabs = this.refs.tabbar.querySelectorAll('.shell-tab');
+
+    tabs.forEach(function(tab) {
+      // Si es fija (Escritorio), no permitir arrastre
+      if (tab.dataset.fija === 'true') return;
+
+      var timer = null;
+      var arrastrando = false;
+
+      var iniciarTimer = function(e) {
+        // No activar si ya se está arrastrando
+        if (arrastrando) return;
+
+        timer = setTimeout(function() {
+          // 200ms → activar modo arrastre
+          arrastrando = true;
+          tab.classList.add('dragging');
+          tab.setAttribute('draggable', 'true');
+        }, 200);
+      };
+
+      var cancelarTimer = function() {
+        if (timer) {
+          clearTimeout(timer);
+          timer = null;
+        }
+        // Si no estamos arrastrando, quitar el modo arrastre
+        if (!arrastrando) {
+          tab.classList.remove('dragging');
+          tab.removeAttribute('draggable');
+        }
+      };
+
+      // Pulsación larga con ratón
+      tab.addEventListener('mousedown', iniciarTimer);
+      tab.addEventListener('mouseup', cancelarTimer);
+      tab.addEventListener('mouseleave', cancelarTimer);
+
+      // Pulsación larga táctil
+      tab.addEventListener('touchstart', iniciarTimer, { passive: true });
+      tab.addEventListener('touchend', cancelarTimer);
+      tab.addEventListener('touchcancel', cancelarTimer);
+
+      // ─── Eventos nativos de drag & drop ───
+      tab.addEventListener('dragstart', function(e) {
+        if (!arrastrando) {
+          e.preventDefault();
+          return;
+        }
+        e.dataTransfer.setData('text/plain', tab.dataset.id);
+        e.dataTransfer.effectAllowed = 'move';
+        tab.classList.add('dragging');
+      });
+
+      tab.addEventListener('dragend', function(e) {
+        tab.classList.remove('dragging');
+        tab.removeAttribute('draggable');
+        arrastrando = false;
+      });
+
+      tab.addEventListener('dragover', function(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'move';
+        // Efecto visual
+        tab.classList.add('drag-over');
+      });
+
+      tab.addEventListener('dragleave', function(e) {
+        tab.classList.remove('drag-over');
+      });
+
+      tab.addEventListener('drop', function(e) {
+        e.preventDefault();
+        tab.classList.remove('drag-over');
+
+        var idOrigen = e.dataTransfer.getData('text/plain');
+        var idDestino = tab.dataset.id;
+
+        if (idOrigen === idDestino) return;
+
+        self.reordenarPestanas(idOrigen, idDestino);
+      });
+
+      // Click: si estamos en modo arrastre, cancelar el activar
+      tab.addEventListener('click', function(e) {
+        if (arrastrando) {
+          e.preventDefault();
+          e.stopPropagation();
+          arrastrando = false;
+        }
+      });
+    });
+  },
+
+  /**
+   * Reordena las pestañas y guarda el nuevo orden
+   */
+  reordenarPestanas(idOrigen, idDestino) {
+    var orden = this.pestanasOrdenadas.map(function(p) { return p.id; });
+
+    var idxOrigen = orden.indexOf(idOrigen);
+    var idxDestino = orden.indexOf(idDestino);
+
+    if (idxOrigen === -1 || idxDestino === -1) return;
+
+    // Quitar la pestaña de su posición
+    orden.splice(idxOrigen, 1);
+    // Insertarla en la nueva posición
+    orden.splice(idxDestino, 0, idOrigen);
+
+    // Guardar
+    try {
+      localStorage.setItem('shell_orden_pestanas', JSON.stringify(orden));
+    } catch (e) {}
+
+    // Re-renderizar
+    this.pestanasOrdenadas = orden.map(function(id) {
+      return Shell.pestanas.find(function(p) { return p.id === id; });
+    }).filter(Boolean);
+
+    this.renderTabbar();
   },
 
   async activarPestana(id) {

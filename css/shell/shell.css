@@ -942,3 +942,52 @@ button.btn-add-nota i {
     justify-content: center;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════
+   PESTAÑAS ARRASTRABLES
+   ═══════════════════════════════════════════════════════════════ */
+
+.shell-tab {
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-drag: element;
+  transition: transform .15s, opacity .15s, background .15s;
+}
+
+/* Modo arrastre activado (pulsación larga) */
+.shell-tab.dragging {
+  opacity: 0.6;
+  cursor: grabbing !important;
+  transform: scale(0.95);
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Cuando otra pestaña está siendo arrastrada encima */
+.shell-tab.drag-over {
+  background: rgba(99, 102, 241, 0.15) !important;
+  border-color: #6366f1 !important;
+  position: relative;
+}
+
+.shell-tab.drag-over::before {
+  content: '';
+  position: absolute;
+  left: -2px;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: #6366f1;
+  border-radius: 2px;
+}
+
+/* La pestaña "Escritorio" (fija) NO se puede arrastrar */
+.shell-tab[data-fija="true"] {
+  cursor: pointer;
+}
+
+.shell-tab[data-fija="true"].dragging {
+  opacity: 1;
+  cursor: pointer !important;
+  transform: none;
+}

@@ -262,19 +262,39 @@ const Pomodoro = {
     }
 
     if (this.estado === 'trabajando') {
+      // Notificar
       this.notificar('¡Pomodoro completado!', 'Toca descansar 🎉');
+
+      // Registrar minutos
       this.registrarSesion(Math.round(this.duracionTrabajo / 60));
 
+      // ¿Ha completado todos los ciclos?
+      // Si cicloActual era igual al total → este era el último
       if (this.cicloActual >= this.ciclosAntesDeDescansoLargo) {
+        // ¡Racha +1!
+        this.registrarDiaEstudiado();
+        this.toast('🎉 ¡Día completado! Racha +1');
+
+        // Resetear ciclos a 1
+        this.cicloActual = 1;
+
+        // Descanso largo
         this.estado = 'descanso';
         this.segundosRestantes = this.duracionDescansoLargo;
-        this.cicloActual = 1;
       } else {
+        // Subir al siguiente ciclo
+        this.cicloActual++;
+
+        // Descanso normal
         this.estado = 'descanso';
         this.segundosRestantes = this.duracionDescanso;
-        this.cicloActual++;
       }
-    } else {
+
+      // Arrancar el descanso automáticamente
+      this.intervalId = setInterval(() => this.tick(), 1000);
+
+    } else if (this.estado === 'descanso') {
+      // Fin del descanso → volver a trabajar
       this.notificar('Descanso terminado', '¡Vamos a por otro pomodoro!');
       this.estado = 'idle';
       this.segundosRestantes = this.duracionTrabajo;
@@ -282,6 +302,30 @@ const Pomodoro = {
 
     this.render();
     this.guardarEstado();
+  },
+
+  /**
+   * Registra un día completo (suma 1 a la racha si no se ha hecho ya hoy)
+   */
+  registrarDiaEstudiado() {
+    try {
+      var log = JSON.parse(localStorage.getItem('estudio_log') || '{}');
+      var hoy = new Date().toISOString().slice(0, 10);
+      var registro = log[hoy] || { minutos: 0, sesiones: 0 };
+
+      if (!registro.diaCompleto) {
+        registro.diaCompleto = true;
+      }
+
+      log[hoy] = registro;
+      localStorage.setItem('estudio_log', JSON.stringify(log));
+
+      if (window.Progreso && typeof Progreso.refrescar === 'function') {
+        Progreso.refrescar();
+      }
+    } catch (e) {
+      console.warn('No se pudo registrar día:', e);
+    }
   },
 
   registrarSesion(minutos) {
