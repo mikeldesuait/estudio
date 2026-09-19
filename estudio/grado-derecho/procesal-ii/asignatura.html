@@ -28,89 +28,241 @@
     <title>Derecho Procesal II</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <style>
-        .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 16px 0; }
-        .info-card {
-            background: var(--bg-card); border-radius: 10px; padding: 16px 20px;
-            border: 1px solid var(--border); display: flex; align-items: center; gap: 14px;
-            transition: all 0.3s ease; text-decoration: none; color: var(--text-primary); cursor: pointer;
-        }
-        .info-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); border-color: var(--accent); }
-        .info-card .icon { font-size: 28px; flex-shrink: 0; }
-        .info-card .info { display: flex; flex-direction: column; }
-        .info-card .info .titulo { font-weight: 600; font-size: 15px; }
-        .info-card .info .subtitulo { font-size: 12px; color: var(--text-secondary); }
-        .badge-pdf { background: #ef4444; color: white; font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 600; margin-left: 6px; }
-        .tema-item { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; border-radius: 8px; border: 1px solid var(--border); cursor: pointer; transition: var(--transition); }
-        .tema-item:hover { background: var(--bg-hover); border-color: var(--accent); }
-        .tema-info { display: flex; align-items: center; gap: 12px; }
-        .tema-numero { background: var(--bg-accent); color: var(--accent); width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; }
-        .tema-titulo { font-weight: 500; }
-        .tema-progreso { display: flex; align-items: center; gap: 12px; color: var(--text-secondary); }
-        .temas-list { display: flex; flex-direction: column; gap: 8px; }
-        .btn-volver { background: transparent; border: 1px solid var(--border); color: var(--text-secondary); padding: 6px 16px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: var(--transition); display: inline-flex; align-items: center; gap: 6px; }
-        .btn-volver:hover { border-color: var(--accent); color: var(--accent); }
-        .loading-temas { text-align: center; padding: 30px; color: var(--text-secondary); }
-        .loading-temas i { font-size: 24px; display: block; margin-bottom: 10px; }
-        .progreso-botones { display: flex; gap: 4px; align-items: center; flex-wrap: wrap; }
-        .progreso-botones button {
-            width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--border);
-            background: transparent; color: var(--text-secondary); cursor: pointer;
-            font-size: 11px; font-weight: 700; transition: var(--transition);
-        }
-        .progreso-botones button:hover { border-color: var(--accent); color: var(--accent); }
-        .progreso-botones button.activo { background: var(--accent); color: white; border-color: var(--accent); }
-        .progreso-texto { min-width: 32px; text-align: center; font-weight: 600; font-size: 14px; }
-        .area-header {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-        .area-header .btn-volver {
-            align-self: flex-start;
-        }
-        .area-header h1 {
-            margin: 0;
-        }
-        .area-header p {
-            margin: 0;
-        }
-    </style>
+:root {
+  --bg: #faf7f2;
+  --bg-card: #ffffff;
+  --bg-soft: #f5f0e8;
+  --text-primary: #2d3748;
+  --text-secondary: #718096;
+  --border: #e2ddd3;
+  --accent: #6366f1;
+  --accent-soft: rgba(99, 102, 241, 0.1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+  padding: 32px 20px;
+}
+.asignatura-container { max-width: 1100px; margin: 0 auto; }
+
+/* Botón volver */
+.btn-volver {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px; background: transparent;
+  border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text-secondary); font-size: 13px; font-weight: 600;
+  font-family: inherit; cursor: pointer; margin-bottom: 24px;
+  transition: all .15s;
+}
+.btn-volver:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+
+/* Header */
+.asig-header { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.asig-titulo {
+  font-size: 36px; font-weight: 800; color: var(--text-primary);
+  display: flex; align-items: center; gap: 14px; margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+.asig-titulo .icono { font-size: 40px; }
+.asig-meta {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 14px; color: var(--text-secondary); flex-wrap: wrap;
+}
+.asig-meta .codigo {
+  font-family: 'SF Mono', Menlo, monospace; background: var(--bg-soft);
+  padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;
+}
+
+/* Sección */
+.seccion { margin-bottom: 40px; }
+.seccion-titulo {
+  font-size: 20px; font-weight: 700; color: var(--text-primary);
+  margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+}
+.seccion-titulo .badge {
+  font-size: 12px; font-weight: 700;
+  background: var(--accent-soft); color: var(--accent);
+  padding: 3px 10px; border-radius: 12px;
+}
+
+/* Materiales (PDFs) */
+.materiales-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+.material-card {
+  display: flex; align-items: center; gap: 14px; padding: 16px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; cursor: pointer; transition: all .15s;
+  text-decoration: none; color: inherit;
+}
+.material-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border-color: var(--accent);
+}
+.material-icon { font-size: 28px; flex-shrink: 0; }
+.material-info { flex: 1; min-width: 0; }
+.material-nombre { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+.material-tipo {
+  font-size: 11px; color: var(--text-secondary);
+  font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+/* Grid de temas */
+.temas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+.tema-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px; cursor: pointer;
+  transition: all .15s; display: flex; flex-direction: column; gap: 12px;
+  position: relative; overflow: hidden;
+}
+.tema-card::before {
+  content: ''; position: absolute; top: 0; left: 0;
+  width: 4px; height: 100%; background: var(--accent);
+  opacity: 0; transition: opacity .15s;
+}
+.tema-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+  border-color: var(--accent);
+}
+.tema-card:hover::before { opacity: 1; }
+.tema-card-header {
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.tema-numero {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; background: var(--accent-soft);
+  color: var(--accent); border-radius: 8px;
+  font-size: 13px; font-weight: 800; flex-shrink: 0;
+}
+.tema-titulo {
+  font-size: 13px; font-weight: 600; color: var(--text-primary);
+  line-height: 1.4; flex: 1;
+}
+.tema-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-top: auto;
+}
+.tema-progreso {
+  flex: 1; display: flex; align-items: center; gap: 8px;
+}
+.tema-progreso .track {
+  flex: 1; height: 6px; background: var(--bg-soft);
+  border-radius: 3px; overflow: hidden;
+}
+.tema-progreso .fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #8b5cf6);
+  border-radius: 3px; transition: width .3s;
+}
+.tema-progreso .pct {
+  font-size: 11px; font-weight: 700; color: var(--text-secondary);
+  min-width: 32px; text-align: right;
+}
+.tema-controles { display: flex; align-items: center; gap: 3px; }
+.tema-controles button {
+  width: 22px; height: 22px; border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--text-secondary);
+  border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s; padding: 0;
+}
+.tema-controles button:hover {
+  background: var(--accent); color: white; border-color: var(--accent);
+}
+.tema-controles .separador {
+  width: 1px; height: 14px; background: var(--border); margin: 0 3px;
+}
+.tema-controles .quick {
+  font-size: 9px; width: auto; padding: 0 5px; height: 20px;
+}
+
+/* Libros (para Teoría del Estado) */
+.libro-bloque {
+  margin-bottom: 36px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+.libro-bloque:last-child { border-bottom: none; margin-bottom: 0; }
+.libro-header { margin-bottom: 16px; }
+.libro-titulo {
+  font-size: 18px; font-weight: 800;
+  color: var(--text-primary);
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 4px;
+}
+.libro-autor {
+  font-size: 13px; color: var(--text-secondary); font-style: italic;
+  margin-left: 28px;
+}
+.loading-temas {
+  grid-column: 1/-1;
+  text-align: center; padding: 40px;
+  color: var(--text-secondary);
+}
+.loading-temas i { font-size: 24px; display: block; margin-bottom: 10px; }
+
+/* Responsive */
+@media (max-width: 640px) {
+  body { padding: 20px 12px; }
+  .asig-titulo { font-size: 26px; }
+  .asig-titulo .icono { font-size: 30px; }
+  .temas-grid { grid-template-columns: 1fr; }
+  .materiales-grid { grid-template-columns: 1fr; }
+}
+</style>
 </head>
 <body>
-    <div class="container" style="padding-top:80px; max-width:900px; margin:0 auto;">
-        <div class="area-header">
-            <button class="btn-volver" onclick="navegarSeguro('/estudio/?nivel=asignaturas&area=grado-derecho&curso=4&semestre=1')">← Volver a las asignaturas</button>
-            <h1>📋 Derecho Procesal II</h1>
-            <p style="color:var(--text-secondary);">Código: 66024025 | 5 ECTS</p>
-        </div>
-        
-        <div class="card">
-            <h2>📚 Materiales de la asignatura</h2>
-            <div class="info-grid">
-                <a href="guia/guia.pdf" class="info-card" target="_blank">
-                    <span class="icon">📘</span>
-                    <div class="info">
-                        <span class="titulo">Guía de la asignatura</span>
-                        <span class="subtitulo">PDF <span class="badge-pdf">PDF</span></span>
-                    </div>
-                </a>
-                <a href="programa/programa.pdf" class="info-card" target="_blank">
-                    <span class="icon">📋</span>
-                    <div class="info">
-                        <span class="titulo">Programa de la asignatura</span>
-                        <span class="subtitulo">PDF <span class="badge-pdf">PDF</span></span>
-                    </div>
-                </a>
-            </div>
-            <div style="font-size:13px; color:var(--text-secondary); margin-top:8px;">
-                <i class="fas fa-info-circle"></i> Haz clic en las tarjetas para abrir los PDFs en una nueva pestaña.
+    <div class="asignatura-container">
+        <button class="btn-volver" onclick="navegarSeguro('/estudio/?nivel=asignaturas&area=grado-derecho&curso=4&semestre=1')">
+            <i class="fas fa-arrow-left"></i> Volver a las asignaturas
+        </button>
+
+        <div class="asig-header">
+            <h1 class="asig-titulo">
+                <span class="icono">📋</span>
+                <span>Derecho Procesal II</span>
+            </h1>
+            <div class="asig-meta">
+                <span class="codigo">66024025</span><span>5 ECTS</span>
             </div>
         </div>
-        
-        <div class="card">
-            <h2>📑 Temas</h2>
-            <div id="temasContainer">
+
+        <div class="seccion">
+                    <div class="seccion-titulo"><i class="fas fa-book"></i> Materiales de la asignatura</div>
+                    <div class="materiales-grid">
+                        <a href="guia/guia.pdf" class="material-card" target="_blank">
+                    <span class="material-icon">📘</span>
+                    <div class="material-info">
+                        <div class="material-nombre">Guía de la asignatura</div>
+                        <div class="material-tipo">PDF</div>
+                    </div>
+                </a><a href="programa/programa.pdf" class="material-card" target="_blank">
+                    <span class="material-icon">📋</span>
+                    <div class="material-info">
+                        <div class="material-nombre">Programa de la asignatura</div>
+                        <div class="material-tipo">PDF</div>
+                    </div>
+                </a>
+                    </div>
+                </div>
+
+        <div class="seccion">
+            <div class="seccion-titulo">
+                <i class="fas fa-list"></i> Temas
+                <span class="badge" id="temasCount">...</span>
+            </div>
+            <div id="temasContainer" class="temas-grid">
                 <div class="loading-temas">
                     <i class="fas fa-spinner fa-spin"></i>
                     Cargando temas...
@@ -118,89 +270,159 @@
             </div>
         </div>
     </div>
-    
+
     <script>
-        const ASIGNATURA_KEY = 'procesal-ii';
+const ASIGNATURA_KEY = 'procesal-ii';
 
-        fetch('config.json')
-            .then(response => response.json())
-            .then(data => {
-                const container = document.getElementById('temasContainer');
-                const temas = data.temas || [];
-                
-                if (temas.length === 0) {
-                    container.innerHTML = '<p style="color:var(--text-secondary);">No hay temas cargados.</p>';
-                    return;
-                }
-                
-                let html = '<div class="temas-list">';
-                temas.forEach((t, index) => {
-                    const temaId = t.id || 'tema' + (index + 1);
-                    const numTema = index + 1;
-                    const titulo = t.titulo || 'Tema ' + numTema;
-                    const key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
-                    const progreso = parseInt(localStorage.getItem(key)) || 0;
-                    
-                    html += `
-                        <div class="tema-item" style="flex-wrap: wrap; gap: 8px;">
-                            <div class="tema-info" onclick="navegarSeguro('temas/${temaId}/tema.html')" style="cursor: pointer; flex: 1;">
-                                <span class="tema-numero">${numTema}</span>
-                                <span class="tema-titulo">${titulo}</span>
-                            </div>
-                            <div class="tema-progreso">
-                                <span class="progreso-texto" id="progreso_${temaId}">${progreso}%</span>
-                                <div class="progreso-botones">
-                                    <button onclick="cambiarProgreso('${temaId}', -10)" title="-10%">−</button>
-                                    <button onclick="cambiarProgreso('${temaId}', 10)" title="+10%">+</button>
-                                    <button onclick="cambiarProgreso('${temaId}', 25)" title="+25%">+25</button>
-                                    <button onclick="cambiarProgreso('${temaId}', 50)" title="50%">50</button>
-                                    <button onclick="cambiarProgreso('${temaId}', 100)" title="100%">100</button>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                });
-                html += '</div>';
-                container.innerHTML = html;
-            })
-            .catch(error => {
-                document.getElementById('temasContainer').innerHTML = `
-                    <p style="color:var(--text-secondary);">Error al cargar los temas: ${error.message}</p>
-                `;
-                console.error('Error cargando temas:', error);
-            });
+fetch('config.json')
+  .then(function(response) { return response.json(); })
+  .then(function(data) {
+    var container = document.getElementById('temasContainer');
+    var countEl = document.getElementById('temasCount');
+    var totalTemas = 0;
 
-        function cambiarProgreso(temaId, cambio) {
-            const key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
-            let actual = parseInt(localStorage.getItem(key)) || 0;
-            let nuevo = Math.max(0, Math.min(100, actual + cambio));
-            localStorage.setItem(key, nuevo.toString());
-            const el = document.getElementById('progreso_' + temaId);
-            if (el) el.textContent = nuevo + '%';
-            mostrarToast('📊 Progreso actualizado: ' + nuevo + '%');
+    // Detectar formato
+    if (data.libros && data.libros.length > 0) {
+      // Formato LIBROS
+      data.libros.forEach(function(libro) { totalTemas += (libro.temas || []).length; });
+      countEl.textContent = totalTemas;
+
+      var html = '';
+      data.libros.forEach(function(libro) {
+        html += '<div class="libro-bloque">';
+        html += '<div class="libro-header">';
+        html += '<div class="libro-titulo"><i class="fas fa-book-open" style="color:var(--accent);"></i> ' + libro.titulo + '</div>';
+        if (libro.autor) {
+          html += '<div class="libro-autor">' + libro.autor + '</div>';
         }
+        html += '</div>';
+        html += '<div class="temas-grid">';
 
-        function mostrarToast(mensaje) {
-            let toast = document.getElementById('toast-progreso');
-            if (!toast) {
-                toast = document.createElement('div');
-                toast.id = 'toast-progreso';
-                toast.style.cssText = `
-                    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-                    background: #1a3d66; color: white; padding: 10px 24px;
-                    border-radius: 30px; font-weight: 600; font-size: 14px;
-                    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-                    opacity: 0; transition: opacity 0.3s ease; z-index: 9999;
-                `;
-                document.body.appendChild(toast);
-            }
-            toast.textContent = mensaje;
-            toast.style.opacity = '1';
-            clearTimeout(toast._timer);
-            toast._timer = setTimeout(() => {
-                toast.style.opacity = '0';
-            }, 2000);
+        (libro.temas || []).forEach(function(t, index) {
+          var temaId = t.id || 'tema' + (index + 1);
+          var numTema = index + 1;
+          var titulo = t.titulo || 'Tema ' + numTema;
+          var archivo = t.archivo || 'tema.html';
+          // Si el archivo no tiene path, añadirlo
+          if (archivo.indexOf('/') === -1) {
+            archivo = 'temas/' + temaId + '/' + archivo;
+          }
+          var key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
+          var progreso = parseInt(localStorage.getItem(key)) || 0;
+
+          html += '<div class="tema-card" data-tema-id="' + temaId + '" data-archivo="' + archivo + '">'
+            + '<div class="tema-card-header">'
+            +   '<span class="tema-numero">' + numTema + '</span>'
+            +   '<span class="tema-titulo">' + titulo + '</span>'
+            + '</div>'
+            + '<div class="tema-footer">'
+            +   '<div class="tema-progreso">'
+            +     '<div class="track"><div class="fill" id="fill_' + temaId + '" style="width:' + progreso + '%"></div></div>'
+            +     '<span class="pct" id="progreso_' + temaId + '">' + progreso + '%</span>'
+            +   '</div>'
+            +   '<div class="tema-controles">'
+            +     '<button onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, -10)" data-tid="' + temaId + '" title="-10%">−</button>'
+            +     '<button onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 10)" data-tid="' + temaId + '" title="+10%">+</button>'
+            +     '<span class="separador"></span>'
+            +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 25)" data-tid="' + temaId + '" title="+25%">25</button>'
+            +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 50)" data-tid="' + temaId + '" title="50%">50</button>'
+            +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 100)" data-tid="' + temaId + '" title="100%">100</button>'
+            +   '</div>'
+            + '</div>'
+            + '</div>';
+        });
+
+        html += '</div>';
+        html += '</div>';
+      });
+      container.innerHTML = html;
+
+    } else if (data.temas && data.temas.length > 0) {
+      // Formato TEMAS
+      totalTemas = data.temas.length;
+      countEl.textContent = totalTemas;
+
+      var html = '';
+      data.temas.forEach(function(t, index) {
+        var temaId = t.id || 'tema' + (index + 1);
+        var numTema = index + 1;
+        var titulo = t.titulo || 'Tema ' + numTema;
+        var archivo = t.archivo || 'tema.html';
+        // Si el archivo no tiene path, añadirlo
+        if (archivo.indexOf('/') === -1) {
+          archivo = 'temas/' + temaId + '/' + archivo;
         }
-    </script>
+        var key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
+        var progreso = parseInt(localStorage.getItem(key)) || 0;
+
+        html += '<div class="tema-card" data-tema-id="' + temaId + '" data-archivo="' + archivo + '">'
+          + '<div class="tema-card-header">'
+          +   '<span class="tema-numero">' + numTema + '</span>'
+          +   '<span class="tema-titulo">' + titulo + '</span>'
+          + '</div>'
+          + '<div class="tema-footer">'
+          +   '<div class="tema-progreso">'
+          +     '<div class="track"><div class="fill" id="fill_' + temaId + '" style="width:' + progreso + '%"></div></div>'
+          +     '<span class="pct" id="progreso_' + temaId + '">' + progreso + '%</span>'
+          +   '</div>'
+          +   '<div class="tema-controles">'
+          +     '<button onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, -10)" data-tid="' + temaId + '" title="-10%">−</button>'
+          +     '<button onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 10)" data-tid="' + temaId + '" title="+10%">+</button>'
+          +     '<span class="separador"></span>'
+          +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 25)" data-tid="' + temaId + '" title="+25%">25</button>'
+          +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 50)" data-tid="' + temaId + '" title="50%">50</button>'
+          +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 100)" data-tid="' + temaId + '" title="100%">100</button>'
+          +   '</div>'
+          + '</div>'
+          + '</div>';
+      });
+      container.innerHTML = html;
+
+    } else {
+      container.innerHTML = '<p style="grid-column:1/-1; color:var(--text-secondary);">No hay contenido cargado.</p>';
+      countEl.textContent = '0';
+      return;
+    }
+
+    // Añadir el onclick a cada tema-card
+    container.querySelectorAll('.tema-card').forEach(function(card) {
+      card.addEventListener('click', function() {
+        var archivo = card.dataset.archivo;
+        navegarSeguro(archivo);
+      });
+    });
+  })
+  .catch(function(error) {
+    document.getElementById('temasContainer').innerHTML =
+      '<p style="grid-column:1/-1; color:#ef4444;">Error al cargar los temas: ' + error.message + '</p>';
+    console.error('Error cargando temas:', error);
+  });
+
+function cambiarProgreso(temaId, cambio) {
+  var key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
+  var actual = parseInt(localStorage.getItem(key)) || 0;
+  var nuevo = Math.max(0, Math.min(100, actual + cambio));
+  localStorage.setItem(key, nuevo.toString());
+  var elPct = document.getElementById('progreso_' + temaId);
+  if (elPct) elPct.textContent = nuevo + '%';
+  var elFill = document.getElementById('fill_' + temaId);
+  if (elFill) elFill.style.width = nuevo + '%';
+  mostrarToast('📊 Progreso: ' + nuevo + '%');
+}
+
+function mostrarToast(mensaje) {
+  var toast = document.getElementById('toast-progreso');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'toast-progreso';
+    toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#6366f1;color:white;padding:10px 24px;border-radius:30px;font-weight:600;font-size:14px;box-shadow:0 4px 20px rgba(0,0,0,0.3);opacity:0;transition:opacity 0.3s ease;z-index:9999;';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = mensaje;
+  toast.style.opacity = '1';
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(function() { toast.style.opacity = '0'; }, 2000);
+}
+</script>
 </body>
 </html>

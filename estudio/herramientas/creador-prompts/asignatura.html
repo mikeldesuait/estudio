@@ -30,695 +30,387 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; background: #0d1a2b; color: #e0e8f0; min-height: 100vh; padding: 20px; }
-.app { max-width: 1200px; margin: 0 auto; }
-h1 { font-size: 26px; font-weight: 700; display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
-.subhead { color: #8a9bb8; font-size: 14px; margin-bottom: 24px; border-left: 3px solid #2a5a8a; padding-left: 16px; }
-.tabs { display: flex; gap: 4px; background: #0f1f33; border-radius: 12px; padding: 4px; margin-bottom: 16px; border: 1px solid #1e3450; flex-wrap: wrap; }
-.tabs button { flex: 1; min-width: 80px; padding: 12px 8px; border: none; border-radius: 9px; background: transparent; color: #8a9bb8; font-weight: 600; font-size: 12px; cursor: pointer; transition: 0.2s; }
-.tabs button.active { background: #1a3d66; color: #fff; box-shadow: 0 4px 14px rgba(20, 80, 180, 0.3); }
-.tabs button:hover:not(.active) { color: #c8d8f0; }
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-.card { background: #0f1f33; border-radius: 16px; padding: 20px 22px; margin-bottom: 18px; border: 1px solid #1e3450; }
-.card-title { font-size: 14px; font-weight: 600; color: #b0c8e8; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-.btn-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 4px; }
-.btn-group .opt { padding: 8px 18px; border: 2px solid #1e3450; border-radius: 30px; background: transparent; color: #b0c8e8; font-weight: 600; font-size: 13px; cursor: pointer; transition: 0.2s; }
-.btn-group .opt:hover { border-color: #3a6a9a; }
-.btn-group .opt.active { background: #1a3d66; border-color: #2a6aaa; color: #fff; }
-textarea, input[type="text"], input[type="password"], input[type="file"] { width: 100%; background: #091220; border: 1px solid #1e3450; border-radius: 12px; padding: 14px 16px; font-size: 14px; line-height: 1.7; color: #d6e2f5; font-family: 'Consolas', 'Monaco', monospace; resize: vertical; transition: 0.15s; }
-textarea:focus, input:focus { outline: none; border-color: #3a7ac0; box-shadow: 0 0 0 3px rgba(40, 100, 200, 0.15); }
-input[type="file"] { font-family: 'Segoe UI', sans-serif; cursor: pointer; padding: 10px 12px; }
-input[type="text"], input[type="password"] { font-family: 'Segoe UI', sans-serif; font-size: 15px; min-height: 46px; }
-.actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
-.btn { padding: 10px 22px; border: none; border-radius: 40px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; gap: 8px; }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.btn-primary { background: #1a4a7a; color: #fff; box-shadow: 0 4px 14px rgba(20, 80, 180, 0.3); }
-.btn-primary:hover:not(:disabled) { background: #2a5a9a; transform: translateY(-1px); }
-.btn-secondary { background: #1a2a44; color: #b0c8e8; border: 1px solid #2a4a6a; }
-.btn-secondary:hover:not(:disabled) { background: #2a3a5e; }
-.btn-success { background: #1a6a4a; color: #fff; }
-.btn-success:hover:not(:disabled) { background: #2a7a5a; transform: translateY(-1px); }
-.btn-danger { background: #6a2a2a; color: #fff; }
-.btn-danger:hover:not(:disabled) { background: #8a3a3a; }
-.btn-purple { background: #4a2a7a; color: #fff; }
-.btn-purple:hover:not(:disabled) { background: #5a3a9a; transform: translateY(-1px); }
-.btn-warning { background: #6a5a1a; color: #fff; }
-.btn-warning:hover:not(:disabled) { background: #8a7a2a; }
-.btn-grande { font-size: 16px; padding: 14px 28px; }
-.badge-count { background: #1a3d66; padding: 2px 10px; border-radius: 20px; font-size: 12px; color: #b0c8e8; }
-.badge-cache { padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
-.badge-cache.on { background: #1a4a2a; color: #6ad89a; }
-.badge-cache.off { background: #4a2a1a; color: #d89a6a; }
-.field-hint { font-size: 12px; color: #6a8aaa; margin-top: 4px; }
-.step-badge { display: inline-block; background: #2a5a8a; color: #fff; border-radius: 30px; padding: 2px 14px; font-size: 11px; font-weight: 700; margin-right: 8px; }
-.consumo-bar { display: flex; gap: 10px; align-items: center; background: #0f1f33; border: 1px solid #1e3450; border-radius: 12px; padding: 10px 16px; margin-bottom: 16px; flex-wrap: wrap; font-size: 13px; }
-.consumo-bar .item { display: flex; align-items: center; gap: 6px; }
-.consumo-bar .item .label { color: #6a8aaa; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
-.consumo-bar .item .value { color: #b0c8e8; font-weight: 700; font-size: 14px; }
-.consumo-bar .sep { color: #2a4a6a; }
-.consumo-bar .badge-cache { margin-left: auto; }
-.tema-item { background: #091220; border-radius: 10px; padding: 14px 18px; margin-bottom: 10px; border: 1px solid #1a2a44; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
-.tema-item .info { flex: 1; min-width: 200px; }
-.tema-item .titulo { font-weight: 600; font-size: 15px; color: #e0e8f0; }
-.tema-item .estado { font-size: 12px; color: #6a8aaa; margin-top: 4px; }
-.tema-item .estado.listo { color: #6ad89a; }
-.tema-item .estado.generando { color: #d8b46a; }
-.tema-item .estado.error { color: #d87a6a; }
-.tema-item .acciones { display: flex; gap: 8px; flex-wrap: wrap; }
-.epigrafe-item { background: #091220; border-radius: 8px; padding: 10px 14px; margin-bottom: 6px; border: 1px solid #1a2a44; display: flex; align-items: center; gap: 10px; }
-.epigrafe-item .num { color: #6a8aaa; font-size: 13px; font-weight: 600; min-width: 70px; }
-.epigrafe-item .titulo { flex: 1; font-size: 14px; color: #d6e2f5; }
-.epigrafe-item .estado { font-size: 12px; padding: 2px 10px; border-radius: 12px; white-space: nowrap; }
-.epigrafe-item .estado.pendiente { background: #1a2a44; color: #8a9bb8; }
-.epigrafe-item .estado.generando { background: #4a3a1a; color: #d8b46a; }
-.epigrafe-item .estado.listo { background: #1a3a2a; color: #6ad89a; }
-.epigrafe-item .estado.error { background: #3a1a1a; color: #d87a6a; }
-.epigrafe-item .acciones { display: flex; gap: 6px; }
-.epigrafe-item .acciones .btn { padding: 4px 10px; font-size: 11px; }
-.epigrafe-item.sub { margin-left: 30px; }
-.epigrafe-item.subsub { margin-left: 60px; }
-.empty-msg { color: #6a8aaa; text-align: center; padding: 30px 20px; font-size: 14px; }
-.toast { position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%); background: #1a3d66; color: #fff; padding: 12px 28px; border-radius: 40px; font-weight: 600; font-size: 14px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5); opacity: 0; transition: opacity 0.3s ease; z-index: 9999; pointer-events: none; max-width: 90vw; text-align: center; }
-.toast.show { opacity: 1; }
-.progress-bar { width: 100%; height: 8px; background: #0f1f33; border-radius: 10px; overflow: hidden; margin-top: 10px; }
-.progress-bar .fill { height: 100%; background: linear-gradient(90deg, #2a6aaa, #4a9ad0); transition: width 0.3s; }
-.check-demo { display: flex; align-items: center; gap: 10px; margin-top: 12px; padding: 12px 16px; background: #1a1a0d; border: 1px solid #6a5a1a; border-radius: 10px; cursor: pointer; }
-.check-demo input { width: 18px; height: 18px; accent-color: #d4a017; cursor: pointer; }
-.check-demo span { font-size: 13px; color: #d8c88a; font-weight: 600; }
-.demo-banner { display: none; background: #6a5a1a; color: #fff; padding: 8px 16px; border-radius: 10px; font-size: 13px; font-weight: 600; margin-bottom: 16px; text-align: center; }
-.demo-banner.visible { display: block; }
-.editor-box { background: #091220; border: 1px solid #1e3450; border-radius: 12px; overflow: hidden; margin-top: 10px; }
-.editor-box-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: #0f1f33; border-bottom: 1px solid #1e3450; flex-wrap: wrap; gap: 8px; }
-.editor-box-header .lang { font-size: 13px; color: #8a9bb8; font-weight: 600; font-family: 'Consolas', monospace; }
-.editor-box-header .tools { display: flex; gap: 6px; flex-wrap: wrap; }
-.editor-box-header .tools button { background: transparent; border: 1px solid #2a4a6a; color: #b0c8e8; padding: 4px 12px; border-radius: 20px; font-size: 12px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 5px; transition: 0.2s; }
-.editor-box-header .tools button:hover { background: #1a3d66; color: #fff; border-color: #3a7ac0; }
-.editor-box-body { height: 600px; overflow: auto; background: #f5f7fa; }
-.editor-box-body iframe { width: 100%; height: 100%; border: none; display: block; background: #f5f7fa; }
-.raw-viewer { margin-top: 14px; background: #091220; border: 1px solid #3a2a5a; border-radius: 10px; padding: 14px 18px; display: none; }
-.raw-viewer.visible { display: block; }
-.raw-viewer h4 { color: #b0a8e8; font-size: 13px; margin-bottom: 8px; }
-.raw-viewer textarea { min-height: 200px; font-size: 12px; background: #050a12; }
-.masivo-box { background: #0d1f2a; border: 1px solid #2a5a3a; border-radius: 16px; padding: 20px 22px; margin-bottom: 18px; }
-.masivo-box .titulo { font-size: 18px; font-weight: 700; color: #6ad89a; margin-bottom: 4px; }
-.masivo-box .subtitulo { font-size: 13px; color: #8aabaa; margin-bottom: 14px; }
-.progreso-info { display: flex; justify-content: space-between; font-size: 13px; color: #b0c8e8; margin-top: 12px; }
-.progreso-info .epigrafe { font-family: 'Consolas', monospace; color: #6ad89a; }
-.finalizado-box { background: #1a3a2a; border: 1px solid #2a6a4a; border-radius: 12px; padding: 16px 20px; margin-top: 14px; display: none; }
-.finalizado-box.visible { display: block; }
-.finalizado-box .titulo { font-size: 16px; font-weight: 700; color: #6ad89a; margin-bottom: 8px; }
-.estimacion-box { background: #1a1a0d; border: 1px solid #6a5a1a; border-radius: 12px; padding: 16px 20px; margin-top: 14px; display: none; }
-.estimacion-box.visible { display: block; }
-.estimacion-box .titulo { font-size: 15px; font-weight: 700; color: #d8c88a; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
-.estimacion-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
-.estimacion-item { background: #0f0f05; border-radius: 8px; padding: 10px 14px; border: 1px solid #4a3a1a; }
-.estimacion-item .label { font-size: 11px; color: #8a7a4a; text-transform: uppercase; letter-spacing: 0.5px; }
-.estimacion-item .value { font-size: 16px; font-weight: 700; color: #d8c88a; margin-top: 4px; }
-.estimacion-nota { font-size: 11px; color: #8a7a4a; margin-top: 10px; font-style: italic; }
-@media (max-width: 700px) { body { padding: 10px; } .card { padding: 14px 12px; } .btn { padding: 8px 14px; font-size: 12px; } .tabs button { font-size: 10px; padding: 10px 4px; min-width: 60px; } .editor-box-body { height: 400px; } .tema-item, .epigrafe-item { flex-direction: column; align-items: stretch; } .epigrafe-item.sub, .epigrafe-item.subsub { margin-left: 0; } .consumo-bar { font-size: 11px; padding: 8px 12px; } }
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: #0a1520; }
-::-webkit-scrollbar-thumb { background: #2a4a6a; border-radius: 4px; }
+:root {
+  --bg: #faf7f2;
+  --bg-card: #ffffff;
+  --bg-soft: #f5f0e8;
+  --text-primary: #2d3748;
+  --text-secondary: #718096;
+  --border: #e2ddd3;
+  --accent: #6366f1;
+  --accent-soft: rgba(99, 102, 241, 0.1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+  padding: 32px 20px;
+}
+.asignatura-container { max-width: 1100px; margin: 0 auto; }
+
+/* Botón volver */
+.btn-volver {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px; background: transparent;
+  border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text-secondary); font-size: 13px; font-weight: 600;
+  font-family: inherit; cursor: pointer; margin-bottom: 24px;
+  transition: all .15s;
+}
+.btn-volver:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+
+/* Header */
+.asig-header { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.asig-titulo {
+  font-size: 36px; font-weight: 800; color: var(--text-primary);
+  display: flex; align-items: center; gap: 14px; margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+.asig-titulo .icono { font-size: 40px; }
+.asig-meta {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 14px; color: var(--text-secondary); flex-wrap: wrap;
+}
+.asig-meta .codigo {
+  font-family: 'SF Mono', Menlo, monospace; background: var(--bg-soft);
+  padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;
+}
+
+/* Sección */
+.seccion { margin-bottom: 40px; }
+.seccion-titulo {
+  font-size: 20px; font-weight: 700; color: var(--text-primary);
+  margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+}
+.seccion-titulo .badge {
+  font-size: 12px; font-weight: 700;
+  background: var(--accent-soft); color: var(--accent);
+  padding: 3px 10px; border-radius: 12px;
+}
+
+/* Materiales (PDFs) */
+.materiales-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+.material-card {
+  display: flex; align-items: center; gap: 14px; padding: 16px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; cursor: pointer; transition: all .15s;
+  text-decoration: none; color: inherit;
+}
+.material-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border-color: var(--accent);
+}
+.material-icon { font-size: 28px; flex-shrink: 0; }
+.material-info { flex: 1; min-width: 0; }
+.material-nombre { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+.material-tipo {
+  font-size: 11px; color: var(--text-secondary);
+  font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+/* Grid de temas */
+.temas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+.tema-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px; cursor: pointer;
+  transition: all .15s; display: flex; flex-direction: column; gap: 12px;
+  position: relative; overflow: hidden;
+}
+.tema-card::before {
+  content: ''; position: absolute; top: 0; left: 0;
+  width: 4px; height: 100%; background: var(--accent);
+  opacity: 0; transition: opacity .15s;
+}
+.tema-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+  border-color: var(--accent);
+}
+.tema-card:hover::before { opacity: 1; }
+.tema-card-header {
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.tema-numero {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; background: var(--accent-soft);
+  color: var(--accent); border-radius: 8px;
+  font-size: 13px; font-weight: 800; flex-shrink: 0;
+}
+.tema-titulo {
+  font-size: 13px; font-weight: 600; color: var(--text-primary);
+  line-height: 1.4; flex: 1;
+}
+.tema-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-top: auto;
+}
+.tema-progreso {
+  flex: 1; display: flex; align-items: center; gap: 8px;
+}
+.tema-progreso .track {
+  flex: 1; height: 6px; background: var(--bg-soft);
+  border-radius: 3px; overflow: hidden;
+}
+.tema-progreso .fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #8b5cf6);
+  border-radius: 3px; transition: width .3s;
+}
+.tema-progreso .pct {
+  font-size: 11px; font-weight: 700; color: var(--text-secondary);
+  min-width: 32px; text-align: right;
+}
+.tema-controles { display: flex; align-items: center; gap: 3px; }
+.tema-controles button {
+  width: 22px; height: 22px; border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--text-secondary);
+  border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s; padding: 0;
+}
+.tema-controles button:hover {
+  background: var(--accent); color: white; border-color: var(--accent);
+}
+.tema-controles .separador {
+  width: 1px; height: 14px; background: var(--border); margin: 0 3px;
+}
+.tema-controles .quick {
+  font-size: 9px; width: auto; padding: 0 5px; height: 20px;
+}
+
+/* Libros (para Teoría del Estado) */
+.libro-bloque {
+  margin-bottom: 36px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+.libro-bloque:last-child { border-bottom: none; margin-bottom: 0; }
+.libro-header { margin-bottom: 16px; }
+.libro-titulo {
+  font-size: 18px; font-weight: 800;
+  color: var(--text-primary);
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 4px;
+}
+.libro-autor {
+  font-size: 13px; color: var(--text-secondary); font-style: italic;
+  margin-left: 28px;
+}
+.loading-temas {
+  grid-column: 1/-1;
+  text-align: center; padding: 40px;
+  color: var(--text-secondary);
+}
+.loading-temas i { font-size: 24px; display: block; margin-bottom: 10px; }
+
+/* Responsive */
+@media (max-width: 640px) {
+  body { padding: 20px 12px; }
+  .asig-titulo { font-size: 26px; }
+  .asig-titulo .icono { font-size: 30px; }
+  .temas-grid { grid-template-columns: 1fr; }
+  .materiales-grid { grid-template-columns: 1fr; }
+}
 </style>
 </head>
 <body>
+    <div class="asignatura-container">
+        <button class="btn-volver" onclick="navegarSeguro('/estudio/?nivel=areas')">
+            <i class="fas fa-arrow-left"></i> Volver a las asignaturas
+        </button>
 
-<div class="app">
-<h1>⚡ PromptMaker · UNED v16</h1>
-<div class="subhead">Esqueleto → Estimación real → Generación con descarga automática → HTMLs + ZIP</div>
-
-<div class="demo-banner" id="demoBanner">🧪 MODO DEMO ACTIVO · No se llama a la API</div>
-
-<div class="consumo-bar" id="consumoBar">
-  <div class="item"><span class="label">Caché</span><span class="value" id="barCache">0</span></div>
-  <div class="sep">|</div>
-  <div class="item"><span class="label">Nuevos</span><span class="value" id="barNuevos">0</span></div>
-  <div class="sep">|</div>
-  <div class="item"><span class="label">Salida</span><span class="value" id="barSalida">0</span></div>
-  <div class="sep">|</div>
-  <div class="item"><span class="label">Coste último</span><span class="value" id="barCoste">$0.0000</span></div>
-  <div class="sep">|</div>
-  <div class="item"><span class="label">Coste total real</span><span class="value" id="barCosteTotal">$0.0000</span></div>
-  <div class="badge-cache off" id="barBadge">Caché: inactiva</div>
-</div>
-
-<div class="tabs">
-<button class="active" data-tab="tab-config">🔑 Configuración</button>
-<button data-tab="tab-esqueleto">🏗️ Esqueleto</button>
-<button data-tab="tab-contenido">📝 Contenido</button>
-<button data-tab="tab-preview">🖼️ Previsualización</button>
-<button data-tab="tab-biblioteca">📦 Biblioteca</button>
-</div>
-
-<div id="tab-config" class="tab-content active">
-  <div class="card">
-    <div class="card-title"><span class="step-badge">Paso 1</span> API Key de DeepSeek</div>
-    <input type="password" id="apiKey" placeholder="sk-..." />
-    <div class="field-hint">🔒 Se guarda solo en tu navegador.</div>
-    <label class="check-demo">
-      <input type="checkbox" id="modoDemo" />
-      <span>🧪 MODO DEMO (probar sin API)</span>
-    </label>
-  </div>
-
-  <div class="card">
-    <div class="card-title"><span class="step-badge">Paso 2</span> Modalidad</div>
-    <div class="btn-group" id="modalidadGroup">
-      <button type="button" class="opt active" data-value="test">📝 Tipo Test</button>
-      <button type="button" class="opt" data-value="desarrollo">📖 Desarrollo</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title"><span class="step-badge">Paso 3</span> Sube el libro (PDF o TXT)</div>
-    <input type="file" id="pdfInput" accept=".pdf,.txt" />
-    <div class="field-hint" id="pdfStatus">📎 Selecciona el archivo del libro.</div>
-    <div class="progress-bar" id="pdfProgress" style="display:none;"><div class="fill" id="pdfProgressFill" style="width:0%"></div></div>
-  </div>
-
-  <div class="card" style="border-color: #3a6a8a;">
-    <div class="card-title"><span class="step-badge">Paso 4</span> Generar esqueleto</div>
-    <div class="field-hint">Primera petición: paga el libro completo. Las siguientes ya usan caché (~$0.001 por epígrafe).</div>
-    <div class="actions">
-      <button type="button" class="btn btn-purple" id="generarEsqueletoBtn" disabled>🏗️ Generar esqueleto</button>
-      <button type="button" class="btn btn-secondary" id="verRespuestaBtn" disabled>👁️ Ver última respuesta</button>
-      <button type="button" class="btn btn-secondary" id="resetBtn">⟳ Reiniciar todo</button>
-    </div>
-    <div class="raw-viewer" id="rawViewer">
-      <h4>📄 Última respuesta cruda de DeepSeek</h4>
-      <textarea id="rawResponse" readonly></textarea>
-      <div class="actions">
-        <button type="button" class="btn btn-secondary" id="cerrarRawBtn">Cerrar</button>
-      </div>
-    </div>
-    <div class="estimacion-box" id="estimacionReal">
-      <div class="titulo">💰 Coste real del esqueleto (datos de DeepSeek)</div>
-      <div class="estimacion-grid">
-        <div class="estimacion-item">
-          <div class="label">Tokens reales del libro</div>
-          <div class="value" id="estTokensReales">0</div>
+        <div class="asig-header">
+            <h1 class="asig-titulo">
+                <span class="icono">⚡</span>
+                <span>PromptMaker · UNED v16</span>
+            </h1>
+            <div class="asig-meta">
+                
+            </div>
         </div>
-        <div class="estimacion-item">
-          <div class="label">Coste de subida</div>
-          <div class="value" id="estCosteSubida">$0.0000</div>
+
+        
+
+        <div class="seccion">
+            <div class="seccion-titulo">
+                <i class="fas fa-list"></i> Temas
+                <span class="badge" id="temasCount">...</span>
+            </div>
+            <div id="temasContainer" class="temas-grid">
+                <div class="loading-temas">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    Cargando temas...
+                </div>
+            </div>
         </div>
-        <div class="estimacion-item">
-          <div class="label">Coste total del esqueleto</div>
-          <div class="value" id="estCosteEsqueletoReal">$0.0000</div>
-        </div>
-      </div>
-      <div class="estimacion-nota">Datos exactos devueltos por la API en el campo usage.prompt_tokens.</div>
     </div>
-  </div>
-</div>
 
-<div id="tab-esqueleto" class="tab-content">
-  <div class="masivo-box" id="masivoBox" style="display:none;">
-    <div class="titulo">🚀 Generar libro completo</div>
-    <div class="subtitulo">Recorre todos los temas y epígrafes del libro, uno por uno, en orden. Al completar cada tema, se monta y descarga automáticamente.</div>
-    <div class="actions">
-      <button type="button" class="btn btn-success btn-grande" id="empezarMasivoBtn">▶️ Empezar</button>
-      <button type="button" class="btn btn-warning" id="pausarMasivoBtn" style="display:none;">⏸️ Pausar</button>
-      <button type="button" class="btn btn-danger" id="cancelarMasivoBtn" style="display:none;">⏹️ Cancelar</button>
-    </div>
-    <div class="progress-bar" id="masivoProgress" style="display:none;"><div class="fill" id="masivoProgressFill" style="width:0%"></div></div>
-    <div class="progreso-info" id="masivoInfo" style="display:none;">
-      <span id="masivoInfoTexto">Preparando…</span>
-      <span class="epigrafe" id="masivoInfoEpigrafe"></span>
-    </div>
-    <div class="finalizado-box" id="masivoFinalizado">
-      <div class="titulo">✅ Libro completo generado</div>
-      <div class="actions">
-        <button type="button" class="btn btn-success btn-grande" id="descargarZipBtn">📦 Descargar ZIP</button>
-        <button type="button" class="btn btn-secondary" id="descargarTodosBtn">📥 Descargar todos (uno a uno)</button>
-      </div>
-    </div>
-  </div>
+    <script>
+const ASIGNATURA_KEY = 'creador-prompts';
 
-  <div class="card">
-    <div class="card-title">🏗️ Esqueleto del libro <span class="badge-count" id="temasCount">0</span></div>
-    <div id="listaEsqueleto"><div class="empty-msg">📭 Aún no hay esqueleto. Sube un libro y pulsa "Generar esqueleto".</div></div>
-  </div>
-</div>
+fetch('config.json')
+  .then(function(response) { return response.json(); })
+  .then(function(data) {
+    var container = document.getElementById('temasContainer');
+    var countEl = document.getElementById('temasCount');
+    var totalTemas = 0;
 
-<div id="tab-contenido" class="tab-content">
-  <div class="card">
-    <div class="card-title">📝 Contenido por epígrafe</div>
-    <div class="field-hint" id="contenidoHint">Selecciona un tema en el esqueleto para ver y generar sus epígrafes.</div>
-    <div id="listaEpigrafes" style="margin-top:14px;"><div class="empty-msg">📭 Selecciona un tema.</div></div>
-    <div class="actions" style="margin-top:14px;">
-      <button type="button" class="btn btn-success" id="generarTodosEpigrafesBtn" disabled>🎨 Generar todos los epígrafes pendientes del tema</button>
-      <button type="button" class="btn btn-purple" id="montarHtmlBtn" disabled>🔨 Montar HTML y descargar del tema</button>
-    </div>
-  </div>
-</div>
+    // Detectar formato
+    if (data.libros && data.libros.length > 0) {
+      // Formato LIBROS
+      data.libros.forEach(function(libro) { totalTemas += (libro.temas || []).length; });
+      countEl.textContent = totalTemas;
 
-<div id="tab-preview" class="tab-content">
-  <div class="card">
-    <div class="card-title" id="previewTitle">🖼️ Previsualización</div>
-    <div id="previewEmpty" class="empty-msg">Monta un HTML desde la pestaña Contenido para verlo aquí.</div>
-    <div class="editor-box" id="previewBox" style="display:none;">
-      <div class="editor-box-header">
-        <span class="lang">html</span>
-        <div class="tools">
-          <button type="button" id="copiarHtmlBtn">📋 Copiar</button>
-          <button type="button" id="descargarHtmlBtn">📥 Descargar</button>
-          <button type="button" id="ejecutarHtmlBtn">▶️ Abrir</button>
-        </div>
-      </div>
-      <div class="editor-box-body">
-        <iframe id="previewIframe"></iframe>
-      </div>
-    </div>
-  </div>
-</div>
-
-<div id="tab-biblioteca" class="tab-content">
-  <div class="card">
-    <div class="card-title">📦 Biblioteca <span class="badge-count" id="libCount">0</span></div>
-    <div id="bibliotecaContainer"><div class="empty-msg">📭 No hay HTMLs guardados.</div></div>
-    <div class="actions" style="margin-top:14px;">
-      <button type="button" class="btn btn-success" id="descargarZipBibliotecaBtn">📦 Descargar ZIP</button>
-      <button type="button" class="btn btn-warning" id="exportarBtn">📤 Exportar JSON</button>
-      <button type="button" class="btn btn-secondary" id="importarBtn">📥 Importar JSON</button>
-      <button type="button" class="btn btn-danger" id="vaciarBtn">🗑️ Vaciar</button>
-    </div>
-    <input type="file" id="importFile" accept=".json" style="display:none;" />
-  </div>
-</div>
-
-</div>
-
-<div id="toast" class="toast"></div>
-
-<script>
-(function() {
-'use strict';
-
-var CSS_ESTUDIO = [
-'body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; max-width: 950px; margin: 30px auto; padding: 20px; background: #fbf9f5; color: #2a2622; line-height: 1.85; font-size: 17px; }',
-'h1 { font-size: 30px; color: #2a2622; border-bottom: 4px solid #8b6f47; padding-bottom: 14px; }',
-'h2 { font-size: 23px; color: #6b4f2f; margin-top: 40px; border-left: 5px solid #8b6f47; padding-left: 16px; }',
-'h3 { font-size: 21px; color: #4a3520; margin-top: 30px; }',
-'h4 { font-size: 18px; color: #4a3520; margin-top: 24px; }',
-'strong { color: #4a3520; }',
-'ul { padding-left: 24px; }',
-'li { margin-bottom: 6px; }',
-'blockquote { background: #f5ede0; padding: 14px 22px; border-left: 5px solid #c9a876; margin: 18px 0; border-radius: 4px; font-style: italic; color: #4a3520; }',
-'hr { border: none; border-top: 2px dashed #d4c4a8; margin: 34px 0; }',
-'.indice { background: #f5ede0; border-radius: 10px; margin-bottom: 34px; overflow: hidden; border-left: 5px solid #8b6f47; }',
-'.indice details { border: none; }',
-'.indice summary { cursor: pointer; padding: 16px 24px; font-weight: 700; font-size: 18px; color: #6b4f2f; list-style: none; user-select: none; display: flex; align-items: center; justify-content: space-between; }',
-'.indice summary::-webkit-details-marker { display: none; }',
-'.indice summary::after { content: "▸"; font-size: 20px; transition: transform 0.2s; margin-left: 10px; color: #8b6f47; }',
-'.indice details[open] summary::after { transform: rotate(90deg); }',
-'.indice summary:hover { background: #ede0c8; }',
-'.indice .indice-content { padding: 0 24px 20px 24px; }',
-'.indice ul { list-style: none; padding-left: 0; margin: 0; }',
-'.indice li { padding: 3px 0; }',
-'.indice li.sub { padding-left: 20px; }',
-'.indice li.subsub { padding-left: 40px; }',
-'.indice a { color: #6b4f2f; text-decoration: none; }',
-'.indice a:hover { text-decoration: underline; color: #8b6f47; }',
-'.idea-central { background: #f5ede0; padding: 22px 28px; border-radius: 12px; margin: 20px 0 40px 0; border-left: 6px solid #8b6f47; }',
-'.idea-central h2 { margin-top: 0; border-left: none; padding-left: 0; }',
-'main { background: #ffffff; padding: 30px 36px; border-radius: 10px; box-shadow: 0 2px 20px rgba(139, 111, 71, 0.08); border: 1px solid #e8dfd0; }',
-'section[id^="ep-"] { scroll-margin-top: 20px; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px dashed #e0d5c0; }',
-'section[id^="ep-"]:last-of-type { border-bottom: none; }',
-'.bloque-resumen { background: #fbfaf7; border-left: 4px solid #8b6f47; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }',
-'.bloque-resumen p { margin-bottom: 10px; }',
-'.bloque-resumen p:last-child { margin-bottom: 0; }',
-'.etiqueta-resumen { display: inline-block; background: #8b6f47; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }',
-'.bloque-clave { background: #fdf6e3; border-left: 5px solid #d4a017; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }',
-'.etiqueta-clave { display: inline-block; background: #d4a017; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }',
-'.bloque-clave ul { list-style: none; padding-left: 0; }',
-'.bloque-clave li { padding: 8px 0 8px 30px; position: relative; border-bottom: 1px dashed #ead9a8; }',
-'.bloque-clave li:last-child { border-bottom: none; }',
-'.bloque-clave li::before { content: "🔑"; position: absolute; left: 0; font-size: 16px; }',
-'.bloque-clave li strong { color: #6b4f2f; }',
-'.bloque-pregunta { background: #eef6fb; border-left: 5px solid #3a7ac0; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }',
-'.etiqueta-pregunta { display: inline-block; background: #3a7ac0; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }',
-'.bloque-guion { background: #f0f7ee; border-left: 5px solid #4a8c3a; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }',
-'.etiqueta-guion { display: inline-block; background: #4a8c3a; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }',
-'.bloque-guion ol { padding-left: 22px; }',
-'.bloque-guion li { margin-bottom: 8px; }',
-'.modo-btn { position: fixed; top: 16px; right: 16px; padding: 8px 18px; border: none; border-radius: 30px; cursor: pointer; font-weight: 600; background: #8b6f47; color: #fff; font-size: 14px; z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }',
-'.modo-btn:hover { background: #6b4f2f; }',
-'.dark-mode { background: #1a1815; color: #e8dfd0; }',
-'.dark-mode main { background: #252220; border-color: #3a352f; box-shadow: none; }',
-'.dark-mode h1 { color: #e8dfd0; border-bottom-color: #c9a876; }',
-'.dark-mode h2 { color: #d4a017; border-left-color: #c9a876; }',
-'.dark-mode h3 { color: #c9a876; }',
-'.dark-mode h4 { color: #c9a876; }',
-'.dark-mode strong { color: #d4a017; }',
-'.dark-mode blockquote { background: #2f2b26; border-left-color: #c9a876; color: #e8dfd0; }',
-'.dark-mode hr { border-top-color: #3a352f; }',
-'.dark-mode .indice { background: #2f2b26; border-left-color: #c9a876; }',
-'.dark-mode .indice summary { color: #d4a017; }',
-'.dark-mode .indice summary:hover { background: #3a352f; }',
-'.dark-mode .indice a { color: #d4a017; }',
-'.dark-mode .indice summary::after { color: #c9a876; }',
-'.dark-mode .idea-central { background: #2f2b26; border-left-color: #c9a876; }',
-'.dark-mode section[id^="ep-"] { border-bottom-color: #3a352f; }',
-'.dark-mode .bloque-resumen { background: #2a2622; border-left-color: #c9a876; }',
-'.dark-mode .bloque-clave { background: #2f2b26; border-left-color: #d4a017; }',
-'.dark-mode .bloque-clave li { border-bottom-color: #3a352f; }',
-'.dark-mode .bloque-clave li strong { color: #d4a017; }',
-'.dark-mode .bloque-pregunta { background: #222c36; border-left-color: #5a9ad0; }',
-'.dark-mode .bloque-guion { background: #222c1e; border-left-color: #6ab858; }',
-'.dark-mode .modo-btn { background: #c9a876; color: #1a1815; }'
-].join('\n');
-
-var PRECIOS = {
-  entradaSinCache: 0.15 / 1000000,
-  entradaConCache: 0.003 / 1000000,
-  salida: 0.60 / 1000000
-};
-
-var RE_BIBLIOGRAFIA = /bibliograf|referencias\s+bibliogr|fuentes\s+bibliogr|obras\s+generales/i;
-function esBibliografia(titulo) { return RE_BIBLIOGRAFIA.test(titulo); }
-
-function getOrdenEsqueleto() {
-    return 'Devuélveme la estructura jerárquica del libro que te he dado, en texto plano.\n\n' +
-'FORMATO: una línea por cada epígrafe, con este patrón exacto:\n' +
-'1. Título del tema 1\n' +
-'1.1. Título del epígrafe 1.1\n' +
-'1.1.1. Título del subepígrafe 1.1.1\n' +
-'2. Título del tema 2\n' +
-'...\n\n' +
-'REGLAS:\n' +
-'- Empieza con el número, luego un punto, luego un espacio, luego el título.\n' +
-'- Un tema es "1. ", un epígrafe es "1.1. ", un subepígrafe es "1.1.1. ".\n' +
-'- NO uses negritas, ni markdown, ni almohadillas (#), ni guiones.\n' +
-'- NO añadas introducción, ni conclusión, ni comentarios.\n' +
-'- Empieza DIRECTAMENTE con la primera línea "1. ...".\n' +
-'- Devuelve SOLO el listado, sin nada más.\n' +
-'- NO incluyas secciones de "Bibliografía", "Referencias" ni "Obras generales" (ni sus subapartados). Omítelas por completo.\n' +
-'- IMPORTANTE: si un tema NO tiene subepígrafes, devuélvelo igualmente como una línea "1. Título del tema". No lo omitas.';
-}
-
-function getOrdenContenido(modalidad, numEpigrafe, tituloEpigrafe) {
-    var formato;
-    if (modalidad === 'test') {
-        formato = '📖 PARA ENTENDERLO\n[Texto redactado con tus propias palabras, en 2-4 párrafos.]\n\n🔑 GRÁBATELO\n- [Concepto 1]: [definición literal]\n- [Concepto 2]: [definición literal]\n\n🎯 TE LA VAN A PREGUNTAR\n- [Advertencia 1]\n- [Advertencia 2]';
-    } else {
-        formato = '📖 PARA ENTENDERLO\n[Texto redactado.]\n\n🔑 GRÁBATELO\n- [Concepto 1]: [definición]\n\n🗂️ ASÍ LO ESCRIBO\nGuion:\n1. [Introducción]\n2. [Apartado]\n3. [Conclusión]\n\nImprescindibles:\n- [Concepto]';
-    }
-    return 'Ahora genera el contenido del epígrafe ' + numEpigrafe + ': "' + tituloEpigrafe + '".\n\nFORMATO DE SALIDA (texto plano, sin HTML, sin markdown):\n\n' + formato + '\n\nREGLAS:\n- NO generes HTML.\n- NO uses etiquetas < >.\n- Solo texto plano con las etiquetas 📖 🔑 🎯 (o 🗂️) como separadores.\n- Extensión: proporcional al epígrafe original del libro.';
-}
-
-var estado = {
-    apiKey: '',
-    modoDemo: false,
-    modalidad: 'test',
-    libroTexto: '',
-    libroNombre: '',
-    esqueleto: [],
-    esqueletoTexto: '',
-    contextoFijo: null,
-    contextoConEsqueleto: null,
-    temaActualIdx: null,
-    epigrafes: {},
-    biblioteca: [],
-    usage: { cache: 0, nuevos: 0, salida: 0, coste: 0, costeTotal: 0 },
-    ultimaRespuesta: '',
-    temasDescargados: {},  // { "1": true, "2": true } para no repetir descargas
-    masivo: {
-        activo: false,
-        pausado: false,
-        cancelado: false,
-        total: 0,
-        completados: 0,
-        epigrafeActual: ''
-    }
-};
-
-function $(id) { return document.getElementById(id); }
-function showToast(msg, dur) {
-    if (!dur) dur = 2000;
-    var t = $('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    clearTimeout(t._timer);
-    t._timer = setTimeout(function() { t.classList.remove('show'); }, dur);
-}
-function escapeHtml(s) {
-    var d = document.createElement('div');
-    d.textContent = s;
-    return d.innerHTML;
-}
-
-// ============================================================
-//  NOMBRE DE ARCHIVO CON NOMBRE DEL LIBRO
-// ============================================================
-function nombreArchivoConLibro(titulo) {
-    var nombreLibro = (estado.libroNombre || 'Libro_UNED').replace(/\.(pdf|txt)$/i, '').trim();
-    var nombre = nombreLibro + ' - ' + titulo;
-    return sanitizeNombre(nombre);
-}
-
-async function llamarDeepSeek(mensajes) {
-    if (estado.modoDemo) {
-        await new Promise(function(r) { setTimeout(r, 600); });
-        var ultimo = mensajes[mensajes.length - 1].content;
-        if (ultimo.indexOf('estructura jerárquica') !== -1) {
-            estado.usage = { cache: 150000, nuevos: 50, salida: 500, coste: 0.0006, costeTotal: estado.usage.costeTotal + 0.0006 };
-            actualizarPanelUso();
-            return { contenido: '1. Aproximación al reglamento\n1.1. Noción\n1.2. Delimitación\n2. El ejercicio\n2.1. El objeto\n2.2. La reserva de ley', usage: { prompt_tokens: 150000, prompt_cache_hit_tokens: 0, prompt_cache_miss_tokens: 150000, completion_tokens: 500 } };
+      var html = '';
+      data.libros.forEach(function(libro) {
+        html += '<div class="libro-bloque">';
+        html += '<div class="libro-header">';
+        html += '<div class="libro-titulo"><i class="fas fa-book-open" style="color:var(--accent);"></i> ' + libro.titulo + '</div>';
+        if (libro.autor) {
+          html += '<div class="libro-autor">' + libro.autor + '</div>';
         }
-        estado.usage = { cache: 150000, nuevos: 30, salida: 800, coste: 0.0008, costeTotal: estado.usage.costeTotal + 0.0008 };
-        actualizarPanelUso();
-        return { contenido: '📖 PARA ENTENDERLO\nContenido de ejemplo del epígrafe en modo demo.\n\n🔑 GRÁBATELO\n- Concepto clave 1: definición.\n- Concepto clave 2: definición.\n\n🎯 TE LA VAN A PREGUNTAR\n- Advertencia 1.\n- Advertencia 2.', usage: {} };
-    }
+        html += '</div>';
+        html += '<div class="temas-grid">';
 
-    if (!estado.apiKey) throw new Error('Falta la API Key.');
+        (libro.temas || []).forEach(function(t, index) {
+          var temaId = t.id || 'tema' + (index + 1);
+          var numTema = index + 1;
+          var titulo = t.titulo || 'Tema ' + numTema;
+          var archivo = t.archivo || 'tema.html';
+          // Si el archivo no tiene path, añadirlo
+          if (archivo.indexOf('/') === -1) {
+            archivo = 'temas/' + temaId + '/' + archivo;
+          }
+          var key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
+          var progreso = parseInt(localStorage.getItem(key)) || 0;
 
-    var response = await fetch('https://api.deepseek.com/chat/completions', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + estado.apiKey
-        },
-        body: JSON.stringify({
-            model: 'deepseek-chat',
-            messages: mensajes,
-            temperature: 0,
-            stream: false
-        })
-    });
-    if (!response.ok) {
-        var errTxt = await response.text();
-        throw new Error('API ' + response.status + ': ' + errTxt.substring(0, 200));
-    }
-    var data = await response.json();
-    var u = data.usage || {};
-    var cacheHit = u.prompt_cache_hit_tokens || 0;
-    var cacheMiss = u.prompt_cache_miss_tokens || 0;
-    var salida = u.completion_tokens || 0;
-    var coste = cacheHit * PRECIOS.entradaConCache
-              + cacheMiss * PRECIOS.entradaSinCache
-              + salida * PRECIOS.salida;
-    estado.usage = { cache: cacheHit, nuevos: cacheMiss, salida: salida, coste: coste, costeTotal: estado.usage.costeTotal + coste };
-    actualizarPanelUso();
-    var contenido = data.choices[0].message.content;
-    estado.ultimaRespuesta = contenido;
-    $('verRespuestaBtn').disabled = false;
-    return { contenido: contenido, usage: u };
-}
-
-function actualizarPanelUso() {
-    var c = estado.usage.cache || 0;
-    var n = estado.usage.nuevos || 0;
-    var s = estado.usage.salida || 0;
-    var co = estado.usage.coste || 0;
-    var ct = estado.usage.costeTotal || 0;
-    $('barCache').textContent  = c.toLocaleString();
-    $('barNuevos').textContent = n.toLocaleString();
-    $('barSalida').textContent = s.toLocaleString();
-    $('barCoste').textContent  = '$' + co.toFixed(4);
-    $('barCosteTotal').textContent = '$' + ct.toFixed(4);
-    var barBadge = $('barBadge');
-    if (c > 1000) { barBadge.textContent = '✅ Caché: ACTIVA'; barBadge.className = 'badge-cache on'; }
-    else { barBadge.textContent = '⚠️ Caché: inactiva'; barBadge.className = 'badge-cache off'; }
-}
-
-async function extraerTextoPDF(file, onProgress) {
-    if (file.name.toLowerCase().endsWith('.txt')) return await file.text();
-    var arrayBuffer = await file.arrayBuffer();
-    var pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-    var total = pdf.numPages;
-    var partes = [];
-    for (var i = 1; i <= total; i++) {
-        var page = await pdf.getPage(i);
-        var content = await page.getTextContent();
-        var texto = content.items.map(function(it) { return it.str; }).join(' ');
-        partes.push('\n\n=== PÁGINA ' + i + ' ===\n\n' + texto);
-        if (onProgress) onProgress(i / total);
-    }
-    return partes.join('');
-}
-
-function construirContextoFijo() {
-    return [
-        { role: 'system', content: 'Eres un asistente experto en preparar material de estudio universitario a partir de un libro. Trabajas con el libro que te proporciona el usuario. Cuando te pida el esqueleto, devuelves solo el índice jerárquico en texto plano. Cuando te pida un epígrafe, devuelves solo su contenido en texto plano.' },
-        { role: 'user', content: 'Aquí tienes el libro completo:\n\n' + estado.libroTexto },
-        { role: 'assistant', content: 'Entendido, tengo el libro completo. Estoy listo para trabajar con él.' }
-    ];
-}
-
-function parsearEsqueleto(texto) {
-    var lineas = texto.split('\n');
-    var items = [];
-    for (var i = 0; i < lineas.length; i++) {
-        var l = lineas[i].trim();
-        if (!l) continue;
-        var m = l.match(/^(\d+(?:\.\d+)*)\.\s*(.+)$/);
-        if (!m) continue;
-        var titulo = m[2].replace(/[*_#`]/g, '').trim();
-        if (esBibliografia(titulo)) continue;
-        items.push({ num: m[1], titulo: titulo, nivel: m[1].split('.').length });
-    }
-    var arbol = [];
-    var pila = [];
-    for (var j = 0; j < items.length; j++) {
-        var it = items[j];
-        while (pila.length > 0 && pila[pila.length - 1].nivel >= it.nivel) pila.pop();
-        if (pila.length === 0) arbol.push(it);
-        else {
-            var padre = pila[pila.length - 1];
-            if (!padre.subs) padre.subs = [];
-            padre.subs.push(it);
-        }
-        pila.push(it);
-    }
-    return arbol;
-}
-
-async function generarEsqueleto() {
-    estado.contextoFijo = construirContextoFijo();
-    var mensajes = estado.contextoFijo.concat([{ role: 'user', content: getOrdenEsqueleto() }]);
-    var res = await llamarDeepSeek(mensajes);
-    estado.esqueletoTexto = res.contenido;
-    estado.contextoConEsqueleto = estado.contextoFijo.concat([
-        { role: 'user', content: getOrdenEsqueleto() },
-        { role: 'assistant', content: res.contenido }
-    ]);
-    var u = res.usage || {};
-    var tokensEntrada = u.prompt_tokens || 0;
-    var costeSubida = (u.prompt_cache_miss_tokens || 0) * PRECIOS.entradaSinCache
-                    + (u.prompt_cache_hit_tokens || 0) * PRECIOS.entradaConCache;
-    var costeSalida = (u.completion_tokens || 0) * PRECIOS.salida;
-    $('estTokensReales').textContent = tokensEntrada.toLocaleString();
-    $('estCosteSubida').textContent = '$' + costeSubida.toFixed(4);
-    $('estCosteEsqueletoReal').textContent = '$' + (costeSubida + costeSalida).toFixed(4);
-    $('estimacionReal').classList.add('visible');
-    return parsearEsqueleto(res.contenido);
-}
-
-async function generarContenidoEpigrafe(num, titulo) {
-    var contexto = estado.contextoConEsqueleto || estado.contextoFijo || construirContextoFijo();
-    var mensajes = contexto.concat([{ role: 'user', content: getOrdenContenido(estado.modalidad, num, titulo) }]);
-    var res = await llamarDeepSeek(mensajes);
-    return res.contenido;
-}
-
-function parsearContenido(texto) {
-    var r = { paraEntenderlo: '', grabate: [], teLaVanAPreguntar: [], guion: [], imprescindibles: [] };
-    var lineas = texto.split('\n');
-    var sec = null;
-    for (var i = 0; i < lineas.length; i++) {
-        var l = lineas[i].trim();
-        if (!l) continue;
-        if (l.indexOf('📖') !== -1) { sec = 'entender'; continue; }
-        if (l.indexOf('🔑') !== -1) { sec = 'grabate'; continue; }
-        if (l.indexOf('🎯') !== -1) { sec = 'preguntar'; continue; }
-        if (l.indexOf('🗂️') !== -1) { sec = 'guion'; continue; }
-        if (sec === 'entender') r.paraEntenderlo += (r.paraEntenderlo ? '\n' : '') + l;
-        else if (sec === 'grabate') { if (l.indexOf('-') === 0) r.grabate.push(l.substring(1).trim()); }
-        else if (sec === 'preguntar') { if (l.indexOf('-') === 0) r.teLaVanAPreguntar.push(l.substring(1).trim()); }
-        else if (sec === 'guion') {
-            if (/^guion:/i.test(l)) continue;
-            if (/^imprescindibles:/i.test(l)) { sec = 'imprescindibles'; continue; }
-            if (/^\d+\./.test(l)) r.guion.push(l.replace(/^\d+\.\s*/, ''));
-            else if (l.indexOf('-') === 0) r.imprescindibles.push(l.substring(1).trim());
-        } else if (sec === 'imprescindibles') { if (l.indexOf('-') === 0) r.imprescindibles.push(l.substring(1).trim()); }
-    }
-    return r;
-}
-
-function generarIndiceHTML(tema) {
-    var html = '';
-    (tema.subs || []).forEach(function(sub) {
-        if (esBibliografia(sub.titulo)) return;
-        html += '<li class="sub"><a href="#ep-' + sub.num.replace(/\./g, '-') + '">' + escapeHtml(sub.num + '. ' + sub.titulo) + '</a></li>';
-        (sub.subs || []).forEach(function(ss) {
-            if (esBibliografia(ss.titulo)) return;
-            html += '<li class="subsub"><a href="#ep-' + ss.num.replace(/\./g, '-') + '">' + escapeHtml(ss.num + '. ' + ss.titulo) + '</a></li>';
+          html += '<div class="tema-card" data-tema-id="' + temaId + '" data-archivo="' + archivo + '">'
+            + '<div class="tema-card-header">'
+            +   '<span class="tema-numero">' + numTema + '</span>'
+            +   '<span class="tema-titulo">' + titulo + '</span>'
+            + '</div>'
+            + '<div class="tema-footer">'
+            +   '<div class="tema-progreso">'
+            +     '<div class="track"><div class="fill" id="fill_' + temaId + '" style="width:' + progreso + '%"></div></div>'
+            +     '<span class="pct" id="progreso_' + temaId + '">' + progreso + '%</span>'
+            +   '</div>'
+            +   '<div class="tema-controles">'
+            +     '<button onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, -10)" data-tid="' + temaId + '" title="-10%">−</button>'
+            +     '<button onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 10)" data-tid="' + temaId + '" title="+10%">+</button>'
+            +     '<span class="separador"></span>'
+            +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 25)" data-tid="' + temaId + '" title="+25%">25</button>'
+            +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 50)" data-tid="' + temaId + '" title="50%">50</button>'
+            +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 100)" data-tid="' + temaId + '" title="100%">100</button>'
+            +   '</div>'
+            + '</div>'
+            + '</div>';
         });
+
+        html += '</div>';
+        html += '</div>';
+      });
+      container.innerHTML = html;
+
+    } else if (data.temas && data.temas.length > 0) {
+      // Formato TEMAS
+      totalTemas = data.temas.length;
+      countEl.textContent = totalTemas;
+
+      var html = '';
+      data.temas.forEach(function(t, index) {
+        var temaId = t.id || 'tema' + (index + 1);
+        var numTema = index + 1;
+        var titulo = t.titulo || 'Tema ' + numTema;
+        var archivo = t.archivo || 'tema.html';
+        // Si el archivo no tiene path, añadirlo
+        if (archivo.indexOf('/') === -1) {
+          archivo = 'temas/' + temaId + '/' + archivo;
+        }
+        var key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
+        var progreso = parseInt(localStorage.getItem(key)) || 0;
+
+        html += '<div class="tema-card" data-tema-id="' + temaId + '" data-archivo="' + archivo + '">'
+          + '<div class="tema-card-header">'
+          +   '<span class="tema-numero">' + numTema + '</span>'
+          +   '<span class="tema-titulo">' + titulo + '</span>'
+          + '</div>'
+          + '<div class="tema-footer">'
+          +   '<div class="tema-progreso">'
+          +     '<div class="track"><div class="fill" id="fill_' + temaId + '" style="width:' + progreso + '%"></div></div>'
+          +     '<span class="pct" id="progreso_' + temaId + '">' + progreso + '%</span>'
+          +   '</div>'
+          +   '<div class="tema-controles">'
+          +     '<button onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, -10)" data-tid="' + temaId + '" title="-10%">−</button>'
+          +     '<button onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 10)" data-tid="' + temaId + '" title="+10%">+</button>'
+          +     '<span class="separador"></span>'
+          +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 25)" data-tid="' + temaId + '" title="+25%">25</button>'
+          +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 50)" data-tid="' + temaId + '" title="50%">50</button>'
+          +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 100)" data-tid="' + temaId + '" title="100%">100</button>'
+          +   '</div>'
+          + '</div>'
+          + '</div>';
+      });
+      container.innerHTML = html;
+
+    } else {
+      container.innerHTML = '<p style="grid-column:1/-1; color:var(--text-secondary);">No hay contenido cargado.</p>';
+      countEl.textContent = '0';
+      return;
+    }
+
+    // Añadir el onclick a cada tema-card
+    container.querySelectorAll('.tema-card').forEach(function(card) {
+      card.addEventListener('click', function() {
+        var archivo = card.dataset.archivo;
+        navegarSeguro(archivo);
+      });
     });
-    return html;
+  })
+  .catch(function(error) {
+    document.getElementById('temasContainer').innerHTML =
+      '<p style="grid-column:1/-1; color:#ef4444;">Error al cargar los temas: ' + error.message + '</p>';
+    console.error('Error cargando temas:', error);
+  });
+
+function cambiarProgreso(temaId, cambio) {
+  var key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
+  var actual = parseInt(localStorage.getItem(key)) || 0;
+  var nuevo = Math.max(0, Math.min(100, actual + cambio));
+  localStorage.setItem(key, nuevo.toString());
+  var elPct = document.getElementById('progreso_' + temaId);
+  if (elPct) elPct.textContent = nuevo + '%';
+  var elFill = document.getElementById('fill_' + temaId);
+  if (elFill) elFill.style.width = nuevo + '%';
+  mostrarToast('📊 Progreso: ' + nuevo + '%');
 }
 
-function generarBloqueEpigrafe(num, titulo, nivel) {
-    var tag = nivel === 1 ? 'h3' : 'h4';
-    var ep = estado.epigrafes[num];
-    var html = '<section id="ep-' + num.replace(/\./g, '-') + '"><' + tag + '>' + escapeHtml(num + '. ' + titulo) + '</' + tag + '>';
-    if (!ep || !ep.contenido) {
-        html += '<div class="bloque-resumen" style="border-left-color:#c8a878;"><em>⏳ Contenido pendiente de generar.</em></div>';
-    } else {
-        var p = parsearContenido(ep.contenido);
-        if (p.paraEntenderlo) {
-            html += '<div class="bloque-resumen"><span class="etiqueta-resumen">📖 PARA ENTENDERLO</span>';
-            p.paraEntenderlo.split('\n').forEach(function(par) { if (par.trim()) html += '<p>' + escapeHtml(par.trim()) + '</p>'; });
-            html += '</div>';
-        }
-        if (p.grabate.length) {
-            html += '<div class="bloque-clave"><span class="etiqueta-clave">🔑 GRÁBATELO</span><ul>';
-            p.grabate.forEach(function(item) {
-                var partes = item.split(':');
-                if (partes.length > 1) html += '<li><strong>' + escapeHtml(partes[0].trim()) + '</strong> — ' + escapeHtml(partes.slice(1).join(':').trim()) + '</li>';
-                else html += '<li>' + escapeHtml(item) + '</li>';
-            });
-            html += '</ul></div>';
-        }
-        if (p.teLaVanAPreguntar.length) {
-            html += '<div class="bloque-pregunta"><span class="etiqueta-pregunta">🎯 TE LA VAN A PREGUNTAR</span><ul>';
-            p.teLaVanAPreguntar.forEach(function(item) { html += '<li>' + escapeHtml(item) + '</li>'; });
-            html += '</ul></div>';
-        }
-        if (p.guion.length || p.imprescindibles.length) {
-            html += '<div class="bloque-guion"><span class="etiqueta-guion">🗂️ ASÍ LO ESCRIBO</span>';
-            if (p.guion.length) { html += '<p><strong>Guion:</strong></p><ol>'; p.guion.forEach(function(g) { html += '<li>' + escapeHtml(g) + '</li>'; }); html += '</ol>'; }
-            if (p.imprescindibles.length) { html += '<p><strong>Imprescindibles:</strong></p><ul>'; p.imprescindibles.forEach(function(im) { html += '<li>' + escapeHtml(im) + '</li>'; }); html += '</ul>'; }
-            html += '</div>';
-        }
-    }
-    html += '</section>';
-    return html;
+function mostrarToast(mensaje) {
+  var toast = document.getElementById('toast-progreso');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'toast-progreso';
+    toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#6366f1;color:white;padding:10px 24px;border-radius:30px;font-weight:600;font-size:14px;box-shadow:0 4px 20px rgba(0,0,0,0.3);opacity:0;transition:opacity 0.3s ease;z-index:9999;';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = mensaje;
+  toast.style.opacity = '1';
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(function() { toast.style.opacity = '0'; }, 2000);
 }
-
-function montarHTML(tema) {
-    var titulo = tema.num + '. ' + tema.titulo;
-    var indiceHTML = generarIndiceHTML(tema);
-    var epigrafesHTML = '';
-
-    var tieneSubs = tema.subs && tema.subs.length > 0;
-    if (!tieneSubs) {
-        epigrafesHTML = generarBloqueEpigrafe(tema.num, tema.titulo, 1);
-    } else {
-        (tema.subs || []).forEach(function(sub) {
-            if (esBibliografia(sub.titulo)) return;
-            epigrafesHTML += generarBloqueEpigrafe(sub.num, sub.titulo, 1);
-            (sub.subs || []).forEach(function(ss) {
-                if (esBibliografia(ss.titulo)) return;
-                epigrafesHTML += generarBloqueEpigrafe(ss.num, ss.titulo, 2);
-            });
-        });
-    }
-
-    return '<!DOCTYPE html>\n<html lang="es">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>' + escapeHtml(titulo) + '</title>\n<style>\n' + CSS_ESTUDIO + '\n</style>\n</head>\n<body>\n\n<button class="modo-btn" onclick="toggleModo()">🌓 Modo</button>\n\n<h1>' + escapeHtml(titulo) + '</h1>\n\n<div class="indice">\n<details open>\n<summary>📑 Índice del tema</summary>\n<div class="indice-content">\n<ul>\n' + (indiceHTML || '<li><em>Sin subepígrafes</em></li>') + '\n</ul>\n</div>\n</details>\n</div>\n\n<main>\n\n' + epigrafesHTML + '\n\n</main>\n\n<script>\nfunction toggleModo(){document.body.classList.toggle("dark-mode");var b=document.querySelector(".modo-btn");b.textContent=document.body.classList.contains("dark-mode")?"☀️ Modo claro":"🌓 Modo";}\ndocument.addEventListener("click",function(e){var a=e.target.closest(".indice a");if(!a)return;var h=a.getAttribute("href");if(!h||h.indexOf("#")!==0)return;e.preventDefault();var t=document.getElementById(h.substring(1));if(t){var d=document.querySelector(".indice details");if(d)d.removeAttribute("open");t.scrollIntoView({behavior:"smooth",block:"start"});}});\n<\/script>\n</body>\n</html>';
+</script>
+</body>
+</html>';
 }
 
 // ============================================================

@@ -29,2248 +29,384 @@
     <title>Plan Dietético y Menú Escolar</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #27ae60;
-            --bg: #f4f7f6;
-            --card-bg: #ffffff;
-            --text: #333;
-            --border: #e0e0e0;
-            --hover-bg: #f8fdf9;
-            --edit-bg: #fffbea;
-            --today-bg: #eafaf1;
-            --today-border: #27ae60;
-            --shopping-color: #e67e22;
-            --advice-color: #8e44ad;
-            --school-color: #3498db;
-            --school-dark: #2980b9;
-            --empty-bg: #fafbfc;
-            --season-color: #16a085;
-            --recipes-color: #c0392b;
-            --generator-color: #d35400;
-        }
-
-        * { box-sizing: border-box; }
-
-        body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            margin: 0;
-            padding: 20px;
-            line-height: 1.6;
-        }
-
-        header { text-align: center; margin-bottom: 15px; }
-        h1 { color: var(--primary); margin-bottom: 5px; font-size: 1.6em; }
-        header p { color: #7f8c8d; margin-top: 0; font-size: 0.9em; }
-        .container { max-width: 1100px; margin: 0 auto; }
-
-        .menu-toggle {
-            position: fixed; top: 15px; right: 15px; z-index: 1000;
-            background: var(--primary); color: white; border: none;
-            width: 45px; height: 45px; border-radius: 50%; font-size: 20px;
-            cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-            display: flex; align-items: center; justify-content: center;
-            transition: transform 0.2s, background 0.3s;
-        }
-
-        .menu-toggle:hover { background: #1a252f; transform: scale(1.05); }
-        .menu-toggle.active { background: var(--secondary); }
-
-        .menu-panel {
-            position: fixed; top: 70px; right: 15px; z-index: 999;
-            background: var(--card-bg); border-radius: 12px;
-            box-shadow: 0 8px 30px rgba(0,0,0,0.15); padding: 15px;
-            width: 320px; max-width: calc(100vw - 30px);
-            transform: translateY(-20px); opacity: 0; pointer-events: none;
-            transition: transform 0.3s, opacity 0.3s;
-            max-height: calc(100vh - 90px); overflow-y: auto;
-        }
-
-        .menu-panel.active { transform: translateY(0); opacity: 1; pointer-events: auto; }
-
-        .menu-panel h3 {
-            margin: 0 0 12px 0; color: var(--primary); font-size: 0.95em;
-            text-transform: uppercase; letter-spacing: 1px;
-            border-bottom: 1px solid var(--border); padding-bottom: 8px;
-        }
-
-        .menu-panel .menu-item {
-            display: block; width: 100%; text-align: left;
-            padding: 10px 12px; margin-bottom: 5px; border: none;
-            background: transparent; color: var(--text); border-radius: 6px;
-            cursor: pointer; font-size: 0.9em; font-weight: 600;
-            transition: background 0.2s;
-        }
-
-        .menu-panel .menu-item:hover { background: var(--hover-bg); }
-        .menu-panel .menu-item.primary { background: var(--secondary); color: white; }
-        .menu-panel .menu-item.primary:hover { background: #219150; }
-        .menu-panel .menu-item.school { background: var(--school-color); color: white; }
-        .menu-panel .menu-item.school:hover { background: var(--school-dark); }
-        .menu-panel .menu-item.danger { color: #e74c3c; }
-        .menu-panel .menu-item.danger:hover { background: #fee; }
-        .menu-panel .menu-item:disabled { opacity: 0.4; cursor: not-allowed; }
-        .menu-panel .menu-divider { height: 1px; background: var(--border); margin: 8px 0; }
-        .menu-panel .menu-info { font-size: 0.8em; color: #7f8c8d; padding: 5px 12px; line-height: 1.4; }
-
-        .menu-overlay { position: fixed; inset: 0; z-index: 998; background: transparent; display: none; }
-        .menu-overlay.active { display: block; }
-
-        .btn {
-            background-color: var(--secondary); color: white; padding: 10px 20px;
-            border: none; border-radius: 8px; cursor: pointer; font-size: 15px;
-            font-weight: bold; transition: background 0.3s;
-            display: inline-block; margin: 5px;
-        }
-
-        .btn:hover { background-color: #219150; }
-        .btn-secondary { background-color: #7f8c8d; }
-        .btn-secondary:hover { background-color: #6c7a7b; }
-        .btn-small { padding: 5px 12px; font-size: 13px; }
-        .btn-danger { background-color: #e74c3c; }
-        .btn-danger:hover { background-color: #c0392b; }
-
-        #status {
-            margin-top: 15px; font-weight: bold; color: var(--primary);
-            min-height: 20px; font-size: 0.9em; text-align: center;
-        }
-
-        .controls-panel {
-            background: var(--card-bg); padding: 15px 20px; border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px;
-            display: none; flex-wrap: wrap; gap: 15px; align-items: center;
-            justify-content: space-between;
-        }
-
-        .controls-panel.active { display: flex; }
-
-        .filter-group {
-            display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
-        }
-
-        .filter-group label {
-            font-weight: 600; color: var(--primary); font-size: 0.9em;
-        }
-
-        .filter-group select, .filter-group input {
-            padding: 6px 10px; border: 1px solid var(--border); border-radius: 6px;
-            font-size: 0.9em; background: #fff; cursor: pointer;
-        }
-
-        #output { display: none; }
-
-        .tabs {
-            display: flex; gap: 5px; margin-bottom: 20px; flex-wrap: wrap;
-            border-bottom: 2px solid var(--border); padding-bottom: 0;
-        }
-
-        .tab-btn {
-            padding: 12px 22px; border: none; background: transparent;
-            color: var(--primary); border-radius: 8px 8px 0 0; cursor: pointer;
-            font-weight: bold; font-size: 0.95em; transition: all 0.3s;
-            border-bottom: 3px solid transparent; margin-bottom: -2px;
-        }
-
-        .tab-btn:hover { background: #eef2f5; }
-        .tab-btn.active { color: var(--secondary); border-bottom-color: var(--secondary); background: transparent; }
-        .tab-btn.school-tab.active { color: var(--school-color); border-bottom-color: var(--school-color); }
-        .tab-btn.generator-tab.active { color: var(--generator-color); border-bottom-color: var(--generator-color); }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        .day-block {
-            background: var(--card-bg); border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 15px;
-            overflow: hidden; border-left: 5px solid var(--secondary);
-        }
-
-        .day-block.today {
-            background: var(--today-bg); border-left: 5px solid var(--today-border);
-            box-shadow: 0 6px 15px rgba(39, 174, 96, 0.15);
-        }
-
-        .day-block.school-day { border-left-color: var(--school-color); }
-        .day-block.school-day.today { border-left-color: var(--today-border); }
-
-        .day-header {
-            background-color: var(--primary); color: white; padding: 15px 20px;
-            font-size: 1.2em; font-weight: bold; display: flex;
-            justify-content: space-between; align-items: center;
-        }
-
-        .day-block.today .day-header { background-color: var(--today-border); }
-        .day-block.school-day .day-header { background-color: var(--school-dark); }
-        .day-block.school-day.today .day-header { background-color: var(--today-border); }
-
-        .today-badge {
-            background: white; color: var(--today-border); padding: 3px 10px;
-            border-radius: 12px; font-size: 0.7em; font-weight: bold;
-            text-transform: uppercase; letter-spacing: 1px;
-        }
-
-        details.day-details {
-            background: var(--card-bg); border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 15px;
-            overflow: hidden; border-left: 5px solid var(--secondary);
-        }
-
-        details.day-details.today {
-            background: var(--today-bg); border-left: 5px solid var(--today-border);
-        }
-
-        details.day-details.past { opacity: 0.65; }
-        details.day-details.past .day-summary { background-color: #7f8c8d; }
-
-        details.day-details .day-summary {
-            background-color: var(--primary); color: white; padding: 15px 20px;
-            font-size: 1.2em; font-weight: bold; cursor: pointer;
-            display: flex; justify-content: space-between; align-items: center;
-            list-style: none;
-        }
-
-        details.day-details.today .day-summary { background-color: var(--today-border); }
-        details.day-details .day-summary::-webkit-details-marker { display: none; }
-        details.day-details .day-summary::after {
-            content: '▼'; font-size: 0.8em; transition: transform 0.3s ease;
-        }
-        details.day-details[open] .day-summary::after { transform: rotate(180deg); }
-
-        .meal-block {
-            padding: 18px 20px; border-bottom: 1px solid var(--border); background: #fff;
-        }
-
-        .meal-block:last-child { border-bottom: none; }
-        .day-block.today .meal-block,
-        details.day-details.today .meal-block { background: rgba(255, 255, 255, 0.7); }
-        .meal-block.empty-meal { background: var(--empty-bg); }
-
-        .meal-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 10px; gap: 10px; flex-wrap: wrap;
-        }
-
-        .meal-title {
-            font-weight: 700; color: var(--primary); font-size: 1.05em;
-            display: flex; align-items: center; gap: 8px;
-        }
-
-        .meal-title::before {
-            content: ''; display: inline-block; width: 8px; height: 8px;
-            background-color: var(--secondary); border-radius: 50%; flex-shrink: 0;
-        }
-
-        .meal-block.school-meal .meal-title::before { background-color: var(--school-color); }
-        .meal-block.empty-meal .meal-title::before { background-color: #bdc3c7; }
-
-        .meal-content { color: #555; padding-left: 16px; }
-        .meal-content.empty { color: #95a5a6; font-style: italic; }
-
-        .ingredients-list {
-            font-size: 0.9em; background-color: #f9f9f9; padding: 12px;
-            border-radius: 6px; margin-top: 10px; border-left: 3px solid #bdc3c7;
-        }
-
-        .recipe-text {
-            font-style: italic; color: #666; margin-top: 10px;
-            font-size: 0.95em; background: #fffdf5; padding: 10px; border-radius: 6px;
-        }
-
-        .school-category {
-            margin-bottom: 12px; padding-left: 12px;
-            border-left: 3px solid var(--school-color);
-        }
-
-        .school-category:last-child { margin-bottom: 0; }
-
-        .school-category-label {
-            display: block; font-weight: 700; color: var(--school-dark);
-            font-size: 0.8em; text-transform: uppercase;
-            letter-spacing: 0.5px; margin-bottom: 4px;
-        }
-
-        .school-category-content { color: #444; font-size: 0.95em; line-height: 1.5; }
-
-        .extra-section {
-            background: var(--card-bg); border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 15px;
-            overflow: hidden; border-left: 5px solid var(--shopping-color);
-        }
-
-        .extra-section.advice { border-left-color: var(--advice-color); }
-        .extra-section.season { border-left-color: var(--season-color); }
-        .extra-section.recipes { border-left-color: var(--recipes-color); }
-        .extra-section.generator { border-left-color: var(--generator-color); }
-
-        .extra-header {
-            background-color: var(--shopping-color); color: white;
-            padding: 15px 20px; font-size: 1.15em; font-weight: bold;
-        }
-
-        .extra-section.advice .extra-header { background-color: var(--advice-color); }
-        .extra-section.season .extra-header { background-color: var(--season-color); }
-        .extra-section.recipes .extra-header { background-color: var(--recipes-color); }
-        .extra-section.generator .extra-header { background-color: var(--generator-color); }
-
-        .extra-content {
-            padding: 20px; color: #555; font-size: 0.95em;
-            max-height: 800px; overflow-y: auto;
-        }
-
-        .extra-content h3 { color: var(--primary); margin-top: 15px; margin-bottom: 8px; font-size: 1em; }
-        .extra-content h4 { color: #555; margin-top: 12px; margin-bottom: 6px; font-size: 0.95em; }
-        .extra-content ul { padding-left: 20px; margin: 8px 0; }
-        .extra-content li { margin-bottom: 4px; }
-        .extra-content strong { color: var(--primary); }
-
-        .recipe-link-card {
-            margin-bottom: 15px; padding-left: 12px;
-            border-left: 3px solid var(--recipes-color);
-        }
-        .recipe-link-card h3 { margin: 0 0 4px 0; }
-        .recipe-link-card a { color: var(--recipes-color); text-decoration: none; font-weight: bold; }
-        .recipe-link-card a:hover { text-decoration: underline; }
-
-        .generator-layout {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 20px;
-        }
-
-        @media (max-width: 800px) {
-            .generator-layout { grid-template-columns: 1fr; }
-        }
-
-        .gen-selector {
-            background: white; border-radius: 10px; padding: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            border-left: 5px solid var(--generator-color);
-            max-height: 700px; overflow-y: auto;
-        }
-
-        .gen-category {
-            margin-bottom: 20px; border-bottom: 1px solid var(--border);
-            padding-bottom: 15px;
-        }
-
-        .gen-category:last-child { border-bottom: none; }
-
-        .gen-category-title {
-            display: flex; justify-content: space-between; align-items: center;
-            font-weight: bold; color: var(--generator-color); font-size: 1em;
-            margin-bottom: 10px; padding-bottom: 5px;
-            border-bottom: 1px dashed var(--generator-color);
-        }
-
-        .gen-category-count {
-            background: var(--generator-color); color: white; padding: 2px 8px;
-            border-radius: 10px; font-size: 0.75em;
-        }
-
-        .gen-items { display: flex; flex-wrap: wrap; gap: 6px; }
-
-        .gen-item {
-            background: #f4f7f6; border: 2px solid transparent;
-            padding: 6px 12px; border-radius: 20px; font-size: 0.85em;
-            cursor: pointer; user-select: none;
-            transition: all 0.2s; color: #555;
-        }
-
-        .gen-item:hover { background: #e8f5e9; border-color: var(--generator-color); }
-
-        .gen-item.selected {
-            background: var(--generator-color); color: white;
-            border-color: var(--generator-color); font-weight: bold;
-        }
-
-        .gen-cart {
-            background: white; border-radius: 10px; padding: 20px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            border-left: 5px solid var(--secondary);
-            position: sticky; top: 20px;
-            max-height: 700px; overflow-y: auto;
-        }
-
-        .gen-cart h3 {
-            margin-top: 0; color: var(--secondary); font-size: 1em;
-            border-bottom: 1px solid var(--border); padding-bottom: 8px;
-        }
-
-        .gen-cart-list {
-            list-style: none; padding: 0; margin: 10px 0; min-height: 40px;
-        }
-
-        .gen-cart-list li {
-            padding: 6px 10px; background: #f4f7f6; border-radius: 6px;
-            margin-bottom: 4px; font-size: 0.9em;
-            display: flex; justify-content: space-between; align-items: center; gap: 8px;
-        }
-
-        .gen-cart-list li button {
-            background: transparent; border: none; color: #e74c3c;
-            cursor: pointer; font-size: 0.9em; padding: 0 4px;
-        }
-
-        .gen-cart-list li button:hover { transform: scale(1.2); }
-
-        .gen-cart-empty {
-            color: #95a5a6; font-style: italic; font-size: 0.9em;
-            text-align: center; padding: 20px 0;
-        }
-
-        .gen-meal-selector {
-            display: flex; flex-direction: column; gap: 8px; margin-bottom: 15px;
-        }
-
-        .gen-meal-btn {
-            padding: 8px 12px; border: 2px solid var(--border);
-            background: white; border-radius: 8px; cursor: pointer;
-            font-size: 0.9em; font-weight: 600; transition: all 0.2s; text-align: left;
-        }
-
-        .gen-meal-btn:hover { border-color: var(--generator-color); }
-
-        .gen-meal-btn.active {
-            background: var(--generator-color); color: white;
-            border-color: var(--generator-color);
-        }
-
-        .gen-action-btns {
-            display: flex; gap: 8px; margin-top: 15px; flex-wrap: wrap;
-        }
-
-        .gen-action-btns button {
-            flex: 1; padding: 10px; border: none; border-radius: 8px;
-            cursor: pointer; font-weight: bold; font-size: 0.9em; min-width: 100px;
-        }
-
-        .gen-clear-btn { background: #ecf0f1; color: #555; }
-        .gen-clear-btn:hover { background: #dfe6e9; }
-
-        .gen-save-btn { background: var(--generator-color); color: white; }
-        .gen-save-btn:hover { background: #a04000; }
-        .gen-save-btn:disabled { background: #bdc3c7; cursor: not-allowed; }
-
-        .saved-menu-card {
-            background: white; border-radius: 8px; padding: 12px;
-            margin-bottom: 10px; border-left: 4px solid var(--generator-color);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            display: flex; justify-content: space-between;
-            align-items: center; gap: 10px;
-        }
-
-        .saved-menu-card .info { flex: 1; }
-
-        .saved-menu-card h4 {
-            margin: 0 0 4px 0; color: var(--generator-color); font-size: 0.95em;
-        }
-
-        .saved-menu-card .items { font-size: 0.85em; color: #666; }
-
-        .saved-menu-card .actions button {
-            background: transparent; border: none; cursor: pointer;
-            font-size: 1.2em; padding: 4px 8px;
-        }
-
-        .saved-menu-card .actions button:hover { transform: scale(1.1); }
-
-        [contenteditable="true"] {
-            background-color: var(--edit-bg); border: 2px dashed var(--secondary);
-            border-radius: 6px; padding: 10px; outline: none;
-            min-height: 50px; transition: background 0.3s;
-        }
-
-        [contenteditable="true"]:focus { background-color: #fff; border-style: solid; }
-
-        .editing-indicator {
-            font-size: 0.8em; color: #e67e22; font-weight: bold;
-            margin-bottom: 5px; display: block;
-        }
-
-        .spinner {
-            border: 4px solid #f3f3f3; border-top: 4px solid var(--secondary);
-            border-radius: 50%; width: 30px; height: 30px;
-            animation: spin 1s linear infinite; margin: 20px auto; display: none;
-        }
-
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .hidden { display: none !important; }
-
-        .empty-message {
-            text-align: center; padding: 40px 20px; color: #7f8c8d;
-            background: var(--card-bg); border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
-
-        .empty-message .icon { font-size: 3em; margin-bottom: 10px; display: block; }
-
-        .past-separator {
-            text-align: center; padding: 15px; margin: 20px 0 15px 0;
-            font-size: 0.85em; color: #95a5a6; text-transform: uppercase;
-            letter-spacing: 2px; font-weight: bold;
-            border-top: 2px dashed var(--border);
-        }
-
-        @media (max-width: 600px) {
-            .controls-panel { flex-direction: column; align-items: stretch; }
-            .filter-group { justify-content: space-between; }
-            .meal-header { flex-direction: column; align-items: flex-start; }
-            .day-header { font-size: 1.05em; }
-            .tab-btn { padding: 8px 12px; font-size: 0.8em; }
-        }
-
-        @media print {
-            .menu-toggle, .menu-panel, .menu-overlay, .controls-panel, .meal-actions, .btn, .tabs { display: none !important; }
-            .day-block, details.day-details, .extra-section { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
-            .meal-content { display: block !important; }
-            .tab-content { display: block !important; }
-        }
-    </style>
+:root {
+  --bg: #faf7f2;
+  --bg-card: #ffffff;
+  --bg-soft: #f5f0e8;
+  --text-primary: #2d3748;
+  --text-secondary: #718096;
+  --border: #e2ddd3;
+  --accent: #6366f1;
+  --accent-soft: rgba(99, 102, 241, 0.1);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text-primary);
+  line-height: 1.6;
+  padding: 32px 20px;
+}
+.asignatura-container { max-width: 1100px; margin: 0 auto; }
+
+/* Botón volver */
+.btn-volver {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 14px; background: transparent;
+  border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text-secondary); font-size: 13px; font-weight: 600;
+  font-family: inherit; cursor: pointer; margin-bottom: 24px;
+  transition: all .15s;
+}
+.btn-volver:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+
+/* Header */
+.asig-header { margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.asig-titulo {
+  font-size: 36px; font-weight: 800; color: var(--text-primary);
+  display: flex; align-items: center; gap: 14px; margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+.asig-titulo .icono { font-size: 40px; }
+.asig-meta {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 14px; color: var(--text-secondary); flex-wrap: wrap;
+}
+.asig-meta .codigo {
+  font-family: 'SF Mono', Menlo, monospace; background: var(--bg-soft);
+  padding: 3px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;
+}
+
+/* Sección */
+.seccion { margin-bottom: 40px; }
+.seccion-titulo {
+  font-size: 20px; font-weight: 700; color: var(--text-primary);
+  margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+}
+.seccion-titulo .badge {
+  font-size: 12px; font-weight: 700;
+  background: var(--accent-soft); color: var(--accent);
+  padding: 3px 10px; border-radius: 12px;
+}
+
+/* Materiales (PDFs) */
+.materiales-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
+}
+.material-card {
+  display: flex; align-items: center; gap: 14px; padding: 16px;
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; cursor: pointer; transition: all .15s;
+  text-decoration: none; color: inherit;
+}
+.material-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border-color: var(--accent);
+}
+.material-icon { font-size: 28px; flex-shrink: 0; }
+.material-info { flex: 1; min-width: 0; }
+.material-nombre { font-size: 14px; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+.material-tipo {
+  font-size: 11px; color: var(--text-secondary);
+  font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+/* Grid de temas */
+.temas-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+}
+.tema-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px; cursor: pointer;
+  transition: all .15s; display: flex; flex-direction: column; gap: 12px;
+  position: relative; overflow: hidden;
+}
+.tema-card::before {
+  content: ''; position: absolute; top: 0; left: 0;
+  width: 4px; height: 100%; background: var(--accent);
+  opacity: 0; transition: opacity .15s;
+}
+.tema-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+  border-color: var(--accent);
+}
+.tema-card:hover::before { opacity: 1; }
+.tema-card-header {
+  display: flex; align-items: flex-start; gap: 10px;
+}
+.tema-numero {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; background: var(--accent-soft);
+  color: var(--accent); border-radius: 8px;
+  font-size: 13px; font-weight: 800; flex-shrink: 0;
+}
+.tema-titulo {
+  font-size: 13px; font-weight: 600; color: var(--text-primary);
+  line-height: 1.4; flex: 1;
+}
+.tema-footer {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; margin-top: auto;
+}
+.tema-progreso {
+  flex: 1; display: flex; align-items: center; gap: 8px;
+}
+.tema-progreso .track {
+  flex: 1; height: 6px; background: var(--bg-soft);
+  border-radius: 3px; overflow: hidden;
+}
+.tema-progreso .fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent), #8b5cf6);
+  border-radius: 3px; transition: width .3s;
+}
+.tema-progreso .pct {
+  font-size: 11px; font-weight: 700; color: var(--text-secondary);
+  min-width: 32px; text-align: right;
+}
+.tema-controles { display: flex; align-items: center; gap: 3px; }
+.tema-controles button {
+  width: 22px; height: 22px; border: 1px solid var(--border);
+  background: var(--bg-card); color: var(--text-secondary);
+  border-radius: 6px; cursor: pointer; font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s; padding: 0;
+}
+.tema-controles button:hover {
+  background: var(--accent); color: white; border-color: var(--accent);
+}
+.tema-controles .separador {
+  width: 1px; height: 14px; background: var(--border); margin: 0 3px;
+}
+.tema-controles .quick {
+  font-size: 9px; width: auto; padding: 0 5px; height: 20px;
+}
+
+/* Libros (para Teoría del Estado) */
+.libro-bloque {
+  margin-bottom: 36px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
+.libro-bloque:last-child { border-bottom: none; margin-bottom: 0; }
+.libro-header { margin-bottom: 16px; }
+.libro-titulo {
+  font-size: 18px; font-weight: 800;
+  color: var(--text-primary);
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 4px;
+}
+.libro-autor {
+  font-size: 13px; color: var(--text-secondary); font-style: italic;
+  margin-left: 28px;
+}
+.loading-temas {
+  grid-column: 1/-1;
+  text-align: center; padding: 40px;
+  color: var(--text-secondary);
+}
+.loading-temas i { font-size: 24px; display: block; margin-bottom: 10px; }
+
+/* Responsive */
+@media (max-width: 640px) {
+  body { padding: 20px 12px; }
+  .asig-titulo { font-size: 26px; }
+  .asig-titulo .icono { font-size: 30px; }
+  .temas-grid { grid-template-columns: 1fr; }
+  .materiales-grid { grid-template-columns: 1fr; }
+}
+</style>
 </head>
 <body>
+    <div class="asignatura-container">
+        <button class="btn-volver" onclick="navegarSeguro('/estudio/?nivel=areas')">
+            <i class="fas fa-arrow-left"></i> Volver a las asignaturas
+        </button>
 
-<button class="menu-toggle" id="menu-toggle" title="Menú">⚙️</button>
-<div class="menu-overlay" id="menu-overlay"></div>
-
-<div class="menu-panel" id="menu-panel">
-    <h3>⚙️ Cargar PDFs</h3>
-    <button class="menu-item primary" id="menu-upload-personal">🍎 Cargar Plan Personal</button>
-    <button class="menu-item school" id="menu-upload-school">🍽️ Cargar Menú Escolar</button>
-    <input type="file" id="pdf-upload-personal" accept=".pdf" style="display:none;">
-    <input type="file" id="pdf-upload-school" accept=".pdf" style="display:none;">
-    <div class="menu-divider"></div>
-    <h3 style="margin-top:10px;">📄 PDFs cargados</h3>
-    <div class="menu-info" id="menu-info">
-        <div id="info-personal" style="display:none;">🍎 Plan personal cargado</div>
-        <div id="info-school" style="display:none;">🍽️ Menú escolar cargado</div>
-        <div id="info-empty">Ningún PDF cargado</div>
-    </div>
-    <div class="menu-divider"></div>
-    <button class="menu-item" id="btn-toggle-view" disabled>📖 Modo lectura</button>
-    <button class="menu-item" id="btn-export" disabled>💾 Exportar JSON</button>
-    <button class="menu-item" id="btn-print" disabled>🖨️ Imprimir</button>
-    <div class="menu-divider"></div>
-    <button class="menu-item danger" id="btn-reset-personal" disabled>🗑️ Borrar Plan Personal</button>
-    <button class="menu-item danger" id="btn-reset-school" disabled>🗑️ Borrar Menú Escolar</button>
-</div>
-
-<div class="container">
-    <header>
-        <h1>🍎 Plan Dietético y Menú Escolar</h1>
-        <p>Carga tus PDFs desde el menú ⚙️</p>
-    </header>
-
-    <div class="controls-panel" id="controls-panel">
-        <div class="filter-group">
-            <label for="filter-day">Día:</label>
-            <select id="filter-day"><option value="all">Todos</option></select>
-        </div>
-        <div class="filter-group" id="filter-meal-group">
-            <label for="filter-meal">Comida:</label>
-            <select id="filter-meal">
-                <option value="all">Todas</option>
-                <option value="desayuno">Desayuno</option>
-                <option value="almuerzo">Almuerzo</option>
-                <option value="comida">Comida</option>
-                <option value="merienda">Merienda</option>
-                <option value="cena">Cena</option>
-            </select>
-        </div>
-        <div class="filter-group">
-            <label for="search-text">Buscar:</label>
-            <input type="text" id="search-text" placeholder="Ej: pollo, arroz...">
-        </div>
-    </div>
-
-    <div class="tabs hidden" id="tabs">
-        <button class="tab-btn active" data-tab="personal" id="tab-btn-personal">🍎 Plan Personal</button>
-        <button class="tab-btn school-tab" data-tab="school" id="tab-btn-school">🍽️ Menú Chicos</button>
-        <button class="tab-btn" data-tab="shopping" id="tab-btn-shopping">🛒 Compra</button>
-        <button class="tab-btn" data-tab="advice" id="tab-btn-advice">💡 Consejos</button>
-        <button class="tab-btn" data-tab="allergens" id="tab-btn-allergens">⚠️ Alérgenos</button>
-        <button class="tab-btn" data-tab="season" id="tab-btn-season">🥗 Temporada</button>
-        <button class="tab-btn" data-tab="recipes" id="tab-btn-recipes">🍳 Recetas</button>
-        <button class="tab-btn generator-tab" data-tab="generator" id="tab-btn-generator">🎨 Crear Menú</button>
-    </div>
-
-    <div class="spinner" id="spinner"></div>
-    <div id="status"></div>
-
-    <div id="output"></div>
-    
-    <div id="tab-personal" class="tab-content active"></div>
-    <div id="tab-school" class="tab-content"></div>
-    <div id="tab-shopping" class="tab-content"></div>
-    <div id="tab-advice" class="tab-content"></div>
-    <div id="tab-allergens" class="tab-content"></div>
-    <div id="tab-season" class="tab-content"></div>
-    <div id="tab-recipes" class="tab-content"></div>
-    <div id="tab-generator" class="tab-content"></div>
-</div>
-
-<script>
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-
-    const menuToggle = document.getElementById('menu-toggle');
-    const menuPanel = document.getElementById('menu-panel');
-    const menuOverlay = document.getElementById('menu-overlay');
-    const menuUploadPersonal = document.getElementById('menu-upload-personal');
-    const menuUploadSchool = document.getElementById('menu-upload-school');
-    const infoPersonal = document.getElementById('info-personal');
-    const infoSchool = document.getElementById('info-school');
-    const infoEmpty = document.getElementById('info-empty');
-
-    const fileInputPersonal = document.getElementById('pdf-upload-personal');
-    const fileInputSchool = document.getElementById('pdf-upload-school');
-    const statusDiv = document.getElementById('status');
-    const outputDiv = document.getElementById('output');
-    const spinner = document.getElementById('spinner');
-    const controlsPanel = document.getElementById('controls-panel');
-    const filterDay = document.getElementById('filter-day');
-    const filterMeal = document.getElementById('filter-meal');
-    const filterMealGroup = document.getElementById('filter-meal-group');
-    const searchText = document.getElementById('search-text');
-    const btnExport = document.getElementById('btn-export');
-    const btnPrint = document.getElementById('btn-print');
-    const btnResetPersonal = document.getElementById('btn-reset-personal');
-    const btnResetSchool = document.getElementById('btn-reset-school');
-    const btnToggleView = document.getElementById('btn-toggle-view');
-    const tabsDiv = document.getElementById('tabs');
-
-    const STORAGE_PERSONAL = 'diet_plan_personal_v18';
-    const STORAGE_SCHOOL = 'diet_plan_school_v18';
-    const STORAGE_CUSTOM_MENUS = 'diet_custom_menus_v3';
-
-    const DIAS_SEMANA = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
-    const MEAL_ORDER = ['desayuno', 'almuerzo', 'comida', 'merienda', 'cena'];
-    const MEAL_NAMES = {
-        desayuno: '🌅 Desayuno', almuerzo: '🥪 Almuerzo', comida: '🍽️ Comida',
-        merienda: '🍎 Merienda', cena: '🌙 Cena'
-    };
-    const MESES_ES = {
-        'enero': 0, 'febrero': 1, 'marzo': 2, 'abril': 3, 'mayo': 4, 'junio': 5,
-        'julio': 6, 'agosto': 7, 'septiembre': 8, 'setiembre': 8, 'octubre': 9,
-        'noviembre': 10, 'diciembre': 11
-    };
-
-    let personalData = null, personalRawText = '';
-    let schoolData = null, schoolRawText = '';
-    // 👇 CAMBIO 1: modo compacto por defecto
-    let compactMode = true;
-    let customMenus = [];
-
-    // =====================================================
-    // BANCO DE ALIMENTOS (igual que antes)
-    // =====================================================
-    const FOOD_DB = {
-        desayuno: {
-            lacteos: ['Café con leche', 'Vaso de leche', 'Leche con cacao', 'Colacao', 'Leche merengada', 'Yogur natural', 'Yogur griego', 'Yogur de frutas', 'Kéfir', 'Cuajada', 'Requesón con miel', 'Queso fresco', 'Queso de untar', 'Petit suisse', 'Actimel', 'Batido de chocolate', 'Batido de fresa', 'Smoothie de frutas'],
-            pan: ['Tostadas con mantequilla', 'Tostadas con mermelada', 'Tostadas con aceite y tomate', 'Pan con tomate', 'Bocadillo de jamón', 'Bocadillo de queso', 'Sándwich mixto', 'Pan de molde', 'Pan integral', 'Pan de centeno', 'Croissant', 'Bollo de leche', 'Magdalenas', 'Bizcocho casero', 'Galletas María', 'Galletitas dulces', 'Cereales de maíz', 'Copos de avena', 'Muesli', 'Churros con chocolate', 'Tortitas con miel', 'Pancakes', 'Biscotes integrales', 'Pan de maíz'],
-            proteinas: ['Huevo duro', 'Huevo frito', 'Tortilla francesa', 'Revuelto de champiñones', 'Jamón serrano', 'Jamón cocido', 'Pavo en lonchas', 'Chorizo', 'Salchichón', 'Queso curado', 'Queso manchego', 'Atún en aceite', 'Salmón ahumado', 'Anchoas', 'Boquerones en vinagre'],
-            frutas: ['Plátano', 'Manzana', 'Naranja', 'Mandarina', 'Kiwi', 'Fresa', 'Pera', 'Melocotón', 'Uvas', 'Sandía', 'Melón', 'Frambuesas', 'Arándanos']
-        },
-        almuerzo: {
-            frutas: ['Manzana', 'Plátano', 'Naranja', 'Pera', 'Mandarina', 'Kiwi', 'Uvas', 'Fresas', 'Melocotón', 'Melón', 'Sandía', 'Ciruela', 'Albaricoque', 'Higos'],
-            frutos_secos: ['Almendras', 'Nueces', 'Avellanas', 'Pistachos', 'Anacardos', 'Cacahuetes', 'Pipas de girasol', 'Pipas de calabaza', 'Dátiles', 'Higos secos', 'Orejones', 'Ciruelas pasas', 'Pasas', 'Castañas'],
-            bocadillos: ['Bocadillo de jamón serrano', 'Bocadillo de jamón cocido', 'Bocadillo de queso', 'Bocadillo de atún', 'Bocadillo vegetal', 'Bocadillo de tortilla', 'Bocadillo de lomo con pimientos', 'Bocadillo de calamares', 'Sándwich mixto', 'Sándwich vegetal', 'Sándwich de pollo', 'Wrap de pollo', 'Wrap vegetal', 'Empanada gallega', 'Empanadilla de atún'],
-            lacteos: ['Yogur natural', 'Yogur de frutas', 'Batido de chocolate', 'Batido de fresa', 'Queso fresco', 'Petit suisse', 'Natillas', 'Flan de huevo', 'Arroz con leche', 'Cuajada', 'Kéfir', 'Yogur griego con miel']
-        },
-        comida: {
-            primeros: ['Paella valenciana', 'Paella de marisco', 'Cocido madrileño', 'Cocido montañés', 'Lentejas estofadas', 'Lentejas con chorizo', 'Garbanzos con espinacas', 'Garbanzos con callos', 'Judías verdes con patata', 'Alubias con morcilla', 'Fabada asturiana', 'Sopa de fideos', 'Sopa castellana de ajo', 'Sopa de picadillo', 'Gazpacho andaluz', 'Salmorejo cordobés', 'Ajoblanco malagueño', 'Crema de calabacín', 'Crema de calabaza', 'Puré de verduras', 'Sopa de marisco', 'Arroz caldoso con bogavante', 'Migas extremeñas', 'Escudella catalana'],
-            segundos: ['Pollo asado', 'Pollo al ajillo', 'Pollo en pepitoria', 'Pollo al chilindrón', 'Filete de ternera a la plancha', 'Entrecot a la brasa', 'Solomillo al whisky', 'Merluza a la plancha', 'Merluza a la vasca', 'Bacalao al pilpil', 'Bacalao a la vizcaína', 'Tortilla de patatas', 'Tortilla española con cebolla', 'Croquetas de jamón', 'Croquetas de bacalao', 'Albóndigas en salsa', 'Albóndigas de ternera', 'Escalope de cerdo', 'Escalope milanesa', 'Salmón al horno', 'Salmón a la plancha', 'Lubina a la sal', 'Dorada a la plancha', 'Empanadillas de atún', 'Costillas de cerdo a la brasa', 'Chuletillas de cordero', 'Cochinillo asado', 'Cordero al chilindrón', 'Conejo al ajillo', 'Pato a la naranja', 'Pulpo a la gallega'],
-            guarniciones: ['Patatas fritas', 'Patatas asadas', 'Patatas panadera', 'Patatas a lo pobre', 'Ensalada mixta', 'Ensalada César', 'Ensalada de tomate y cebolla', 'Ensaladilla rusa', 'Arroz blanco', 'Arroz a la cubana', 'Verduras salteadas', 'Pisto manchego', 'Champiñones a la plancha', 'Espárragos a la plancha', 'Calabacín asado', 'Berenjena al horno', 'Pimientos asados', 'Pimientos del padrón', 'Judías verdes salteadas', 'Menestra de verduras', 'Puré de patatas', 'Cous cous'],
-            postres: ['Fruta de temporada', 'Yogur natural', 'Flan casero', 'Flan de huevo', 'Natillas', 'Arroz con leche', 'Helado de vainilla', 'Helado de chocolate', 'Tarta de queso', 'Tarta de Santiago', 'Crema catalana', 'Fruta en almíbar', 'Cuajada con miel', 'Macedonia de frutas', 'Leche frita', 'Torrijas', 'Pestiños', 'Churros con chocolate', 'Buñuelos de calabaza', 'Tarta de manzana']
-        },
-        merienda: {
-            lacteos: ['Yogur natural', 'Yogur griego', 'Batido de chocolate', 'Batido de fresa', 'Queso fresco', 'Petit suisse', 'Kéfir', 'Cuajada', 'Requesón', 'Leche merengada', 'Horchata de chufa', 'Yogur con frutas'],
-            pan: ['Bocadillo pequeño', 'Sándwich mixto', 'Tostadas con mermelada', 'Tostadas con mantequilla', 'Pan con chocolate', 'Galletas María', 'Galletas de chocolate', 'Bizcocho casero', 'Magdalenas', 'Croissant', 'Napolitana de chocolate', 'Palmera de chocolate', 'Donuts', 'Tortitas con miel', 'Tortitas de maíz', 'Biscotes integrales'],
-            frutas: ['Plátano', 'Manzana', 'Naranja', 'Fresas', 'Kiwi', 'Pera', 'Uvas', 'Melocotón', 'Sandía', 'Melón', 'Frambuesas', 'Arándanos', 'Cerezas'],
-            frutos_secos: ['Almendras', 'Nueces', 'Avellanas', 'Pistachos', 'Anacardos', 'Cacahuetes', 'Pipas', 'Dátiles', 'Higos secos', 'Orejones']
-        },
-        cena: {
-            ligeros: ['Tortilla francesa', 'Tortilla de patatas', 'Tortilla de calabacín', 'Revuelto de champiñones', 'Revuelto de ajos tiernos', 'Huevos rotos', 'Pescado a la plancha', 'Merluza al vapor', 'Lubina a la plancha', 'Pollo a la plancha', 'Pechuga de pavo a la plancha', 'Ensalada César', 'Ensalada caprese', 'Ensalada griega', 'Ensalada de pasta', 'Gazpacho', 'Salmorejo', 'Sopa de verduras', 'Crema de calabaza', 'Crema de zanahoria', 'Sopa de miso', 'Vichyssoise'],
-            guarniciones: ['Ensalada verde', 'Tomate aliñado', 'Verduras al vapor', 'Patatas cocidas', 'Arroz blanco', 'Puré de patatas', 'Espárragos a la plancha', 'Champiñones salteados', 'Calabacín a la plancha', 'Berenjena asada', 'Pimientos asados', 'Judías verdes salteadas', 'Brócoli al vapor', 'Coliflor al vapor', 'Espinacas salteadas', 'Acelgas rehogadas'],
-            postres: ['Fruta de temporada', 'Yogur natural', 'Infusión con miel', 'Cuajada', 'Requesón con miel', 'Kéfir', 'Fruta en compota', 'Macedonia', 'Flan casero', 'Natillas', 'Arroz con leche'],
-            proteinas: ['Huevo', 'Pollo', 'Pavo', 'Merluza', 'Bacalao', 'Salmón', 'Atún', 'Gambas', 'Mejillones', 'Calamares', 'Pulpo', 'Calamar a la romana', 'Boquerones fritos', 'Sardinas a la plancha']
-        }
-    };
-
-    let genState = { meal: 'desayuno', selected: [] };
-
-    // =====================================================
-    // CARGA INICIAL
-    // =====================================================
-    window.addEventListener('DOMContentLoaded', () => {
-        const savedPersonal = localStorage.getItem(STORAGE_PERSONAL);
-        if (savedPersonal) {
-            try {
-                const parsed = JSON.parse(savedPersonal);
-                personalData = parsed.data;
-                personalRawText = parsed.rawText || '';
-                // Si hay compactMode guardado lo respetamos, si no, queda por defecto en true
-                if (typeof parsed.compactMode === 'boolean') compactMode = parsed.compactMode;
-            } catch (e) {}
-        }
-        
-        const savedSchool = localStorage.getItem(STORAGE_SCHOOL);
-        if (savedSchool) {
-            try {
-                const parsed = JSON.parse(savedSchool);
-                schoolData = parsed.data;
-                schoolRawText = parsed.rawText || '';
-            } catch (e) {}
-        }
-        
-        const savedCustomMenus = localStorage.getItem(STORAGE_CUSTOM_MENUS);
-        if (savedCustomMenus) {
-            try { customMenus = JSON.parse(savedCustomMenus) || []; } catch (e) {}
-        }
-        
-        renderAll();
-        updateMenuStatus();
-        updateViewToggleButton();
-    });
-
-    // =====================================================
-    // MENÚ LATERAL
-    // =====================================================
-    menuToggle.addEventListener('click', (e) => {
-        e.stopPropagation();
-        menuPanel.classList.toggle('active');
-        menuOverlay.classList.toggle('active');
-        menuToggle.classList.toggle('active');
-        menuToggle.textContent = menuPanel.classList.contains('active') ? '✕' : '⚙️';
-    });
-
-    menuOverlay.addEventListener('click', closeMenu);
-
-    function closeMenu() {
-        menuPanel.classList.remove('active');
-        menuOverlay.classList.remove('active');
-        menuToggle.classList.remove('active');
-        menuToggle.textContent = '⚙️';
-    }
-
-    menuUploadPersonal.addEventListener('click', () => fileInputPersonal.click());
-    menuUploadSchool.addEventListener('click', () => fileInputSchool.click());
-
-    function getTodayName() {
-        const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-        return days[new Date().getDay()];
-    }
-
-    function getOrderedDays(dayList = DIAS_SEMANA) {
-        const today = getTodayName();
-        const todayIndex = dayList.indexOf(today);
-        if (todayIndex === -1) return [...dayList];
-        return [...dayList.slice(todayIndex), ...dayList.slice(0, todayIndex)];
-    }
-
-    function updateMenuStatus() {
-        infoPersonal.style.display = personalData ? 'block' : 'none';
-        infoSchool.style.display = schoolData ? 'block' : 'none';
-        infoEmpty.style.display = (!personalData && !schoolData) ? 'block' : 'none';
-        btnResetPersonal.disabled = !personalData;
-        btnResetSchool.disabled = !schoolData;
-        btnExport.disabled = !personalData && !schoolData;
-        btnPrint.disabled = !personalData && !schoolData;
-        btnToggleView.disabled = !personalData && !schoolData;
-    }
-
-    fileInputPersonal.addEventListener('change', async (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
-        closeMenu();
-        await loadPdf(file, 'personal');
-    });
-
-    fileInputSchool.addEventListener('change', async (event) => {
-        const file = event.target.files[0];
-        if (!file) return;
-        closeMenu();
-        await loadPdf(file, 'school');
-    });
-
-    async function loadPdf(file, type) {
-        outputDiv.innerHTML = '';
-        outputDiv.style.display = 'none';
-        controlsPanel.classList.remove('active');
-        statusDiv.textContent = `Leyendo PDF (${type === 'school' ? 'Menú Escolar' : 'Plan Personal'})...`;
-        spinner.style.display = 'block';
-        try {
-            const arrayBuffer = await file.arrayBuffer();
-            const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
-            statusDiv.textContent = `PDF cargado (${pdf.numPages} páginas). Extrayendo texto...`;
-            let fullText = '';
-            for (let i = 1; i <= pdf.numPages; i++) {
-                const page = await pdf.getPage(i);
-                const textContent = await page.getTextContent();
-                let pageText = '';
-                let lastY = null;
-                textContent.items.forEach(item => {
-                    if (lastY !== null && Math.abs(item.transform[5] - lastY) > 5) pageText += '\n';
-                    else if (lastY !== null) pageText += ' ';
-                    pageText += item.str;
-                    lastY = item.transform[5];
-                });
-                fullText += `\n--- PÁGINA ${i} ---\n${pageText}\n`;
-            }
-            statusDiv.textContent = 'Procesando estructura...';
-            
-            if (type === 'school') {
-                schoolRawText = fullText;
-                const newSchoolData = parseSchoolMenu(fullText);
-                // 👇 CAMBIO 3: merge con los datos existentes (conservar customMeals y customContent)
-                schoolData = mergeSchoolData(schoolData, newSchoolData);
-                saveToStorage('school');
-            } else {
-                personalRawText = fullText;
-                const newPersonalData = parseFullDocument(fullText);
-                // Merge también para personal (conservar contenido editado manualmente)
-                personalData = mergePersonalData(personalData, newPersonalData);
-                saveToStorage('personal');
-            }
-            
-            renderAll();
-            statusDiv.textContent = `✅ ${type === 'school' ? 'Menú Escolar' : 'Plan Personal'} cargado correctamente.`;
-            spinner.style.display = 'none';
-            updateMenuStatus();
-        } catch (error) {
-            console.error(error);
-            statusDiv.textContent = '❌ Error: ' + error.message;
-            spinner.style.display = 'none';
-        }
-    }
-
-    // =====================================================
-    // MERGE — conservar contenido personalizado al recargar PDF
-    // =====================================================
-    function mergeSchoolData(oldData, newData) {
-        if (!oldData || !oldData.weeks) return newData;
-        if (!newData || !newData.weeks) return oldData;
-        
-        // Crear un índice de días antiguos: "año-mes-día" → { customMeals, customContent }
-        const oldIndex = {};
-        oldData.weeks.forEach(week => {
-            Object.keys(week.days).forEach(dayName => {
-                const d = week.days[dayName];
-                const key = `${d.year}-${d.month}-${d.dayOfMonth}`;
-                oldIndex[key] = {
-                    customMeals: d.customMeals || {},
-                    customContent: d.customContent || null
-                };
-            });
-        });
-        
-        // Recorrer los nuevos días y restaurar los datos personalizados
-        newData.weeks.forEach(week => {
-            Object.keys(week.days).forEach(dayName => {
-                const d = week.days[dayName];
-                const key = `${d.year}-${d.month}-${d.dayOfMonth}`;
-                if (oldIndex[key]) {
-                    if (oldIndex[key].customMeals && Object.keys(oldIndex[key].customMeals).length > 0) {
-                        d.customMeals = { ...oldIndex[key].customMeals, ...(d.customMeals || {}) };
-                    }
-                    if (oldIndex[key].customContent) {
-                        d.customContent = oldIndex[key].customContent;
-                    }
-                }
-            });
-        });
-        
-        return newData;
-    }
-
-    function mergePersonalData(oldData, newData) {
-        if (!oldData || !oldData.plan) return newData;
-        if (!newData || !newData.plan) return oldData;
-        
-        // Merge por día: si el nuevo no tiene un día, se mantiene el antiguo
-        Object.keys(oldData.plan).forEach(day => {
-            if (!newData.plan[day]) {
-                newData.plan[day] = oldData.plan[day];
-            } else {
-                // Merge interno por comida
-                Object.keys(oldData.plan[day]).forEach(mealId => {
-                    if (!newData.plan[day][mealId]) {
-                        newData.plan[day][mealId] = oldData.plan[day][mealId];
-                    }
-                });
-            }
-        });
-        
-        return newData;
-    }
-
-    function saveToStorage(type) {
-        try {
-            if (type === 'personal' && personalData) {
-                localStorage.setItem(STORAGE_PERSONAL, JSON.stringify({ data: personalData, rawText: personalRawText, compactMode: compactMode }));
-            } else if (type === 'school' && schoolData) {
-                localStorage.setItem(STORAGE_SCHOOL, JSON.stringify({ data: schoolData, rawText: schoolRawText }));
-            } else if (type === 'customMenus') {
-                localStorage.setItem(STORAGE_CUSTOM_MENUS, JSON.stringify(customMenus));
-            }
-        } catch (e) {}
-    }
-
-    // =====================================================
-    // DETECCIÓN DE IDIOMA
-    // =====================================================
-    function detectLanguage(line) {
-        if (!line || line.length < 3) return 'unknown';
-        const upperLine = line.toUpperCase();
-        let spanishScore = 0, englishScore = 0;
-        const spanishWords = /\b(DE|DEL|CON|Y|EL|LA|LOS|LAS|AL|EN|POR|PARA|ENSALADA|CREMA|SOPA|PURÉ|ARROZ|PASTA|POLLO|PESCADO|CARNE|TERNERA|CERDO|PAVO|MERLUZA|BACALAO|SALMÓN|HUEVO|TORTILLA|CROQUETAS|ALBÓNDIGAS|FILETE|LOMO|JAMÓN|FRUTA|YOGUR|NATILLAS|FLAN|HELADO|LENTEJAS|GARBANZOS|ALUBIAS|JUDÍAS|VERDURAS|ESPINACAS|CALABACÍN|ZANAHORIA|CEBOLLA|TOMATE|LECHUGA|PATATA|MAÍZ|GUISANTES|HABAS|CHAMPIÑONES|ESPÁRRAGOS|BROCOLI|COLIFLOR|CALABAZA|BERENJENA|PIMIENTO|PEPINO|AJO|ACEITE|PAN|QUESO|LECHE|SALSA|GUISO|ESTOFADO|ASADO|HORNO|PLANCHA|REVUELTO|COCIDO|POTAJE|GAZPACHO|SALMOREJO|PAELLA|CALDERO|FIDEOS|MACARRONES|ESPAGUETIS|ESPIRALES|QUINOA|HUMMUS|BROTES)\b/gi;
-        spanishScore += (upperLine.match(spanishWords) || []).length * 2;
-        const englishWords = /\b(THE|AND|WITH|OF|SALAD|SOUP|CREAM|RICE|PASTA|CHICKEN|FISH|MEAT|HAKE|COD|SALMON|EGG|EGGS|OMELETTE|CROQUETTES|MEATBALLS|STEAK|LOIN|HAM|FRUIT|YOGURT|YOGHURT|LENTILS|CHICKPEAS|BEANS|VEGETABLES|SPINACH|COURGETTE|CARROT|ONION|TOMATO|LETTUCE|POTATO|CORN|PEAS|MUSHROOMS|ASPARAGUS|BROCCOLI|PUMPKIN|PEPPER|CUCUMBER|GARLIC|OIL|OLIVE|SALT|WATER|BREAD|CHEESE|MILK|BUTTER|SUGAR|FLOUR|SAUCE|STEW|ROAST|BAKED|GRILLED|WHOLE|GRAIN|NOODLES|SPAGHETTI|MACARONI)\b/gi;
-        englishScore += (upperLine.match(englishWords) || []).length * 2;
-        const spanishChars = (line.match(/[áéíóúñÁÉÍÓÚÑ]/g) || []).length;
-        spanishScore += spanishChars * 3;
-        if (/\bAND\b/.test(upperLine)) englishScore += 3;
-        if (/\bWITH\b/.test(upperLine)) englishScore += 3;
-        if (/\bOF\b/.test(upperLine)) englishScore += 3;
-        if (/\bDE\b/.test(upperLine)) spanishScore += 3;
-        if (/\bCON\b/.test(upperLine)) spanishScore += 3;
-        if (/\bDEL\b/.test(upperLine)) spanishScore += 3;
-        if (englishScore > spanishScore) return 'english';
-        if (spanishScore > englishScore) return 'spanish';
-        return 'spanish';
-    }
-
-    // =====================================================
-    // PARSER PDF ESCOLAR
-    // =====================================================
-    function parseSchoolMenu(text) {
-        const result = { weeks: [], notes: '', month: null, year: null };
-        let cleanText = cleanHtml(text);
-        const dateMatch = cleanText.match(/(Enero|Febrero|Marzo|Abril|Mayo|Junio|Julio|Agosto|Septiembre|Setiembre|Octubre|Noviembre|Diciembre)\s*[-–]?\s*(\d{4})/i);
-        if (dateMatch) {
-            const monthName = dateMatch[1].toLowerCase();
-            result.month = MESES_ES[monthName] !== undefined ? MESES_ES[monthName] : null;
-            result.year = parseInt(dateMatch[2]);
-        }
-        const notesMatch = cleanText.match(/NOTAS[:\s]*([\s\S]*?)$/i);
-        if (notesMatch) result.notes = notesMatch[1].trim().substring(0, 1500);
-        const lines = cleanText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-        const filteredLines = [];
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i];
-            if (/PÁGINA\s+\d+/i.test(line)) continue;
-            if (/Scolarest/i.test(line)) continue;
-            if (/www\./i.test(line)) continue;
-            if (/^\d{4}$/.test(line)) continue;
-            if (/NEW\s+CASTELAR/i.test(line)) continue;
-            if (/FISH\s+REVOLUTION/i.test(line)) continue;
-            if (/^NOTAS:/i.test(line)) continue;
-            if (/^La valoración nutricional/i.test(line)) continue;
-            if (/^Leyenda:/i.test(line)) continue;
-            if (/^Aportes calóricos/i.test(line)) continue;
-            if (/^de nutrientes/i.test(line)) continue;
-            if (/^Nuestros menús/i.test(line)) continue;
-            if (/^CONSEJERÍA/i.test(line)) continue;
-            if (/^Septiembre\s*-/i.test(line)) continue;
-            if (/^Octubre\s*-/i.test(line)) continue;
-            if (line.length < 2) continue;
-            filteredLines.push(line);
-        }
-        const dayGroups = [];
-        filteredLines.forEach((line, idx) => {
-            if (/^\s*\d{1,2}\s+\d[\d.]*\s+Kcal/i.test(line)) {
-                const days = [];
-                const regex = /(\d{1,2})\s+\d[\d.]*\s+Kcal/gi;
-                let match;
-                while ((match = regex.exec(line)) !== null) {
-                    const num = parseInt(match[1]);
-                    if (num >= 1 && num <= 31) days.push(num);
-                }
-                if (days.length > 0) dayGroups.push({ days, lineIdx: idx });
-            }
-        });
-        const daysWithDishes = [];
-        for (let g = 0; g < dayGroups.length; g++) {
-            const group = dayGroups[g];
-            const nextGroup = dayGroups[g + 1];
-            const startIdx = group.lineIdx + 1;
-            const endIdx = nextGroup ? nextGroup.lineIdx : filteredLines.length;
-            let groupDishes = filteredLines.slice(startIdx, endIdx).filter(l => {
-                if (/Kcal/i.test(l)) return false;
-                if (/^\d+\s*$/.test(l)) return false;
-                if (l.length < 2) return false;
-                return true;
-            });
-            groupDishes = groupDishes.filter(l => detectLanguage(l) === 'spanish');
-            let mergedDishes = [];
-            let buffer = '';
-            for (let i = 0; i < groupDishes.length; i++) {
-                const line = groupDishes[i];
-                if (buffer) {
-                    buffer += ' ' + line;
-                    if (!line.endsWith(',')) { mergedDishes.push(buffer); buffer = ''; }
-                } else {
-                    if (line.endsWith(',') || / (DE|CON|Y|DEL|AL|EN|LA|EL|LOS|LAS)$/i.test(line)) buffer = line;
-                    else mergedDishes.push(line);
-                }
-            }
-            if (buffer) mergedDishes.push(buffer);
-            const isDessert = (dish) => {
-                const lower = dish.toLowerCase();
-                return lower.includes('fruta') || lower.includes('yogur') || lower.includes('yoghurt') ||
-                       lower.includes('natilla') || lower.includes('flan') || lower.includes('helado') ||
-                       lower.includes('postre') || lower.includes('cuajada') || lower.includes('macedonia') ||
-                       lower.includes('gelatina') || lower.includes('batido');
-            };
-            let currentDay = [];
-            const dayBlocks = [];
-            mergedDishes.forEach(dish => {
-                currentDay.push(dish);
-                if (isDessert(dish)) { dayBlocks.push([...currentDay]); currentDay = []; }
-            });
-            if (currentDay.length > 0) {
-                if (dayBlocks.length > 0) dayBlocks[dayBlocks.length - 1].push(...currentDay);
-                else dayBlocks.push(currentDay);
-            }
-            group.days.forEach((dayOfMonth, dayIdx) => {
-                if (dayIdx < dayBlocks.length) {
-                    daysWithDishes.push({ dayOfMonth, dishes: categorizeByPosition(dayBlocks[dayIdx]) });
-                }
-            });
-        }
-        if (result.month === null || result.year === null) {
-            const weeks = [];
-            let currentWeek = { title: 'Semana 1', days: {} };
-            let dayIdx = 0;
-            daysWithDishes.forEach((dayData) => {
-                const dayName = DIAS_SEMANA[dayIdx % 5];
-                currentWeek.days[dayName] = { dayOfMonth: dayData.dayOfMonth, month: result.month, year: result.year, dishes: dayData.dishes, customMeals: {}, customContent: null };
-                dayIdx++;
-                if (dayIdx % 5 === 0) { weeks.push(currentWeek); currentWeek = { title: `Semana ${weeks.length + 1}`, days: {} }; }
-            });
-            if (Object.keys(currentWeek.days).length > 0) weeks.push(currentWeek);
-            result.weeks = weeks;
-            return result;
-        }
-        const weeks = [];
-        let currentWeek = null;
-        let lastWeekNumber = -1;
-        daysWithDishes.forEach((dayData) => {
-            const dateObj = new Date(result.year, result.month, dayData.dayOfMonth);
-            const dayOfWeek = dateObj.getDay();
-            if (dayOfWeek === 0 || dayOfWeek === 6) return;
-            const dayName = DIAS_SEMANA[dayOfWeek - 1];
-            const weekNumber = Math.ceil(dayData.dayOfMonth / 7);
-            if (weekNumber !== lastWeekNumber) {
-                if (currentWeek) weeks.push(currentWeek);
-                currentWeek = { title: `Semana del ${dayData.dayOfMonth} de ${getMonthName(result.month)}`, days: {} };
-                lastWeekNumber = weekNumber;
-            }
-            currentWeek.days[dayName] = { dayOfMonth: dayData.dayOfMonth, month: result.month, year: result.year, dishes: dayData.dishes, customMeals: {}, customContent: null };
-        });
-        if (currentWeek && Object.keys(currentWeek.days).length > 0) weeks.push(currentWeek);
-        result.weeks = weeks;
-        return result;
-    }
-
-    function getMonthName(monthIdx) {
-        const names = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-                       'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
-        return names[monthIdx] || '';
-    }
-
-    function categorizeByPosition(dishes) {
-        const result = {};
-        const cleanDishes = dishes.map(d => d.trim()).filter(d => d.length > 2).filter(d => !/^\d+$/.test(d));
-        if (cleanDishes.length === 0) return result;
-        const postres = [cleanDishes[cleanDishes.length - 1]];
-        const mainDishes = cleanDishes.slice(0, -1);
-        const entrantes = [], primeros = [], segundos = [];
-        if (mainDishes.length >= 1) entrantes.push(mainDishes[0]);
-        if (mainDishes.length >= 2) primeros.push(mainDishes[1]);
-        if (mainDishes.length >= 3) segundos.push(mainDishes.slice(2).join(' · '));
-        if (entrantes.length > 0) result.entrante = { label: '🥗 Entrante', content: entrantes.join(' · ') };
-        if (primeros.length > 0) result.primero = { label: '🍲 Primer plato', content: primeros.join(' · ') };
-        if (segundos.length > 0) result.segundo = { label: '🍖 Segundo plato', content: segundos.join(' · ') };
-        if (postres.length > 0) result.postre = { label: '🍎 Postre', content: postres.join(' · ') };
-        if (Object.keys(result).length === 0) result.menu = { label: '📋 Menú', content: cleanDishes.join(' · ') };
-        return result;
-    }
-
-    function cleanHtml(text) {
-        let cleaned = text.replace(/<[^>]+>/g, ' ');
-        cleaned = cleaned.replace(/&nbsp;/g, ' ');
-        cleaned = cleaned.replace(/&amp;/g, '&');
-        cleaned = cleaned.replace(/&lt;/g, '<');
-        cleaned = cleaned.replace(/&gt;/g, '>');
-        cleaned = cleaned.replace(/[ \t]+/g, ' ');
-        cleaned = cleaned.replace(/\n\s*\n/g, '\n');
-        return cleaned;
-    }
-
-    function parseFullDocument(text) {
-        const cleanText = cleanHtml(text);
-        const result = { plan: {}, shopping: '', advice: '', allergens: '' };
-        const shoppingStart = cleanText.search(/LISTA\s+DE\s+LA\s+COMPRA/i);
-        const adviceStart = cleanText.search(/RECOMENDACIONES\s+PATOLOGÍAS/i);
-        const allergensStart = cleanText.search(/RESUMEN\s+DE\s+GRUPOS\s+DE\s+ALÉRGENOS/i);
-        let planEnd = cleanText.length;
-        [shoppingStart, adviceStart, allergensStart].forEach(idx => { if (idx !== -1 && idx < planEnd) planEnd = idx; });
-        const planText = cleanText.substring(0, planEnd);
-        result.plan = parseWeeklyPlan(planText);
-        if (shoppingStart !== -1) {
-            const shoppingEnd = adviceStart !== -1 && adviceStart > shoppingStart ? adviceStart : (allergensStart !== -1 && allergensStart > shoppingStart ? allergensStart : cleanText.length);
-            let shoppingText = cleanText.substring(shoppingStart, shoppingEnd);
-            shoppingText = shoppingText.replace(/^LISTA\s+DE\s+LA\s+COMPRA\s*/i, '').trim();
-            result.shopping = shoppingText;
-        }
-        if (adviceStart !== -1) {
-            const adviceEnd = allergensStart !== -1 && allergensStart > adviceStart ? allergensStart : cleanText.length;
-            let adviceText = cleanText.substring(adviceStart, adviceEnd);
-            adviceText = adviceText.replace(/^RECOMENDACIONES\s+PATOLOGÍAS\s*/i, '').trim();
-            result.advice = adviceText;
-        }
-        if (allergensStart !== -1) {
-            let allergensText = cleanText.substring(allergensStart);
-            allergensText = allergensText.replace(/^RESUMEN\s+DE\s+GRUPOS\s+DE\s+ALÉRGENOS\s+ALIMENTARIOS\s+POR\s+DÍA\s*/i, '').trim();
-            result.allergens = allergensText;
-        }
-        return result;
-    }
-
-    function parseWeeklyPlan(text) {
-        const data = {};
-        let dayPositions = [];
-        DIAS_SEMANA.forEach(dia => {
-            const regex = new RegExp(`\\b${dia}\\b`, 'gi');
-            let match;
-            while ((match = regex.exec(text)) !== null) dayPositions.push({ day: dia, index: match.index });
-        });
-        dayPositions.sort((a, b) => a.index - b.index);
-        const page3Index = text.indexOf('--- PÁGINA 3 ---');
-        let realPositions = dayPositions.filter(p => p.index > (page3Index !== -1 ? page3Index : 0));
-        if (realPositions.length === 0) realPositions = dayPositions;
-        let uniquePositions = [];
-        realPositions.forEach((curr) => {
-            const last = uniquePositions[uniquePositions.length - 1];
-            if (last && last.day === curr.day && (curr.index - last.index) < 200) return;
-            uniquePositions.push(curr);
-        });
-        let seenDays = new Set();
-        let finalPositions = [];
-        uniquePositions.forEach(p => { if (!seenDays.has(p.day)) { seenDays.add(p.day); finalPositions.push(p); } });
-        finalPositions.sort((a, b) => a.index - b.index);
-        for (let i = 0; i < finalPositions.length; i++) {
-            const currentDay = finalPositions[i].day;
-            const startIndex = finalPositions[i].index;
-            const endIndex = (i + 1 < finalPositions.length) ? finalPositions[i + 1].index : text.length;
-            let dayText = text.substring(startIndex, endIndex);
-            dayText = dayText.replace(new RegExp(`^${currentDay}\\s*`, 'i'), '').trim();
-            const meals = parseMealsFromDay(dayText);
-            if (Object.keys(meals).length > 0) data[currentDay] = meals;
-        }
-        return data;
-    }
-
-    function parseMealsFromDay(dayText) {
-        const meals = {};
-        const mealKeywords = [
-            { id: 'desayuno', patterns: [/\bDesayuno\b/gi] },
-            { id: 'almuerzo', patterns: [/\bTentempie\s*1?\b/gi, /\bTentempié\s*1?\b/gi, /\bMedia\s+Mañana\b/gi, /\bAlmuerzo\b/gi] },
-            { id: 'comida', patterns: [/\bComida\b/gi] },
-            { id: 'merienda', patterns: [/\bMerienda\s*1?\b/gi] },
-            { id: 'cena', patterns: [/\bCena\b/gi] }
-        ];
-        let matches = [];
-        mealKeywords.forEach(meal => {
-            meal.patterns.forEach(pattern => {
-                let match;
-                pattern.lastIndex = 0;
-                while ((match = pattern.exec(dayText)) !== null) {
-                    matches.push({ id: meal.id, text: match[0], index: match.index, length: match[0].length });
-                    if (match[0].length === 0) break;
-                }
-            });
-        });
-        matches.sort((a, b) => a.index - b.index);
-        let filteredMatches = [];
-        matches.forEach((curr) => {
-            const last = filteredMatches[filteredMatches.length - 1];
-            if (last && last.id === curr.id && (curr.index - last.index) < 30) return;
-            filteredMatches.push(curr);
-        });
-        for (let i = 0; i < filteredMatches.length; i++) {
-            const mealInfo = filteredMatches[i];
-            const startIndex = mealInfo.index + mealInfo.length;
-            const endIndex = (i + 1 < filteredMatches.length) ? filteredMatches[i + 1].index : dayText.length;
-            let content = dayText.substring(startIndex, endIndex).trim();
-            content = content.replace(/\s+/g, ' ').trim();
-            if (content.length > 0) meals[mealInfo.id] = { title: mealInfo.text.trim(), content: content };
-        }
-        return meals;
-    }
-
-    // =====================================================
-    // TEMPORADA + RECETAS
-    // =====================================================
-    const SEASON_DATA = {
-        fruits: {
-            'Enero': ['Kiwi', 'Limón', 'Mandarina', 'Manzana', 'Naranja', 'Plátano', 'Pomelo'],
-            'Febrero': ['Fresa', 'Kiwi', 'Limón', 'Mandarina', 'Naranja', 'Plátano', 'Pomelo'],
-            'Marzo': ['Fresa', 'Kiwi', 'Limón', 'Mandarina', 'Naranja', 'Plátano', 'Pomelo'],
-            'Abril': ['Fresa', 'Limón', 'Níspero', 'Naranja', 'Plátano', 'Pomelo'],
-            'Mayo': ['Albaricoque', 'Cereza', 'Fresa', 'Limón', 'Melocotón', 'Nectarina', 'Níspero', 'Plátano'],
-            'Junio': ['Aguacate', 'Albaricoque', 'Cereza', 'Ciruela', 'Higo', 'Melocotón', 'Melón', 'Nectarina', 'Plátano', 'Sandía'],
-            'Julio': ['Aguacate', 'Albaricoque', 'Ciruela', 'Higo', 'Melocotón', 'Melón', 'Nectarina', 'Paraguaya', 'Pera', 'Plátano', 'Sandía'],
-            'Agosto': ['Aguacate', 'Ciruela', 'Higo', 'Mango', 'Manzana', 'Melocotón', 'Melón', 'Membrillo', 'Nectarina', 'Paraguaya', 'Pera', 'Plátano', 'Sandía', 'Uva'],
-            'Septiembre': ['Caqui', 'Chirimoya', 'Ciruela', 'Granada', 'Higo', 'Kiwi', 'Mango', 'Manzana', 'Melocotón', 'Melón', 'Membrillo', 'Pera', 'Plátano', 'Sandía', 'Uva'],
-            'Octubre': ['Aguacate', 'Caqui', 'Chirimoya', 'Granada', 'Kiwi', 'Mango', 'Manzana', 'Plátano', 'Uva'],
-            'Noviembre': ['Caqui', 'Chirimoya', 'Granada', 'Kiwi', 'Limón', 'Mandarina', 'Manzana', 'Naranja', 'Pera', 'Plátano', 'Uva'],
-            'Diciembre': ['Caqui', 'Chirimoya', 'Kiwi', 'Limón', 'Mandarina', 'Manzana', 'Naranja', 'Plátano', 'Pomelo', 'Uva']
-        },
-        vegetables: {
-            'Enero': ['Acelga', 'Alcachofa', 'Apio', 'Brócoli', 'Cardo', 'Coliflor', 'Escarola', 'Espinaca', 'Puerro', 'Repollo'],
-            'Febrero': ['Alcachofa', 'Brócoli', 'Coliflor', 'Escarola', 'Espinaca', 'Guisante', 'Haba', 'Puerro'],
-            'Marzo': ['Acelga', 'Alcachofa', 'Brócoli', 'Espárrago verde', 'Espinaca', 'Guisante', 'Haba'],
-            'Abril': ['Acelga', 'Alcachofa', 'Espárrago', 'Espinaca', 'Guisante', 'Haba', 'Lechuga'],
-            'Mayo': ['Calabacín', 'Cebolla tierna', 'Espárrago', 'Judía verde', 'Lechuga', 'Pepino'],
-            'Junio': ['Berenjena', 'Calabacín', 'Judía verde', 'Lechuga', 'Pepino', 'Pimiento', 'Tomate'],
-            'Julio': ['Berenjena', 'Calabacín', 'Cebolla', 'Judía verde', 'Pepino', 'Pimiento', 'Tomate'],
-            'Agosto': ['Berenjena', 'Calabacín', 'Calabaza temprana', 'Judía verde', 'Pepino', 'Pimiento', 'Tomate'],
-            'Septiembre': ['Acelga', 'Berenjena', 'Calabaza', 'Cebolla', 'Endibia', 'Espinaca', 'Judía verde', 'Lechuga', 'Nabo', 'Pimiento', 'Puerro', 'Remolacha', 'Tomate', 'Zanahoria'],
-            'Octubre': ['Acelga', 'Alcachofa', 'Brócoli', 'Calabaza', 'Coliflor', 'Escarola', 'Espinaca', 'Puerro'],
-            'Noviembre': ['Acelga', 'Alcachofa', 'Brócoli', 'Cardo', 'Coliflor', 'Espinaca', 'Puerro', 'Repollo'],
-            'Diciembre': ['Acelga', 'Alcachofa', 'Brócoli', 'Cardo', 'Coliflor', 'Escarola', 'Espinaca', 'Puerro', 'Repollo']
-        }
-    };
-
-    const RECIPE_RESOURCES = [
-        { category: '📖 Webs y Blogs', items: [
-            { name: 'Directo al Paladar', url: 'https://www.directoalpaladar.com', desc: 'Uno de los blogs de cocina más visitados de España.' },
-            { name: 'Recetas de rechupete', url: 'https://www.recetasderechupete.com', desc: 'Recetas tradicionales españolas e internacionales paso a paso.' },
-            { name: 'Paulina Cocina', url: 'https://paulinacocina.net', desc: 'Recetas sencillas, económicas y muy populares.' },
-            { name: 'Cookpad', url: 'https://cookpad.com/es', desc: 'Plataforma colaborativa con millones de recetas.' },
-            { name: 'PequeRecetas', url: 'https://www.pequerecetas.com', desc: 'Especializada en cocina para niños y familias.' },
-            { name: 'Divina Cocina', url: 'https://www.divinacocina.es', desc: 'Recetas clásicas y modernas con explicaciones detalladas.' },
-            { name: 'Cocina Fácil', url: 'https://www.cocinafacil.com.mx', desc: 'Recetas rápidas y sencillas.' }
-        ]},
-        { category: '📺 Canales de YouTube', items: [
-            { name: 'Anna Recetas Fáciles', url: 'https://www.youtube.com/@AnnaRecetasFaciles', desc: 'La youtuber de cocina más seguida en España.' },
-            { name: '¡Que Viva la Cocina!', url: 'https://www.youtube.com/@QueVivalaCocina', desc: 'Recetas fáciles y rápidas para el día a día.' },
-            { name: 'La Cocina de Loli Domínguez', url: 'https://www.youtube.com/@LaCocinadeLoliDominguez', desc: 'Recetas caseras y tradicionales paso a paso.' }
-        ]}
-    ];
-
-    // =====================================================
-    // RENDERIZADO PRINCIPAL
-    // =====================================================
-    function renderAll() {
-        updateTabsVisibility();
-        if (personalData) { renderPlan(); renderShopping(); renderAdvice(); renderAllergens(); }
-        if (schoolData) renderSchoolMenu();
-        renderSeason();
-        renderRecipes();
-        renderGenerator();
-        showControls();
-        updateMenuStatus();
-    }
-
-    function updateTabsVisibility() {
-        tabsDiv.classList.remove('hidden');
-        const tabPersonal = document.getElementById('tab-btn-personal');
-        const tabSchool = document.getElementById('tab-btn-school');
-        const tabShopping = document.getElementById('tab-btn-shopping');
-        const tabAdvice = document.getElementById('tab-btn-advice');
-        const tabAllergens = document.getElementById('tab-btn-allergens');
-        tabPersonal.classList.toggle('hidden', !personalData);
-        tabSchool.classList.toggle('hidden', !schoolData);
-        tabShopping.classList.toggle('hidden', !personalData || !personalData.shopping);
-        tabAdvice.classList.toggle('hidden', !personalData || !personalData.advice);
-        tabAllergens.classList.toggle('hidden', !personalData || !personalData.allergens);
-        if (!personalData && schoolData) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            tabSchool.classList.add('active');
-            document.getElementById('tab-school').classList.add('active');
-        }
-    }
-
-    function showControls() {
-        if (!personalData && !schoolData) { controlsPanel.classList.remove('active'); return; }
-        controlsPanel.classList.add('active');
-        outputDiv.style.display = 'block';
-        filterDay.innerHTML = '<option value="all">Todos</option>';
-        const daysSet = new Set();
-        if (personalData && personalData.plan) Object.keys(personalData.plan).forEach(d => daysSet.add(d));
-        if (schoolData && schoolData.weeks) schoolData.weeks.forEach(w => Object.keys(w.days).forEach(d => daysSet.add(d)));
-        getOrderedDays().forEach(d => {
-            if (daysSet.has(d)) {
-                const opt = document.createElement('option');
-                opt.value = d;
-                opt.textContent = d + (d === getTodayName() ? ' (hoy)' : '');
-                filterDay.appendChild(opt);
-            }
-        });
-        filterMealGroup.style.display = 'flex';
-    }
-
-    function updateViewToggleButton() {
-        btnToggleView.textContent = compactMode ? '📖 Modo lectura' : '📋 Modo compacto';
-    }
-
-    btnToggleView.addEventListener('click', () => {
-        compactMode = !compactMode;
-        updateViewToggleButton();
-        renderAll();
-        saveToStorage('personal');
-        closeMenu();
-    });
-
-    // =====================================================
-    // MENÚ ESCOLAR
-    // =====================================================
-    function renderSchoolMenu() {
-        const tabSchool = document.getElementById('tab-school');
-        tabSchool.innerHTML = '';
-        outputDiv.style.display = 'block';
-        if (!schoolData || !schoolData.weeks || schoolData.weeks.length === 0) {
-            tabSchool.innerHTML = `<div class="empty-message"><span class="icon">🍽️</span><p>No se pudieron extraer los platos del menú escolar.</p></div>`;
-            return;
-        }
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        const todayDay = today.getDate();
-        const todayMonth = today.getMonth();
-        const todayYear = today.getFullYear();
-        const allDays = [];
-        schoolData.weeks.forEach((week, weekIdx) => {
-            Object.keys(week.days).forEach(dayName => {
-                const dayInfo = week.days[dayName];
-                const date = new Date(dayInfo.year, dayInfo.month, dayInfo.dayOfMonth);
-                date.setHours(0, 0, 0, 0);
-                allDays.push({ dayName, dayInfo, weekIdx, date });
-            });
-        });
-        const futureDays = allDays.filter(d => d.date >= today).sort((a, b) => a.date - b.date);
-        const pastDays = allDays.filter(d => d.date < today).sort((a, b) => a.date - b.date);
-        futureDays.forEach((item) => tabSchool.appendChild(createSchoolDayElement(item, todayDay, todayMonth, todayYear)));
-        if (pastDays.length > 0) {
-            const separator = document.createElement('div');
-            separator.className = 'past-separator';
-            separator.textContent = '── Días anteriores ──';
-            tabSchool.appendChild(separator);
-            pastDays.forEach((item) => {
-                const dayEl = createSchoolDayElement(item, todayDay, todayMonth, todayYear);
-                dayEl.classList.add('past');
-                tabSchool.appendChild(dayEl);
-            });
-        }
-        if (schoolData.notes) {
-            const notesDiv = document.createElement('div');
-            notesDiv.className = 'extra-section';
-            notesDiv.innerHTML = `<div class="extra-header">📝 Notas</div><div class="extra-content"><p>${escapeHtml(schoolData.notes)}</p></div>`;
-            tabSchool.appendChild(notesDiv);
-        }
-        applyFilters();
-    }
-
-    function createSchoolDayElement(item, todayDay, todayMonth, todayYear) {
-        const { dayName, dayInfo, weekIdx } = item;
-        const isToday = (dayInfo.dayOfMonth === todayDay && dayInfo.month === todayMonth && dayInfo.year === todayYear);
-        const dayDetails = document.createElement('details');
-        dayDetails.className = 'day-details' + (isToday ? ' today' : '');
-        dayDetails.dataset.day = dayName;
-        dayDetails.dataset.week = weekIdx;
-        if (isToday) dayDetails.setAttribute('open', '');
-        const summary = document.createElement('summary');
-        summary.className = 'day-summary';
-        const dateStr = `${dayInfo.dayOfMonth} de ${getMonthName(dayInfo.month)}`;
-        summary.innerHTML = `<span>${dayName} · ${dateStr}${isToday ? ' <span class="today-badge">Hoy</span>' : ''}</span>`;
-        dayDetails.appendChild(summary);
-        MEAL_ORDER.forEach(mealId => {
-            const mealBlock = document.createElement('div');
-            mealBlock.className = 'meal-block';
-            mealBlock.dataset.day = dayName;
-            mealBlock.dataset.meal = mealId;
-            mealBlock.dataset.source = 'school';
-            if (mealId === 'comida') {
-                mealBlock.classList.add('school-meal');
-                const mealHeader = document.createElement('div');
-                mealHeader.className = 'meal-header';
-                const mealTitle = document.createElement('div');
-                mealTitle.className = 'meal-title';
-                mealTitle.textContent = '🍽️ Comida (Colegio)';
-                mealHeader.appendChild(mealTitle);
-                const actionsDiv = document.createElement('div');
-                actionsDiv.className = 'meal-actions';
-                const editBtn = document.createElement('button');
-                editBtn.className = 'btn btn-small';
-                editBtn.textContent = '✏️ Editar';
-                editBtn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); toggleEditSchool(mealBlock, dayInfo); };
-                actionsDiv.appendChild(editBtn);
-                mealHeader.appendChild(actionsDiv);
-                mealBlock.appendChild(mealHeader);
-                const content = document.createElement('div');
-                content.className = 'meal-content';
-                content.innerHTML = formatSchoolDishes(dayInfo.dishes);
-                mealBlock.appendChild(content);
-            } else {
-                mealBlock.classList.add('empty-meal');
-                const mealHeader = document.createElement('div');
-                mealHeader.className = 'meal-header';
-                const mealTitle = document.createElement('div');
-                mealTitle.className = 'meal-title';
-                mealTitle.textContent = MEAL_NAMES[mealId];
-                mealHeader.appendChild(mealTitle);
-                const actionsDiv = document.createElement('div');
-                actionsDiv.className = 'meal-actions';
-                const savedBtn = document.createElement('button');
-                savedBtn.className = 'btn btn-small';
-                savedBtn.textContent = '📂 Elegir';
-                savedBtn.style.background = 'var(--generator-color)';
-                savedBtn.style.marginRight = '5px';
-                savedBtn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); openSavedMenusPicker(mealBlock, dayInfo, mealId, 'school'); };
-                actionsDiv.appendChild(savedBtn);
-                const editBtn = document.createElement('button');
-                editBtn.className = 'btn btn-small';
-                editBtn.textContent = '✏️ Añadir';
-                editBtn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); toggleEditEmptySchool(mealBlock, dayInfo, mealId); };
-                actionsDiv.appendChild(editBtn);
-                mealHeader.appendChild(actionsDiv);
-                mealBlock.appendChild(mealHeader);
-                const content = document.createElement('div');
-                content.className = 'meal-content empty';
-                if (dayInfo.customMeals && dayInfo.customMeals[mealId]) {
-                    content.textContent = dayInfo.customMeals[mealId];
-                    content.classList.remove('empty');
-                    mealBlock.classList.remove('empty-meal');
-                    editBtn.textContent = '✏️ Editar';
-                } else {
-                    content.textContent = 'Sin contenido. Pulsa "Elegir" o "Añadir".';
-                }
-                mealBlock.appendChild(content);
-            }
-            dayDetails.appendChild(mealBlock);
-        });
-        return dayDetails;
-    }
-
-    function formatSchoolDishes(dishes) {
-        let html = '';
-        const order = ['entrante', 'primero', 'segundo', 'postre', 'menu'];
-        order.forEach(catId => {
-            if (dishes[catId]) {
-                const dish = dishes[catId];
-                html += `<div class="school-category"><span class="school-category-label">${dish.label}</span><div class="school-category-content"><span class="dish">${escapeHtml(dish.content)}</span></div></div>`;
-            }
-        });
-        return html || '<p><em>Sin platos asignados</em></p>';
-    }
-
-    function toggleEditSchool(block, dayInfo) {
-        const mealContent = block.querySelector('.meal-content');
-        const editBtn = block.querySelector('.meal-actions .btn');
-        const isEditing = mealContent.getAttribute('contenteditable') === 'true';
-        if (!isEditing) {
-            mealContent.setAttribute('contenteditable', 'true');
-            mealContent.focus();
-            editBtn.textContent = '💾 Guardar';
-            editBtn.classList.add('btn-secondary');
-            const indicator = document.createElement('span');
-            indicator.className = 'editing-indicator';
-            indicator.textContent = '✏️ Editando...';
-            mealContent.parentNode.insertBefore(indicator, mealContent);
-        } else {
-            mealContent.setAttribute('contenteditable', 'false');
-            editBtn.textContent = '✏️ Editar';
-            editBtn.classList.remove('btn-secondary');
-            const indicator = block.querySelector('.editing-indicator');
-            if (indicator) indicator.remove();
-            const newContent = mealContent.innerText.trim();
-            if (schoolData && schoolData.weeks) {
-                schoolData.weeks.forEach(week => {
-                    if (week.days[dayInfo.dayName] && week.days[dayInfo.dayName].dayOfMonth === dayInfo.dayOfMonth) week.days[dayInfo.dayName].customContent = newContent;
-                });
-                saveToStorage('school');
-            }
-            if (schoolData.weeks) {
-                const week = schoolData.weeks.find(w => w.days[dayInfo.dayName] && w.days[dayInfo.dayName].dayOfMonth === dayInfo.dayOfMonth);
-                if (week) mealContent.innerHTML = formatSchoolDishes(week.days[dayInfo.dayName].dishes);
-            }
-        }
-    }
-
-    function toggleEditEmptySchool(block, dayInfo, mealId) {
-        const mealContent = block.querySelector('.meal-content');
-        const editBtn = block.querySelector('.meal-actions .btn:last-child');
-        const isEditing = mealContent.getAttribute('contenteditable') === 'true';
-        if (!isEditing) {
-            mealContent.classList.remove('empty');
-            if (mealContent.textContent.includes('Sin contenido')) mealContent.textContent = '';
-            mealContent.setAttribute('contenteditable', 'true');
-            mealContent.focus();
-            editBtn.textContent = '💾 Guardar';
-            editBtn.classList.add('btn-secondary');
-            block.classList.remove('empty-meal');
-            const indicator = document.createElement('span');
-            indicator.className = 'editing-indicator';
-            indicator.textContent = '✏️ Editando...';
-            mealContent.parentNode.insertBefore(indicator, mealContent);
-        } else {
-            mealContent.setAttribute('contenteditable', 'false');
-            editBtn.textContent = '✏️ Editar';
-            editBtn.classList.remove('btn-secondary');
-            const indicator = block.querySelector('.editing-indicator');
-            if (indicator) indicator.remove();
-            const newContent = mealContent.innerText.trim();
-            if (schoolData && schoolData.weeks) {
-                schoolData.weeks.forEach(week => {
-                    if (week.days[dayInfo.dayName] && week.days[dayInfo.dayName].dayOfMonth === dayInfo.dayOfMonth) {
-                        if (!week.days[dayInfo.dayName].customMeals) week.days[dayInfo.dayName].customMeals = {};
-                        week.days[dayInfo.dayName].customMeals[mealId] = newContent;
-                    }
-                });
-                saveToStorage('school');
-            }
-            if (!newContent) {
-                mealContent.classList.add('empty');
-                mealContent.textContent = 'Sin contenido. Pulsa "Elegir" o "Añadir".';
-                block.classList.add('empty-meal');
-                editBtn.textContent = '✏️ Añadir';
-            }
-        }
-    }
-
-    // =====================================================
-    // SELECTOR DE MENÚS GUARDADOS (funciona para school y para plan)
-    // =====================================================
-    function openSavedMenusPicker(block, dayInfo, mealId, source) {
-        if (customMenus.length === 0) {
-            alert('No tienes menús guardados todavía. Ve a la pestaña 🎨 Crear Menú para crear uno.');
-            return;
-        }
-        const matching = customMenus.filter(m => m.meal === mealId);
-        if (matching.length === 0) {
-            alert(`No hay menús guardados para "${MEAL_NAMES[mealId]}". Crea uno desde la pestaña 🎨 Crear Menú.`);
-            return;
-        }
-        const overlay = document.createElement('div');
-        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;';
-        const modal = document.createElement('div');
-        modal.style.cssText = 'background:white;border-radius:12px;padding:20px;max-width:500px;width:100%;max-height:80vh;overflow-y:auto;';
-        modal.innerHTML = `<h3 style="margin-top:0;color:var(--generator-color);">📂 Elegir menú guardado</h3>`;
-        matching.forEach(menu => {
-            const btn = document.createElement('button');
-            btn.className = 'btn btn-small';
-            btn.style.cssText = 'display:block;width:100%;text-align:left;margin-bottom:8px;background:white;color:#333;border:2px solid var(--generator-color);';
-            btn.innerHTML = `<strong>${menu.name}</strong><br><small style="color:#666;">${menu.items.join(' · ')}</small>`;
-            btn.onclick = () => {
-                const mealContent = block.querySelector('.meal-content');
-                mealContent.textContent = menu.items.join(' · ');
-                mealContent.classList.remove('empty');
-                block.classList.remove('empty-meal');
-                const editBtn = block.querySelector('.meal-actions .btn:last-child');
-                editBtn.textContent = '✏️ Editar';
+        <div class="asig-header">
+            <h1 class="asig-titulo">
+                <span class="icono">🍎</span>
+                <span>Plan Dietético y Menú Escolar</span>
+            </h1>
+            <div class="asig-meta">
                 
-                if (source === 'school') {
-                    if (!dayInfo.customMeals) dayInfo.customMeals = {};
-                    dayInfo.customMeals[mealId] = menu.items.join(' · ');
-                    if (schoolData && schoolData.weeks) {
-                        schoolData.weeks.forEach(week => {
-                            if (week.days[dayInfo.dayName] && week.days[dayInfo.dayName].dayOfMonth === dayInfo.dayOfMonth) {
-                                if (!week.days[dayInfo.dayName].customMeals) week.days[dayInfo.dayName].customMeals = {};
-                                week.days[dayInfo.dayName].customMeals[mealId] = menu.items.join(' · ');
-                            }
-                        });
-                        saveToStorage('school');
-                    }
-                } else if (source === 'plan') {
-                    // 👇 Guardar en personalData
-                    const day = dayInfo.dayName;
-                    if (!personalData.plan[day]) personalData.plan[day] = {};
-                    personalData.plan[day][mealId] = { title: MEAL_NAMES[mealId], content: menu.items.join(' · ') };
-                    saveToStorage('personal');
-                }
-                document.body.removeChild(overlay);
-            };
-            modal.appendChild(btn);
-        });
-        const closeBtn = document.createElement('button');
-        closeBtn.className = 'btn btn-secondary';
-        closeBtn.textContent = 'Cerrar';
-        closeBtn.style.marginTop = '15px';
-        closeBtn.onclick = () => document.body.removeChild(overlay);
-        modal.appendChild(closeBtn);
-        overlay.appendChild(modal);
-        overlay.onclick = (e) => { if (e.target === overlay) document.body.removeChild(overlay); };
-        document.body.appendChild(overlay);
-    }
+            </div>
+        </div>
 
-    // =====================================================
-    // PLAN PERSONAL — con botón "📂 Elegir"
-    // =====================================================
-    function renderPlan() {
-        const tabPlan = document.getElementById('tab-personal');
-        tabPlan.innerHTML = '';
-        outputDiv.style.display = 'block';
-        if (!personalData || !personalData.plan || Object.keys(personalData.plan).length === 0) return;
-        const orderedDays = getOrderedDays().filter(d => personalData.plan[d]);
-        const today = getTodayName();
-        const currentMealFilter = filterMeal.value;
-        const currentDayFilter = filterDay.value;
-        const forceExpanded = (currentMealFilter !== 'all') || (currentDayFilter !== 'all');
-        const useCompact = compactMode && !forceExpanded;
-        orderedDays.forEach(day => {
-            const dayData = personalData.plan[day];
-            const isToday = (day === today);
-            if (useCompact) {
-                const dayDetails = document.createElement('details');
-                dayDetails.className = 'day-details' + (isToday ? ' today' : '');
-                dayDetails.dataset.day = day;
-                if (isToday) dayDetails.setAttribute('open', '');
-                const summary = document.createElement('summary');
-                summary.className = 'day-summary';
-                summary.innerHTML = `<span>${day}${isToday ? ' <span class="today-badge">Hoy</span>' : ''}</span>`;
-                dayDetails.appendChild(summary);
-                MEAL_ORDER.forEach(mealId => {
-                    if (dayData[mealId]) dayDetails.appendChild(createMealBlock(day, mealId, dayData[mealId], 'plan'));
-                    else dayDetails.appendChild(createEmptyMealBlock(day, mealId, 'plan'));
-                });
-                tabPlan.appendChild(dayDetails);
-            } else {
-                const dayBlock = document.createElement('div');
-                dayBlock.className = 'day-block' + (isToday ? ' today' : '');
-                dayBlock.dataset.day = day;
-                const header = document.createElement('div');
-                header.className = 'day-header';
-                header.innerHTML = `<span>${day}${isToday ? ' <span class="today-badge">Hoy</span>' : ''}</span>`;
-                dayBlock.appendChild(header);
-                MEAL_ORDER.forEach(mealId => {
-                    if (dayData[mealId]) dayBlock.appendChild(createMealBlock(day, mealId, dayData[mealId], 'plan'));
-                    else dayBlock.appendChild(createEmptyMealBlock(day, mealId, 'plan'));
-                });
-                tabPlan.appendChild(dayBlock);
-            }
-        });
-        applyFilters();
-    }
+        
 
-    function renderShopping() {
-        const tabShopping = document.getElementById('tab-shopping');
-        tabShopping.innerHTML = '';
-        if (!personalData || !personalData.shopping) {
-            tabShopping.innerHTML = '<p>No se encontró la Lista de la Compra en el PDF.</p>';
-            return;
+        <div class="seccion">
+            <div class="seccion-titulo">
+                <i class="fas fa-list"></i> Temas
+                <span class="badge" id="temasCount">...</span>
+            </div>
+            <div id="temasContainer" class="temas-grid">
+                <div class="loading-temas">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    Cargando temas...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+const ASIGNATURA_KEY = 'dieta';
+
+fetch('config.json')
+  .then(function(response) { return response.json(); })
+  .then(function(data) {
+    var container = document.getElementById('temasContainer');
+    var countEl = document.getElementById('temasCount');
+    var totalTemas = 0;
+
+    // Detectar formato
+    if (data.libros && data.libros.length > 0) {
+      // Formato LIBROS
+      data.libros.forEach(function(libro) { totalTemas += (libro.temas || []).length; });
+      countEl.textContent = totalTemas;
+
+      var html = '';
+      data.libros.forEach(function(libro) {
+        html += '<div class="libro-bloque">';
+        html += '<div class="libro-header">';
+        html += '<div class="libro-titulo"><i class="fas fa-book-open" style="color:var(--accent);"></i> ' + libro.titulo + '</div>';
+        if (libro.autor) {
+          html += '<div class="libro-autor">' + libro.autor + '</div>';
         }
-        const section = document.createElement('div');
-        section.className = 'extra-section';
-        section.innerHTML = `<div class="extra-header">🛒 Lista de la Compra</div>`;
-        const content = document.createElement('div');
-        content.className = 'extra-content';
-        content.innerHTML = formatExtraContent(personalData.shopping);
-        section.appendChild(content);
-        tabShopping.appendChild(section);
-    }
+        html += '</div>';
+        html += '<div class="temas-grid">';
 
-    function renderAdvice() {
-        const tabAdvice = document.getElementById('tab-advice');
-        tabAdvice.innerHTML = '';
-        if (!personalData || !personalData.advice) {
-            tabAdvice.innerHTML = '<p>No se encontraron consejos o patologías en el PDF.</p>';
-            return;
+        (libro.temas || []).forEach(function(t, index) {
+          var temaId = t.id || 'tema' + (index + 1);
+          var numTema = index + 1;
+          var titulo = t.titulo || 'Tema ' + numTema;
+          var archivo = t.archivo || 'tema.html';
+          // Si el archivo no tiene path, añadirlo
+          if (archivo.indexOf('/') === -1) {
+            archivo = 'temas/' + temaId + '/' + archivo;
+          }
+          var key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
+          var progreso = parseInt(localStorage.getItem(key)) || 0;
+
+          html += '<div class="tema-card" data-tema-id="' + temaId + '" data-archivo="' + archivo + '">'
+            + '<div class="tema-card-header">'
+            +   '<span class="tema-numero">' + numTema + '</span>'
+            +   '<span class="tema-titulo">' + titulo + '</span>'
+            + '</div>'
+            + '<div class="tema-footer">'
+            +   '<div class="tema-progreso">'
+            +     '<div class="track"><div class="fill" id="fill_' + temaId + '" style="width:' + progreso + '%"></div></div>'
+            +     '<span class="pct" id="progreso_' + temaId + '">' + progreso + '%</span>'
+            +   '</div>'
+            +   '<div class="tema-controles">'
+            +     '<button onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, -10)" data-tid="' + temaId + '" title="-10%">−</button>'
+            +     '<button onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 10)" data-tid="' + temaId + '" title="+10%">+</button>'
+            +     '<span class="separador"></span>'
+            +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 25)" data-tid="' + temaId + '" title="+25%">25</button>'
+            +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 50)" data-tid="' + temaId + '" title="50%">50</button>'
+            +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 100)" data-tid="' + temaId + '" title="100%">100</button>'
+            +   '</div>'
+            + '</div>'
+            + '</div>';
+        });
+
+        html += '</div>';
+        html += '</div>';
+      });
+      container.innerHTML = html;
+
+    } else if (data.temas && data.temas.length > 0) {
+      // Formato TEMAS
+      totalTemas = data.temas.length;
+      countEl.textContent = totalTemas;
+
+      var html = '';
+      data.temas.forEach(function(t, index) {
+        var temaId = t.id || 'tema' + (index + 1);
+        var numTema = index + 1;
+        var titulo = t.titulo || 'Tema ' + numTema;
+        var archivo = t.archivo || 'tema.html';
+        // Si el archivo no tiene path, añadirlo
+        if (archivo.indexOf('/') === -1) {
+          archivo = 'temas/' + temaId + '/' + archivo;
         }
-        const adviceText = personalData.advice;
-        const sections = [
-            { title: '🍼 Intolerancia a la Lactosa', pattern: /INTOLERANCIA\s+A\s+LA\s+LACTOSA/i },
-            { title: '💨 Meteorismo o Flatulencia', pattern: /METEORISMO\s+O\s+FLATULENCIA/i },
-            { title: '🔥 Reflujo Gastroesofágico', pattern: /REFLUJO\s+GASTROESOFÁGICO/i },
-            { title: '🌾 Sensibilidad al Gluten No Celiaca', pattern: /SENSIBILIDAD\s+AL\s+GLUTEN\s+NO\s+CELIACA/i },
-            { title: '⚖️ Reducir Grasa Corporal', pattern: /REDUCIR\s+GRASA\s+CORPORAL/i }
-        ];
-        let allSections = [];
-        sections.forEach(sec => {
-            const match = adviceText.match(sec.pattern);
-            if (match) allSections.push({ title: sec.title, index: match.index, pattern: sec.pattern });
-        });
-        allSections.sort((a, b) => a.index - b.index);
-        if (allSections.length > 0) {
-            for (let i = 0; i < allSections.length; i++) {
-                const start = allSections[i].index;
-                const end = (i + 1 < allSections.length) ? allSections[i + 1].index : adviceText.length;
-                let sectionContent = adviceText.substring(start, end);
-                sectionContent = sectionContent.replace(allSections[i].pattern, '').trim();
-                const section = document.createElement('div');
-                section.className = 'extra-section advice';
-                section.innerHTML = `<div class="extra-header">${allSections[i].title}</div>`;
-                const content = document.createElement('div');
-                content.className = 'extra-content';
-                content.innerHTML = formatExtraContent(sectionContent);
-                section.appendChild(content);
-                tabAdvice.appendChild(section);
-            }
-        }
+        var key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
+        var progreso = parseInt(localStorage.getItem(key)) || 0;
+
+        html += '<div class="tema-card" data-tema-id="' + temaId + '" data-archivo="' + archivo + '">'
+          + '<div class="tema-card-header">'
+          +   '<span class="tema-numero">' + numTema + '</span>'
+          +   '<span class="tema-titulo">' + titulo + '</span>'
+          + '</div>'
+          + '<div class="tema-footer">'
+          +   '<div class="tema-progreso">'
+          +     '<div class="track"><div class="fill" id="fill_' + temaId + '" style="width:' + progreso + '%"></div></div>'
+          +     '<span class="pct" id="progreso_' + temaId + '">' + progreso + '%</span>'
+          +   '</div>'
+          +   '<div class="tema-controles">'
+          +     '<button onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, -10)" data-tid="' + temaId + '" title="-10%">−</button>'
+          +     '<button onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 10)" data-tid="' + temaId + '" title="+10%">+</button>'
+          +     '<span class="separador"></span>'
+          +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 25)" data-tid="' + temaId + '" title="+25%">25</button>'
+          +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 50)" data-tid="' + temaId + '" title="50%">50</button>'
+          +     '<button class="quick" onclick="event.stopPropagation();cambiarProgreso(this.dataset.tid, 100)" data-tid="' + temaId + '" title="100%">100</button>'
+          +   '</div>'
+          + '</div>'
+          + '</div>';
+      });
+      container.innerHTML = html;
+
+    } else {
+      container.innerHTML = '<p style="grid-column:1/-1; color:var(--text-secondary);">No hay contenido cargado.</p>';
+      countEl.textContent = '0';
+      return;
     }
 
-    function renderAllergens() {
-        const tabAllergens = document.getElementById('tab-allergens');
-        tabAllergens.innerHTML = '';
-        if (!personalData || !personalData.allergens) {
-            tabAllergens.innerHTML = '<p>No se encontró el resumen de alérgenos en el PDF.</p>';
-            return;
-        }
-        const section = document.createElement('div');
-        section.className = 'extra-section';
-        section.innerHTML = `<div class="extra-header">⚠️ Resumen de Alérgenos por Día</div>`;
-        const content = document.createElement('div');
-        content.className = 'extra-content';
-        content.innerHTML = formatExtraContent(personalData.allergens);
-        section.appendChild(content);
-        tabAllergens.appendChild(section);
-    }
-
-    function renderSeason() {
-        const tabSeason = document.getElementById('tab-season');
-        tabSeason.innerHTML = '';
-        const currentMonth = new Date().toLocaleString('es-ES', { month: 'long' });
-        const monthCapitalized = currentMonth.charAt(0).toUpperCase() + currentMonth.slice(1);
-        const currentSection = document.createElement('div');
-        currentSection.className = 'extra-section season';
-        currentSection.innerHTML = `<div class="extra-header">📅 En temporada en ${monthCapitalized}</div>`;
-        const content = document.createElement('div');
-        content.className = 'extra-content';
-        const fruits = SEASON_DATA.fruits[monthCapitalized] || [];
-        const vegetables = SEASON_DATA.vegetables[monthCapitalized] || [];
-        if (fruits.length > 0) content.innerHTML += `<h3>🍓 Frutas</h3><p>${fruits.join(' · ')}</p>`;
-        if (vegetables.length > 0) content.innerHTML += `<h3>🥦 Verduras y Hortalizas</h3><p>${vegetables.join(' · ')}</p>`;
-        currentSection.appendChild(content);
-        tabSeason.appendChild(currentSection);
-        const yearDetails = document.createElement('details');
-        yearDetails.className = 'day-details';
-        yearDetails.style.marginTop = '20px';
-        const yearSummary = document.createElement('summary');
-        yearSummary.className = 'day-summary';
-        yearSummary.textContent = '📆 Ver calendario anual completo';
-        yearDetails.appendChild(yearSummary);
-        const yearContent = document.createElement('div');
-        yearContent.style.padding = '20px';
-        Object.keys(SEASON_DATA.fruits).forEach(month => {
-            const monthBlock = document.createElement('div');
-            monthBlock.style.marginBottom = '15px';
-            monthBlock.innerHTML = `<h4>${month}</h4><p><strong>Frutas:</strong> ${SEASON_DATA.fruits[month].join(', ')}</p><p><strong>Verduras:</strong> ${SEASON_DATA.vegetables[month].join(', ')}</p>`;
-            yearContent.appendChild(monthBlock);
-        });
-        yearDetails.appendChild(yearContent);
-        tabSeason.appendChild(yearDetails);
-    }
-
-    function renderRecipes() {
-        const tabRecipes = document.getElementById('tab-recipes');
-        tabRecipes.innerHTML = '';
-        RECIPE_RESOURCES.forEach(group => {
-            const section = document.createElement('div');
-            section.className = 'extra-section recipes';
-            section.innerHTML = `<div class="extra-header">${group.category}</div>`;
-            const content = document.createElement('div');
-            content.className = 'extra-content';
-            group.items.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'recipe-link-card';
-                card.innerHTML = `<h3><a href="${item.url}" target="_blank" rel="noopener">${item.name} ↗</a></h3><p style="margin: 0; color: #555; font-size: 0.9em;">${item.desc}</p>`;
-                content.appendChild(card);
-            });
-            section.appendChild(content);
-            tabRecipes.appendChild(section);
-        });
-    }
-
-    // =====================================================
-    // GENERADOR INTERACTIVO
-    // =====================================================
-    function renderGenerator() {
-        const tabGen = document.getElementById('tab-generator');
-        tabGen.innerHTML = '';
-        const layout = document.createElement('div');
-        layout.className = 'generator-layout';
-        const selector = document.createElement('div');
-        selector.className = 'gen-selector';
-        const title = document.createElement('h2');
-        title.style.cssText = 'margin-top:0;color:var(--generator-color);';
-        title.textContent = '🎨 Crear tu menú';
-        selector.appendChild(title);
-        const mealSelectorTitle = document.createElement('p');
-        mealSelectorTitle.innerHTML = '<strong>1. ¿Qué comida es?</strong>';
-        mealSelectorTitle.style.marginBottom = '8px';
-        selector.appendChild(mealSelectorTitle);
-        const mealSelector = document.createElement('div');
-        mealSelector.className = 'gen-meal-selector';
-        mealSelector.style.flexDirection = 'row';
-        mealSelector.style.flexWrap = 'wrap';
-        MEAL_ORDER.forEach(mealId => {
-            const btn = document.createElement('button');
-            btn.className = 'gen-meal-btn' + (genState.meal === mealId ? ' active' : '');
-            btn.textContent = MEAL_NAMES[mealId];
-            btn.style.flex = '1';
-            btn.style.minWidth = '120px';
-            btn.onclick = () => { genState.meal = mealId; renderGenerator(); };
-            mealSelector.appendChild(btn);
-        });
-        selector.appendChild(mealSelector);
-        const catTitle = document.createElement('p');
-        catTitle.innerHTML = '<strong>2. Elige los alimentos que quieras</strong>';
-        catTitle.style.marginTop = '20px';
-        catTitle.style.marginBottom = '8px';
-        selector.appendChild(catTitle);
-        const mealDb = FOOD_DB[genState.meal] || {};
-        Object.keys(mealDb).forEach(catKey => {
-            const catDiv = document.createElement('div');
-            catDiv.className = 'gen-category';
-            const catHeader = document.createElement('div');
-            catHeader.className = 'gen-category-title';
-            const catNames = {
-                lacteos: '🥛 Lácteos y bebidas', pan: '🍞 Pan, tostadas y bollería',
-                proteinas: '🥓 Proteínas y embutidos', frutas: '🍓 Frutas',
-                frutos_secos: '🥜 Frutos secos', bocadillos: '🥪 Bocadillos y sándwiches',
-                primeros: '🍲 Primeros platos', segundos: '🍖 Segundos platos',
-                guarniciones: '🥗 Guarniciones', postres: '🍮 Postres', ligeros: '🥗 Platos ligeros'
-            };
-            const catLabel = catNames[catKey] || catKey;
-            const selectedCount = mealDb[catKey].filter(item => genState.selected.includes(item)).length;
-            catHeader.innerHTML = `<span>${catLabel}</span>`;
-            if (selectedCount > 0) {
-                const countBadge = document.createElement('span');
-                countBadge.className = 'gen-category-count';
-                countBadge.textContent = `${selectedCount} selec.`;
-                catHeader.appendChild(countBadge);
-            }
-            catDiv.appendChild(catHeader);
-            const itemsDiv = document.createElement('div');
-            itemsDiv.className = 'gen-items';
-            mealDb[catKey].forEach(item => {
-                const itemEl = document.createElement('span');
-                itemEl.className = 'gen-item' + (genState.selected.includes(item) ? ' selected' : '');
-                itemEl.textContent = item;
-                itemEl.onclick = () => {
-                    const idx = genState.selected.indexOf(item);
-                    if (idx >= 0) genState.selected.splice(idx, 1);
-                    else genState.selected.push(item);
-                    renderGenerator();
-                };
-                itemsDiv.appendChild(itemEl);
-            });
-            catDiv.appendChild(itemsDiv);
-            selector.appendChild(catDiv);
-        });
-        layout.appendChild(selector);
-        const cart = document.createElement('div');
-        cart.className = 'gen-cart';
-        const cartTitle = document.createElement('h3');
-        cartTitle.textContent = `📋 Tu menú (${genState.selected.length} items)`;
-        cart.appendChild(cartTitle);
-        if (genState.selected.length === 0) {
-            const emptyMsg = document.createElement('div');
-            emptyMsg.className = 'gen-cart-empty';
-            emptyMsg.textContent = 'Selecciona alimentos de la izquierda para añadirlos a tu menú.';
-            cart.appendChild(emptyMsg);
-        } else {
-            const ul = document.createElement('ul');
-            ul.className = 'gen-cart-list';
-            genState.selected.forEach((item, idx) => {
-                const li = document.createElement('li');
-                li.innerHTML = `<span>${item}</span>`;
-                const removeBtn = document.createElement('button');
-                removeBtn.textContent = '✕';
-                removeBtn.onclick = () => { genState.selected.splice(idx, 1); renderGenerator(); };
-                li.appendChild(removeBtn);
-                ul.appendChild(li);
-            });
-            cart.appendChild(ul);
-        }
-        const actionBtns = document.createElement('div');
-        actionBtns.className = 'gen-action-btns';
-        const clearBtn = document.createElement('button');
-        clearBtn.className = 'gen-clear-btn';
-        clearBtn.textContent = '🗑️ Limpiar';
-        clearBtn.onclick = () => {
-            if (genState.selected.length === 0 || confirm('¿Vaciar el menú actual?')) {
-                genState.selected = [];
-                renderGenerator();
-            }
-        };
-        actionBtns.appendChild(clearBtn);
-        const saveBtn = document.createElement('button');
-        saveBtn.className = 'gen-save-btn';
-        saveBtn.textContent = '💾 Guardar menú';
-        saveBtn.disabled = genState.selected.length === 0;
-        saveBtn.onclick = () => saveCurrentMenu();
-        actionBtns.appendChild(saveBtn);
-        cart.appendChild(actionBtns);
-        const savedInfo = document.createElement('p');
-        savedInfo.style.cssText = 'margin-top:15px;font-size:0.85em;color:#7f8c8d;text-align:center;';
-        savedInfo.textContent = `Tienes ${customMenus.length} menú(s) guardado(s)`;
-        cart.appendChild(savedInfo);
-        layout.appendChild(cart);
-        tabGen.appendChild(layout);
-        const savedSection = document.createElement('div');
-        savedSection.className = 'extra-section generator';
-        savedSection.style.marginTop = '20px';
-        savedSection.innerHTML = `<div class="extra-header">📂 Menús guardados (${customMenus.length})</div>`;
-        const savedContent = document.createElement('div');
-        savedContent.className = 'extra-content';
-        if (customMenus.length === 0) {
-            savedContent.innerHTML = '<p style="color:#888;text-align:center;">Aún no has guardado ningún menú. Cuando lo hagas, aparecerán aquí y podrás usarlos desde el Menú Chicos o desde Plan Personal pulsando "📂 Elegir".</p>';
-        } else {
-            customMenus.forEach((menu, idx) => {
-                const card = document.createElement('div');
-                card.className = 'saved-menu-card';
-                card.innerHTML = `
-                    <div class="info">
-                        <h4>${MEAL_NAMES[menu.meal] || menu.meal} — ${menu.name}</h4>
-                        <div class="items">${menu.items.join(' · ')}</div>
-                    </div>
-                    <div class="actions">
-                        <button title="Editar" data-edit="${idx}">✏️</button>
-                        <button title="Borrar" data-del="${idx}">🗑️</button>
-                    </div>
-                `;
-                savedContent.appendChild(card);
-            });
-            savedContent.querySelectorAll('button[data-del]').forEach(btn => {
-                btn.onclick = () => {
-                    const idx = parseInt(btn.dataset.del);
-                    if (confirm(`¿Borrar "${customMenus[idx].name}"?`)) {
-                        customMenus.splice(idx, 1);
-                        saveToStorage('customMenus');
-                        renderGenerator();
-                    }
-                };
-            });
-            savedContent.querySelectorAll('button[data-edit]').forEach(btn => {
-                btn.onclick = () => {
-                    const idx = parseInt(btn.dataset.edit);
-                    const menu = customMenus[idx];
-                    genState.meal = menu.meal;
-                    genState.selected = [...menu.items];
-                    customMenus.splice(idx, 1);
-                    saveToStorage('customMenus');
-                    renderGenerator();
-                    document.querySelector('.gen-selector').scrollIntoView({ behavior: 'smooth' });
-                };
-            });
-        }
-        savedSection.appendChild(savedContent);
-        tabGen.appendChild(savedSection);
-    }
-
-    function saveCurrentMenu() {
-        if (genState.selected.length === 0) {
-            alert('Selecciona al menos un alimento antes de guardar.');
-            return;
-        }
-        const defaultName = `${MEAL_NAMES[genState.meal].split(' ')[1] || 'Menú'} ${customMenus.length + 1}`;
-        const name = prompt('Ponle un nombre al menú:', defaultName);
-        if (!name || !name.trim()) return;
-        customMenus.push({
-            name: name.trim(),
-            meal: genState.meal,
-            items: [...genState.selected],
-            createdAt: new Date().toISOString()
-        });
-        saveToStorage('customMenus');
-        genState.selected = [];
-        renderGenerator();
-        alert('✅ Menú guardado. Ya puedes usarlo desde el Menú Chicos o desde Plan Personal pulsando "📂 Elegir".');
-    }
-
-    // =====================================================
-    // HELPERS
-    // =====================================================
-    function formatExtraContent(text) {
-        if (!text) return '<p><em>Sin contenido</em></p>';
-        const lines = text.split(/\n/);
-        let html = '';
-        let inList = false;
-        lines.forEach(line => {
-            const trimmed = line.trim();
-            if (!trimmed) {
-                if (inList) { html += '</ul>'; inList = false; }
-                html += '<br>';
-                return;
-            }
-            if (trimmed.match(/^[-•*]\s/)) {
-                if (!inList) { html += '<ul>'; inList = true; }
-                html += `<li>${escapeHtml(trimmed.replace(/^[-•*]\s/, ''))}</li>`;
-            } else if (trimmed.match(/^[A-ZÁÉÍÓÚÑ\s]+$/) && trimmed.length > 5 && trimmed.length < 80) {
-                if (inList) { html += '</ul>'; inList = false; }
-                html += `<h3>${escapeHtml(trimmed)}</h3>`;
-            } else {
-                if (inList) { html += '</ul>'; inList = false; }
-                html += `<p>${escapeHtml(trimmed)}</p>`;
-            }
-        });
-        if (inList) html += '</ul>';
-        return html || `<p>${escapeHtml(text)}</p>`;
-    }
-
-    // createMealBlock / createEmptyMealBlock con botón Elegir en plan personal también
-    function createMealBlock(day, mealId, meal, source) {
-        const block = document.createElement('div');
-        block.className = 'meal-block';
-        block.dataset.day = day;
-        block.dataset.meal = mealId;
-        block.dataset.source = source;
-        const header = document.createElement('div');
-        header.className = 'meal-header';
-        const title = document.createElement('div');
-        title.className = 'meal-title';
-        title.textContent = meal.title || MEAL_NAMES[mealId];
-        header.appendChild(title);
-        const actionsDiv = document.createElement('div');
-        actionsDiv.className = 'meal-actions';
-        // Botón elegir también en plan personal
-        const savedBtn = document.createElement('button');
-        savedBtn.className = 'btn btn-small';
-        savedBtn.textContent = '📂 Elegir';
-        savedBtn.style.background = 'var(--generator-color)';
-        savedBtn.style.marginRight = '5px';
-        savedBtn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); openSavedMenusPicker(block, { dayName: day }, mealId, 'plan'); };
-        actionsDiv.appendChild(savedBtn);
-        const editBtn = document.createElement('button');
-        editBtn.className = 'btn btn-small';
-        editBtn.textContent = '✏️ Editar';
-        editBtn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); toggleEditMode(block, day, mealId, source); };
-        actionsDiv.appendChild(editBtn);
-        header.appendChild(actionsDiv);
-        block.appendChild(header);
-        const content = document.createElement('div');
-        content.className = 'meal-content';
-        content.innerHTML = formatMealContent(meal.content);
-        block.appendChild(content);
-        return block;
-    }
-
-    function createEmptyMealBlock(day, mealId, source) {
-        const block = document.createElement('div');
-        block.className = 'meal-block empty-meal';
-        block.dataset.day = day;
-        block.dataset.meal = mealId;
-        block.dataset.source = source;
-        const header = document.createElement('div');
-        header.className = 'meal-header';
-        const title = document.createElement('div');
-        title.className = 'meal-title';
-        title.textContent = MEAL_NAMES[mealId];
-        header.appendChild(title);
-        const actionsDiv = document.createElement('div');
-        actionsDiv.className = 'meal-actions';
-        // Botón elegir también en plan personal
-        const savedBtn = document.createElement('button');
-        savedBtn.className = 'btn btn-small';
-        savedBtn.textContent = '📂 Elegir';
-        savedBtn.style.background = 'var(--generator-color)';
-        savedBtn.style.marginRight = '5px';
-        savedBtn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); openSavedMenusPicker(block, { dayName: day }, mealId, 'plan'); };
-        actionsDiv.appendChild(savedBtn);
-        const editBtn = document.createElement('button');
-        editBtn.className = 'btn btn-small';
-        editBtn.textContent = '✏️ Añadir';
-        editBtn.onclick = (e) => { e.preventDefault(); e.stopPropagation(); toggleEditEmpty(block, day, mealId, source); };
-        actionsDiv.appendChild(editBtn);
-        header.appendChild(actionsDiv);
-        block.appendChild(header);
-        const content = document.createElement('div');
-        content.className = 'meal-content empty';
-        content.textContent = 'Sin contenido. Pulsa "Elegir" o "Añadir".';
-        block.appendChild(content);
-        return block;
-    }
-
-    function formatMealContent(content) {
-        if (!content) return '<p><em>Sin contenido</em></p>';
-        let contentHtml = '';
-        const upperContent = content.toUpperCase();
-        const ingredientesIndex = upperContent.indexOf('INGREDIENTES');
-        const recetaIndex = upperContent.indexOf('RECETA');
-        if (ingredientesIndex !== -1 && recetaIndex !== -1 && recetaIndex > ingredientesIndex) {
-            const beforeIng = content.substring(0, ingredientesIndex).trim();
-            const ingText = content.substring(ingredientesIndex, recetaIndex).trim();
-            const recetaText = content.substring(recetaIndex).trim();
-            if (beforeIng) contentHtml += `<p>${escapeHtml(beforeIng)}</p>`;
-            contentHtml += `<div class="ingredients-list"><strong>${escapeHtml(ingText)}</strong></div>`;
-            contentHtml += `<div class="recipe-text">${escapeHtml(recetaText)}</div>`;
-        } else {
-            contentHtml = `<p>${escapeHtml(content)}</p>`;
-        }
-        return contentHtml;
-    }
-
-    function escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    function toggleEditMode(block, day, mealId, source) {
-        const mealContent = block.querySelector('.meal-content');
-        const editBtn = block.querySelectorAll('.meal-actions .btn')[1] || block.querySelector('.meal-actions .btn');
-        const isEditing = mealContent.getAttribute('contenteditable') === 'true';
-        if (!isEditing) {
-            mealContent.setAttribute('contenteditable', 'true');
-            mealContent.focus();
-            editBtn.textContent = '💾 Guardar';
-            editBtn.classList.add('btn-secondary');
-            const indicator = document.createElement('span');
-            indicator.className = 'editing-indicator';
-            indicator.textContent = '✏️ Editando...';
-            mealContent.parentNode.insertBefore(indicator, mealContent);
-        } else {
-            mealContent.setAttribute('contenteditable', 'false');
-            editBtn.textContent = '✏️ Editar';
-            editBtn.classList.remove('btn-secondary');
-            const indicator = block.querySelector('.editing-indicator');
-            if (indicator) indicator.remove();
-            const newContent = mealContent.innerText.trim();
-            if (source === 'plan' && personalData.plan[day] && personalData.plan[day][mealId]) {
-                personalData.plan[day][mealId].content = newContent;
-                saveToStorage('personal');
-            }
-            mealContent.innerHTML = formatMealContent(newContent);
-        }
-    }
-
-    function toggleEditEmpty(block, day, mealId, source) {
-        const mealContent = block.querySelector('.meal-content');
-        const editBtn = block.querySelectorAll('.meal-actions .btn')[1] || block.querySelector('.meal-actions .btn');
-        const isEditing = mealContent.getAttribute('contenteditable') === 'true';
-        if (!isEditing) {
-            mealContent.classList.remove('empty');
-            if (mealContent.textContent.includes('Sin contenido')) mealContent.textContent = '';
-            mealContent.setAttribute('contenteditable', 'true');
-            mealContent.focus();
-            editBtn.textContent = '💾 Guardar';
-            editBtn.classList.add('btn-secondary');
-            block.classList.remove('empty-meal');
-            const indicator = document.createElement('span');
-            indicator.className = 'editing-indicator';
-            indicator.textContent = '✏️ Editando...';
-            mealContent.parentNode.insertBefore(indicator, mealContent);
-        } else {
-            mealContent.setAttribute('contenteditable', 'false');
-            editBtn.textContent = '✏️ Editar';
-            editBtn.classList.remove('btn-secondary');
-            const indicator = block.querySelector('.editing-indicator');
-            if (indicator) indicator.remove();
-            const newContent = mealContent.innerText.trim();
-            if (source === 'plan' && personalData) {
-                if (!personalData.plan[day]) personalData.plan[day] = {};
-                personalData.plan[day][mealId] = { title: MEAL_NAMES[mealId], content: newContent };
-                saveToStorage('personal');
-            }
-            if (!newContent) {
-                mealContent.classList.add('empty');
-                mealContent.textContent = 'Sin contenido. Pulsa "Elegir" o "Añadir".';
-                block.classList.add('empty-meal');
-                editBtn.textContent = '✏️ Añadir';
-            }
-        }
-    }
-
-    function applyFilters() {
-        const dayFilterVal = filterDay.value;
-        const mealFilterVal = filterMeal.value;
-        const searchFilter = searchText.value.toLowerCase().trim();
-        document.querySelectorAll('#tab-personal .day-block, #tab-personal .day-details').forEach(dayEl => {
-            const dayName = dayEl.dataset.day;
-            let dayVisible = (dayFilterVal === 'all' || dayFilterVal === dayName);
-            let anyMealVisible = false;
-            dayEl.querySelectorAll('.meal-block').forEach(mealEl => {
-                const mealType = mealEl.dataset.meal;
-                const content = mealEl.querySelector('.meal-content').innerText.toLowerCase();
-                const mealMatch = (mealFilterVal === 'all' || mealFilterVal === mealType);
-                const searchMatch = (!searchFilter || content.includes(searchFilter));
-                const visible = mealMatch && searchMatch;
-                if (visible) { mealEl.classList.remove('hidden'); anyMealVisible = true; }
-                else mealEl.classList.add('hidden');
-            });
-            if (dayVisible && anyMealVisible) dayEl.classList.remove('hidden');
-            else dayEl.classList.add('hidden');
-        });
-        document.querySelectorAll('#tab-school .day-block, #tab-school .day-details').forEach(dayEl => {
-            const dayName = dayEl.dataset.day;
-            let dayVisible = (dayFilterVal === 'all' || dayFilterVal === dayName);
-            let anyMealVisible = false;
-            dayEl.querySelectorAll('.meal-block').forEach(mealEl => {
-                const mealType = mealEl.dataset.meal;
-                const content = mealEl.querySelector('.meal-content').innerText.toLowerCase();
-                const mealMatch = (mealFilterVal === 'all' || mealFilterVal === mealType);
-                const searchMatch = (!searchFilter || content.includes(searchFilter));
-                const visible = mealMatch && searchMatch;
-                if (visible) { mealEl.classList.remove('hidden'); anyMealVisible = true; }
-                else mealEl.classList.add('hidden');
-            });
-            if (dayVisible && anyMealVisible) dayEl.classList.remove('hidden');
-            else dayEl.classList.add('hidden');
-        });
-    }
-
-    filterDay.addEventListener('change', applyFilters);
-    filterMeal.addEventListener('change', applyFilters);
-    searchText.addEventListener('input', applyFilters);
-
-    document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
-        });
+    // Añadir el onclick a cada tema-card
+    container.querySelectorAll('.tema-card').forEach(function(card) {
+      card.addEventListener('click', function() {
+        var archivo = card.dataset.archivo;
+        navegarSeguro(archivo);
+      });
     });
+  })
+  .catch(function(error) {
+    document.getElementById('temasContainer').innerHTML =
+      '<p style="grid-column:1/-1; color:#ef4444;">Error al cargar los temas: ' + error.message + '</p>';
+    console.error('Error cargando temas:', error);
+  });
 
-    btnExport.addEventListener('click', () => {
-        const dataStr = JSON.stringify({ 
-            personal: personalData ? { data: personalData, rawText: personalRawText } : null,
-            school: schoolData ? { data: schoolData, rawText: schoolRawText } : null,
-            customMenus: customMenus
-        }, null, 2);
-        const blob = new Blob([dataStr], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = 'menus.json';
-        a.click();
-        URL.revokeObjectURL(url);
-        closeMenu();
-    });
+function cambiarProgreso(temaId, cambio) {
+  var key = 'progreso_' + ASIGNATURA_KEY + '_' + temaId;
+  var actual = parseInt(localStorage.getItem(key)) || 0;
+  var nuevo = Math.max(0, Math.min(100, actual + cambio));
+  localStorage.setItem(key, nuevo.toString());
+  var elPct = document.getElementById('progreso_' + temaId);
+  if (elPct) elPct.textContent = nuevo + '%';
+  var elFill = document.getElementById('fill_' + temaId);
+  if (elFill) elFill.style.width = nuevo + '%';
+  mostrarToast('📊 Progreso: ' + nuevo + '%');
+}
 
-    btnPrint.addEventListener('click', () => {
-        document.querySelectorAll('details').forEach(d => d.setAttribute('open', ''));
-        window.print();
-        closeMenu();
-    });
-
-    btnResetPersonal.addEventListener('click', () => {
-        if (confirm('¿Borrar el Plan Personal?')) {
-            localStorage.removeItem(STORAGE_PERSONAL);
-            personalData = null; personalRawText = '';
-            document.getElementById('tab-personal').innerHTML = '';
-            document.getElementById('tab-shopping').innerHTML = '';
-            document.getElementById('tab-advice').innerHTML = '';
-            document.getElementById('tab-allergens').innerHTML = '';
-            renderAll(); closeMenu();
-        }
-    });
-
-    btnResetSchool.addEventListener('click', () => {
-        if (confirm('¿Borrar el Menú Escolar?')) {
-            localStorage.removeItem(STORAGE_SCHOOL);
-            schoolData = null; schoolRawText = '';
-            document.getElementById('tab-school').innerHTML = '';
-            renderAll(); closeMenu();
-        }
-    });
-
+function mostrarToast(mensaje) {
+  var toast = document.getElementById('toast-progreso');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.id = 'toast-progreso';
+    toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#6366f1;color:white;padding:10px 24px;border-radius:30px;font-weight:600;font-size:14px;box-shadow:0 4px 20px rgba(0,0,0,0.3);opacity:0;transition:opacity 0.3s ease;z-index:9999;';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = mensaje;
+  toast.style.opacity = '1';
+  clearTimeout(toast._timer);
+  toast._timer = setTimeout(function() { toast.style.opacity = '0'; }, 2000);
+}
 </script>
-
 </body>
 </html>

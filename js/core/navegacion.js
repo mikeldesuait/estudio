@@ -1,5 +1,5 @@
 /* ============================================================
-   NAVEGACION — Historial unificado + Chincheta de punto
+   NAVEGACION — Historial + Chincheta de punto + Enganche de iframes
    ============================================================ */
 
 const Navegacion = {
@@ -9,27 +9,23 @@ const Navegacion = {
   historial: {},
   inicializado: false,
 
+  /* ═══════════════════════════════════════════════════════
+     INICIALIZACIÓN
+     ═══════════════════════════════════════════════════════ */
+
   init() {
-    if (this.inicializado) {
-      return;
-    }
+    if (this.inicializado) return;
     this.inicializado = true;
 
     this.cargarHistorial();
 
-    const btnAtras = document.getElementById('shellBtnAtras');
-    const btnAdelante = document.getElementById('shellBtnAdelante');
-    const btnPunto = document.getElementById('shellBtnPunto');
+    var btnAtras = document.getElementById('shellBtnAtras');
+    var btnAdelante = document.getElementById('shellBtnAdelante');
+    var btnPunto = document.getElementById('shellBtnPunto');
 
-    if (btnAtras) {
-      btnAtras.addEventListener('click', () => this.irAtras());
-    }
-    if (btnAdelante) {
-      btnAdelante.addEventListener('click', () => this.irAdelante());
-    }
-    if (btnPunto) {
-      btnPunto.addEventListener('click', () => this.togglePunto());
-    }
+    if (btnAtras) btnAtras.addEventListener('click', () => this.irAtras());
+    if (btnAdelante) btnAdelante.addEventListener('click', () => this.irAdelante());
+    if (btnPunto) btnPunto.addEventListener('click', () => this.togglePunto());
 
     this.actualizarBotones();
     this.actualizarBotonPunto();
@@ -42,7 +38,9 @@ const Navegacion = {
     console.log('✅ Navegación inicializada');
   },
 
-  /* ═══ HISTORIAL ═══ */
+  /* ═══════════════════════════════════════════════════════
+     HISTORIAL
+     ═══════════════════════════════════════════════════════ */
 
   cargarHistorial() {
     try {
@@ -59,7 +57,7 @@ const Navegacion = {
   },
 
   getHist() {
-    const pestana = window.Shell ? Shell.pestanaActiva : 'default';
+    var pestana = window.Shell ? Shell.pestanaActiva : 'default';
     if (!this.historial[pestana]) {
       this.historial[pestana] = { entradas: [], indice: -1 };
     }
@@ -67,10 +65,10 @@ const Navegacion = {
   },
 
   registrar(entrada) {
-    const hist = this.getHist();
+    var hist = this.getHist();
+    var actual = hist.entradas[hist.indice];
 
-    const actual = hist.entradas[hist.indice];
-    if (actual && actual.tipo === entrada.tipo && actual.ref === entrada.ref && actual.url === entrada.url) {
+    if (actual && actual.tipo === entrada.tipo && actual.url === entrada.url) {
       return;
     }
 
@@ -91,25 +89,19 @@ const Navegacion = {
   },
 
   irAtras() {
-    const hist = this.getHist();
+    var hist = this.getHist();
     if (hist.indice <= 0) return;
-
     hist.indice--;
-    const entrada = hist.entradas[hist.indice];
-
-    this.ejecutarEntrada(entrada);
+    this.ejecutarEntrada(hist.entradas[hist.indice]);
     this.guardarHistorial();
     this.actualizarBotones();
   },
 
   irAdelante() {
-    const hist = this.getHist();
+    var hist = this.getHist();
     if (hist.indice >= hist.entradas.length - 1) return;
-
     hist.indice++;
-    const entrada = hist.entradas[hist.indice];
-
-    this.ejecutarEntrada(entrada);
+    this.ejecutarEntrada(hist.entradas[hist.indice]);
     this.guardarHistorial();
     this.actualizarBotones();
   },
@@ -118,17 +110,10 @@ const Navegacion = {
     if (!entrada) return;
 
     if (entrada.tipo === 'iframe' && entrada.url) {
-      const iframe = document.querySelector('.shell-contenido-pestana.shell-activa iframe');
+      var iframe = document.querySelector('.shell-contenido-pestana.shell-activa iframe');
       if (iframe) {
         try {
           iframe.contentWindow.location.href = entrada.url;
-          if (entrada.scroll) {
-            setTimeout(() => {
-              try {
-                iframe.contentWindow.scrollTo(0, entrada.scroll);
-              } catch (e) {}
-            }, 200);
-          }
         } catch (e) {
           console.warn('No se pudo navegar el iframe:', e);
         }
@@ -139,76 +124,91 @@ const Navegacion = {
   },
 
   actualizarBotones() {
-    const hist = this.getHist();
-    const btnAtras = document.getElementById('shellBtnAtras');
-    const btnAdelante = document.getElementById('shellBtnAdelante');
-
+    var hist = this.getHist();
+    var btnAtras = document.getElementById('shellBtnAtras');
+    var btnAdelante = document.getElementById('shellBtnAdelante');
     if (btnAtras) btnAtras.disabled = hist.indice <= 0;
     if (btnAdelante) btnAdelante.disabled = hist.indice >= hist.entradas.length - 1;
   },
 
-    /* ═══ CHINCHETA DE PUNTO ═══ */
+  /* ═══════════════════════════════════════════════════════
+     ENGANCHAR IFRAME AL HISTORIAL
+     ═══════════════════════════════════════════════════════ */
 
-  /**
-   * Obtiene la URL actual del iframe (sin cache-buster)
-   */
+  engancharIframe(iframe) {
+    if (!iframe) return;
+
+    var self = this;
+
+    var registrarCarga = function() {
+      try {
+        var url = iframe.contentWindow.location.href;
+        self.registrar({
+          tipo: 'iframe',
+          url: url,
+          timestamp: Date.now()
+        });
+      } catch (e) {
+        console.warn('No se pudo registrar navegacion del iframe:', e);
+      }
+    };
+
+    if (iframe.contentDocument && iframe.contentDocument.readyState === 'complete') {
+      registrarCarga();
+    } else {
+      iframe.addEventListener('load', registrarCarga, { once: true });
+    }
+  },
+
+  /* ═══════════════════════════════════════════════════════
+     CHINCHETA DE PUNTO
+     ═══════════════════════════════════════════════════════ */
+
   getUrlActual() {
-    const iframe = document.querySelector('.shell-contenido-pestana.shell-activa iframe');
+    var iframe = document.querySelector('.shell-contenido-pestana.shell-activa iframe');
     if (!iframe) return null;
     try {
-      const u = new URL(iframe.contentWindow.location.href, window.location.href);
+      var u = new URL(iframe.contentWindow.location.href, window.location.href);
       return u.pathname;
     } catch (e) {
       return null;
     }
   },
 
-  /**
-   * Obtiene la asignatura actual (ruta base)
-   */
   getClaveAsignatura() {
-    const url = this.getUrlActual();
+    var url = this.getUrlActual();
     if (!url) return null;
-    // Detectar la parte de asignatura (hasta el asignatura.html)
-    // ej: /estudio/estudio/grado-derecho/historia-derecho-espanol/asignatura.html → /estudio/estudio/grado-derecho/historia-derecho-espanol/
-    const match = url.match(/^(.*?\/)[^\/]+\.html$/);
+    var match = url.match(/^(.*?\/)[^\/]+\.html$/);
     return match ? match[1] : url;
   },
 
-  /**
-   * Obtiene el título del tema actual (del <title> del iframe)
-   */
   getTituloActual() {
-    const iframe = document.querySelector('.shell-contenido-pestana.shell-activa iframe');
-    if (!iframe) return 'esta página';
+    var iframe = document.querySelector('.shell-contenido-pestana.shell-activa iframe');
+    if (!iframe) return 'esta pagina';
     try {
-      const titulo = iframe.contentDocument.title;
+      var titulo = iframe.contentDocument.title;
       if (titulo && titulo.trim()) return titulo.trim();
     } catch (e) {}
 
-    // Fallback: nombre del archivo
-    const url = this.getUrlActual();
+    var url = this.getUrlActual();
     if (url) {
-      const partes = url.split('/').filter(p => p);
-      const ultima = partes[partes.length - 1];
+      var partes = url.split('/').filter(function(p) { return p; });
+      var ultima = partes[partes.length - 1];
       return decodeURIComponent(ultima).replace('.html', '').replace(/-/g, ' ');
     }
-    return 'esta página';
+    return 'esta pagina';
   },
 
-  /**
-   * Obtiene todos los puntos guardados para la asignatura actual
-   */
   getPuntosAsignatura() {
-    const claveAsig = this.getClaveAsignatura();
+    var claveAsig = this.getClaveAsignatura();
     if (!claveAsig) return {};
 
     try {
-      const todos = JSON.parse(localStorage.getItem(this.CLAVE_PUNTO) || '{}');
-      const resultado = {};
-      Object.entries(todos).forEach(([url, punto]) => {
-        if (url.startsWith(claveAsig)) {
-          resultado[url] = punto;
+      var todos = JSON.parse(localStorage.getItem(this.CLAVE_PUNTO) || '{}');
+      var resultado = {};
+      Object.keys(todos).forEach(function(url) {
+        if (url.indexOf(claveAsig) === 0) {
+          resultado[url] = todos[url];
         }
       });
       return resultado;
@@ -217,36 +217,29 @@ const Navegacion = {
     }
   },
 
-  /**
-   * Obtiene el punto de la URL actual
-   */
   getPuntoActual() {
-    const url = this.getUrlActual();
+    var url = this.getUrlActual();
     if (!url) return null;
-
     try {
-      const puntos = JSON.parse(localStorage.getItem(this.CLAVE_PUNTO) || '{}');
+      var puntos = JSON.parse(localStorage.getItem(this.CLAVE_PUNTO) || '{}');
       return puntos[url] || null;
     } catch (e) {
       return null;
     }
   },
 
-  /**
-   * Guarda un punto para la URL actual
-   */
   guardarPunto() {
-    const iframe = document.querySelector('.shell-contenido-pestana.shell-activa iframe');
-    const url = this.getUrlActual();
+    var iframe = document.querySelector('.shell-contenido-pestana.shell-activa iframe');
+    var url = this.getUrlActual();
     if (!iframe || !url) return false;
 
     try {
-      const win = iframe.contentWindow;
-      const scrollPx = win.scrollY;
-      const scrollHeight = win.document.documentElement.scrollHeight;
-      const innerHeight = win.innerHeight;
+      var win = iframe.contentWindow;
+      var scrollPx = win.scrollY;
+      var scrollHeight = win.document.documentElement.scrollHeight;
+      var innerHeight = win.innerHeight;
 
-      let puntos = {};
+      var puntos = {};
       try {
         puntos = JSON.parse(localStorage.getItem(this.CLAVE_PUNTO) || '{}');
       } catch (e) {}
@@ -266,15 +259,11 @@ const Navegacion = {
     }
   },
 
-  /**
-   * Elimina el punto de la URL actual
-   */
   eliminarPuntoActual() {
-    const url = this.getUrlActual();
+    var url = this.getUrlActual();
     if (!url) return false;
-
     try {
-      const puntos = JSON.parse(localStorage.getItem(this.CLAVE_PUNTO) || '{}');
+      var puntos = JSON.parse(localStorage.getItem(this.CLAVE_PUNTO) || '{}');
       delete puntos[url];
       localStorage.setItem(this.CLAVE_PUNTO, JSON.stringify(puntos));
       return true;
@@ -283,31 +272,24 @@ const Navegacion = {
     }
   },
 
-  /**
-   * Navega a un punto específico (por URL)
-   */
-  irAlPuntoPorUrl(urlPunto) {
-    const iframe = document.querySelector('.shell-contenido-pestana.shell-activa iframe');
+  irAlPuntoPorUrl: function(urlPunto) {
+    var iframe = document.querySelector('.shell-contenido-pestana.shell-activa iframe');
     if (!iframe) return false;
 
     try {
-      const puntos = JSON.parse(localStorage.getItem(this.CLAVE_PUNTO) || '{}');
-      const punto = puntos[urlPunto];
+      var puntos = JSON.parse(localStorage.getItem(this.CLAVE_PUNTO) || '{}');
+      var punto = puntos[urlPunto];
       if (!punto) return false;
 
-      // Si no estamos en esa URL, navegar primero
-      const urlActual = this.getUrlActual();
+      var urlActual = this.getUrlActual();
       if (urlActual !== urlPunto) {
-        // Navegar el iframe a esa URL
         iframe.contentWindow.location.href = urlPunto;
-        // Después del load, hacer scroll
-        setTimeout(() => {
+        setTimeout(function() {
           try {
             iframe.contentWindow.scrollTo({ top: punto.scrollPx, behavior: 'smooth' });
           } catch (e) {}
         }, 500);
       } else {
-        // Ya estamos, solo scroll
         iframe.contentWindow.scrollTo({ top: punto.scrollPx, behavior: 'smooth' });
       }
       return true;
@@ -317,13 +299,9 @@ const Navegacion = {
     }
   },
 
-  /**
-   * Actualiza el tooltip y estado visual del botón 📌
-   */
   actualizarBotonPunto() {
     var btn = document.getElementById('shellBtnPunto');
     var iframe = document.querySelector('.shell-contenido-pestana.shell-activa iframe');
-
     if (!btn) return;
 
     if (!iframe) {
@@ -343,7 +321,7 @@ const Navegacion = {
     if (puntoActual) {
       btn.classList.add('tiene-punto');
       btn.classList.remove('tiene-punto-otro');
-      btn.title = 'Punto guardado en esta pagina - Clic para gestionar';
+      btn.title = 'Punto guardado aqui - Clic para gestionar';
     } else if (totalPuntos > 0) {
       btn.classList.remove('tiene-punto');
       btn.classList.add('tiene-punto-otro');
@@ -355,163 +333,149 @@ const Navegacion = {
     }
   },
 
-  /**
-   * Clic en la chincheta: muestra un modal con opciones
-   */
   togglePunto() {
-    const iframe = document.querySelector('.shell-contenido-pestana.shell-activa iframe');
+    var iframe = document.querySelector('.shell-contenido-pestana.shell-activa iframe');
     if (!iframe) return;
 
-    const puntoActual = this.getPuntoActual();
-    const puntosAsignatura = this.getPuntosAsignatura();
-    const totalPuntos = Object.keys(puntosAsignatura).length;
-    const tituloActual = this.getTituloActual();
+    var puntoActual = this.getPuntoActual();
+    var puntosAsignatura = this.getPuntosAsignatura();
+    var totalPuntos = Object.keys(puntosAsignatura).length;
+    var tituloActual = this.getTituloActual();
+    var self = this;
 
-    // Caso 1: Hay punto en la página actual
+    // Caso 1: hay punto en la página actual
     if (puntoActual) {
       this.abrirModalPunto({
         titulo: '📌 Punto guardado',
-        mensaje: 'Estás en la página donde dejaste el punto:<br><br><strong>📖 ' + this.escapar(tituloActual) + '</strong>',
+        mensaje: 'Estas en la pagina donde dejaste el punto:<br><br><strong>📖 ' + this.escapar(tituloActual) + '</strong>',
         acciones: [
-          { texto: '📍 Ir al punto', clase: 'primary', accion: () => {
-            this.irAlPuntoPorUrl(this.getUrlActual());
-            this.cerrarModalPunto();
-            this.toast('📍 Volviendo al punto guardado');
+          { texto: '📍 Ir al punto', clase: 'primary', accion: function() {
+            self.irAlPuntoPorUrl(self.getUrlActual());
+            self.cerrarModalPunto();
+            self.toast('📍 Volviendo al punto guardado');
           }},
-          { texto: '📌 Actualizar punto', clase: 'secondary', accion: () => {
-            this.guardarPunto();
-            this.cerrarModalPunto();
-            this.toast('📌 Punto actualizado');
-            this.actualizarBotonPunto();
+          { texto: '📌 Actualizar punto', clase: 'secondary', accion: function() {
+            self.guardarPunto();
+            self.cerrarModalPunto();
+            self.toast('📌 Punto actualizado');
+            self.actualizarBotonPunto();
           }},
-          { texto: '🗑️ Eliminar punto', clase: 'danger', accion: () => {
-            this.eliminarPuntoActual();
-            this.cerrarModalPunto();
-            this.toast('🗑️ Punto eliminado');
-            this.actualizarBotonPunto();
+          { texto: '🗑️ Eliminar punto', clase: 'danger', accion: function() {
+            self.eliminarPuntoActual();
+            self.cerrarModalPunto();
+            self.toast('🗑️ Punto eliminado');
+            self.actualizarBotonPunto();
           }}
         ]
       });
       return;
     }
 
-    // Caso 2: No hay punto aquí pero sí en otros temas
+    // Caso 2: hay puntos en otros temas
     if (totalPuntos > 0) {
-      // Lista de puntos
-      let listaHtml = '<div style="max-height:200px;overflow-y:auto;margin-top:10px;">';
-      Object.entries(puntosAsignatura).forEach(([url, p]) => {
-        listaHtml += '<div class="punto-item" data-url="' + this.escapar(url) + '">';
-        listaHtml += '<strong>📖 ' + this.escapar(p.titulo || url) + '</strong><br>';
-        listaHtml += '<span style="font-size:11px;color:#718096;">' + Math.round((p.scrollPct || 0) * 100) + '% de la página</span>';
+      var listaHtml = '<div style="max-height:200px;overflow-y:auto;margin-top:10px;">';
+      Object.keys(puntosAsignatura).forEach(function(url) {
+        var p = puntosAsignatura[url];
+        listaHtml += '<div class="punto-item" data-url="' + self.escapar(url) + '">';
+        listaHtml += '<strong>📖 ' + self.escapar(p.titulo || url) + '</strong><br>';
+        listaHtml += '<span style="font-size:11px;color:#718096;">' + Math.round((p.scrollPct || 0) * 100) + '% de la pagina</span>';
         listaHtml += '</div>';
       });
       listaHtml += '</div>';
 
       this.abrirModalPunto({
         titulo: '📌 Puntos guardados',
-        mensaje: 'En esta página no tienes punto, pero sí en otros temas:<br>' + listaHtml + '<br>¿Qué quieres hacer?',
+        mensaje: 'En esta pagina no tienes punto, pero si en otros temas:<br>' + listaHtml + '<br>¿Que quieres hacer?',
         acciones: [
-          { texto: '📌 Marcar aquí nuevo', clase: 'primary', accion: () => {
-            this.guardarPunto();
-            this.cerrarModalPunto();
-            this.toast('📌 Punto guardado aquí');
-            this.actualizarBotonPunto();
+          { texto: '📌 Marcar aqui nuevo', clase: 'primary', accion: function() {
+            self.guardarPunto();
+            self.cerrarModalPunto();
+            self.toast('📌 Punto guardado aqui');
+            self.actualizarBotonPunto();
           }},
-          { texto: 'Cerrar', clase: 'secondary', accion: () => this.cerrarModalPunto() }
+          { texto: 'Cerrar', clase: 'secondary', accion: function() { self.cerrarModalPunto(); }}
         ],
-        onItemClick: (url) => {
-          this.irAlPuntoPorUrl(url);
-          this.cerrarModalPunto();
-          this.toast('📍 Yendo al punto guardado');
+        onItemClick: function(url) {
+          self.irAlPuntoPorUrl(url);
+          self.cerrarModalPunto();
+          self.toast('📍 Yendo al punto guardado');
         }
       });
       return;
     }
 
-    // Caso 3: No hay ningún punto
+    // Caso 3: no hay ningún punto
     this.abrirModalPunto({
       titulo: '📌 Sin puntos guardados',
-      mensaje: 'No tienes ningún punto guardado en esta asignatura.<br><br>¿Quieres marcar este punto para volver luego?',
+      mensaje: 'No tienes ningun punto guardado en esta asignatura.<br><br>¿Quieres marcar este punto para volver luego?',
       acciones: [
-        { texto: '📌 Marcar aquí', clase: 'primary', accion: () => {
-          this.guardarPunto();
-          this.cerrarModalPunto();
-          this.toast('📌 Punto guardado');
-          this.actualizarBotonPunto();
+        { texto: '📌 Marcar aqui', clase: 'primary', accion: function() {
+          self.guardarPunto();
+          self.cerrarModalPunto();
+          self.toast('📌 Punto guardado');
+          self.actualizarBotonPunto();
         }},
-        { texto: 'Cancelar', clase: 'secondary', accion: () => this.cerrarModalPunto() }
+        { texto: 'Cancelar', clase: 'secondary', accion: function() { self.cerrarModalPunto(); }}
       ]
     });
   },
 
-  /**
-   * Abre un modal genérico para la chincheta
-   */
-  abrirModalPunto(opciones) {
-    // Cerrar modal existente
+  abrirModalPunto: function(opciones) {
     this.cerrarModalPunto();
 
-    const modal = document.createElement('div');
+    var modal = document.createElement('div');
     modal.id = 'navPuntoModal';
     modal.className = 'nav-punto-overlay';
 
-    let accionesHtml = '';
-    (opciones.acciones || []).forEach((acc, i) => {
+    var accionesHtml = '';
+    (opciones.acciones || []).forEach(function(acc, i) {
       accionesHtml += '<button class="nav-punto-accion ' + (acc.clase || '') + '" data-accion="' + i + '">' + acc.texto + '</button>';
     });
 
-    modal.innerHTML = `
-      <div class="nav-punto-modal">
-        <div class="nav-punto-header">
-          <h3>${opciones.titulo}</h3>
-          <button class="nav-punto-close" onclick="Navegacion.cerrarModalPunto()">✕</button>
-        </div>
-        <div class="nav-punto-body">
-          ${opciones.mensaje}
-        </div>
-        <div class="nav-punto-footer">
-          ${accionesHtml}
-        </div>
-      </div>
-    `;
+    modal.innerHTML = '<div class="nav-punto-modal">'
+      + '<div class="nav-punto-header">'
+      +   '<h3>' + opciones.titulo + '</h3>'
+      +   '<button class="nav-punto-close" onclick="Navegacion.cerrarModalPunto()">✕</button>'
+      + '</div>'
+      + '<div class="nav-punto-body">' + opciones.mensaje + '</div>'
+      + '<div class="nav-punto-footer">' + accionesHtml + '</div>'
+      + '</div>';
 
     document.body.appendChild(modal);
 
-    // Event listeners
-    setTimeout(() => modal.classList.add('show'), 10);
+    var self = this;
+    setTimeout(function() { modal.classList.add('show'); }, 10);
 
-    modal.addEventListener('click', (e) => {
-      if (e.target === modal) this.cerrarModalPunto();
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) self.cerrarModalPunto();
     });
 
-    // Acciones
-    modal.querySelectorAll('.nav-punto-accion').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const idx = parseInt(btn.dataset.accion);
-        const accion = opciones.acciones[idx];
+    modal.querySelectorAll('.nav-punto-accion').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var idx = parseInt(btn.dataset.accion);
+        var accion = opciones.acciones[idx];
         if (accion && accion.accion) accion.accion();
       });
     });
 
-    // Items de la lista (si hay)
     if (opciones.onItemClick) {
-      modal.querySelectorAll('.punto-item').forEach(item => {
-        item.addEventListener('click', () => {
+      modal.querySelectorAll('.punto-item').forEach(function(item) {
+        item.addEventListener('click', function() {
           opciones.onItemClick(item.dataset.url);
         });
       });
     }
   },
 
-  cerrarModalPunto() {
-    const modal = document.getElementById('navPuntoModal');
+  cerrarModalPunto: function() {
+    var modal = document.getElementById('navPuntoModal');
     if (modal) {
       modal.classList.remove('show');
-      setTimeout(() => modal.remove(), 200);
+      setTimeout(function() { modal.remove(); }, 200);
     }
   },
 
-  escapar(str) {
+  escapar: function(str) {
     return String(str || '')
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
@@ -519,6 +483,24 @@ const Navegacion = {
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#39;');
   },
+
+  toast: function(msg) {
+    var toast = document.getElementById('navToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'navToast';
+      toast.style.cssText = 'position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(20px);background:#6366f1;color:white;padding:10px 20px;border-radius:24px;font-family:Inter,sans-serif;font-weight:600;font-size:12px;box-shadow:0 8px 30px rgba(99,102,241,0.4);z-index:10001;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateX(-50%) translateY(0)';
+    clearTimeout(toast._timer);
+    toast._timer = setTimeout(function() {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(-50%) translateY(20px)';
+    }, 2000);
+  }
 };
 
 window.Navegacion = Navegacion;
