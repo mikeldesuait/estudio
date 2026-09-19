@@ -19,19 +19,13 @@ const Navegacion = {
 
     this.cargarHistorial();
 
-    var btnAtras = document.getElementById('shellBtnAtras');
-    var btnAdelante = document.getElementById('shellBtnAdelante');
     var btnPunto = document.getElementById('shellBtnPunto');
 
-    if (btnAtras) btnAtras.addEventListener('click', () => this.irAtras());
-    if (btnAdelante) btnAdelante.addEventListener('click', () => this.irAdelante());
     if (btnPunto) btnPunto.addEventListener('click', () => this.togglePunto());
 
-    this.actualizarBotones();
     this.actualizarBotonPunto();
 
     setInterval(() => {
-      this.actualizarBotones();
       this.actualizarBotonPunto();
     }, 1000);
 
@@ -124,11 +118,7 @@ const Navegacion = {
   },
 
   actualizarBotones() {
-    var hist = this.getHist();
-    var btnAtras = document.getElementById('shellBtnAtras');
-    var btnAdelante = document.getElementById('shellBtnAdelante');
-    if (btnAtras) btnAtras.disabled = hist.indice <= 0;
-    if (btnAdelante) btnAdelante.disabled = hist.indice >= hist.entradas.length - 1;
+    // Los botones de navegacion ya no existen
   },
 
   /* ═══════════════════════════════════════════════════════

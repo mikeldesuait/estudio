@@ -226,7 +226,7 @@ const Shell = {
       <div class="shell-brand">
         <span class="logo">📚</span>
         <span>Estudio</span>
-        <span class="shell-version">v1.2</span>
+        <span class="shell-version">v1.3</span>
       </div>
 
       <div class="shell-pomodoro">
@@ -263,11 +263,8 @@ const Shell = {
       </div>
 
       <div class="shell-nav-buttons">
-        <button class="shell-nav-btn" id="shellBtnAtras" title="Atrás" disabled>
-          <i class="fas fa-arrow-left"></i>
-        </button>
-        <button class="shell-nav-btn" id="shellBtnAdelante" title="Adelante" disabled>
-          <i class="fas fa-arrow-right"></i>
+        <button class="shell-btn-volver-tema" id="shellBtnVolverTema" title="Volver a los temas" style="display:none;">
+          <i class="fas fa-arrow-left"></i> <span>Volver</span>
         </button>
         <button class="shell-nav-btn shell-btn-punto" id="shellBtnPunto" title="Marcar punto" disabled>
           <i class="fas fa-thumbtack"></i>
@@ -945,3 +942,70 @@ window.addEventListener('message', function(event) {
     console.warn('Error al procesar navegacion del iframe:', e);
   }
 });
+
+/* ============================================================
+   BOTÓN FLOTANTE "VOLVER A TEMAS"
+   Se inyecta en los temas (dentro del iframe)
+   ============================================================ */
+
+Shell.inyectarBotonVolver = function(iframe) {
+  if (!iframe) return;
+
+  var btnTopbar = document.getElementById('shellBtnVolverTema');
+  if (!btnTopbar) return;
+
+  try {
+    var win = iframe.contentWindow;
+    if (!win) return;
+
+    // ¿Es un tema? (URL contiene /temas/)
+    var esTema = win.location.href.indexOf('/temas/') !== -1;
+
+    if (esTema) {
+      // Mostrar el botón "Volver" en el topbar
+      btnTopbar.style.display = 'flex';
+
+      // Configurar el click (una sola vez por si acaso)
+      if (!btnTopbar.dataset.bound) {
+        btnTopbar.dataset.bound = 'true';
+        btnTopbar.addEventListener('click', function() {
+          var iframeActual = document.querySelector('.shell-contenido-pestana.shell-activa iframe');
+          if (!iframeActual) return;
+
+          try {
+            var urlActual = iframeActual.contentWindow.location.href;
+            var partes = urlActual.split('/temas/');
+            if (partes.length >= 2) {
+              iframeActual.contentWindow.location.href = partes[0] + '/asignatura.html?t=' + Date.now();
+            }
+          } catch (err) {
+            console.warn('No se pudo volver a la asignatura:', err);
+          }
+        });
+      }
+    } else {
+      // Ocultar el botón cuando no estamos en un tema
+      btnTopbar.style.display = 'none';
+    }
+
+  } catch (e) {
+    // Silencioso
+  }
+};
+
+/* ─── Vigilar cada iframe para mostrar/ocultar el botón ─── */
+setInterval(function() {
+  var iframes = document.querySelectorAll('.shell-contenido-pestana.shell-activa iframe');
+  iframes.forEach(function(iframe) {
+    Shell.inyectarBotonVolver(iframe);
+  });
+}, 500);
+
+
+/* ─── Vigilar cada iframe para inyectar el botón cuando cargue ─── */
+setInterval(function() {
+  var iframes = document.querySelectorAll('.shell-contenido-pestana.shell-activa iframe');
+  iframes.forEach(function(iframe) {
+    Shell.inyectarBotonVolver(iframe);
+  });
+}, 500);
