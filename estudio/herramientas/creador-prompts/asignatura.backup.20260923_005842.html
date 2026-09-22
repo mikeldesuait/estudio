@@ -425,7 +425,7 @@ function getOrdenEsqueleto() {
    - TEST: entender + trabajar lo literal (dos fases separadas)
    - DESARROLLO: entender + estructurar la respuesta
    ============================================================ */
-function getOrdenContenido(modalidad, numEpigrafe, tituloEpigrafe, tieneSubs) {
+function getOrdenContenido(modalidad, numEpigrafe, tituloEpigrafe) {
     var rol =
 'Eres un estudiante de Derecho de la UNED preparando sus apuntes. ' +
 'NO estás resumiendo el libro: estás explicando el contenido del epígrafe con tus propias palabras. ' +
@@ -444,15 +444,6 @@ function getOrdenContenido(modalidad, numEpigrafe, tituloEpigrafe, tieneSubs) {
 '- Frases cortas. Una idea por frase. Si una frase pasa de 25 palabras, pártela.\n' +
 '- Registro de examen universitario: ni coloquial ni academicista.\n' +
 '- Longitud: la justa para que el epígrafe quede entendido. Ni telegrama ni tostón.';
-
-    if (tieneSubs) {
-        reglasComunes += '\n' +
-'- INSTRUCCIÓN ESPECIAL: este epígrafe tiene SUBEPÍGRAFES. ' +
-'NO desarrolles el contenido de cada subepígrafe: eso se hará por separado. ' +
-'Tu trabajo aquí es SOLO hacer un encuadre general del conjunto: de qué trata, qué partes cubre y cómo se relacionan. ' +
-'El bloque 📖 CONTENIDO debe ser BREVE (3-6 frases). ' +
-'PROHIBIDO repetir información que se desarrollará en los subepígrafes.';
-    }
 
     if (modalidad === 'test') {
         var formatoTest =
@@ -690,21 +681,9 @@ async function generarEsqueleto() {
     return parsearEsqueleto(res.contenido);
 }
 
-function epigrafeTieneSubs(num) {
-    var tiene = false;
-    estado.esqueleto.forEach(function(t) {
-        if (t.num === num && t.subs && t.subs.length > 0) tiene = true;
-        (t.subs || []).forEach(function(s) {
-            if (s.num === num && s.subs && s.subs.length > 0) tiene = true;
-        });
-    });
-    return tiene;
-}
-
 async function generarContenidoEpigrafe(num, titulo) {
     var contexto = estado.contextoConEsqueleto || estado.contextoFijo || construirContextoFijo();
-    var tieneSubs = epigrafeTieneSubs(num);
-    var mensajes = contexto.concat([{ role: 'user', content: getOrdenContenido(estado.modalidad, num, titulo, tieneSubs) }]);
+    var mensajes = contexto.concat([{ role: 'user', content: getOrdenContenido(estado.modalidad, num, titulo) }]);
     var res = await llamarDeepSeek(mensajes);
     return res.contenido;
 }
