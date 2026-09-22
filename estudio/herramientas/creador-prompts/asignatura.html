@@ -443,14 +443,20 @@ function getOrdenContenido(modalidad, numEpigrafe, tituloEpigrafe, tieneSubs) {
 '- Empieza directamente con la primera idea del epígrafe, sin encuadres previos.\n' +
 '- Frases cortas. Una idea por frase. Si una frase pasa de 25 palabras, pártela.\n' +
 '- Registro de examen universitario: ni coloquial ni academicista.\n' +
-'- Longitud: la justa para que el epígrafe quede entendido. Ni telegrama ni tostón.';
+'- Longitud: la justa para que el epígrafe quede entendido. Ni telegrama ni tostón.' +
+'- El bloque 📖 CONTENIDO debe estar SIEMPRE separado en párrafos. ' +
+'Cada idea o bloque temático va en su propio párrafo. ' +
+'NUNCA devuelvas el 📖 como un bloque único de texto seguido. ' +
+'Entre párrafo y párrafo, deja una línea en blanco.';
 
     if (tieneSubs) {
         reglasComunes += '\n' +
 '- INSTRUCCIÓN ESPECIAL: este epígrafe tiene SUBEPÍGRAFES. ' +
 'NO desarrolles el contenido de cada subepígrafe: eso se hará por separado. ' +
 'Tu trabajo aquí es SOLO hacer un encuadre general del conjunto: de qué trata, qué partes cubre y cómo se relacionan. ' +
-'El bloque 📖 CONTENIDO debe ser BREVE (3-6 frases). ' +
+'El bloque 📖 CONTENIDO debe ser BREVE, pero SEPARADO EN PÁRRAFOS. ' +
+'Cada idea o bloque temático va en su propio párrafo. ' +
+'PROHIBIDO meter todo el contenido en un único párrafo. ' +
 'PROHIBIDO repetir información que se desarrollará en los subepígrafes.';
     }
 
