@@ -419,14 +419,81 @@ function getOrdenEsqueleto() {
 '- IMPORTANTE: si un tema NO tiene subepígrafes, devuélvelo igualmente como una línea "1. Título del tema". No lo omitas.';
 }
 
+/* ============================================================
+   PROMPT DE CONTENIDO — v2 afinado
+   Dos modos con enfoques distintos:
+   - TEST: entender + trabajar lo literal (dos fases separadas)
+   - DESARROLLO: entender + estructurar la respuesta
+   ============================================================ */
 function getOrdenContenido(modalidad, numEpigrafe, tituloEpigrafe) {
-    var formato;
+    var rol =
+'Eres un estudiante de Derecho de la UNED preparando sus apuntes. ' +
+'NO estás resumiendo el libro: estás explicando el contenido del epígrafe con tus propias palabras. ' +
+'El alumno NO va a leer el libro: estos apuntes son su único material de estudio.';
+
+    var reglasComunes =
+'\n\nREGLAS:\n' +
+'- NO generes HTML ni uses etiquetas < >.\n' +
+'- Usa SOLO las etiquetas emoji indicadas como separadores.\n' +
+'- PROHIBIDO repetir el título del epígrafe al principio.\n' +
+'- PROHIBIDO añadir introducciones ("En este epígrafe...") o cierres ("En resumen...").\n' +
+'- PROHIBIDO inventar contenido que no esté en el libro.\n' +
+'- PROHIBIDO cualquier frase que anuncie el contenido o describa lo que va a venir: "este apartado trata de", "este punto aborda", "aquí se explica", "yo entiendo que", "lo que veo aquí es", "el texto dice", "el autor quiere decir", "conviene señalar", "es importante destacar", "cabe destacar", "en última instancia".\n' +
+'- Cada frase debe ser YA el contenido: dato, concepto, relación, nombre, fecha. Prueba: si al quitar una frase no se pierde información, sobra.\n' +
+'- Empieza directamente con la primera idea del epígrafe, sin encuadres previos.\n' +
+'- Frases cortas. Una idea por frase. Si una frase pasa de 25 palabras, pártela.\n' +
+'- Registro de examen universitario: ni coloquial ni academicista.\n' +
+'- Longitud: la justa para que el epígrafe quede entendido. Ni telegrama ni tostón.';
+
     if (modalidad === 'test') {
-        formato = '📖 PARA ENTENDERLO\n[Texto redactado con tus propias palabras, en 2-4 párrafos.]\n\n🔑 GRÁBATELO\n- [Concepto 1]: [definición literal]\n- [Concepto 2]: [definición literal]\n\n🎯 TE LA VAN A PREGUNTAR\n- [Advertencia 1]\n- [Advertencia 2]';
-    } else {
-        formato = '📖 PARA ENTENDERLO\n[Texto redactado.]\n\n🔑 GRÁBATELO\n- [Concepto 1]: [definición]\n\n🗂️ ASÍ LO ESCRIBO\nGuion:\n1. [Introducción]\n2. [Apartado]\n3. [Conclusión]\n\nImprescindibles:\n- [Concepto]';
+        var formatoTest =
+'🎯 DE QUÉ VA\n' +
+'[1-2 frases. La idea central del epígrafe.]\n\n' +
+'📖 CONTENIDO\n' +
+'[Explicación del epígrafe con tus propias palabras. Empieza directamente con la primera idea, sin anunciar lo que vas a decir. Recorre todos los apartados que el libro desarrolla bajo este título, en su orden. Cada frase debe aportar contenido. Frases cortas.]\n\n' +
+'🔑 LITERAL QUE HAY QUE GRABAR\n' +
+'[Aquí empieza el trabajo de respuesta literal. Frases o definiciones exactas del libro que tienen pinta de ser pregunta de test. Cópialas con la terminología del manual, entre comillas, destacando la palabra clave que la UNED puede cambiar.]\n' +
+'- [...]\n' +
+'- [Máximo 4-5. Solo las que tengan pinta real de pregunta, no cualquier frase.]\n\n' +
+'⚠️ POR DÓNDE TE PUEDEN LIAR\n' +
+'- [Confusión típica en formato "no es X, es Y". La UNED pone dos opciones casi idénticas que se diferencian en una palabra o matiz. Identifica esas parejas. Solo trampas reales, 2-3.]';
+
+        return rol + '\n\n' +
+'CONTEXTO: examen TIPO TEST de la UNED. Las preguntas son literales, con tres alternativas, y suelen poner dos opciones casi idénticas que se diferencian en una palabra o matiz para confundir.\n\n' +
+'El resumen tiene DOS PARTES con funciones distintas:\n' +
+'1) 📖 CONTENIDO: para ENTENDER el epígrafe. Como si se lo explicaras a un compañero. Aquí no se memoriza, se comprende.\n' +
+'2) 🔑 y ⚠️: para TRABAJAR LO LITERAL. Ya has entendido el epígrafe; ahora se trata de reconocer las frases exactas y saber por dónde te pueden liar.\n' +
+'No mezcles las dos funciones: el 📖 no lleva literales, y el 🔑/⚠️ no lleva explicaciones.\n\n' +
+'Epígrafe: ' + numEpigrafe + ' — "' + tituloEpigrafe + '"\n\n' +
+'FORMATO DE SALIDA (texto plano, sin HTML, sin markdown):\n\n' +
+formatoTest +
+reglasComunes;
     }
-    return 'Ahora genera el contenido del epígrafe ' + numEpigrafe + ': "' + tituloEpigrafe + '".\n\nFORMATO DE SALIDA (texto plano, sin HTML, sin markdown):\n\n' + formato + '\n\nREGLAS:\n- NO generes HTML.\n- NO uses etiquetas < >.\n- Solo texto plano con las etiquetas 📖 🔑 🎯 (o 🗂️) como separadores.\n- Extensión: proporcional al epígrafe original del libro.';
+
+    var formatoDesarrollo =
+'🎯 DE QUÉ VA\n' +
+'[1-2 frases. La idea central del epígrafe.]\n\n' +
+'📖 CONTENIDO\n' +
+'[Explicación del epígrafe con tus propias palabras. Empieza directamente con la primera idea, sin anunciar lo que vas a decir. Recorre TODOS los apartados que el libro desarrolla bajo este título, en el orden del manual. Cada frase debe aportar contenido. Frases cortas.]\n\n' +
+'🧠 CÓMO LO DESARROLLARÍA\n' +
+'[La estructura de una respuesta de examen, siguiendo el orden del libro. Qué dirías primero, qué después, qué al final. Los puntos reflejan la estructura REAL del epígrafe, no una plantilla genérica.]\n' +
+'1. [...]\n' +
+'2. [...]\n' +
+'3. [...]\n' +
+'4. [...]\n\n' +
+'🔑 CONCEPTOS QUE NO PUEDEN FALTAR\n' +
+'- [Concepto, término técnico o dato que si no aparece en tu respuesta, está coja.]\n' +
+'- [...]\n' +
+'- [Máximo 5.]';
+
+    return rol + '\n\n' +
+'CONTEXTO: examen de DESARROLLO de la UNED. La pregunta puede ser el título del epígrafe o del tema, y hay que explicarlo con tus palabras. ' +
+'Solo vale el contenido del libro: no añadas información externa. ' +
+'Necesito entender el epígrafe y tener clara la estructura de la respuesta.\n\n' +
+'Epígrafe: ' + numEpigrafe + ' — "' + tituloEpigrafe + '"\n\n' +
+'FORMATO DE SALIDA (texto plano, sin HTML, sin markdown):\n\n' +
+formatoDesarrollo +
+reglasComunes;
 }
 
 var estado = {
@@ -444,7 +511,7 @@ var estado = {
     biblioteca: [],
     usage: { cache: 0, nuevos: 0, salida: 0, coste: 0, costeTotal: 0 },
     ultimaRespuesta: '',
-    temasDescargados: {},  // { "1": true, "2": true } para no repetir descargas
+    temasDescargados: {},
     masivo: {
         activo: false,
         pausado: false,
@@ -470,9 +537,6 @@ function escapeHtml(s) {
     return d.innerHTML;
 }
 
-// ============================================================
-//  NOMBRE DE ARCHIVO CON NOMBRE DEL LIBRO
-// ============================================================
 function nombreArchivoConLibro(titulo) {
     var nombreLibro = (estado.libroNombre || 'Libro_UNED').replace(/\.(pdf|txt)$/i, '').trim();
     var nombre = nombreLibro + ' - ' + titulo;
@@ -490,7 +554,7 @@ async function llamarDeepSeek(mensajes) {
         }
         estado.usage = { cache: 150000, nuevos: 30, salida: 800, coste: 0.0008, costeTotal: estado.usage.costeTotal + 0.0008 };
         actualizarPanelUso();
-        return { contenido: '📖 PARA ENTENDERLO\nContenido de ejemplo del epígrafe en modo demo.\n\n🔑 GRÁBATELO\n- Concepto clave 1: definición.\n- Concepto clave 2: definición.\n\n🎯 TE LA VAN A PREGUNTAR\n- Advertencia 1.\n- Advertencia 2.', usage: {} };
+        return { contenido: '🎯 DE QUÉ VA\nContenido de ejemplo del epígrafe en modo demo.\n\n📖 CONTENIDO\nExplicación de ejemplo del epígrafe, con las ideas principales.\n\n🔑 LITERAL QUE HAY QUE GRABAR\n- "Frase literal de ejemplo."\n- "Otra frase literal."\n\n⚠️ POR DÓNDE TE PUEDEN LIAR\n- No es "X", es "Y".', usage: {} };
     }
 
     if (!estado.apiKey) throw new Error('Falta la API Key.');
@@ -625,25 +689,25 @@ async function generarContenidoEpigrafe(num, titulo) {
 }
 
 function parsearContenido(texto) {
-    var r = { paraEntenderlo: '', grabate: [], teLaVanAPreguntar: [], guion: [], imprescindibles: [] };
+    var r = { deQueVa: '', contenido: '', grabate: [], trampas: [], guion: [], imprescindibles: [] };
     var lineas = texto.split('\n');
     var sec = null;
     for (var i = 0; i < lineas.length; i++) {
         var l = lineas[i].trim();
         if (!l) continue;
-        if (l.indexOf('📖') !== -1) { sec = 'entender'; continue; }
+        if (l.indexOf('🎯') !== -1) { sec = 'deQueVa'; continue; }
+        if (l.indexOf('📖') !== -1) { sec = 'contenido'; continue; }
         if (l.indexOf('🔑') !== -1) { sec = 'grabate'; continue; }
-        if (l.indexOf('🎯') !== -1) { sec = 'preguntar'; continue; }
-        if (l.indexOf('🗂️') !== -1) { sec = 'guion'; continue; }
-        if (sec === 'entender') r.paraEntenderlo += (r.paraEntenderlo ? '\n' : '') + l;
+        if (l.indexOf('⚠️') !== -1) { sec = 'trampas'; continue; }
+        if (l.indexOf('🧠') !== -1) { sec = 'guion'; continue; }
+        if (sec === 'deQueVa') r.deQueVa += (r.deQueVa ? '\n' : '') + l;
+        else if (sec === 'contenido') r.contenido += (r.contenido ? '\n' : '') + l;
         else if (sec === 'grabate') { if (l.indexOf('-') === 0) r.grabate.push(l.substring(1).trim()); }
-        else if (sec === 'preguntar') { if (l.indexOf('-') === 0) r.teLaVanAPreguntar.push(l.substring(1).trim()); }
+        else if (sec === 'trampas') { if (l.indexOf('-') === 0) r.trampas.push(l.substring(1).trim()); }
         else if (sec === 'guion') {
-            if (/^guion:/i.test(l)) continue;
-            if (/^imprescindibles:/i.test(l)) { sec = 'imprescindibles'; continue; }
             if (/^\d+\./.test(l)) r.guion.push(l.replace(/^\d+\.\s*/, ''));
             else if (l.indexOf('-') === 0) r.imprescindibles.push(l.substring(1).trim());
-        } else if (sec === 'imprescindibles') { if (l.indexOf('-') === 0) r.imprescindibles.push(l.substring(1).trim()); }
+        }
     }
     return r;
 }
@@ -669,29 +733,32 @@ function generarBloqueEpigrafe(num, titulo, nivel) {
         html += '<div class="bloque-resumen" style="border-left-color:#c8a878;"><em>⏳ Contenido pendiente de generar.</em></div>';
     } else {
         var p = parsearContenido(ep.contenido);
-        if (p.paraEntenderlo) {
-            html += '<div class="bloque-resumen"><span class="etiqueta-resumen">📖 PARA ENTENDERLO</span>';
-            p.paraEntenderlo.split('\n').forEach(function(par) { if (par.trim()) html += '<p>' + escapeHtml(par.trim()) + '</p>'; });
+        if (p.deQueVa) {
+            html += '<div class="bloque-resumen"><span class="etiqueta-resumen">🎯 DE QUÉ VA</span>';
+            p.deQueVa.split('\n').forEach(function(par) { if (par.trim()) html += '<p>' + escapeHtml(par.trim()) + '</p>'; });
+            html += '</div>';
+        }
+        if (p.contenido) {
+            html += '<div class="bloque-resumen"><span class="etiqueta-resumen">📖 CONTENIDO</span>';
+            p.contenido.split('\n').forEach(function(par) { if (par.trim()) html += '<p>' + escapeHtml(par.trim()) + '</p>'; });
             html += '</div>';
         }
         if (p.grabate.length) {
-            html += '<div class="bloque-clave"><span class="etiqueta-clave">🔑 GRÁBATELO</span><ul>';
+            html += '<div class="bloque-clave"><span class="etiqueta-clave">🔑 LITERAL QUE HAY QUE GRABAR</span><ul>';
             p.grabate.forEach(function(item) {
-                var partes = item.split(':');
-                if (partes.length > 1) html += '<li><strong>' + escapeHtml(partes[0].trim()) + '</strong> — ' + escapeHtml(partes.slice(1).join(':').trim()) + '</li>';
-                else html += '<li>' + escapeHtml(item) + '</li>';
+                html += '<li>' + escapeHtml(item) + '</li>';
             });
             html += '</ul></div>';
         }
-        if (p.teLaVanAPreguntar.length) {
-            html += '<div class="bloque-pregunta"><span class="etiqueta-pregunta">🎯 TE LA VAN A PREGUNTAR</span><ul>';
-            p.teLaVanAPreguntar.forEach(function(item) { html += '<li>' + escapeHtml(item) + '</li>'; });
+        if (p.trampas.length) {
+            html += '<div class="bloque-pregunta"><span class="etiqueta-pregunta">⚠️ POR DÓNDE TE PUEDEN LIAR</span><ul>';
+            p.trampas.forEach(function(item) { html += '<li>' + escapeHtml(item) + '</li>'; });
             html += '</ul></div>';
         }
         if (p.guion.length || p.imprescindibles.length) {
-            html += '<div class="bloque-guion"><span class="etiqueta-guion">🗂️ ASÍ LO ESCRIBO</span>';
-            if (p.guion.length) { html += '<p><strong>Guion:</strong></p><ol>'; p.guion.forEach(function(g) { html += '<li>' + escapeHtml(g) + '</li>'; }); html += '</ol>'; }
-            if (p.imprescindibles.length) { html += '<p><strong>Imprescindibles:</strong></p><ul>'; p.imprescindibles.forEach(function(im) { html += '<li>' + escapeHtml(im) + '</li>'; }); html += '</ul>'; }
+            html += '<div class="bloque-guion"><span class="etiqueta-guion">🧠 CÓMO LO DESARROLLARÍA</span>';
+            if (p.guion.length) { html += '<ol>'; p.guion.forEach(function(g) { html += '<li>' + escapeHtml(g) + '</li>'; }); html += '</ol>'; }
+            if (p.imprescindibles.length) { html += '<p><strong>Conceptos que no pueden faltar:</strong></p><ul>'; p.imprescindibles.forEach(function(im) { html += '<li>' + escapeHtml(im) + '</li>'; }); html += '</ul>'; }
             html += '</div>';
         }
     }
@@ -721,9 +788,6 @@ function montarHTML(tema) {
     return '<!DOCTYPE html>\n<html lang="es">\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">\n<title>' + escapeHtml(titulo) + '</title>\n<style>\n' + CSS_ESTUDIO + '\n</style>\n</head>\n<body>\n\n<button class="modo-btn" onclick="toggleModo()">🌓 Modo</button>\n\n<h1>' + escapeHtml(titulo) + '</h1>\n\n<div class="indice">\n<details open>\n<summary>📑 Índice del tema</summary>\n<div class="indice-content">\n<ul>\n' + (indiceHTML || '<li><em>Sin subepígrafes</em></li>') + '\n</ul>\n</div>\n</details>\n</div>\n\n<main>\n\n' + epigrafesHTML + '\n\n</main>\n\n<script>\nfunction toggleModo(){document.body.classList.toggle("dark-mode");var b=document.querySelector(".modo-btn");b.textContent=document.body.classList.contains("dark-mode")?"☀️ Modo claro":"🌓 Modo";}\ndocument.addEventListener("click",function(e){var a=e.target.closest(".indice a");if(!a)return;var h=a.getAttribute("href");if(!h||h.indexOf("#")!==0)return;e.preventDefault();var t=document.getElementById(h.substring(1));if(t){var d=document.querySelector(".indice details");if(d)d.removeAttribute("open");t.scrollIntoView({behavior:"smooth",block:"start"});}});\n<\/script>\n</body>\n</html>';
 }
 
-// ============================================================
-//  COMPROBAR SI UN TEMA ESTÁ COMPLETO Y DESCARGARLO
-// ============================================================
 function temaEstaCompleto(tema) {
     var tieneSubs = tema.subs && tema.subs.length > 0;
     if (!tieneSubs) {
@@ -747,7 +811,6 @@ function temaEstaCompleto(tema) {
 function montarYDescargarTema(tema) {
     var html = montarHTML(tema);
     var titulo = tema.num + '. ' + tema.titulo;
-    // Guardar en biblioteca
     var existe = estado.biblioteca.some(function(b) { return b.titulo === titulo; });
     if (!existe) {
         estado.biblioteca.push({ titulo: titulo, html: html, fecha: new Date().toISOString() });
@@ -759,7 +822,6 @@ function montarYDescargarTema(tema) {
     }
     guardarEstado();
     renderBiblioteca();
-    // Descargar automáticamente con nombre del libro + tema
     var nombreArchivo = nombreArchivoConLibro(titulo);
     descargarArchivo(html, nombreArchivo, 'html');
     estado.temasDescargados[tema.num] = true;
@@ -958,7 +1020,6 @@ async function ejecutarMasivo() {
         }
         actualizarProgresoMasivo();
 
-        // Comprobar si el tema padre está completo y descargarlo
         var temaPadre = estado.esqueleto.find(function(t) { return t.num === ep.temaPadreNum; });
         if (temaPadre && temaEstaCompleto(temaPadre) && !estado.temasDescargados[temaPadre.num]) {
             montarYDescargarTema(temaPadre);
@@ -1048,10 +1109,8 @@ window.__montarTema = function(idx) {
     }
     guardarEstado();
     renderBiblioteca();
-    // Descargar con nombre del libro + tema
     var nombreArchivo = nombreArchivoConLibro(titulo);
     descargarArchivo(html, nombreArchivo, 'html');
-    // Preview
     $('previewEmpty').style.display = 'none';
     $('previewBox').style.display = 'block';
     $('previewTitle').textContent = '🖼️ ' + titulo;
@@ -1253,7 +1312,6 @@ $('generarTodosEpigrafesBtn').addEventListener('click', async function() {
         await window.__generarEpigrafe(ep.num);
     }
     this.disabled = false;
-    // Descargar el tema al terminar
     if (temaEstaCompleto(tema)) {
         montarYDescargarTema(tema);
     }
