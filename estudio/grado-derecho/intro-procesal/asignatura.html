@@ -300,7 +300,8 @@ fetch('config.json?t=' + Date.now())
 
         (libro.temas || []).forEach(function(t, index) {
           var temaId = t.id || 'tema' + (index + 1);
-          var numTema = index + 1;
+          var numTema = parseInt(temaId.replace('tema', ''), 10);
+          if (isNaN(numTema)) numTema = index;
           var titulo = t.titulo || 'Tema ' + numTema;
           var archivo = t.archivo || 'tema.html';
           // Si el archivo no tiene path, añadirlo
@@ -345,7 +346,8 @@ fetch('config.json?t=' + Date.now())
       var html = '';
       data.temas.forEach(function(t, index) {
         var temaId = t.id || 'tema' + (index + 1);
-        var numTema = index + 1;
+        var numTema = parseInt(temaId.replace('tema', ''), 10);
+          if (isNaN(numTema)) numTema = index;
         var titulo = t.titulo || 'Tema ' + numTema;
         var archivo = t.archivo || 'tema.html';
         // Si el archivo no tiene path, añadirlo
