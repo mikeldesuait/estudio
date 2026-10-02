@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8. Conclusión: El secreto para alcanzar resultados que duren</title>
+<style>
+body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; max-width: 950px; margin: 30px auto; padding: 20px; background: #fbf9f5; color: #2a2622; line-height: 1.85; font-size: 17px; }
+h1 { font-size: 30px; color: #2a2622; border-bottom: 4px solid #8b6f47; padding-bottom: 14px; }
+h2 { font-size: 23px; color: #6b4f2f; margin-top: 40px; border-left: 5px solid #8b6f47; padding-left: 16px; }
+h3 { font-size: 21px; color: #4a3520; margin-top: 30px; }
+h4 { font-size: 18px; color: #4a3520; margin-top: 24px; }
+strong { color: #4a3520; }
+ul { padding-left: 24px; }
+li { margin-bottom: 6px; }
+blockquote { background: #f5ede0; padding: 14px 22px; border-left: 5px solid #c9a876; margin: 18px 0; border-radius: 4px; font-style: italic; color: #4a3520; }
+hr { border: none; border-top: 2px dashed #d4c4a8; margin: 34px 0; }
+.indice { background: #f5ede0; border-radius: 10px; margin-bottom: 34px; overflow: hidden; border-left: 5px solid #8b6f47; }
+.indice details { border: none; }
+.indice summary { cursor: pointer; padding: 16px 24px; font-weight: 700; font-size: 18px; color: #6b4f2f; list-style: none; user-select: none; display: flex; align-items: center; justify-content: space-between; }
+.indice summary::-webkit-details-marker { display: none; }
+.indice summary::after { content: "▸"; font-size: 20px; transition: transform 0.2s; margin-left: 10px; color: #8b6f47; }
+.indice details[open] summary::after { transform: rotate(90deg); }
+.indice summary:hover { background: #ede0c8; }
+.indice .indice-content { padding: 0 24px 20px 24px; }
+.indice ul { list-style: none; padding-left: 0; margin: 0; }
+.indice li { padding: 3px 0; }
+.indice li.sub { padding-left: 20px; }
+.indice li.subsub { padding-left: 40px; }
+.indice a { color: #6b4f2f; text-decoration: none; }
+.indice a:hover { text-decoration: underline; color: #8b6f47; }
+.idea-central { background: #f5ede0; padding: 22px 28px; border-radius: 12px; margin: 20px 0 40px 0; border-left: 6px solid #8b6f47; }
+.idea-central h2 { margin-top: 0; border-left: none; padding-left: 0; }
+main { background: #ffffff; padding: 30px 36px; border-radius: 10px; box-shadow: 0 2px 20px rgba(139, 111, 71, 0.08); border: 1px solid #e8dfd0; }
+section[id^="ep-"] { scroll-margin-top: 20px; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px dashed #e0d5c0; }
+section[id^="ep-"]:last-of-type { border-bottom: none; }
+.bloque-resumen { background: #fbfaf7; border-left: 4px solid #8b6f47; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.bloque-resumen p { margin-bottom: 10px; }
+.bloque-resumen p:last-child { margin-bottom: 0; }
+.etiqueta-resumen { display: inline-block; background: #8b6f47; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-clave { background: #fdf6e3; border-left: 5px solid #d4a017; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.etiqueta-clave { display: inline-block; background: #d4a017; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-clave ul { list-style: none; padding-left: 0; }
+.bloque-clave li { padding: 8px 0 8px 30px; position: relative; border-bottom: 1px dashed #ead9a8; }
+.bloque-clave li:last-child { border-bottom: none; }
+.bloque-clave li::before { content: "🔑"; position: absolute; left: 0; font-size: 16px; }
+.bloque-clave li strong { color: #6b4f2f; }
+.bloque-pregunta { background: #eef6fb; border-left: 5px solid #3a7ac0; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.etiqueta-pregunta { display: inline-block; background: #3a7ac0; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-guion { background: #f0f7ee; border-left: 5px solid #4a8c3a; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.etiqueta-guion { display: inline-block; background: #4a8c3a; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-guion ol { padding-left: 22px; }
+.bloque-guion li { margin-bottom: 8px; }
+.modo-btn { position: fixed; top: 16px; right: 16px; padding: 8px 18px; border: none; border-radius: 30px; cursor: pointer; font-weight: 600; background: #8b6f47; color: #fff; font-size: 14px; z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.modo-btn:hover { background: #6b4f2f; }
+.dark-mode { background: #1a1815; color: #e8dfd0; }
+.dark-mode main { background: #252220; border-color: #3a352f; box-shadow: none; }
+.dark-mode h1 { color: #e8dfd0; border-bottom-color: #c9a876; }
+.dark-mode h2 { color: #d4a017; border-left-color: #c9a876; }
+.dark-mode h3 { color: #c9a876; }
+.dark-mode h4 { color: #c9a876; }
+.dark-mode strong { color: #d4a017; }
+.dark-mode blockquote { background: #2f2b26; border-left-color: #c9a876; color: #e8dfd0; }
+.dark-mode hr { border-top-color: #3a352f; }
+.dark-mode .indice { background: #2f2b26; border-left-color: #c9a876; }
+.dark-mode .indice summary { color: #d4a017; }
+.dark-mode .indice summary:hover { background: #3a352f; }
+.dark-mode .indice a { color: #d4a017; }
+.dark-mode .indice summary::after { color: #c9a876; }
+.dark-mode .idea-central { background: #2f2b26; border-left-color: #c9a876; }
+.dark-mode section[id^="ep-"] { border-bottom-color: #3a352f; }
+.dark-mode .bloque-resumen { background: #2a2622; border-left-color: #c9a876; }
+.dark-mode .bloque-clave { background: #2f2b26; border-left-color: #d4a017; }
+.dark-mode .bloque-clave li { border-bottom-color: #3a352f; }
+.dark-mode .bloque-clave li strong { color: #d4a017; }
+.dark-mode .bloque-pregunta { background: #222c36; border-left-color: #5a9ad0; }
+.dark-mode .bloque-guion { background: #222c1e; border-left-color: #6ab858; }
+.dark-mode .modo-btn { background: #c9a876; color: #1a1815; }
+</style>
+</head>
+<body>
+
+<button class="modo-btn" onclick="toggleModo()">🌓 Modo</button>
+
+<h1>8. Conclusión: El secreto para alcanzar resultados que duren</h1>
+
+<div class="indice">
+<details open>
+<summary>📑 Índice del tema</summary>
+<div class="indice-content">
+<ul>
+<li><em>Sin subepígrafes</em></li>
+</ul>
+</div>
+</details>
+</div>
+
+<main>
+
+<section id="ep-8"><h3>8. Conclusión: El secreto para alcanzar resultados que duren</h3><div class="bloque-resumen"><span class="etiqueta-resumen">🎯 DE QUÉ VA</span><p>El éxito no es una meta que se cruza, sino un sistema de mejora continua que nunca se detiene. La clave para que los resultados duren es no dejar nunca de refinar los hábitos mediante las Cuatro Leyes.</p></div><div class="bloque-resumen"><span class="etiqueta-resumen">📖 CONTENIDO</span><p>La paradoja sorites plantea si una moneda puede volver rico a alguien. Una sola moneda no lo hace, pero la acumulación de muchas sí transforma la vida. Lo mismo ocurre con los hábitos: un cambio pequeño aislado parece no producir diferencia, pero la acumulación de capas de pequeños cambios inclina la balanza de la vida.</p><p>El santo grial del cambio de hábitos no es un 1% de mejora, sino mil. Es un cúmulo de hábitos atómicos en pila, cada uno una unidad fundamental del sistema. Al principio las mejoras parecen desaparecer bajo el peso del sistema, pero conforme se acumulan, los platillos de la balanza empiezan a moverse. Si se mantienen los hábitos, se alcanza un punto clave en que resulta más sencillo mantenerlos: el peso del sistema trabaja a favor en lugar de en contra.</p><p>El éxito no es un objetivo ni una línea de meta. Es un sistema de mejora, un proceso interminable que se tiene que refinar. Si alguien tiene problemas para cambiar sus hábitos, el problema no es la persona: es su sistema. Los malos hábitos se repiten no por falta de voluntad, sino porque el sistema de cambio es equivocado.</p><p>Las Cuatro Leyes del Cambio de Conducta son las herramientas para construir mejores sistemas. Cuando un hábito es difícil de recordar, hay que hacerlo obvio. Cuando no apetece empezar, hay que hacerlo atractivo. Cuando parece complicado, hay que hacerlo sencillo. Cuando no se quiere mantener, hay que hacerlo satisfactorio. Los buenos hábitos se llevan al lado del espectro donde las conductas no requieren esfuerzo; los malos, al lado donde son difíciles.</p><p>No hay línea de meta ni solución permanente. Siempre que se quiera mejorar, hay que recorrer las Cuatro Leyes hasta encontrar el siguiente cuello de botella. Es un proceso continuo de buscar siempre la siguiente manera de ser un 1% mejor.</p><p>El secreto para obtener resultados que duren consiste en no dejar nunca de hacer mejoras. Es notable lo que se puede construir si no se detiene uno: un negocio, un cuerpo, conocimiento, una fortuna, amistades. Los pequeños hábitos no se suman: se componen. Ese es el poder de los hábitos atómicos: pequeños cambios, resultados extraordinarios.</p></div><div class="bloque-clave"><span class="etiqueta-clave">🔑 LITERAL QUE HAY QUE GRABAR</span><ul><li>Paradoja sorites</li><li>El santo grial: no un 1%, sino mil</li><li>El éxito como sistema de mejora interminable, no como línea de meta</li><li>Las Cuatro Leyes como herramientas de refinamiento continuo</li><li>Los pequeños hábitos se componen, no se suman</li></ul></div><div class="bloque-guion"><span class="etiqueta-guion">🧠 CÓMO LO DESARROLLARÍA</span><ol><li>La paradoja sorites: una moneda no enriquece, pero su acumulación sí transforma. Aplicación a los hábitos atómicos.</li><li>El santo grial no es un 1% sino mil: acumulación de hábitos en pila. El punto clave en que el sistema trabaja a favor.</li><li>El éxito como sistema de mejora interminable, no como línea de meta. El problema es el sistema, no la persona.</li><li>Las Cuatro Leyes como herramientas para refinar el sistema continuamente. El espectro de conductas fáciles frente a difíciles.</li><li>No hay solución permanente: recorrer las Cuatro Leyes ante cada cuello de botella. El secreto: no dejar nunca de mejorar. Los hábitos se componen, no se suman.</li></ol></div></section>
+
+</main>
+
+<script>
+function toggleModo(){document.body.classList.toggle("dark-mode");var b=document.querySelector(".modo-btn");b.textContent=document.body.classList.contains("dark-mode")?"☀️ Modo claro":"🌓 Modo";}
+document.addEventListener("click",function(e){var a=e.target.closest(".indice a");if(!a)return;var h=a.getAttribute("href");if(!h||h.indexOf("#")!==0)return;e.preventDefault();var t=document.getElementById(h.substring(1));if(t){var d=document.querySelector(".indice details");if(d)d.removeAttribute("open");t.scrollIntoView({behavior:"smooth",block:"start"});}});
+</script>
+</body>
+</html>

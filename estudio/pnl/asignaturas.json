@@ -11,6 +11,18 @@
       "semestre": "0",
       "matriculada": true,
       "path": "practitioner/"
+    },
+    {
+      "id": "habitos-atomicos",
+      "nombre": "Hábitos Atómicos",
+      "codigo": "PNL-HA",
+      "creditos": 10,
+      "caracter": "LECTURA COMPLEMENTARIA",
+      "icon": "⚛️",
+      "curso": "0",
+      "semestre": "0",
+      "matriculada": true,
+      "path": "habitos-atomicos/"
     }
   ]
 }

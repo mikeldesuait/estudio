@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1. Introducción: Mi historia</title>
+<style>
+body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; max-width: 950px; margin: 30px auto; padding: 20px; background: #fbf9f5; color: #2a2622; line-height: 1.85; font-size: 17px; }
+h1 { font-size: 30px; color: #2a2622; border-bottom: 4px solid #8b6f47; padding-bottom: 14px; }
+h2 { font-size: 23px; color: #6b4f2f; margin-top: 40px; border-left: 5px solid #8b6f47; padding-left: 16px; }
+h3 { font-size: 21px; color: #4a3520; margin-top: 30px; }
+h4 { font-size: 18px; color: #4a3520; margin-top: 24px; }
+strong { color: #4a3520; }
+ul { padding-left: 24px; }
+li { margin-bottom: 6px; }
+blockquote { background: #f5ede0; padding: 14px 22px; border-left: 5px solid #c9a876; margin: 18px 0; border-radius: 4px; font-style: italic; color: #4a3520; }
+hr { border: none; border-top: 2px dashed #d4c4a8; margin: 34px 0; }
+.indice { background: #f5ede0; border-radius: 10px; margin-bottom: 34px; overflow: hidden; border-left: 5px solid #8b6f47; }
+.indice details { border: none; }
+.indice summary { cursor: pointer; padding: 16px 24px; font-weight: 700; font-size: 18px; color: #6b4f2f; list-style: none; user-select: none; display: flex; align-items: center; justify-content: space-between; }
+.indice summary::-webkit-details-marker { display: none; }
+.indice summary::after { content: "▸"; font-size: 20px; transition: transform 0.2s; margin-left: 10px; color: #8b6f47; }
+.indice details[open] summary::after { transform: rotate(90deg); }
+.indice summary:hover { background: #ede0c8; }
+.indice .indice-content { padding: 0 24px 20px 24px; }
+.indice ul { list-style: none; padding-left: 0; margin: 0; }
+.indice li { padding: 3px 0; }
+.indice li.sub { padding-left: 20px; }
+.indice li.subsub { padding-left: 40px; }
+.indice a { color: #6b4f2f; text-decoration: none; }
+.indice a:hover { text-decoration: underline; color: #8b6f47; }
+.idea-central { background: #f5ede0; padding: 22px 28px; border-radius: 12px; margin: 20px 0 40px 0; border-left: 6px solid #8b6f47; }
+.idea-central h2 { margin-top: 0; border-left: none; padding-left: 0; }
+main { background: #ffffff; padding: 30px 36px; border-radius: 10px; box-shadow: 0 2px 20px rgba(139, 111, 71, 0.08); border: 1px solid #e8dfd0; }
+section[id^="ep-"] { scroll-margin-top: 20px; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px dashed #e0d5c0; }
+section[id^="ep-"]:last-of-type { border-bottom: none; }
+.bloque-resumen { background: #fbfaf7; border-left: 4px solid #8b6f47; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.bloque-resumen p { margin-bottom: 10px; }
+.bloque-resumen p:last-child { margin-bottom: 0; }
+.etiqueta-resumen { display: inline-block; background: #8b6f47; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-clave { background: #fdf6e3; border-left: 5px solid #d4a017; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.etiqueta-clave { display: inline-block; background: #d4a017; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-clave ul { list-style: none; padding-left: 0; }
+.bloque-clave li { padding: 8px 0 8px 30px; position: relative; border-bottom: 1px dashed #ead9a8; }
+.bloque-clave li:last-child { border-bottom: none; }
+.bloque-clave li::before { content: "🔑"; position: absolute; left: 0; font-size: 16px; }
+.bloque-clave li strong { color: #6b4f2f; }
+.bloque-pregunta { background: #eef6fb; border-left: 5px solid #3a7ac0; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.etiqueta-pregunta { display: inline-block; background: #3a7ac0; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-guion { background: #f0f7ee; border-left: 5px solid #4a8c3a; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.etiqueta-guion { display: inline-block; background: #4a8c3a; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-guion ol { padding-left: 22px; }
+.bloque-guion li { margin-bottom: 8px; }
+.modo-btn { position: fixed; top: 16px; right: 16px; padding: 8px 18px; border: none; border-radius: 30px; cursor: pointer; font-weight: 600; background: #8b6f47; color: #fff; font-size: 14px; z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.modo-btn:hover { background: #6b4f2f; }
+.dark-mode { background: #1a1815; color: #e8dfd0; }
+.dark-mode main { background: #252220; border-color: #3a352f; box-shadow: none; }
+.dark-mode h1 { color: #e8dfd0; border-bottom-color: #c9a876; }
+.dark-mode h2 { color: #d4a017; border-left-color: #c9a876; }
+.dark-mode h3 { color: #c9a876; }
+.dark-mode h4 { color: #c9a876; }
+.dark-mode strong { color: #d4a017; }
+.dark-mode blockquote { background: #2f2b26; border-left-color: #c9a876; color: #e8dfd0; }
+.dark-mode hr { border-top-color: #3a352f; }
+.dark-mode .indice { background: #2f2b26; border-left-color: #c9a876; }
+.dark-mode .indice summary { color: #d4a017; }
+.dark-mode .indice summary:hover { background: #3a352f; }
+.dark-mode .indice a { color: #d4a017; }
+.dark-mode .indice summary::after { color: #c9a876; }
+.dark-mode .idea-central { background: #2f2b26; border-left-color: #c9a876; }
+.dark-mode section[id^="ep-"] { border-bottom-color: #3a352f; }
+.dark-mode .bloque-resumen { background: #2a2622; border-left-color: #c9a876; }
+.dark-mode .bloque-clave { background: #2f2b26; border-left-color: #d4a017; }
+.dark-mode .bloque-clave li { border-bottom-color: #3a352f; }
+.dark-mode .bloque-clave li strong { color: #d4a017; }
+.dark-mode .bloque-pregunta { background: #222c36; border-left-color: #5a9ad0; }
+.dark-mode .bloque-guion { background: #222c1e; border-left-color: #6ab858; }
+.dark-mode .modo-btn { background: #c9a876; color: #1a1815; }
+</style>
+</head>
+<body>
+
+<button class="modo-btn" onclick="toggleModo()">🌓 Modo</button>
+
+<h1>1. Introducción: Mi historia</h1>
+
+<div class="indice">
+<details open>
+<summary>📑 Índice del tema</summary>
+<div class="indice-content">
+<ul>
+<li><em>Sin subepígrafes</em></li>
+</ul>
+</div>
+</details>
+</div>
+
+<main>
+
+<section id="ep-1"><h3>1. Introducción: Mi historia</h3><div class="bloque-resumen"><span class="etiqueta-resumen">🎯 DE QUÉ VA</span><p>El autor narra el accidente que sufrió a los 16 años y cómo, a través de pequeños hábitos, logró recuperarse hasta convertirse en un atleta destacado. La lección central es que los hábitos pequeños se transforman en resultados extraordinarios si se mantienen durante años.</p></div><div class="bloque-resumen"><span class="etiqueta-resumen">📖 CONTENIDO</span><p>James Clear sufrió un accidente a los 16 años cuando un bate de béisbol le golpeó la cara. Sufrió fracturas múltiples, daño cerebral y estuvo en coma inducido. Los médicos le dijeron que no volvería a ser el mismo.</p><p>Tras despertar, había perdido el olfato, tenía la nariz rota, múltiples fracturas faciales y su ojo izquierdo se había salido de su órbita. Durante meses tuvo visión doble y no podía conducir. Tuvo que aprender a caminar en línea recta de nuevo. Se sentía deprimido y abrumado.</p><p>Un año después volvió al béisbol, pero ya no era el mismo. Lo relegaron al equipo de segunda división y se sintió humillado.</p><p>Al llegar a la Universidad Denison, en medio del caos de la vida universitaria, decidió ordenar su vida. No hizo una gran revolución. Empezó por cosas minúsculas: dormir temprano, mantener su habitación limpia, levantar pesas varias veces a la semana.</p><p>Esas pequeñas acciones le devolvieron el control sobre su vida. Esa sensación de seguridad se reflejó en sus estudios. Empezó a sacar sobresalientes. Pasó de 78 kg a 90 kg de músculo. Se convirtió en capitán del equipo de béisbol, rompió 8 récords universitarios y ganó la Medalla del Presidente.</p><p>Seis años después del accidente fue nombrado el mejor atleta de su universidad. La lección que aprendió fue que los hábitos que parecen pequeños y poco significativos se transforman en resultados extraordinarios si tienes la voluntad de mantenerlos durante años. No hubo un solo momento mágico. Fue una evolución gradual, una suma de pequeños triunfos diarios. La calidad de nuestra vida depende de la calidad de nuestros hábitos.</p><p>Años después decidió compartir su historia. En 2012 empezó a escribir un blog publicando artículos los lunes y jueves. Al principio nadie le leía. Ese pequeño hábito de escribir le llevó a tener 1.000 suscriptores, luego 30.000, luego 100.000. En 2015 firmó un contrato para escribir un libro. En 2016 sus artículos eran leídos por 8 millones de personas y entrenadores de la NFL y la NBA empezaron a usarlos. En 2017 creó la "Habits Academy" y más de 10.000 líderes empresariales se graduaron en ella.</p><p>El autor se siente un impostor. No es un genio ni un atleta profesional. Solo es alguien que experimentó consigo mismo y aprendió que los hábitos son la base de todo.</p><p>El libro no trata sobre lo que cambia, sino sobre lo que NO cambia: los principios fundamentales de la conducta humana. No importa si quieres mejorar tu salud, tu dinero, tus relaciones o tu productividad. Si sigues estos principios, el cambio es posible.</p></div><div class="bloque-clave"><span class="etiqueta-clave">🔑 LITERAL QUE HAY QUE GRABAR</span><ul><li>El accidente a los 16 años con un bate de béisbol: fracturas múltiples, daño cerebral y coma inducido.</li><li>La recuperación mediante pequeños hábitos: dormir temprano, mantener la habitación limpia, levantar pesas.</li><li>Los resultados: capitán del equipo, 8 récords universitarios, Medalla del Presidente, mejor atleta de su universidad.</li><li>La lección central: los hábitos pequeños se transforman en resultados extraordinarios si se mantienen durante años.</li><li>La calidad de nuestra vida depende de la calidad de nuestros hábitos.</li></ul></div><div class="bloque-guion"><span class="etiqueta-guion">🧠 CÓMO LO DESARROLLARÍA</span><ol><li>El accidente: el bate de béisbol, las fracturas, el coma inducido y el pronóstico médico.</li><li>Las secuelas físicas: pérdida del olfato, fracturas faciales, ojo fuera de órbita, visión doble, aprender a caminar de nuevo.</li><li>El regreso al béisbol y la humillación de ser relegado al equipo de segunda división.</li><li>El cambio en la Universidad Denison: ordenar su vida empezando por hábitos minúsculos (dormir temprano, habitación limpia, levantar pesas).</li><li>Los resultados: control sobre su vida, sobresalientes, paso de 78 kg a 90 kg de músculo, capitán del equipo, 8 récords universitarios, Medalla del Presidente, mejor atleta de su universidad.</li><li>La lección: los hábitos pequeños se transforman en resultados extraordinarios si se mantienen durante años. La calidad de vida depende de la calidad de los hábitos.</li><li>El nacimiento del libro: el blog en 2012, el crecimiento de suscriptores, el contrato en 2015, los 8 millones de lectores en 2016, la Habits Academy en 2017.</li><li>El propósito del libro: no trata sobre lo que cambia, sino sobre los principios fundamentales de la conducta humana.</li></ol></div></section>
+
+</main>
+
+<script>
+function toggleModo(){document.body.classList.toggle("dark-mode");var b=document.querySelector(".modo-btn");b.textContent=document.body.classList.contains("dark-mode")?"☀️ Modo claro":"🌓 Modo";}
+document.addEventListener("click",function(e){var a=e.target.closest(".indice a");if(!a)return;var h=a.getAttribute("href");if(!h||h.indexOf("#")!==0)return;e.preventDefault();var t=document.getElementById(h.substring(1));if(t){var d=document.querySelector(".indice details");if(d)d.removeAttribute("open");t.scrollIntoView({behavior:"smooth",block:"start"});}});
+</script>
+</body>
+</html>

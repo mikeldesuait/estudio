@@ -1,0 +1,18 @@
+{
+  "id": "habitos-atomicos",
+  "nombre": "Hábitos Atómicos",
+  "codigo": "PNL-HA",
+  "creditos": 10,
+  "icon": "⚛️",
+  "temas": [
+    { "id": "tema1", "titulo": "1. Introducción: Mi historia", "archivo": "temas/tema1/HA1.html" },
+    { "id": "tema2", "titulo": "2. Principios fundamentales: Por qué los pequeños cambios generan una gran diferencia", "archivo": "temas/tema2/HA2.html" },
+    { "id": "tema3", "titulo": "3. Primera Ley: Hacerlo obvio", "archivo": "temas/tema3/HA3.html" },
+    { "id": "tema4", "titulo": "4. Segunda Ley: Hacerlo atractivo", "archivo": "temas/tema4/HA4.html" },
+    { "id": "tema5", "titulo": "5. Tercera Ley: Hacerlo sencillo", "archivo": "temas/tema5/HA5.html" },
+    { "id": "tema6", "titulo": "6. Cuarta Ley: Hacerlo satisfactorio", "archivo": "temas/tema6/HA6.html" },
+    { "id": "tema7", "titulo": "7. Tácticas avanzadas: Cómo pasar de ser solamente bueno a ser verdaderamente grandioso", "archivo": "temas/tema7/HA7.html" },
+    { "id": "tema8", "titulo": "8. Conclusión: El secreto para alcanzar resultados que duren", "archivo": "temas/tema8/HA8.html" },
+    { "id": "tema9", "titulo": "9. Apéndice: Pequeñas lecciones de las Cuatro Leyes", "archivo": "temas/tema9/HA9.html" }
+  ]
+}
