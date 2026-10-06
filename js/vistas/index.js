@@ -46,6 +46,9 @@ const Vistas = {
         case 'tema':
           await this.renderTema(main, params);
           break;
+        case 'cuaderno':
+          await this.renderCuaderno(main, params);
+          break;
         default:
           main.innerHTML = '<div style="padding:40px;text-align:center;">Vista no encontrada: ' + nivel + '</div>';
       }
@@ -224,6 +227,26 @@ const Vistas = {
 
   async renderTemas(main, params) {
     main.innerHTML = '<div style="padding:24px;">Temas (en desarrollo)</div>';
+  },
+
+  /* ═══════════════════════════════════════════════════════
+     CUADERNO
+     ═══════════════════════════════════════════════════════ */
+
+  async renderCuaderno(main, params) {
+    main.innerHTML = '<div id="cuaderno-root" style="height:100%;min-height:500px;"></div>';
+
+    if (!window.Cuaderno) {
+      main.innerHTML = '<div style="padding:40px;color:#ef4444;">Error: módulo Cuaderno no cargado</div>';
+      return;
+    }
+
+    window.Cuaderno.montar(document.getElementById('cuaderno-root'), {
+      namespace: 'estudio:cuaderno',
+      cuadernoId: params.cuadernoId || null,
+      hojaId: params.hojaId || null,
+      asignaturaId: params.asignaturaId || null
+    });
   },
 
   async renderTema(main, params) {

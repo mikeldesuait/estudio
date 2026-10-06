@@ -1,0 +1,832 @@
+/* ============================================================
+   CUADERNO — Estilos (v2: hojas apiladas con corte automático)
+   ============================================================ */
+
+.cd-root {
+  --cd-sidebar-bg: #2b2d42;
+  --cd-sidebar-fg: #edf2f4;
+  --cd-accent: #ef233c;
+  --cd-paper: #ffffff;
+  --cd-line: #cbd5e1;
+  --cd-text: #1f2937;
+  --cd-bg: #d6d8de;
+
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  height: 100%;
+  min-height: 400px;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--cd-text);
+  background: var(--cd-bg);
+}
+
+.cd-root * { box-sizing: border-box; }
+
+[data-theme="dark"] .cd-root {
+  --cd-sidebar-bg: #1a1b26;
+  --cd-sidebar-fg: #c8cad6;
+  --cd-paper: #232634;
+  --cd-line: #3a3d52;
+  --cd-text: #e5e7eb;
+  --cd-bg: #0d0e14;
+}
+
+/* ─── Fix del contenedor externo (shell de la app) ─── */
+
+body.cd-cuaderno-montado #mainContent,
+body.cd-cuaderno-montado #mainContent.container {
+  max-width: 100% !important;
+  width: 100% !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+body.cd-cuaderno-montado .shell,
+body.cd-cuaderno-montado .shell-contenidos,
+body.cd-cuaderno-montado .shell-contenido-pestana,
+body.cd-cuaderno-montado .pestana-root {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+body.cd-cuaderno-montado .cd-root {
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+/* ═══════════════════════════════════════════════════════
+   SIDEBAR
+   ═══════════════════════════════════════════════════════ */
+
+.cd-sidebar {
+  background: var(--cd-sidebar-bg);
+  color: var(--cd-sidebar-fg);
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.cd-sidebar-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 14px;
+}
+
+.cd-sidebar-header h2 {
+  font-size: 14px; font-weight: 600; margin: 0; letter-spacing: .3px;
+}
+
+.cd-btn-nuevo {
+  background: var(--cd-accent); color: #fff; border: none;
+  width: 26px; height: 26px; border-radius: 6px;
+  cursor: pointer; font-size: 16px; line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+}
+.cd-btn-nuevo:hover { filter: brightness(1.15); }
+
+.cd-lista-cuadernos {
+  list-style: none; padding: 0; margin: 0;
+  flex: 1; overflow-y: auto;
+}
+
+.cd-lista-vacia {
+  font-size: 12px; color: #8d93a3;
+  padding: 12px 8px; text-align: center; line-height: 1.5;
+}
+
+.cd-item-cuaderno {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px; border-radius: 8px;
+  cursor: pointer; margin-bottom: 3px;
+  font-size: 13px; color: #cfd6dd;
+  transition: background .12s;
+}
+
+.cd-item-cuaderno:hover { background: rgba(255,255,255,.06); }
+.cd-item-cuaderno.cd-activo { background: rgba(255,255,255,.15); color: #fff; }
+
+.cd-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; cursor: pointer; }
+
+.cd-nombre { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.cd-count {
+  font-size: 10px; background: rgba(255,255,255,.1);
+  padding: 1px 6px; border-radius: 10px;
+}
+.cd-item-cuaderno.cd-activo .cd-count { background: rgba(255,255,255,.22); }
+
+.cd-del {
+  background: none; border: none; color: #cfd6dd; cursor: pointer;
+  font-size: 11px; padding: 2px 4px; opacity: 0; transition: opacity .12s;
+}
+.cd-item-cuaderno:hover .cd-del { opacity: 1; }
+.cd-del:hover { color: var(--cd-accent); }
+
+.cd-sidebar-footer {
+  font-size: 11px; color: #8d93a3; text-align: center;
+  padding-top: 12px; border-top: 1px solid rgba(255,255,255,.08);
+}
+
+/* ═══════════════════════════════════════════════════════
+   MAIN
+   ═══════════════════════════════════════════════════════ */
+
+.cd-main { display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+.cd-toolbar {
+  display: flex; align-items: center; gap: 16px;
+  padding: 8px 16px;
+  background: var(--cd-paper);
+  border-bottom: 1px solid var(--cd-line);
+  flex-wrap: wrap;
+}
+
+.cd-grupo { display: flex; align-items: center; gap: 4px; }
+.cd-grupo-formato { padding-left: 12px; border-left: 1px solid var(--cd-line); }
+
+.cd-btn, .cd-btn-herr, .cd-btn-fmt {
+  background: transparent; border: 1px solid transparent;
+  color: var(--cd-text); border-radius: 6px;
+  padding: 5px 9px; cursor: pointer; font-size: 14px; line-height: 1;
+  transition: background .12s, border-color .12s;
+  min-width: 32px; text-align: center;
+}
+
+.cd-btn:hover, .cd-btn-herr:hover, .cd-btn-fmt:hover {
+  background: rgba(0,0,0,.05); border-color: var(--cd-line);
+}
+
+.cd-btn-herr.cd-activo {
+  background: var(--cd-accent); color: #fff; border-color: var(--cd-accent);
+}
+
+.cd-select-plantilla {
+  background: transparent; border: 1px solid var(--cd-line);
+  color: var(--cd-text); border-radius: 6px;
+  padding: 5px 8px; font-size: 12px; font-family: inherit; cursor: pointer;
+}
+
+.cd-indicador-hoja {
+  font-size: 12px; color: #6b7280; margin-right: 6px; white-space: nowrap;
+}
+
+/* Paletas de color (sin cambios) */
+
+.cd-btn-color {
+  background: transparent; border: 1px solid transparent;
+  color: var(--cd-text); border-radius: 6px;
+  padding: 4px 8px; cursor: pointer; font-size: 14px; line-height: 1;
+  display: flex; align-items: center; gap: 3px;
+  min-width: 40px; justify-content: center;
+}
+.cd-btn-color:hover { background: rgba(0,0,0,.05); border-color: var(--cd-line); }
+
+.cd-icono-color { font-weight: 700; font-size: 15px; font-family: Georgia, serif; line-height: 1; }
+.cd-icono-resaltado {
+  display: inline-block; width: 14px; height: 14px;
+  border-radius: 3px; background: #fde047; border: 1px solid rgba(0,0,0,.15);
+}
+.cd-flecha { font-size: 9px; opacity: 0.6; margin-left: -2px; }
+
+.cd-paleta {
+  display: flex; gap: 6px; padding: 8px;
+  background: var(--cd-paper, #fff);
+  border: 1px solid var(--cd-line, #cbd5e1);
+  border-radius: 8px;
+  box-shadow: 0 6px 24px rgba(0,0,0,.15);
+}
+.cd-paleta-color {
+  width: 26px; height: 26px; border-radius: 6px;
+  border: 2px solid transparent; cursor: pointer;
+  transition: transform .1s, border-color .1s; padding: 0;
+}
+.cd-paleta-color:hover { transform: scale(1.15); border-color: rgba(0,0,0,.3); }
+
+/* ═══════════════════════════════════════════════════════
+   HOJAS APILADAS
+   ═══════════════════════════════════════════════════════ */
+
+.cd-contenedor-hojas {
+  flex: 1;
+  overflow: auto;
+  padding: 28px 20px 60px;
+  background: var(--cd-bg);
+}
+
+.cd-hoja {
+  position: relative;
+  width: 760px;
+  height: 980px;
+  margin: 0 auto 30px;
+  background: var(--cd-paper);
+  box-shadow: 0 2px 10px rgba(0,0,0,.12), 0 6px 30px rgba(0,0,0,.06);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+/* Patrones de fondo */
+.cd-hoja.cd-papel-rayada::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 31px,
+    var(--cd-line) 31px,
+    var(--cd-line) 32px
+  );
+  background-position: 0 40px;
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cd-hoja.cd-papel-cuadriculada::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(148,163,184,.35) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(148,163,184,.35) 1px, transparent 1px);
+  background-size: 32px 32px;
+  background-position: 0 40px;
+  opacity: 0.7;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.cd-hoja.cd-papel-lisa::before { content: none; }
+
+/* Número de página */
+.cd-numero-pagina {
+  position: absolute;
+  right: -46px;
+  top: 8px;
+  font-size: 11px;
+  color: #94a3b8;
+  font-family: Inter, sans-serif;
+  z-index: 3;
+  user-select: none;
+}
+
+/* Capa de texto */
+.cd-capa-texto {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  padding: 40px 48px;
+  outline: none;
+  font-size: 16px;
+  line-height: 32px;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+  color: var(--cd-text);
+  overflow: hidden;
+}
+
+.cd-capa-texto:empty::before {
+  content: 'Empieza a escribir…';
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════════════════════
+   FIX — Sin scroll dentro de la hoja
+   ═══════════════════════════════════════════════════════ */
+
+/* El contenedor es el único que scrollea */
+.cd-contenedor-hojas {
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+
+/* Las hojas NO scrollean: son cajas cerradas */
+.cd-hoja {
+  overflow: hidden !important;
+}
+
+/* La capa de texto tampoco scrollea: es la hoja entera */
+.cd-capa-texto {
+  overflow: hidden !important;
+  height: 100% !important;
+  max-height: 100% !important;
+}
+
+/* El contenteditable no debe crecer más de la hoja */
+.cd-capa-texto[contenteditable="true"] {
+  overflow: hidden !important;
+}
+
+/* ═══════════════════════════════════════════════════════
+   FIX — Permitir medir el contenido real con scrollHeight
+   ═══════════════════════════════════════════════════════ */
+
+.cd-capa-texto {
+  height: auto !important;        /* deja crecer el contenido */
+  min-height: 100% !important;    /* pero al menos ocupa la hoja entera */
+  max-height: none !important;    /* sin límite para poder medir */
+  overflow: hidden !important;    /* el recorte visual lo hace el padre */
+}
+
+/* ═══════════════════════════════════════════════════════
+   HOJA ACTIVA — resaltado sutil
+   ═══════════════════════════════════════════════════════ */
+
+.cd-hoja.cd-hoja-activa {
+  box-shadow: 0 2px 10px rgba(0,0,0,.12), 0 6px 30px rgba(0,0,0,.06),
+              0 0 0 2px rgba(239, 35, 60, 0.35);
+}
+
+
+/* ═══════════════════════════════════════════════════════
+   MENÚ EXPORTAR — desplegable
+   ═══════════════════════════════════════════════════════ */
+
+.cd-menu-exportar {
+  background: var(--cd-paper, #fff);
+  border: 1px solid var(--cd-line, #cbd5e1);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0,0,0,.18);
+  padding: 6px;
+  min-width: 240px;
+  animation: cd-menu-in .12s ease;
+}
+
+@keyframes cd-menu-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.cd-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 10px;
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: var(--cd-text, #1f2937);
+  transition: background .1s;
+}
+
+.cd-menu-item:hover {
+  background: rgba(0,0,0,.05);
+}
+
+[data-theme="dark"] .cd-menu-item:hover {
+  background: rgba(255,255,255,.08);
+}
+
+.cd-menu-icono {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+
+.cd-menu-titulo {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.cd-menu-desc {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+[data-theme="dark"] .cd-menu-desc {
+  color: #9ca3af;
+}
+
+/* ═══════════════════════════════════════════════════════
+   IMPRESIÓN — Modos de exportación
+   ═══════════════════════════════════════════════════════ */
+
+@media print {
+  /* Solo la hoja activa */
+  body.cd-exportando.cd-export-hoja .cd-hoja:not(.cd-hoja-exportar) {
+    display: none !important;
+  }
+
+  /* Cuaderno entero: todas visibles (comportamiento por defecto) */
+  body.cd-exportando.cd-export-cuaderno .cd-hoja {
+    display: block !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   IMPRESIÓN — Estilos agresivos para exportar a PDF
+   ═══════════════════════════════════════════════════════ */
+
+@media print {
+  /* Reset general */
+  body.cd-exportando {
+    background: #fff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    height: auto !important;
+  }
+
+  /* Ocultar toda la "chrome" de la app */
+  body.cd-exportando .shell-topbar,
+  body.cd-exportando .shell-tabbar,
+  body.cd-exportando .shell-statusbar,
+  body.cd-exportando .cd-sidebar,
+  body.cd-exportando .cd-toolbar,
+  body.cd-exportando .cd-menu-exportar {
+    display: none !important;
+  }
+
+  /* Forzar que TODA la cadena de contenedores sea "visible" */
+  body.cd-exportando .shell,
+  body.cd-exportando .shell-contenidos,
+  body.cd-exportando .shell-contenido-pestana,
+  body.cd-exportando .pestana-root,
+  body.cd-exportando .cd-root,
+  body.cd-exportando .cd-main,
+  body.cd-exportando .cd-contenedor-hojas {
+    display: block !important;
+    position: static !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    overflow-x: visible !important;
+    overflow-y: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #fff !important;
+    grid-template-columns: none !important;
+    grid-template-rows: none !important;
+  }
+
+  /* Cada hoja = una página */
+  body.cd-exportando .cd-hoja {
+    display: block !important;
+    width: 21cm !important;
+    height: auto !important;
+    min-height: 29.7cm !important;
+    max-height: none !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    position: relative !important;
+    overflow: hidden !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  body.cd-exportando .cd-hoja:last-child {
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
+
+  /* Ocultar sombras y marcas de la hoja activa */
+  body.cd-exportando .cd-hoja.cd-hoja-activa,
+  body.cd-exportando .cd-hoja.cd-hoja-exportar {
+    box-shadow: none !important;
+    outline: none !important;
+  }
+
+  /* Ocultar números de página */
+  body.cd-exportando .cd-numero-pagina {
+    display: none !important;
+  }
+
+  /* La capa de texto: contenido completo */
+  body.cd-exportando .cd-capa-texto {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: none !important;
+    color: #000 !important;
+    padding: 40px 48px !important;
+  }
+
+  /* Fondos (rayado/cuadrícula) con opacidad baja */
+  body.cd-exportando .cd-hoja::before {
+    opacity: 0.4 !important;
+  }
+
+  /* Modo "solo hoja actual" */
+  body.cd-exportando.cd-export-hoja .cd-hoja:not(.cd-hoja-exportar) {
+    display: none !important;
+  }
+
+  /* Configuración de la página A4 */
+  @page {
+    size: A4;
+    margin: 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   IMPRESIÓN v2 — Todo debe ser visible, sin overflow
+   ═══════════════════════════════════════════════════════ */
+
+@media print {
+  /* Reset TOTAL del body y todo lo que cuelga del shell */
+  body.cd-exportando,
+  body.cd-exportando * {
+    overflow: visible !important;
+    max-height: none !important;
+    box-sizing: border-box !important;
+  }
+
+  body.cd-exportando #mainContent,
+  body.cd-exportando .container {
+    max-width: none !important;
+    width: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    height: auto !important;
+  }
+
+  /* Cadena completa: bloques visibles y autosuficientes */
+  body.cd-exportando .shell,
+  body.cd-exportando .shell-contenidos,
+  body.cd-exportando .shell-contenido-pestana,
+  body.cd-exportando .pestana-root,
+  body.cd-exportando .cd-root,
+  body.cd-exportando .cd-main,
+  body.cd-exportando .cd-contenedor-hojas {
+    display: block !important;
+    position: static !important;
+    height: auto !important;
+    max-height: none !important;
+    min-height: 0 !important;
+    width: auto !important;
+    max-width: none !important;
+    overflow: visible !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    background: #fff !important;
+    grid-template-columns: none !important;
+    grid-template-rows: none !important;
+  }
+
+  /* Cada hoja en su página */
+  body.cd-exportando .cd-hoja {
+    display: block !important;
+    position: relative !important;
+    width: 21cm !important;
+    max-width: 21cm !important;
+    height: 29.5cm !important;
+    max-height: 29.5cm !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  body.cd-exportando .cd-hoja:last-child {
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
+
+  /* Capa de texto */
+  body.cd-exportando .cd-capa-texto {
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    color: #000 !important;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   IMPRESIÓN con contenedor dedicado (#cd-print-root)
+   Estrategia: ocultar TODO, mostrar solo #cd-print-root
+   ═══════════════════════════════════════════════════════ */
+
+/* Fuera de impresión, el contenedor está oculto (nunca se ve) */
+#cd-print-root { display: none; }
+
+@media print {
+  /* Ocultar absolutamente todo el body */
+  body.cd-print-mode > *:not(#cd-print-root) {
+    display: none !important;
+  }
+
+  /* Mostrar el contenedor de impresión */
+  body.cd-print-mode #cd-print-root {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    background: #fff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Reset general del body y html en modo impresión */
+  body.cd-print-mode,
+  html:has(body.cd-print-mode) {
+    background: #fff !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  /* Cada hoja clonada = una página A4 */
+  body.cd-print-mode #cd-print-root .cd-hoja {
+    display: block !important;
+    position: relative !important;
+    width: 21cm !important;
+    height: 29.5cm !important;
+    max-height: 29.5cm !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    overflow: hidden !important;
+    page-break-after: always !important;
+    break-after: page !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  body.cd-print-mode #cd-print-root .cd-hoja:last-child {
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
+
+  /* Ocultar elementos que no deben imprimirse */
+  body.cd-print-mode #cd-print-root .cd-numero-pagina {
+    display: none !important;
+  }
+
+  /* La capa de texto ocupa la hoja completa */
+  body.cd-print-mode #cd-print-root .cd-capa-texto {
+    width: 100% !important;
+    height: 100% !important;
+    overflow: hidden !important;
+    color: #000 !important;
+    padding: 40px 48px !important;
+  }
+
+  /* Fondos suaves */
+  body.cd-print-mode #cd-print-root .cd-hoja::before {
+    opacity: 0.4 !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 0;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════
+   AVISO DE GUARDADO
+   ═══════════════════════════════════════════════════════ */
+
+.cd-aviso-guardado {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #10b981;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 24px;
+  font-family: Inter, sans-serif;
+  font-weight: 600;
+  font-size: 13px;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+  opacity: 0;
+  transition: opacity .25s, transform .25s;
+  pointer-events: none;
+  z-index: 10000;
+}
+
+.cd-aviso-guardado.cd-aviso-visible {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ═══════════════════════════════════════════════════════
+   CAPA DE DIBUJO (canvas) — superpuesta a la hoja
+   ═══════════════════════════════════════════════════════ */
+
+.cd-capa-dibujo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: none;      /* Por defecto no captura clics (modo texto) */
+  touch-action: none;         /* Mejor soporte táctil */
+  cursor: crosshair;          /* Solo se verá cuando pointer-events:auto */
+}
+
+/* Cuando el body está en modo dibujo, el canvas captura los clics */
+body.cd-mododibujo .cd-capa-dibujo {
+  pointer-events: auto;
+}
+
+/* Y el texto no recibe clics */
+body.cd-mododibujo .cd-capa-texto {
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Cursor según herramienta */
+body.cd-mododibujo.cd-herr-lapiz .cd-capa-dibujo {
+  cursor: crosshair;
+}
+
+body.cd-mododibujo.cd-herr-resaltador .cd-capa-dibujo {
+  cursor: cell;
+}
+
+body.cd-mododibujo.cd-herr-borrador .cd-capa-dibujo {
+  cursor: not-allowed;
+}
+
+/* ═══════════════════════════════════════════════════════
+   SELECTORES DE DIBUJO (color + grosor)
+   ═══════════════════════════════════════════════════════ */
+
+.cd-grupo-dibujo {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding-left: 12px;
+  border-left: 1px solid var(--cd-line);
+}
+
+.cd-btn-dibujo {
+  background: transparent;
+  border: 1px solid var(--cd-line);
+  color: var(--cd-text);
+  border-radius: 6px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 40px;
+  justify-content: center;
+}
+
+.cd-btn-dibujo:hover {
+  background: rgba(0,0,0,.05);
+}
+
+.cd-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+  border: 1px solid rgba(0,0,0,.15);
+}
+
+.cd-preview-grosor {
+  display: inline-block;
+  border-radius: 50%;
+  background: #1f2937;
+  min-width: 4px;
+  min-height: 4px;
+}
+
+.cd-paleta-grosor {
+  width: 34px;
+  height: 34px;
+  border: 1px solid var(--cd-line, #cbd5e1);
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background .1s;
+}
+
+.cd-paleta-grosor:hover {
+  background: rgba(0,0,0,.05);
+}
+
+.cd-paleta-grosor-dot {
+  display: block;
+  border-radius: 50%;
+  background: #1f2937;
+}

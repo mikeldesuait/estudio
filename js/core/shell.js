@@ -9,6 +9,7 @@ const Shell = {
   // Pestañas fijas: Escritorio + 5 áreas
   pestanas: [
     { id: 'escritorio',    nombre: 'Escritorio',    icono: '🏠', tipo: 'home' },
+    { id: 'cuaderno',      nombre: 'Cuadernos',     icono: '📓', tipo: 'cuaderno' },
     { id: 'grado-derecho', nombre: 'Derecho',       icono: '⚖️', tipo: 'area' },
     { id: 'pnl',           nombre: 'PNL',           icono: '🧠', tipo: 'area' },
     { id: 'herramientas',  nombre: 'Herramientas',  icono: '🔧', tipo: 'area' },
@@ -501,6 +502,8 @@ const Shell = {
 
     if (p.tipo === 'home') {
       Router.navegar('escritorio');
+    } else if (p.tipo === 'cuaderno') {
+      Router.navegar('cuaderno');
     } else if (p.tipo === 'area') {
       Router.navegar('asignaturas', { areaId: id });
     }
