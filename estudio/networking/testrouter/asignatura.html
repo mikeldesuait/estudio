@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <title>Test Router · Exam Trainer</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════════
+       CABECERA
+       ═══════════════════════════════════════════════════════ -->
+  <header class="app-header">
+    <div class="header-left">
+      <span class="header-icon">🏅</span>
+      <div class="header-title">
+        <strong>Test Router</strong>
+        <span class="header-subtitle">Exam Trainer</span>
+      </div>
+    </div>
+
+    <div class="header-center">
+      <button class="mode-toggle" id="btnMode" title="Cambiar entre modo estudio y examen">
+        <span class="mode-icon">📖</span>
+        <span class="mode-label">Estudio</span>
+      </button>
+    </div>
+
+    <div class="header-right">
+      <button class="icon-btn" id="btnLang" title="Cambiar idioma pregunta (solo modo estudio)" style="display:none;">🇪🇸</button>
+      <button class="icon-btn" id="btnTheme" title="Cambiar tema claro/oscuro">🌙</button>
+      <button class="icon-btn" id="btnReset" title="Reiniciar el test">🔄</button>
+      <button class="icon-btn" id="btnInfo" title="Información">ℹ️</button>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════════
+       PANEL DE PROGRESO (móvil/tablet, colapsable)
+       ═══════════════════════════════════════════════════════ -->
+  <div class="progress-bar-mobile" id="progressBarMobile">
+    <div class="progress-info">
+      <span id="progressText">Pregunta 1 / 100</span>
+      <span id="progressScore">0%</span>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       LAYOUT PRINCIPAL
+       ═══════════════════════════════════════════════════════ -->
+  <main class="app-main">
+
+    <!-- ZONA DE LA PREGUNTA -->
+    <section class="question-area">
+      <div class="question-card" id="questionHost">
+        <!-- Aquí se renderiza la pregunta con JS -->
+      </div>
+
+      <!-- Barra de navegación inferior -->
+      <div class="question-nav">
+        <button class="nav-btn" id="btnPrev" title="Anterior">
+          <span>◀</span> Anterior
+        </button>
+        <button class="nav-btn primary" id="btnNext" title="Siguiente">
+          Siguiente <span>▶</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- PANEL LATERAL (oculto en móvil, visible en escritorio) -->
+    <aside class="panel" id="panel">
+
+      <div class="panel-section">
+        <h3 class="panel-title">📊 Estadísticas</h3>
+
+        <div class="stat-big">
+          <div class="stat-big-label">Pregunta actual</div>
+          <div class="stat-big-value">
+            <span id="panelIdx">1</span>
+            <span class="stat-big-total">/ <span id="panelTotal">100</span></span>
+          </div>
+        </div>
+
+        <div class="stat-progress">
+          <div class="stat-progress-fill" id="panelProgressFill"></div>
+        </div>
+
+        <div class="stat-list">
+          <div class="stat-item stat-ok">
+            <span class="stat-item-icon">✅</span>
+            <span class="stat-item-label">Correctas</span>
+            <span class="stat-item-value" id="panelCorrect">0</span>
+          </div>
+          <div class="stat-item stat-bad">
+            <span class="stat-item-icon">❌</span>
+            <span class="stat-item-label">Falladas</span>
+            <span class="stat-item-value" id="panelWrong">0</span>
+          </div>
+          <div class="stat-item stat-pending">
+            <span class="stat-item-icon">⚪</span>
+            <span class="stat-item-label">Sin contestar</span>
+            <span class="stat-item-value" id="panelPending">0</span>
+          </div>
+        </div>
+
+        <div class="stat-score">
+          <div class="stat-score-label">🎯 Puntuación</div>
+          <div class="stat-score-value" id="panelScore">0%</div>
+        </div>
+      </div>
+
+      <div class="panel-section">
+        <h3 class="panel-title">🔧 Acciones</h3>
+
+        <button class="panel-btn" id="btnFinish" disabled>
+          📝 Corregir todo
+        </button>
+        <button class="panel-btn" id="btnStudyOnly" title="Solo preguntas sin contestar">
+          🎯 Repaso pendientes
+        </button>
+        <button class="panel-btn" id="btnWrongOnly" title="Solo preguntas falladas">
+          ❌ Repaso falladas
+        </button>
+      </div>
+
+      <div class="panel-section">
+        <h3 class="panel-title">📤 Datos</h3>
+
+        <button class="panel-btn small" id="btnExport" title="Exportar respuestas a JSON">
+          📤 Exportar respuestas
+        </button>
+        <button class="panel-btn small" id="btnImport" title="Importar respuestas desde JSON">
+          📥 Importar respuestas
+        </button>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════════
+       MODAL DE RESULTADO FINAL
+       ═══════════════════════════════════════════════════════ -->
+  <div class="modal" id="modalResult">
+    <div class="modal-content modal-result">
+      <div class="modal-header">
+        <h2>🎯 Resultado final</h2>
+        <button class="modal-close" id="modalResultClose">✕</button>
+      </div>
+      <div class="modal-body" id="modalResultBody">
+        <!-- Se rellena desde JS -->
+      </div>
+      <div class="modal-footer">
+        <button class="panel-btn" id="btnCloseResult">Cerrar</button>
+        <button class="panel-btn primary" id="btnReviewResult">Revisar respuestas</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       MODAL DE INFO
+       ═══════════════════════════════════════════════════════ -->
+  <div class="modal" id="modalInfo">
+    <div class="modal-content modal-info">
+      <div class="modal-header">
+        <h2>ℹ️ Información</h2>
+        <button class="modal-close" id="modalInfoClose">✕</button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Test Router</strong> es un exam trainer para practicar preguntas tipo test.</p>
+
+        <h3>Modos</h3>
+        <ul>
+          <li><strong>📖 Modo Estudio:</strong> feedback inmediato al responder, explicaciones EN/ES visibles, botón de traducir.</li>
+          <li><strong>📝 Modo Examen:</strong> sin correcciones hasta el final. Corriges al pulsar "Corregir todo".</li>
+        </ul>
+
+        <h3>Tipos de preguntas</h3>
+        <ul>
+          <li><strong>MCQ:</strong> respuesta única.</li>
+          <li><strong>MSQ:</strong> varias respuestas correctas.</li>
+          <li><strong>MATCH:</strong> empareja elementos (toca uno de la izquierda y luego uno de la derecha).</li>
+          <li><strong>ORDER:</strong> ordena los elementos con los números.</li>
+        </ul>
+
+        <h3>Atajos</h3>
+        <ul>
+          <li><kbd>←</kbd> <kbd>→</kbd>: navegar entre preguntas.</li>
+          <li><kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> <kbd>4</kbd>: seleccionar opción (MCQ/MSQ).</li>
+          <li><kbd>Enter</kbd>: confirmar / siguiente.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast para notificaciones -->
+  <div class="toast" id="toast"></div>
+
+  <!-- ═══════════════════════════════════════════════════════
+       SCRIPTS
+       ═══════════════════════════════════════════════════════ -->
+  <script src="preguntas.js"></script>
+  <script src="traducciones.js"></script>
+  <script src="app.js"></script>
+
+</body>
+</html>
