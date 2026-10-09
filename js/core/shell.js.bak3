@@ -15,8 +15,7 @@ const Shell = {
     { id: 'pnl',           nombre: 'PNL',           icono: '🧠', tipo: 'area' },
     { id: 'herramientas',  nombre: 'Herramientas',  icono: '🔧', tipo: 'area' },
     { id: 'networking',    nombre: 'Networking',    icono: '🌐', tipo: 'area' },
-    { id: 'dieta',         nombre: 'Dieta',         icono: '🥗', tipo: 'area' },
-    { id: 'peso',          nombre: 'Peso',          icono: '⚖️', tipo: 'area' }
+    { id: 'dieta',         nombre: 'Dieta',         icono: '🥗', tipo: 'area' }
   ],
 
   // ═══════════════════════════════════════════════════════
@@ -40,7 +39,7 @@ const Shell = {
       id: 'salud',
       nombre: 'Salud',
       icono: '💪',
-      pestanas: ['dieta', 'peso']
+      pestanas: ['dieta']
     },
     {
       id: 'herramientas-grupo',
@@ -414,9 +413,6 @@ const Shell = {
               '<span class="gitem-icono">' + p.icono + '</span>' +
               '<span class="gitem-nombre">' + p.nombre + '</span>' +
               (numMarcadores > 0 ? '<span class="gitem-badge">' + numMarcadores + '</span>' : '') +
-              (numMarcadores > 0 ? '<button class="gitem-cerrar" ' +
-                'onclick="event.stopPropagation(); Shell.cerrarMarcadoresDe(\'' + pestanaId + '\')" ' +
-                'title="Cerrar marcadores abiertos">✕</button>' : '') +
               '</div>';
     });
 
@@ -445,47 +441,6 @@ const Shell = {
   seleccionarPestanaDeGrupo(pestanaId) {
     this.cerrarDropdown();
     this.activarPestana(pestanaId);
-  },
-
-  /**
-   * Cierra todos los marcadores abiertos de una pestaña
-   */
-  cerrarMarcadoresDe(pestanaId) {
-    if (!this.marcadoresAbiertos[pestanaId]) return;
-
-    // Cerrar cada marcador silenciosamente
-    Object.keys(this.marcadoresAbiertos[pestanaId]).forEach(function(clave) {
-      Shell.cerrarMarcadorSilencioso(pestanaId, clave);
-    });
-
-    // Limpiar el objeto
-    this.marcadoresAbiertos[pestanaId] = {};
-    this.marcadorActivo[pestanaId] = null;
-
-    // Guardar
-    this.guardarMarcadoresAbiertos();
-
-    // Si el marcador activo estaba en esta pestaña, volver a la raíz
-    if (this.marcadorActivo[pestanaId] === null) {
-      // Nada que hacer, ya está a null
-    }
-
-    // Refrescar UI
-    if (window.Bookmarks && Bookmarks.render) Bookmarks.render();
-    this.renderTabbar();
-
-    // Volver a abrir el dropdown para que se vea el cambio
-    var grupoActual = this.grupos.find(function(g) {
-      return g.pestanas.indexOf(pestanaId) !== -1;
-    });
-    if (grupoActual) {
-      this.toggleGrupo(grupoActual.id);
-    }
-
-    // Toast de confirmación
-    if (window.Navegacion && Navegacion.toast) {
-      Navegacion.toast('🧹 Marcadores cerrados');
-    }
   },
 
   /**

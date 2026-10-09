@@ -991,3 +991,171 @@ button.btn-add-nota i {
   cursor: pointer !important;
   transform: none;
 }
+
+/* ═══════════════════════════════════════════════════════
+   GRUPOS DE PESTAÑAS — Dropdown de categorías
+   ═══════════════════════════════════════════════════════ */
+
+/* Botón de grupo */
+.shell-tab-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.shell-tab-group .arrow {
+  font-size: 10px;
+  opacity: 0.6;
+  transition: transform 0.2s;
+  margin-left: 2px;
+}
+
+.shell-tab-group.grupo-abierto .arrow {
+  transform: rotate(180deg);
+}
+
+.shell-tab-group.grupo-abierto {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* Badge con contador de marcadores abiertos */
+.shell-tab-group .grupo-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 6px;
+  background: #ef233c;
+  color: #fff;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: 'Consolas', monospace;
+}
+
+/* Dropdown */
+.shell-grupo-dropdown {
+  position: fixed;
+  z-index: 1000;
+  min-width: 220px;
+  max-width: 90vw;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  padding: 6px;
+  font-family: 'Inter', system-ui, sans-serif;
+  animation: shellGrupoIn 0.15s ease;
+}
+
+@keyframes shellGrupoIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Ítem dentro del dropdown */
+.shell-grupo-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #1f2937;
+  transition: background 0.12s;
+  user-select: none;
+}
+
+.shell-grupo-item:hover {
+  background: #f3f4f6;
+}
+
+.shell-grupo-item.active {
+  background: #dbeafe;
+  color: #1e40af;
+  font-weight: 600;
+}
+
+.gitem-icono {
+  font-size: 18px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.gitem-nombre {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gitem-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  background: #ef233c;
+  color: #fff;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 700;
+  font-family: 'Consolas', monospace;
+}
+
+/* Modo oscuro */
+[data-theme="dark"] .shell-grupo-dropdown {
+  background: #1f2937;
+  border-color: #374151;
+}
+
+[data-theme="dark"] .shell-grupo-item {
+  color: #e5e7eb;
+}
+
+[data-theme="dark"] .shell-grupo-item:hover {
+  background: #374151;
+}
+
+[data-theme="dark"] .shell-grupo-item.active {
+  background: rgba(59, 130, 246, 0.2);
+  color: #93c5fd;
+}
+
+/* Botón ✕ para cerrar marcadores en el dropdown */
+.shell-grupo-item .gitem-cerrar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: #9ca3af;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.15s;
+  flex-shrink: 0;
+  margin-left: 4px;
+  font-family: inherit;
+}
+
+.shell-grupo-item .gitem-cerrar:hover {
+  background: #fee2e2;
+  color: #ef4444;
+  border-color: #fca5a5;
+}
+
+[data-theme="dark"] .shell-grupo-item .gitem-cerrar:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #fca5a5;
+  border-color: #7f1d1d;
+}

@@ -15,8 +15,7 @@ const Shell = {
     { id: 'pnl',           nombre: 'PNL',           icono: '🧠', tipo: 'area' },
     { id: 'herramientas',  nombre: 'Herramientas',  icono: '🔧', tipo: 'area' },
     { id: 'networking',    nombre: 'Networking',    icono: '🌐', tipo: 'area' },
-    { id: 'dieta',         nombre: 'Dieta',         icono: '🥗', tipo: 'area' },
-    { id: 'peso',          nombre: 'Peso',          icono: '⚖️', tipo: 'area' }
+    { id: 'dieta',         nombre: 'Dieta',         icono: '🥗', tipo: 'area' }
   ],
 
   // ═══════════════════════════════════════════════════════
@@ -40,7 +39,7 @@ const Shell = {
       id: 'salud',
       nombre: 'Salud',
       icono: '💪',
-      pestanas: ['dieta', 'peso']
+      pestanas: ['dieta']
     },
     {
       id: 'herramientas-grupo',
@@ -324,182 +323,37 @@ const Shell = {
      ═══════════════════════════════════════════════════════ */
 
   renderTabbar() {
-    var self = this;
+    // Leer orden guardado
+    var ordenGuardado = null;
+    try {
+      ordenGuardado = JSON.parse(localStorage.getItem('shell_orden_pestanas') || 'null');
+    } catch (e) {}
 
-    // 1. Botón Escritorio (home, siempre visible)
-    var html = '';
-    var escritorio = this.pestanas.find(function(p) { return p.tipo === 'home'; });
-    if (escritorio) {
-      var activoHome = this.pestanaActiva === escritorio.id;
-      html += '<div class="shell-tab ' + (activoHome ? 'active' : '') + '" ' +
-              'data-id="' + escritorio.id + '" data-fija="true" ' +
-              'onclick="Shell.activarPestana(\'' + escritorio.id + '\')">' +
-              '<span class="favicon">' + escritorio.icono + '</span>' +
-              '<span>' + escritorio.nombre + '</span>' +
-              '</div>';
+    // Aplicar el orden guardado si existe
+    var pestanasOrdenadas = this.pestanas.slice();
+    if (Array.isArray(ordenGuardado) && ordenGuardado.length === this.pestanas.length) {
+      var mapa = {};
+      this.pestanas.forEach(function(p) { mapa[p.id] = p; });
+      pestanasOrdenadas = ordenGuardado.map(function(id) { return mapa[id]; }).filter(Boolean);
     }
 
-    // 2. Botones de grupo
-    this.grupos.forEach(function(grupo) {
-      // ¿Alguna pestaña del grupo está activa?
-      var tieneActiva = grupo.pestanas.indexOf(self.pestanaActiva) !== -1;
+    // Guardar el orden actual en memoria para usarlo después
+    this.pestanasOrdenadas = pestanasOrdenadas;
 
-      // ¿Cuántos marcadores abiertos tiene el grupo?
-      var totalMarcadores = 0;
-      grupo.pestanas.forEach(function(pid) {
-        if (self.marcadoresAbiertos && self.marcadoresAbiertos[pid]) {
-          totalMarcadores += Object.keys(self.marcadoresAbiertos[pid]).length;
-        }
-      });
+    this.refs.tabbar.innerHTML = pestanasOrdenadas.map(function(p, idx) {
+      var esFija = p.tipo === 'home';
+      return '<div class="shell-tab ' + (p.id === Shell.pestanaActiva ? 'active' : '') + '" ' +
+             'data-id="' + p.id + '" ' +
+             'data-index="' + idx + '" ' +
+             'data-fija="' + (esFija ? 'true' : 'false') + '" ' +
+             'onclick="Shell.activarPestana(\'' + p.id + '\')">' +
+             '<span class="favicon">' + p.icono + '</span>' +
+             '<span>' + p.nombre + '</span>' +
+             '</div>';
+    }).join('');
 
-      html += '<div class="shell-tab shell-tab-group ' + (tieneActiva ? 'active' : '') + '" ' +
-              'data-grupo="' + grupo.id + '" data-fija="true" ' +
-              'onclick="Shell.toggleGrupo(\'' + grupo.id + '\')">' +
-              '<span class="favicon">' + grupo.icono + '</span>' +
-              '<span>' + grupo.nombre + '</span>' +
-              (totalMarcadores > 0 ? '<span class="grupo-badge">' + totalMarcadores + '</span>' : '') +
-              '<span class="arrow">▾</span>' +
-              '</div>';
-    });
-
-    this.refs.tabbar.innerHTML = html;
-  },
-
-  /**
-   * Abre o cierra el dropdown de un grupo
-   */
-  toggleGrupo(grupoId) {
-    var self = this;
-
-    // Si ya está abierto este grupo, cerrar
-    var existente = document.querySelector('.shell-grupo-dropdown');
-    if (existente && existente.dataset.grupo === grupoId) {
-      this.cerrarDropdown();
-      return;
-    }
-
-    // Cerrar cualquier otro
-    this.cerrarDropdown();
-
-    // Buscar el grupo
-    var grupo = this.grupos.find(function(g) { return g.id === grupoId; });
-    if (!grupo) return;
-
-    // Buscar el botón pulsado
-    var boton = document.querySelector('.shell-tab-group[data-grupo="' + grupoId + '"]');
-    if (!boton) return;
-
-    // Marcar el botón como abierto
-    boton.classList.add('grupo-abierto');
-
-    // Crear el dropdown
-    var dropdown = document.createElement('div');
-    dropdown.className = 'shell-grupo-dropdown';
-    dropdown.dataset.grupo = grupoId;
-
-    var html = '';
-    grupo.pestanas.forEach(function(pestanaId) {
-      var p = self.pestanas.find(function(x) { return x.id === pestanaId; });
-      if (!p) return;
-
-      var activa = pestanaId === self.pestanaActiva;
-
-      // Marcadores abiertos de esta pestaña
-      var marcadores = (self.marcadoresAbiertos && self.marcadoresAbiertos[pestanaId]) || {};
-      var numMarcadores = Object.keys(marcadores).length;
-
-      html += '<div class="shell-grupo-item ' + (activa ? 'active' : '') + '" ' +
-              'data-pestana="' + pestanaId + '" ' +
-              'onclick="event.stopPropagation(); Shell.seleccionarPestanaDeGrupo(\'' + pestanaId + '\')">' +
-              '<span class="gitem-icono">' + p.icono + '</span>' +
-              '<span class="gitem-nombre">' + p.nombre + '</span>' +
-              (numMarcadores > 0 ? '<span class="gitem-badge">' + numMarcadores + '</span>' : '') +
-              (numMarcadores > 0 ? '<button class="gitem-cerrar" ' +
-                'onclick="event.stopPropagation(); Shell.cerrarMarcadoresDe(\'' + pestanaId + '\')" ' +
-                'title="Cerrar marcadores abiertos">✕</button>' : '') +
-              '</div>';
-    });
-
-    dropdown.innerHTML = html;
-
-    // Posicionar debajo del botón
-    var rect = boton.getBoundingClientRect();
-    dropdown.style.left = Math.max(10, rect.left) + 'px';
-    dropdown.style.top = (rect.bottom + 4) + 'px';
-
-    document.body.appendChild(dropdown);
-
-    // Cerrar al hacer clic fuera
-    setTimeout(function() {
-      document.addEventListener('click', self._cerrarDropdownFuera = function(e) {
-        if (!dropdown.contains(e.target) && !boton.contains(e.target)) {
-          self.cerrarDropdown();
-        }
-      });
-    }, 100);
-  },
-
-  /**
-   * Selecciona una pestaña desde el dropdown y cierra
-   */
-  seleccionarPestanaDeGrupo(pestanaId) {
-    this.cerrarDropdown();
-    this.activarPestana(pestanaId);
-  },
-
-  /**
-   * Cierra todos los marcadores abiertos de una pestaña
-   */
-  cerrarMarcadoresDe(pestanaId) {
-    if (!this.marcadoresAbiertos[pestanaId]) return;
-
-    // Cerrar cada marcador silenciosamente
-    Object.keys(this.marcadoresAbiertos[pestanaId]).forEach(function(clave) {
-      Shell.cerrarMarcadorSilencioso(pestanaId, clave);
-    });
-
-    // Limpiar el objeto
-    this.marcadoresAbiertos[pestanaId] = {};
-    this.marcadorActivo[pestanaId] = null;
-
-    // Guardar
-    this.guardarMarcadoresAbiertos();
-
-    // Si el marcador activo estaba en esta pestaña, volver a la raíz
-    if (this.marcadorActivo[pestanaId] === null) {
-      // Nada que hacer, ya está a null
-    }
-
-    // Refrescar UI
-    if (window.Bookmarks && Bookmarks.render) Bookmarks.render();
-    this.renderTabbar();
-
-    // Volver a abrir el dropdown para que se vea el cambio
-    var grupoActual = this.grupos.find(function(g) {
-      return g.pestanas.indexOf(pestanaId) !== -1;
-    });
-    if (grupoActual) {
-      this.toggleGrupo(grupoActual.id);
-    }
-
-    // Toast de confirmación
-    if (window.Navegacion && Navegacion.toast) {
-      Navegacion.toast('🧹 Marcadores cerrados');
-    }
-  },
-
-  /**
-   * Cierra el dropdown abierto
-   */
-  cerrarDropdown() {
-    document.querySelectorAll('.shell-grupo-dropdown').forEach(function(el) { el.remove(); });
-    document.querySelectorAll('.shell-tab-group.grupo-abierto').forEach(function(el) {
-      el.classList.remove('grupo-abierto');
-    });
-    if (this._cerrarDropdownFuera) {
-      document.removeEventListener('click', this._cerrarDropdownFuera);
-      this._cerrarDropdownFuera = null;
-    }
+    // Activar el arrastre
+    this.activarArrastrePestanas();
   },
 
   /**

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Peso</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════════
+       CABECERA
+       ═══════════════════════════════════════════════════ -->
+  <header class="app-header">
+    <div class="header-left">
+      <span class="logo">⚖️</span>
+      <div>
+        <h1>Registro de Peso</h1>
+        <p class="subtitle" id="headerDate">—</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-icon" id="btnExport" title="Exportar datos">📤</button>
+      <button class="btn-icon" id="btnPerfil" title="Perfil">⚙️</button>
+      <button class="btn-primary" id="btnRegistrar">+ Registrar peso</button>
+    </div>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════════
+       CONTENIDO PRINCIPAL
+       ═══════════════════════════════════════════════════ -->
+  <main class="app-main">
+
+    <!-- Sin perfil -->
+    <section class="empty-state" id="emptyState">
+      <div class="empty-icon">⚖️</div>
+      <h2>Configura tu perfil</h2>
+      <p>Necesitamos tu altura para calcular el IMC y darte recomendaciones personalizadas.</p>
+      <button class="btn-primary btn-large" id="btnConfigurar">Configurar perfil</button>
+    </section>
+
+    <!-- Dashboard -->
+    <section class="dashboard" id="dashboard" style="display:none;">
+
+      <!-- Tarjetas superiores -->
+      <div class="cards-grid">
+
+        <div class="card card-peso" id="cardPeso">
+          <div class="card-label">Peso actual</div>
+          <div class="card-value">
+            <span id="pesoActual">—</span>
+            <span class="card-unit">kg</span>
+          </div>
+          <div class="card-trend" id="pesoTrend"></div>
+        </div>
+
+        <div class="card card-imc" id="cardImc">
+          <div class="card-label">IMC</div>
+          <div class="card-value">
+            <span id="imcValor">—</span>
+          </div>
+          <div class="card-trend" id="imcClasif">—</div>
+        </div>
+
+        <div class="card card-racha" id="cardRacha">
+          <div class="card-label">Racha</div>
+          <div class="card-value">
+            <span id="rachaDias">0</span>
+            <span class="card-unit">días</span>
+          </div>
+          <div class="card-trend" id="rachaMsg">Sin registro</div>
+        </div>
+
+        <div class="card card-objetivo" id="cardObjetivo">
+          <div class="card-label">Objetivo</div>
+          <div class="card-value">
+            <span id="objetivoValor">—</span>
+            <span class="card-unit">kg</span>
+          </div>
+          <div class="card-trend" id="objetivoMsg">—</div>
+        </div>
+
+      </div>
+
+      <!-- Bloque de recomendaciones -->
+      <section class="recomendaciones" id="recomendaciones">
+        <h3>💡 Recomendaciones</h3>
+        <div id="recomendacionesContent"></div>
+      </section>
+
+      <!-- Gráfica -->
+      <section class="grafica-section">
+        <div class="grafica-header">
+          <h3>📈 Evolución</h3>
+          <div class="range-selector">
+            <button class="range-btn active" data-range="30">30 días</button>
+            <button class="range-btn" data-range="90">90 días</button>
+            <button class="range-btn" data-range="365">1 año</button>
+            <button class="range-btn" data-range="all">Todo</button>
+          </div>
+        </div>
+        <div class="grafica-container">
+          <canvas id="graficaPeso"></canvas>
+        </div>
+      </section>
+
+      <!-- Logros -->
+      <section class="logros" id="logros">
+        <h3>🏆 Logros</h3>
+        <div class="logros-grid" id="logrosGrid"></div>
+      </section>
+
+      <!-- Historial -->
+      <section class="historial">
+        <div class="historial-header">
+          <h3>📋 Historial</h3>
+          <span class="historial-count" id="historialCount">0 registros</span>
+        </div>
+        <div id="historialList"></div>
+      </section>
+
+    </section>
+  </main>
+
+  <!-- ═══════════════════════════════════════════════════
+       MODAL: REGISTRAR PESO
+       ═══════════════════════════════════════════════════ -->
+  <div class="modal" id="modalRegistrar">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Registrar peso</h2>
+        <button class="modal-close" data-close="modalRegistrar">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="field">
+          <span class="field-label">Peso (kg)</span>
+          <input type="number" id="inputPeso" step="0.1" min="20" max="300" placeholder="Ej: 78.5" autocomplete="off">
+        </label>
+        <label class="field">
+          <span class="field-label">Fecha</span>
+          <input type="date" id="inputFecha">
+        </label>
+        <label class="field">
+          <span class="field-label">Nota (opcional)</span>
+          <textarea id="inputNota" rows="2" placeholder="Ej: después de desayunar, antes de entrenar..."></textarea>
+        </label>
+        <p class="field-hint" id="registrarHint"></p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" data-close="modalRegistrar">Cancelar</button>
+        <button class="btn-primary" id="btnGuardarRegistro">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════
+       MODAL: PERFIL
+       ═══════════════════════════════════════════════════ -->
+  <div class="modal" id="modalPerfil">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Perfil</h2>
+        <button class="modal-close" data-close="modalPerfil">✕</button>
+      </div>
+      <div class="modal-body">
+        <label class="field">
+          <span class="field-label">Altura (cm) *</span>
+          <input type="number" id="inputAltura" step="0.5" min="100" max="250" placeholder="Ej: 175">
+        </label>
+        <label class="field">
+          <span class="field-label">Sexo</span>
+          <select id="inputSexo">
+            <option value="">—</option>
+            <option value="M">Masculino</option>
+            <option value="F">Femenino</option>
+          </select>
+        </label>
+        <label class="field">
+          <span class="field-label">Fecha de nacimiento</span>
+          <input type="date" id="inputNacimiento">
+        </label>
+        <label class="field">
+          <span class="field-label">Peso objetivo (kg)</span>
+          <input type="number" id="inputObjetivo" step="0.1" min="20" max="300" placeholder="Ej: 75">
+        </label>
+        <label class="field">
+          <span class="field-label">Nivel de actividad</span>
+          <select id="inputActividad">
+            <option value="">—</option>
+            <option value="sedentario">Sedentario (poco o ningún ejercicio)</option>
+            <option value="ligero">Ligero (1-3 días/semana)</option>
+            <option value="moderado">Moderado (3-5 días/semana)</option>
+            <option value="alto">Alto (6-7 días/semana)</option>
+            <option value="atleta">Atleta (2 veces al día)</option>
+          </select>
+        </label>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" data-close="modalPerfil">Cancelar</button>
+        <button class="btn-primary" id="btnGuardarPerfil">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script src="app.js"></script>
+
+</body>
+</html>
