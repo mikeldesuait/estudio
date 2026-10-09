@@ -830,3 +830,62 @@ body.cd-mododibujo.cd-herr-borrador .cd-capa-dibujo {
   border-radius: 50%;
   background: #1f2937;
 }
+
+/* ═══════════════════════════════════════════════════════
+   SIDEBAR RESPONSIVE — se oculta en pantallas estrechas
+   ═══════════════════════════════════════════════════════ */
+
+/* Estado: sidebar oculta */
+.cd-root.cd-sidebar-oculta {
+  grid-template-columns: 0 minmax(0, 1fr) !important;
+}
+
+.cd-root.cd-sidebar-oculta .cd-sidebar {
+  display: none !important;
+}
+
+/* Botón ☰ */
+.cd-btn-sidebar {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--cd-text);
+  border-radius: 6px;
+  padding: 5px 9px;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  transition: background .12s, border-color .12s;
+  margin-right: 4px;
+}
+
+.cd-btn-sidebar:hover {
+  background: rgba(0,0,0,.05);
+  border-color: var(--cd-line);
+}
+
+[data-theme="dark"] .cd-btn-sidebar:hover {
+  background: rgba(255,255,255,.08);
+}
+
+/* Cuando la sidebar está oculta, la hoja se centra mejor */
+.cd-root.cd-sidebar-oculta .cd-contenedor-hojas {
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+/* ═══════════════════════════════════════════════════════
+   FIX sidebar oculta — no colapsar a 0px, mejor 1fr 1fr
+   ═══════════════════════════════════════════════════════ */
+
+.cd-root.cd-sidebar-oculta {
+  grid-template-columns: 1fr !important;
+}
+
+.cd-root.cd-sidebar-oculta .cd-sidebar {
+  display: none !important;
+}
+
+.cd-root.cd-sidebar-oculta .cd-main {
+  grid-column: 1 / -1 !important;
+  width: 100% !important;
+}

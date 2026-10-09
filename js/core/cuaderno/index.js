@@ -55,6 +55,9 @@ window.Cuaderno = (function() {
 
     state.notificar();
 
+    // ─── Sidebar responsive ───
+    initSidebarResponsive(rootElement);
+
     var instancia = {
       root: rootElement,
       state: state,
@@ -80,6 +83,62 @@ window.Cuaderno = (function() {
   function desmontar(rootElement) {
     var inst = instancias.get(rootElement);
     if (inst) inst.desmontar();
+  }
+
+  // ─── Sidebar responsive ───
+  var STORAGE_KEY = 'estudio:cuaderno:sidebar-pref';
+  var ANCHO_BREAKPOINT = 750;
+
+  function initSidebarResponsive(root) {
+    var boton = root.querySelector('[data-action="toggle-sidebar"]');
+    if (!boton) return;
+
+    // Aplicar estado inicial
+    aplicarEstadoInicial(root);
+
+    // Listener del botón
+    boton.addEventListener('click', function() {
+      var oculta = root.classList.toggle('cd-sidebar-oculta');
+      // Guardar preferencia
+      try {
+        localStorage.setItem(STORAGE_KEY, oculta ? 'oculta' : 'visible');
+      } catch (e) {}
+    });
+
+    // Listener de resize: si no hay preferencia guardada, adaptar
+    var resizeDebounced = null;
+    window.addEventListener('resize', function() {
+      clearTimeout(resizeDebounced);
+      resizeDebounced = setTimeout(function() {
+        var pref = null;
+        try { pref = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+        if (pref) return; // si hay preferencia manual, no hacemos nada
+        adaptarAlAncho(root);
+      }, 200);
+    });
+  }
+
+  function aplicarEstadoInicial(root) {
+    var pref = null;
+    try { pref = localStorage.getItem(STORAGE_KEY); } catch (e) {}
+
+    if (pref === 'oculta') {
+      root.classList.add('cd-sidebar-oculta');
+    } else if (pref === 'visible') {
+      root.classList.remove('cd-sidebar-oculta');
+    } else {
+      // Sin preferencia → aplicar regla automática
+      adaptarAlAncho(root);
+    }
+  }
+
+  function adaptarAlAncho(root) {
+    var ancho = window.innerWidth;
+    if (ancho < ANCHO_BREAKPOINT) {
+      root.classList.add('cd-sidebar-oculta');
+    } else {
+      root.classList.remove('cd-sidebar-oculta');
+    }
   }
 
   return { montar: montar, desmontar: desmontar };

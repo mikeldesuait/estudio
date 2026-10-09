@@ -20,6 +20,10 @@ window.CuadernoTemplate = (function() {
       +   '<div class="cd-toolbar">'
 
       +     '<div class="cd-grupo">'
+      +       '<button class="cd-btn-sidebar" data-action="toggle-sidebar" title="Mostrar/ocultar lista de cuadernos">☰</button>'
+      +     '</div>'
+
+      +     '<div class="cd-grupo">'
       +       '<button class="cd-btn-herr" data-herr="texto" title="Escribir">✍️</button>'
       +       '<button class="cd-btn-herr" data-herr="lapiz" title="Lápiz">✏️</button>'
       +       '<button class="cd-btn-herr" data-herr="resaltador" title="Resaltador">🖍️</button>'
