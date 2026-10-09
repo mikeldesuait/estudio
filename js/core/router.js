@@ -63,7 +63,8 @@ const Router = {
       'asignaturas': 'Asignaturas',
       'temas': 'Temas',
       'tema': 'Estudiando',
-      'cuaderno': 'Cuadernos'
+      'cuaderno': 'Cuadernos',
+      'economia': 'Economía familiar'
     };
     Shell.setContexto(textos[nivel] || nivel);
   },

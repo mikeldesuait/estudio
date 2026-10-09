@@ -10,6 +10,7 @@ const Shell = {
   pestanas: [
     { id: 'escritorio',    nombre: 'Escritorio',    icono: '🏠', tipo: 'home' },
     { id: 'cuaderno',      nombre: 'Cuadernos',     icono: '📓', tipo: 'cuaderno' },
+    { id: 'economia',      nombre: 'Economía',      icono: '💶', tipo: 'custom' },
     { id: 'grado-derecho', nombre: 'Derecho',       icono: '⚖️', tipo: 'area' },
     { id: 'pnl',           nombre: 'PNL',           icono: '🧠', tipo: 'area' },
     { id: 'herramientas',  nombre: 'Herramientas',  icono: '🔧', tipo: 'area' },
@@ -470,6 +471,8 @@ const Shell = {
         Router.navegar('asignaturas', { areaId: id });
       } else if (p && p.tipo === 'home') {
         Router.navegar('escritorio');
+      } else if (p && p.tipo === 'custom' && id === 'economia') {
+        Router.navegar('economia');
       }
       return;
     }
@@ -506,6 +509,8 @@ const Shell = {
       Router.navegar('cuaderno');
     } else if (p.tipo === 'area') {
       Router.navegar('asignaturas', { areaId: id });
+    } else if (p.tipo === 'custom' && id === 'economia') {
+      Router.navegar('economia');
     }
   },
 

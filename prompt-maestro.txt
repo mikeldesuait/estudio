@@ -1,0 +1,280 @@
+# CONTEXTO DEL PROYECTO: ESTUDIO PERSONAL
+
+Tengo una aplicación de estudio personal alojada en GitHub Pages:
+
+  URL:  https://mikeldesuait.github.io/estudio/
+  Repo: https://github.com/mikeldesuait/estudio
+  Ruta local: ~/estudio/
+  Rama: main
+
+Necesito ayuda para mantenerla y ampliarla. Aquí está todo el contexto:
+
+═══════════════════════════════════════════════════════════════
+ESTRUCTURA DEL PROYECTO
+═══════════════════════════════════════════════════════════════
+
+estudio/
+├── index.html                    ← Página principal
+├── README.md                     ← Documentación completa
+├── .gitignore
+│
+├── css/
+│   ├── styles.css                ← Estilos base
+│   ├── themes.css                ← Temas claro/oscuro
+│   └── shell/                    ← Estilos por componente
+│       ├── shell.css             ← Shell (pestañas, topbar)
+│       ├── escritorio.css        ← Escritorio (dashboard)
+│       ├── cuaderno.css          ← Cuaderno digital
+│       ├── pomodoro-config.css
+│       ├── agenda-modal.css
+│       ├── ajustes.css
+│       └── bookmarks.css
+│
+├── js/
+│   ├── core/                     ← Núcleo del shell
+│   │   ├── shell.js              ← Pestañas + topbar + tabbar
+│   │   ├── router.js             ← Enrutador entre vistas
+│   │   ├── navegacion.js         ← Historial + chincheta
+│   │   ├── bookmarks.js          ← Marcadores por pestaña
+│   │   ├── ajustes.js            ← Panel de configuración
+│   │   ├── lectura.js            ← Progreso de lectura
+│   │   └── cuaderno/             ← MÓDULO CUADERNO DIGITAL
+│   │       ├── index.js          ← API pública Cuaderno.montar()
+│   │       ├── state.js          ← Estado global + pub/sub
+│   │       ├── storage.js        ← Persistencia
+│   │       ├── schema.js         ← Esquema + migraciones
+│   │       ├── sidebar.js        ← Lista de cuadernos
+│   │       ├── template.js       ← HTML del módulo
+│   │       ├── pageView.js       ← Render de hojas
+│   │       ├── editor.js         ← Editor de texto
+│   │       ├── drawing.js        ← Canvas (lápiz, resaltador)
+│   │       ├── toolbar.js        ← Barra de herramientas
+│   │       ├── shortcuts.js      ← Atajos de teclado
+│   │       └── utils.js          ← Utilidades
+│   │
+│   ├── vistas/
+│   │   ├── index.js              ← Puente Router ↔ Vistas
+│   │   └── escritorio.js         ← Dashboard con widgets
+│   │
+│   ├── widgets/
+│   │   ├── pomodoro.js
+│   │   ├── progreso.js
+│   │   └── agenda-modal.js
+│   │
+│   └── estudio-subrayado.js      ← Subrayado en temas HTML
+│
+└── estudio/                      ← CONTENIDO
+    ├── grado-derecho/            ← 46 asignaturas (CON cursos/semestres)
+    ├── pnl/                      ← 2 asignaturas (SIN cursos)
+    ├── networking/               ← Cisco + Test Router (SIN cursos)
+    ├── herramientas/             ← 1 asignatura (SIN cursos)
+    └── dieta/                    ← 1 asignatura (SIN cursos)
+
+═══════════════════════════════════════════════════════════════
+SISTEMA DE CONTENIDO
+═══════════════════════════════════════════════════════════════
+
+Cada ÁREA tiene:
+  - asignaturas.json → lista de asignaturas con curso/semestre
+
+Cada ASIGNATURA tiene:
+  - config.json      → metadatos + lista de temas
+  - asignatura.html  → página que carga config.json
+  - guia/guia.pdf    → (opcional)
+  - programa/programa.pdf → (opcional)
+  - temas/temaN/     → carpeta por tema con su HTML
+
+Ejemplo de asignatura:
+  ~/estudio/estudio/grado-derecho/civil-contratos/
+  ├── config.json
+  ├── asignatura.html
+  ├── guia/guia.pdf
+  ├── programa/programa.pdf
+  └── temas/
+      ├── tema1/tema1.html
+      ├── tema2/tema2.html
+      └── ...
+
+═══════════════════════════════════════════════════════════════
+REGLAS DEL SISTEMA
+═══════════════════════════════════════════════════════════════
+
+## Áreas CON cursos y semestres (grado-derecho)
+- Navegación: Áreas → Cursos → Semestres → Asignaturas
+- En asignaturas.json: "curso": "1", "semestre": "1" (números > 0)
+- Volver: window.location.href='/estudio/?nivel=asignaturas&area=grado-derecho&curso=X&semestre=Y'
+
+## Áreas SIN cursos ni semestres (pnl, networking, herramientas, dieta)
+- Navegación: Áreas → Asignaturas (directo)
+- En asignaturas.json: "curso": "0", "semestre": "0"
+- Volver: window.location.href='/estudio/?nivel=asignaturas&area=XXX&curso=0&semestre=0'
+
+## Rutas en GitHub Pages
+- TODAS las rutas absolutas desde /estudio/
+- Los ../../ NO funcionan en asignaturas embebidas
+- Ejemplo: <link rel="stylesheet" href="/estudio/css/styles.css">
+
+## Progreso
+- localStorage con clave: progreso_[ASIGNATURA_KEY]_[temaId]
+- ASIGNATURA_KEY está definida en cada asignatura.html
+
+═══════════════════════════════════════════════════════════════
+MÓDULOS IMPLEMENTADOS
+═══════════════════════════════════════════════════════════════
+
+## 1. SHELL
+- Contenedor persistente de la app
+- Pestañas fijas (Escritorio + áreas) y pestañas de asignaturas
+- Cada pestaña con su historial, scroll y estado
+- Topbar: pomodoro, racha, progreso, botones de acción
+- Statusbar: tiempo hoy, tareas, repasos, contexto
+
+Ficheros: js/core/shell.js, css/shell/shell.css
+
+## 2. ESCRITORIO (Dashboard tipo corcho)
+- Widgets arrastrables con interact.js
+- Tipos: botones de áreas, calendario, notas (post-its)
+- Modo Mover ON/OFF con #btnModoMover
+- localStorage en clave escritorio_elementos
+- Cada elemento: { id, tipo, x, y, w, h }
+
+Ficheros: js/vistas/escritorio.js, css/shell/escritorio.css
+
+## 3. CALENDARIO (dentro del escritorio)
+- Vistas: día, semana, mes
+- Eventos en localStorage: eventos_calendario
+- Modal para crear/editar/eliminar
+- Formato: { id, fecha, hora, titulo, desc }
+
+Ficheros: js/widgets/agenda-modal.js, css/shell/agenda-modal.css
+
+## 4. POMODORO
+- Ciclos 25/5 min configurables
+- Sesiones agrupadas
+- Config persistente en localStorage
+
+Ficheros: js/widgets/pomodoro.js
+
+## 5. CUADERNO DIGITAL (Módulo completo)
+- Múltiples cuadernos (crear, renombrar, borrar, color)
+- Hojas con corte automático de texto entre páginas
+- Formato: negrita, cursiva, subrayado, colores
+- Paletas de color para texto y resaltado
+- Dibujo en canvas: lápiz, resaltador, borrador, undo/redo
+- Selector de color y grosor por herramienta
+- Plantillas: rayada, cuadriculada, lisa
+- Export a PDF (hoja o cuaderno completo)
+- Sidebar responsive con botón ☰ para iPad
+- Atajos: Ctrl+B/I/U/Z/Y/S
+- Persistencia en localStorage: estudio:cuaderno:v1
+
+Ficheros: js/core/cuaderno/*, css/shell/cuaderno.css
+
+## 6. SUBRAYADO EN TEMAS
+- Script que se inyecta en cada tema HTML
+- Barra flotante con colores (resaltar 3, subrayar 2)
+- Guarda marcas en localStorage
+- Export/Import JSON
+- Compatible con modo oscuro
+
+Fichero: js/estudio-subrayado.js
+
+## 7. TEST ROUTER (Exam Trainer)
+- Cisco 800-150 con 100 preguntas
+- 3 tipos: MCQ, MSQ, MATCH (con líneas SVG)
+- 2 modos: Estudio y Examen
+- Traducción al español en modo estudio
+- Explicaciones EN + ES
+- Panel colapsable en iPad vertical
+- Export/Import de respuestas
+- Atajos de teclado
+
+Ubicación: estudio/networking/testrouter/
+Ficheros: asignatura.html, app.js, styles.css, preguntas.js, traducciones.js
+
+## 8. EXPORTAR / IMPORTAR BACKUP
+- Botones en la barra inferior
+- Exportar: JSON con escritorio, eventos, progreso, aprobadas, theme
+- Importar: restaura todo en localStorage
+
+═══════════════════════════════════════════════════════════════
+CONVENCIONES
+═══════════════════════════════════════════════════════════════
+
+- HTML5 + CSS3 con variables CSS para temas
+- JavaScript ES6+ vanilla (SIN frameworks, SIN bundler)
+- localStorage para persistencia (sin backend)
+- postMessage para comunicación iframe ↔ shell
+- fetch() para cargar config.json
+- Rutas absolutas /estudio/...
+- Nombres de archivos en español (navegacion.js, ajustes.js)
+- Prefijos CSS por módulo: .shell-, .cd-, .esb-
+- CDNs: interact.js, Font Awesome, Google Fonts (Inter)
+
+═══════════════════════════════════════════════════════════════
+LO QUE PUEDO PEDIRTE
+═══════════════════════════════════════════════════════════════
+
+A) Añadir un nuevo tema a una asignatura existente
+B) Crear una nueva asignatura dentro de un área existente
+C) Crear una nueva área de estudio (con o sin cursos)
+D) Modificar el escritorio (widgets, calendario, notas)
+E) Modificar el cuaderno digital
+F) Modificar el subrayado en temas
+G) Crear/modificar un exam trainer
+H) Cambios globales (shell, router, temas, colores)
+I) Cualquier otra cosa
+
+═══════════════════════════════════════════════════════════════
+CÓMO QUIERO QUE ME RESPONDAS
+═══════════════════════════════════════════════════════════════
+
+PREFERENCIAS ESTRICTAS:
+
+1. Comandos para pegar en la terminal (Ubuntu + VS Code + Git)
+2. Comandos que funcionen pegados directamente (uno o varios)
+3. Para archivos nuevos o modificaciones grandes: nano o VS Code
+   (NO usar heredocs con > 50 líneas porque se cortan)
+4. Para cambios puntuales: sed o python3 inline
+5. Siempre con backup antes: cp archivo archivo.bak
+
+REGLAS:
+- NO me hagas editar manualmente en el navegador
+- NO uses Python inline complejo (falla con caracteres especiales)
+- Prefiero comandos simples que funcionen siempre
+- Si hay que modificar un archivo grande, dame el COMPLETO con cat >
+  (si es < 50 líneas) o dime que use nano
+- Siempre rutas absolutas /estudio/ para GitHub Pages
+- Para probar en local: cd ~/estudio && python3 -m http.server 8000
+- Ver cambios en: http://localhost:8000/estudio/
+
+FORMATO:
+1. Explicación breve del plan (3-5 líneas)
+2. Comandos uno por uno
+3. Cómo verificar que funcionó
+4. Commit + push al final si aplica
+
+═══════════════════════════════════════════════════════════════
+CONTEXTO ACTUAL
+═══════════════════════════════════════════════════════════════
+
+- Todo el sistema funciona en producción
+- Ubuntu + VS Code + Git + GitHub Pages
+- LocalStorage como única persistencia
+- Sin backend, sin frameworks, sin bundler
+- 52 asignaturas en 5 áreas
+- 123 temas HTML con subrayado activo
+
+═══════════════════════════════════════════════════════════════
+LO QUE QUIERO HACER AHORA
+═══════════════════════════════════════════════════════════════
+
+[ESCRIBE AQUÍ TU PETICIÓN CONCRETA]
+
+Ejemplos:
+- "Quiero añadir una asignatura nueva llamada 'derecho-mercantil-v'..."
+- "Quiero modificar el cuaderno digital para que..."
+- "Quiero crear un exam trainer para la asignatura X..."
+- "Tengo un bug en el subrayado de temas, cuando..."
+
+Cuando entiendas todo el contexto, confirma y pásame un plan.

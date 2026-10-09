@@ -49,6 +49,9 @@ const Vistas = {
         case 'cuaderno':
           await this.renderCuaderno(main, params);
           break;
+        case 'economia':
+          this.renderEconomia(main, params);
+          break;
         default:
           main.innerHTML = '<div style="padding:40px;text-align:center;">Vista no encontrada: ' + nivel + '</div>';
       }
@@ -251,6 +254,21 @@ const Vistas = {
 
   async renderTema(main, params) {
     main.innerHTML = '<div style="padding:24px;">Tema (en desarrollo)</div>';
+  },
+
+  /* ═══════════════════════════════════════════════════════
+     ECONOMÍA
+     ═══════════════════════════════════════════════════════ */
+
+  renderEconomia(main, params) {
+    main.innerHTML = '<div id="economia-root" style="height:100%;min-height:500px;"></div>';
+
+    if (!window.Economia) {
+      main.innerHTML = '<div style="padding:40px;color:#ef4444;">Error: módulo Economía no cargado</div>';
+      return;
+    }
+
+    window.Economia.montar(document.getElementById('economia-root'));
   }
 };
 
