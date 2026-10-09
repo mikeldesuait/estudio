@@ -110,6 +110,7 @@ const Shell = {
     if (window.Progreso) window.Progreso.init();
     if (window.Pomodoro) window.Pomodoro.init();
     if (window.Navegacion) window.Navegacion.init();
+    if (window.StorageMonitor) window.StorageMonitor.init();
     if (window.Navegacion) window.Navegacion.init();
   },
 
@@ -585,6 +586,7 @@ const Shell = {
       <div class="item"><i class="fas fa-check-circle" style="color:#10b981"></i> 0 tareas</div>
       <div class="item"><i class="fas fa-redo" style="color:#f59e0b"></i> 0 repasos</div>
       <div class="derecha">
+        <div class="item" id="shellStorageMonitor"><!-- StorageMonitor --></div>
         <div class="item"><i class="fas fa-layer-group"></i> <span id="shellContexto">Escritorio</span></div>
         <div class="item"><i class="fas fa-circle" style="color:#10b981;font-size:7px"></i> OK</div>
       </div>
