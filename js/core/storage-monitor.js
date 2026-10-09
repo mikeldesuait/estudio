@@ -1,27 +1,22 @@
 /* ============================================================
    STORAGE MONITOR — Indicador de uso de localStorage
-   Muestra el espacio usado en la statusbar con desglose
-   y opciones de limpieza.
    ============================================================ */
 
 const StorageMonitor = {
   intervalo: null,
-  intervaloMs: 30000, // 30 segundos
+  intervaloMs: 30000,
 
-  /* ═══════════════════════════════════════════════════════
-     CÁLCULO DE USO
-     ═══════════════════════════════════════════════════════ */
+  APPS_ANTIGUAS: ['uned_v16', 'diet_plan_data_v5', 'diet_plan_personal_v19', 'diet_plan_school_v19', 'cisco_exam_trainer_full_v3'],
 
-  // Calcula el tamaño en bytes de una clave + valor
+  PREFIJOS_ACTIVOS: ['progreso_', 'aprobada_', 'escritorio_elementos', 'eventos_calendario', 'estudio:cuaderno', 'estudio-subrayado:', 'testrouter_', 'theme', 'shell_', 'deepseek_', 'navegacion_'],
+
   tamanoClave(key, value) {
-    return (key.length + (value || '').length) * 2; // UTF-16
+    return (key.length + (value || '').length) * 2;
   },
 
-  // Devuelve un objeto con el análisis completo
   analizar() {
     let total = 0;
     const items = [];
-
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       const value = localStorage.getItem(key) || '';
@@ -29,157 +24,107 @@ const StorageMonitor = {
       total += size;
       items.push({ key, value, size });
     }
-
-    // Agrupar por tipo
     const grupos = {
-      'Marcas de subrayado': 0,
-      'Cuaderno digital': 0,
-      'Progreso de temas': 0,
-      'Estado aprobadas': 0,
-      'Escritorio (widgets)': 0,
-      'Eventos calendario': 0,
-      'Test Router': 0,
-      'Tema (claro/oscuro)': 0,
-      'Otros': 0
+      'Marcas de subrayado': 0, 'Cuaderno digital': 0, 'Progreso de temas': 0,
+      'Estado aprobadas': 0, 'Escritorio (widgets)': 0, 'Eventos calendario': 0,
+      'Test Router': 0, 'Tema (claro/oscuro)': 0, 'Shell': 0, 'Otros': 0
     };
-
     items.forEach(item => {
       const k = item.key;
-      if (k.startsWith('estudio-subrayado:'))       grupos['Marcas de subrayado'] += item.size;
-      else if (k.startsWith('estudio:cuaderno'))    grupos['Cuaderno digital'] += item.size;
-      else if (k.startsWith('progreso_'))           grupos['Progreso de temas'] += item.size;
-      else if (k.startsWith('aprobada_'))           grupos['Estado aprobadas'] += item.size;
-      else if (k === 'escritorio_elementos')        grupos['Escritorio (widgets)'] += item.size;
-      else if (k === 'eventos_calendario')          grupos['Eventos calendario'] += item.size;
-      else if (k.startsWith('testrouter'))          grupos['Test Router'] += item.size;
-      else if (k === 'theme')                       grupos['Tema (claro/oscuro)'] += item.size;
-      else                                          grupos['Otros'] += item.size;
+      if (k.startsWith('estudio-subrayado:')) grupos['Marcas de subrayado'] += item.size;
+      else if (k.startsWith('estudio:cuaderno')) grupos['Cuaderno digital'] += item.size;
+      else if (k.startsWith('progreso_')) grupos['Progreso de temas'] += item.size;
+      else if (k.startsWith('aprobada_')) grupos['Estado aprobadas'] += item.size;
+      else if (k === 'escritorio_elementos') grupos['Escritorio (widgets)'] += item.size;
+      else if (k === 'eventos_calendario') grupos['Eventos calendario'] += item.size;
+      else if (k.startsWith('testrouter')) grupos['Test Router'] += item.size;
+      else if (k === 'theme') grupos['Tema (claro/oscuro)'] += item.size;
+      else if (k.startsWith('shell_')) grupos['Shell'] += item.size;
+      else grupos['Otros'] += item.size;
     });
-
     return { total, items, grupos };
   },
 
-  // Formatea bytes a texto legible
   formatear(bytes) {
     if (bytes < 1024) return bytes + ' B';
     if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
     return (bytes / (1024 * 1024)).toFixed(2) + ' MB';
   },
 
-  // Devuelve el color según el porcentaje (verde/amarillo/rojo)
   colorSegunPct(pct) {
     if (pct < 60) return 'verde';
     if (pct < 85) return 'amarillo';
     return 'rojo';
   },
 
-  /* ═══════════════════════════════════════════════════════
-     RENDERIZADO DEL BADGE
-     ═══════════════════════════════════════════════════════ */
+  esClaveActiva(key) {
+    return this.PREFIJOS_ACTIVOS.some(function(p) { return key.startsWith(p) || key === p; });
+  },
 
   renderizar() {
     const slot = document.getElementById('shellStorageMonitor');
     if (!slot) return;
-
     const { total } = this.analizar();
-    const limite = 5 * 1024 * 1024; // 5 MB
+    const limite = 5 * 1024 * 1024;
     const pct = (total / limite) * 100;
     const color = this.colorSegunPct(pct);
-
-    slot.innerHTML = `
-      <div class="sm-badge sm-${color}" title="Uso de localStorage">
-        💾 ${this.formatear(total)} (${pct.toFixed(1)}%)
-      </div>
-    `;
-
-    // Click → abrir popup
-    slot.querySelector('.sm-badge').addEventListener('click', (e) => {
-      e.stopPropagation();
-      this.abrirPopup();
-    });
+    slot.innerHTML = '<div class="sm-badge sm-' + color + '">💾 ' + this.formatear(total) + ' (' + pct.toFixed(1) + '%)</div>';
+    const badge = slot.querySelector('.sm-badge');
+    if (badge) {
+      badge.addEventListener('click', (e) => { e.stopPropagation(); this.abrirPopup(); });
+    }
   },
-
-  /* ═══════════════════════════════════════════════════════
-     POPUP CON DESGLOSE
-     ═══════════════════════════════════════════════════════ */
 
   abrirPopup() {
     this.cerrarPopup();
-
     const { total, items, grupos } = this.analizar();
     const limite = 5 * 1024 * 1024;
     const pct = (total / limite) * 100;
     const color = this.colorSegunPct(pct);
-
-    // Ordenar grupos de mayor a menor, quitando los que son 0
-    const gruposOrdenados = Object.entries(grupos)
-      .filter(([, size]) => size > 0)
-      .sort((a, b) => b[1] - a[1]);
-
-    // TOP 5 claves más grandes
-    const topClaves = items
-      .sort((a, b) => b.size - a.size)
-      .slice(0, 5);
+    const gruposOrdenados = Object.entries(grupos).filter(e => e[1] > 0).sort((a, b) => b[1] - a[1]);
+    const topClaves = items.sort((a, b) => b.size - a.size).slice(0, 5);
 
     const popup = document.createElement('div');
     popup.id = 'storageMonitorPopup';
-    popup.innerHTML = `
-      <div class="sm-popup-header">
-        <h3>💾 Almacenamiento local</h3>
-        <button class="sm-popup-close" onclick="StorageMonitor.cerrarPopup()">✕</button>
-      </div>
 
-      <div class="sm-popup-body">
-        <div class="sm-resumen sm-${color}">
-          <div class="sm-resumen-principal">
-            <span class="sm-resumen-titulo">Total usado</span>
-            <span class="sm-resumen-valor">${this.formatear(total)}</span>
-          </div>
-          <div class="sm-resumen-bar">
-            <div class="sm-resumen-bar-fill sm-${color}" style="width: ${Math.min(pct, 100)}%"></div>
-          </div>
-          <div class="sm-resumen-info">
-            ${pct.toFixed(1)}% de ~5 MB
-          </div>
-        </div>
+    let html = '';
+    html += '<div class="sm-popup-header"><h3>💾 Almacenamiento local</h3>';
+    html += '<button class="sm-popup-close" onclick="StorageMonitor.cerrarPopup()">✕</button></div>';
+    html += '<div class="sm-popup-body">';
+    html += '<div class="sm-resumen sm-' + color + '">';
+    html += '<div class="sm-resumen-principal"><span class="sm-resumen-titulo">Total usado</span>';
+    html += '<span class="sm-resumen-valor">' + this.formatear(total) + '</span></div>';
+    html += '<div class="sm-resumen-bar"><div class="sm-resumen-bar-fill sm-' + color + '" style="width:' + Math.min(pct, 100) + '%"></div></div>';
+    html += '<div class="sm-resumen-info">' + pct.toFixed(1) + '% de ~5 MB</div></div>';
+    html += '<div class="sm-grupos"><h4>Por categoría</h4>';
+    gruposOrdenados.forEach(e => {
+      html += '<div class="sm-grupo"><span class="sm-grupo-nombre">' + e[0] + '</span>';
+      html += '<span class="sm-grupo-tamano">' + this.formatear(e[1]) + '</span></div>';
+    });
+    html += '</div>';
+    html += '<div class="sm-top"><h4>Top 5 más grandes</h4>';
+    topClaves.forEach((item, i) => {
+      html += '<div class="sm-item"><span class="sm-item-num">' + (i + 1) + '.</span>';
+      html += '<span class="sm-item-key">' + this.escapeHtml(item.key.substring(0, 40)) + '</span>';
+      html += '<span class="sm-item-size">' + this.formatear(item.size) + '</span></div>';
+    });
+    html += '</div></div>';
 
-        <div class="sm-grupos">
-          <h4>Por categoría</h4>
-          ${gruposOrdenados.map(([nombre, size]) => `
-            <div class="sm-grupo">
-              <span class="sm-grupo-nombre">${nombre}</span>
-              <span class="sm-grupo-tamano">${this.formatear(size)}</span>
-            </div>
-          `).join('')}
-        </div>
+    html += '<div class="sm-popup-footer">';
+    html += '<button class="sm-btn sm-btn-secondary" onclick="StorageMonitor.exportarTodo()">📤 Exportar todo</button>';
+    html += '<button class="sm-btn sm-btn-danger" onclick="StorageMonitor.limpiarAppsAntiguas()">🧹 Limpiar apps antiguas</button>';
+    html += '<button class="sm-btn sm-btn-warning" onclick="StorageMonitor.limpiarSubrayadoHuerfano()">🧽 Subrayado huérfano</button>';
+    html += '<button class="sm-btn sm-btn-secondary" onclick="StorageMonitor.verAppsActivas()">📊 Ver apps activas</button>';
+    html += '<button class="sm-btn sm-btn-warning" onclick="StorageMonitor.limpiarMarcadoresHuerfanos()">🧹 Marcadores huérfanos</button>';
+    html += '<button class="sm-btn sm-btn-danger" onclick="StorageMonitor.borrarCacheHTML()">🗑️ Borrar caché HTML</button>';
+    html += '</div>';
 
-        <div class="sm-top">
-          <h4>Top 5 más grandes</h4>
-          ${topClaves.map((item, i) => `
-            <div class="sm-item">
-              <span class="sm-item-num">${i + 1}.</span>
-              <span class="sm-item-key" title="${this.escapeHtml(item.key)}">${this.escapeHtml(item.key.substring(0, 40))}${item.key.length > 40 ? '…' : ''}</span>
-              <span class="sm-item-size">${this.formatear(item.size)}</span>
-            </div>
-          `).join('')}
-        </div>
-      </div>
-
-      <div class="sm-popup-footer">
-        <button class="sm-btn sm-btn-secondary" onclick="StorageMonitor.exportarTodo()">📤 Exportar todo</button>
-        <button class="sm-btn sm-btn-warning" onclick="StorageMonitor.limpiarAntiguos()">🧹 Limpiar antiguos</button>
-        <button class="sm-btn sm-btn-danger" onclick="StorageMonitor.borrarCacheHTML()">🗑️ Borrar caché HTML</button>
-      </div>
-    `;
-
+    popup.innerHTML = html;
     document.body.appendChild(popup);
 
-    // Cerrar al hacer click fuera
     setTimeout(() => {
       document.addEventListener('click', this._cerrarFuera = (e) => {
-        if (!popup.contains(e.target)) {
-          this.cerrarPopup();
-        }
+        if (!popup.contains(e.target)) this.cerrarPopup();
       });
     }, 100);
   },
@@ -193,24 +138,13 @@ const StorageMonitor = {
     }
   },
 
-  /* ═══════════════════════════════════════════════════════
-     ACCIONES
-     ═══════════════════════════════════════════════════════ */
-
-  // Exportar TODO el localStorage como JSON
   exportarTodo() {
     const data = {};
     for (let i = 0; i < localStorage.length; i++) {
       const key = localStorage.key(i);
       data[key] = localStorage.getItem(key);
     }
-
-    const json = JSON.stringify({
-      fecha: new Date().toISOString(),
-      total_claves: localStorage.length,
-      datos: data
-    }, null, 2);
-
+    const json = JSON.stringify({ fecha: new Date().toISOString(), total_claves: localStorage.length, datos: data }, null, 2);
     const blob = new Blob([json], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
@@ -218,63 +152,104 @@ const StorageMonitor = {
     a.download = 'estudio-backup-' + Date.now() + '.json';
     a.click();
     URL.revokeObjectURL(url);
-
-    if (window.Navegacion && Navegacion.toast) {
-      Navegacion.toast('📤 Backup exportado');
-    }
+    if (window.Navegacion && Navegacion.toast) Navegacion.toast('📤 Backup exportado');
   },
 
-  // Borrar marcas de subrayado de temas concretos (o antiguas)
+  limpiarAppsAntiguas() {
+    const apps = this.APPS_ANTIGUAS.filter(k => localStorage.getItem(k) !== null);
+    if (apps.length === 0) { alert('No hay apps antiguas'); return; }
+    let total = 0;
+    const det = apps.map(k => {
+      const v = localStorage.getItem(k) || '';
+      total += v.length * 2;
+      return '  - ' + k + ' (' + (v.length * 2 / 1024).toFixed(1) + ' KB)';
+    });
+    const msg = 'BORRAR APPS ANTIGUAS\n\n' + det.join('\n') + '\n\nTOTAL: ' + (total / 1024).toFixed(1) + ' KB\n\nSeguro?';
+    if (!confirm(msg)) return;
+    apps.forEach(k => localStorage.removeItem(k));
+    if (window.Navegacion && Navegacion.toast) Navegacion.toast('🧹 ' + (total / 1024).toFixed(0) + ' KB liberados');
+    this.cerrarPopup();
+    this.renderizar();
+  },
+
+  limpiarSubrayadoHuerfano() {
+    const claves = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.indexOf('estudio-subrayado:') === 0) claves.push(k);
+    }
+    if (claves.length === 0) { alert('No hay marcas'); return; }
+    let total = 0;
+    claves.forEach(k => { try { total += (JSON.parse(localStorage.getItem(k)) || []).length; } catch (e) {} });
+    if (!confirm('Limpiar marcas de subrayado\n\nConjuntos: ' + claves.length + '\nMarcas: ' + total + '\n\nBorrar TODAS?')) return;
+    claves.forEach(k => localStorage.removeItem(k));
+    if (window.Navegacion && Navegacion.toast) Navegacion.toast('🧽 ' + claves.length + ' conjuntos borrados');
+    this.cerrarPopup();
+    this.renderizar();
+  },
+
+  verAppsActivas() {
+    const activas = [];
+    const desconocidas = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (!k) continue;
+      if (this.esClaveActiva(k)) activas.push(k);
+      else desconocidas.push(k);
+    }
+    let msg = 'APPS ACTIVAS\n\nConocidas: ' + activas.length + '\n';
+    activas.slice(0, 8).forEach(k => { msg += '  - ' + k.substring(0, 45) + '\n'; });
+    if (activas.length > 8) msg += '  ... y ' + (activas.length - 8) + ' mas\n';
+    msg += '\nDesconocidas: ' + desconocidas.length + '\n';
+    desconocidas.slice(0, 8).forEach(k => { msg += '  - ' + k.substring(0, 45) + '\n'; });
+    if (desconocidas.length > 8) msg += '  ... y ' + (desconocidas.length - 8) + ' mas';
+    alert(msg);
+  },
+
+  limpiarMarcadoresHuerfanos() {
+    if (!window.Shell) return;
+    let total = 0;
+    Object.keys(Shell.marcadoresAbiertos || {}).forEach(pd => {
+      const m = Shell.marcadoresAbiertos[pd] || {};
+      const n = Object.keys(m).length;
+      if (n > 0) {
+        total += n;
+        Shell.marcadoresAbiertos[pd] = {};
+        Shell.marcadorActivo[pd] = null;
+      }
+    });
+    if (total === 0) {
+      if (window.Navegacion && Navegacion.toast) Navegacion.toast('Sin marcadores huérfanos');
+      return;
+    }
+    Shell.guardarMarcadoresAbiertos();
+    if (window.Bookmarks && Bookmarks.render) Bookmarks.render();
+    Shell.renderTabbar();
+    if (window.Navegacion && Navegacion.toast) Navegacion.toast('🧹 ' + total + ' marcador(es) limpiado(s)');
+    this.cerrarPopup();
+    this.renderizar();
+  },
+
   limpiarAntiguos() {
-    const opciones = [
-      'Borrar TODAS las marcas de subrayado',
-      'Borrar progreso de asignaturas no matriculadas',
-      'Cancelar'
-    ];
-
-    const respuesta = prompt(
-      '¿Qué quieres limpiar?\n\n' +
-      '1. Todas las marcas de subrayado\n' +
-      '2. Progreso de asignaturas no matriculadas\n' +
-      '0. Cancelar\n\n' +
-      'Escribe el número:'
-    );
-
-    if (respuesta === '1') {
-      const claves = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const k = localStorage.key(i);
-        if (k.startsWith('estudio-subrayado:')) claves.push(k);
-      }
-      claves.forEach(k => localStorage.removeItem(k));
-      if (window.Navegacion && Navegacion.toast) {
-        Navegacion.toast('🧹 ' + claves.length + ' conjuntos de marcas borrados');
-      }
-      this.cerrarPopup();
-      this.renderizar();
-    } else if (respuesta === '2') {
-      if (window.Navegacion && Navegacion.toast) {
-        Navegacion.toast('⚠️ Función pendiente de implementar');
-      }
+    if (!confirm('Borrar TODAS las marcas de subrayado?')) return;
+    const claves = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i);
+      if (k && k.startsWith('estudio-subrayado:')) claves.push(k);
     }
+    claves.forEach(k => localStorage.removeItem(k));
+    if (window.Navegacion && Navegacion.toast) Navegacion.toast('🧹 ' + claves.length + ' conjuntos borrados');
+    this.cerrarPopup();
+    this.renderizar();
   },
 
-  // Borrar caché de HTML de pestañas
   borrarCacheHTML() {
-    if (!confirm('¿Borrar el HTML en caché de las pestañas? Se recargarán al volver a cada una.')) return;
-
-    // La caché está en Shell.cacheHTML (en memoria, no en localStorage)
+    if (!confirm('Borrar el HTML en caché?')) return;
     if (window.Shell && window.Shell.cacheHTML) {
       window.Shell.cacheHTML = {};
-      if (window.Navegacion && Navegacion.toast) {
-        Navegacion.toast('🗑️ Caché HTML borrada');
-      }
+      if (window.Navegacion && Navegacion.toast) Navegacion.toast('🗑️ Caché HTML borrada');
     }
   },
-
-  /* ═══════════════════════════════════════════════════════
-     UTILIDADES
-     ═══════════════════════════════════════════════════════ */
 
   escapeHtml(s) {
     const div = document.createElement('div');
@@ -282,18 +257,10 @@ const StorageMonitor = {
     return div.innerHTML;
   },
 
-  /* ═══════════════════════════════════════════════════════
-     INICIALIZACIÓN
-     ═══════════════════════════════════════════════════════ */
-
   init() {
-    // Renderizar inmediatamente
     setTimeout(() => this.renderizar(), 500);
-
-    // Refrescar cada 30 segundos
     if (this.intervalo) clearInterval(this.intervalo);
     this.intervalo = setInterval(() => this.renderizar(), this.intervaloMs);
-
     console.log('✅ StorageMonitor inicializado');
   }
 };
