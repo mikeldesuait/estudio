@@ -324,6 +324,16 @@
     $('#btnExport')?.addEventListener('click', exportAnswers);
     $('#btnImport')?.addEventListener('click', importAnswers);
 
+    // Panel colapsable (móvil/tablet vertical)
+    $('#btnPanel')?.addEventListener('click', abrirPanel);
+    $('#btnPanelClose')?.addEventListener('click', cerrarPanel);
+    $('#panelOverlay')?.addEventListener('click', cerrarPanel);
+
+    // Cerrar panel con Escape
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') cerrarPanel();
+    });
+
     // Modales
     $('#modalInfoClose')?.addEventListener('click', () => closeModal('modalInfo'));
     $('#modalResultClose')?.addEventListener('click', () => closeModal('modalResult'));
@@ -399,6 +409,7 @@
     saveState();
     render();
     updateProgress();
+    cerrarPanel();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -1163,6 +1174,7 @@
      ═══════════════════════════════════════════════════════ */
 
   function filterPending() {
+    cerrarPanel();
     const pending = [];
     QUESTIONS.forEach((q, i) => {
       const a = state.answers[q.id];
@@ -1181,6 +1193,7 @@
   }
 
   function filterWrong() {
+    cerrarPanel();
     const wrong = [];
     QUESTIONS.forEach((q, i) => {
       const a = state.answers[q.id];
@@ -1254,6 +1267,23 @@
   /* ═══════════════════════════════════════════════════════
      RESET
      ═══════════════════════════════════════════════════════ */
+
+  /* ─── Panel colapsable (móvil) ─── */
+  function abrirPanel() {
+    const panel = $('#panel');
+    const overlay = $('#panelOverlay');
+    if (!panel) return;
+    panel.classList.add('panel-abierto');
+    if (overlay) overlay.classList.add('panel-abierto');
+  }
+
+  function cerrarPanel() {
+    const panel = $('#panel');
+    const overlay = $('#panelOverlay');
+    if (!panel) return;
+    panel.classList.remove('panel-abierto');
+    if (overlay) overlay.classList.remove('panel-abierto');
+  }
 
   function resetAll() {
     if (!confirm('¿Reiniciar todo? Se borrarán tus respuestas.')) return;

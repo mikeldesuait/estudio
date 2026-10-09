@@ -30,6 +30,7 @@
 
     <div class="header-right">
       <button class="icon-btn" id="btnLang" title="Cambiar idioma pregunta (solo modo estudio)" style="display:none;">🇪🇸</button>
+      <button class="icon-btn" id="btnPanel" title="Mostrar/ocultar panel">📊</button>
       <button class="icon-btn" id="btnTheme" title="Cambiar tema claro/oscuro">🌙</button>
       <button class="icon-btn" id="btnReset" title="Reiniciar el test">🔄</button>
       <button class="icon-btn" id="btnInfo" title="Información">ℹ️</button>
@@ -71,8 +72,13 @@
       </div>
     </section>
 
+    <!-- OVERLAY (fondo oscuro cuando el panel está abierto en móvil) -->
+    <div class="panel-overlay" id="panelOverlay"></div>
+
     <!-- PANEL LATERAL (oculto en móvil, visible en escritorio) -->
     <aside class="panel" id="panel">
+
+      <button class="panel-close" id="btnPanelClose" title="Cerrar panel">✕</button>
 
       <div class="panel-section">
         <h3 class="panel-title">📊 Estadísticas</h3>

@@ -1515,3 +1515,101 @@ kbd {
     padding: 12px 16px;
   }
 }
+
+/* ═══════════════════════════════════════════════════════
+   PANEL COLAPSABLE EN MÓVIL
+   El botón 📊 y el panel deslizante solo en < 1024px
+   ═══════════════════════════════════════════════════════ */
+
+/* Botón del panel: oculto en escritorio */
+#btnPanel {
+  display: none;
+}
+
+/* Botón cerrar dentro del panel: oculto en escritorio */
+.panel-close {
+  display: none;
+}
+
+/* Overlay: oculto por defecto */
+.panel-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, .5);
+  z-index: 199;
+  opacity: 0;
+  transition: opacity .25s ease;
+  backdrop-filter: blur(2px);
+}
+
+@media (max-width: 1023px) {
+  /* Mostrar botón 📊 en móvil */
+  #btnPanel {
+    display: flex;
+  }
+
+  /* El panel se convierte en cajón lateral */
+  .panel {
+    display: flex !important;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 320px;
+    max-width: 85vw;
+    background: var(--panel);
+    border-left: 1px solid var(--border);
+    box-shadow: -8px 0 30px rgba(0, 0, 0, .25);
+    z-index: 200;
+    padding: 20px;
+    gap: 16px;
+    overflow-y: auto;
+    transform: translateX(100%);
+    transition: transform .3s cubic-bezier(.4, 0, .2, 1);
+    /* Reset del sticky de escritorio */
+    max-height: none;
+    align-self: auto;
+  }
+
+  /* Cuando el panel está abierto */
+  .panel.panel-abierto {
+    transform: translateX(0);
+  }
+
+  /* Mostrar overlay cuando está abierto */
+  .panel-overlay.panel-abierto {
+    display: block;
+    opacity: 1;
+  }
+
+  /* Mostrar botón cerrar en móvil */
+  .panel-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--panel-hover);
+    color: var(--text);
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all var(--transition);
+    z-index: 201;
+  }
+
+  .panel-close:hover {
+    background: var(--bad);
+    color: #fff;
+  }
+
+  /* Overlay z-index debajo del panel */
+  .panel-overlay {
+    z-index: 199;
+  }
+}
