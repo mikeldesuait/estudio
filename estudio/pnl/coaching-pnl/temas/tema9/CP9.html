@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>9. Lambent do Brasil</title>
+<style>
+body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; max-width: 950px; margin: 30px auto; padding: 20px; background: #fbf9f5; color: #2a2622; line-height: 1.85; font-size: 17px; }
+h1 { font-size: 30px; color: #2a2622; border-bottom: 4px solid #8b6f47; padding-bottom: 14px; }
+h2 { font-size: 23px; color: #6b4f2f; margin-top: 40px; border-left: 5px solid #8b6f47; padding-left: 16px; }
+h3 { font-size: 21px; color: #4a3520; margin-top: 30px; }
+h4 { font-size: 18px; color: #4a3520; margin-top: 24px; }
+strong { color: #4a3520; }
+ul { padding-left: 24px; }
+li { margin-bottom: 6px; }
+blockquote { background: #f5ede0; padding: 14px 22px; border-left: 5px solid #c9a876; margin: 18px 0; border-radius: 4px; font-style: italic; color: #4a3520; }
+hr { border: none; border-top: 2px dashed #d4c4a8; margin: 34px 0; }
+.indice { background: #f5ede0; border-radius: 10px; margin-bottom: 34px; overflow: hidden; border-left: 5px solid #8b6f47; }
+.indice details { border: none; }
+.indice summary { cursor: pointer; padding: 16px 24px; font-weight: 700; font-size: 18px; color: #6b4f2f; list-style: none; user-select: none; display: flex; align-items: center; justify-content: space-between; }
+.indice summary::-webkit-details-marker { display: none; }
+.indice summary::after { content: "▸"; font-size: 20px; transition: transform 0.2s; margin-left: 10px; color: #8b6f47; }
+.indice details[open] summary::after { transform: rotate(90deg); }
+.indice summary:hover { background: #ede0c8; }
+.indice .indice-content { padding: 0 24px 20px 24px; }
+.indice ul { list-style: none; padding-left: 0; margin: 0; }
+.indice li { padding: 3px 0; }
+.indice li.sub { padding-left: 20px; }
+.indice li.subsub { padding-left: 40px; }
+.indice a { color: #6b4f2f; text-decoration: none; }
+.indice a:hover { text-decoration: underline; color: #8b6f47; }
+.idea-central { background: #f5ede0; padding: 22px 28px; border-radius: 12px; margin: 20px 0 40px 0; border-left: 6px solid #8b6f47; }
+.idea-central h2 { margin-top: 0; border-left: none; padding-left: 0; }
+main { background: #ffffff; padding: 30px 36px; border-radius: 10px; box-shadow: 0 2px 20px rgba(139, 111, 71, 0.08); border: 1px solid #e8dfd0; }
+section[id^="ep-"] { scroll-margin-top: 20px; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px dashed #e0d5c0; }
+section[id^="ep-"]:last-of-type { border-bottom: none; }
+.bloque-resumen { background: #fbfaf7; border-left: 4px solid #8b6f47; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.bloque-resumen p { margin-bottom: 10px; }
+.bloque-resumen p:last-child { margin-bottom: 0; }
+.etiqueta-resumen { display: inline-block; background: #8b6f47; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-clave { background: #fdf6e3; border-left: 5px solid #d4a017; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.etiqueta-clave { display: inline-block; background: #d4a017; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-clave ul { list-style: none; padding-left: 0; }
+.bloque-clave li { padding: 8px 0 8px 30px; position: relative; border-bottom: 1px dashed #ead9a8; }
+.bloque-clave li:last-child { border-bottom: none; }
+.bloque-clave li::before { content: "🔑"; position: absolute; left: 0; font-size: 16px; }
+.bloque-clave li strong { color: #6b4f2f; }
+.bloque-pregunta { background: #eef6fb; border-left: 5px solid #3a7ac0; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.etiqueta-pregunta { display: inline-block; background: #3a7ac0; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-guion { background: #f0f7ee; border-left: 5px solid #4a8c3a; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.etiqueta-guion { display: inline-block; background: #4a8c3a; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-guion ol { padding-left: 22px; }
+.bloque-guion li { margin-bottom: 8px; }
+.modo-btn { position: fixed; top: 16px; right: 16px; padding: 8px 18px; border: none; border-radius: 30px; cursor: pointer; font-weight: 600; background: #8b6f47; color: #fff; font-size: 14px; z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.modo-btn:hover { background: #6b4f2f; }
+.dark-mode { background: #1a1815; color: #e8dfd0; }
+.dark-mode main { background: #252220; border-color: #3a352f; box-shadow: none; }
+.dark-mode h1 { color: #e8dfd0; border-bottom-color: #c9a876; }
+.dark-mode h2 { color: #d4a017; border-left-color: #c9a876; }
+.dark-mode h3 { color: #c9a876; }
+.dark-mode h4 { color: #c9a876; }
+.dark-mode strong { color: #d4a017; }
+.dark-mode blockquote { background: #2f2b26; border-left-color: #c9a876; color: #e8dfd0; }
+.dark-mode hr { border-top-color: #3a352f; }
+.dark-mode .indice { background: #2f2b26; border-left-color: #c9a876; }
+.dark-mode .indice summary { color: #d4a017; }
+.dark-mode .indice summary:hover { background: #3a352f; }
+.dark-mode .indice a { color: #d4a017; }
+.dark-mode .indice summary::after { color: #c9a876; }
+.dark-mode .idea-central { background: #2f2b26; border-left-color: #c9a876; }
+.dark-mode section[id^="ep-"] { border-bottom-color: #3a352f; }
+.dark-mode .bloque-resumen { background: #2a2622; border-left-color: #c9a876; }
+.dark-mode .bloque-clave { background: #2f2b26; border-left-color: #d4a017; }
+.dark-mode .bloque-clave li { border-bottom-color: #3a352f; }
+.dark-mode .bloque-clave li strong { color: #d4a017; }
+.dark-mode .bloque-pregunta { background: #222c36; border-left-color: #5a9ad0; }
+.dark-mode .bloque-guion { background: #222c1e; border-left-color: #6ab858; }
+.dark-mode .modo-btn { background: #c9a876; color: #1a1815; }
+</style>
+</head>
+<body>
+
+<button class="modo-btn" onclick="toggleModo()">🌓 Modo</button>
+
+<h1>9. Lambent do Brasil</h1>
+
+<div class="indice">
+<details open>
+<summary>📑 Índice del tema</summary>
+<div class="indice-content">
+<ul>
+<li class="sub"><a href="#ep-9-1">9.1. Certificado Internacional de Coaching</a></li><li class="sub"><a href="#ep-9-2">9.2. International Coaching Community (ICC)</a></li><li class="sub"><a href="#ep-9-3">9.3. International Community of NLP (ICNLP)</a></li><li class="sub"><a href="#ep-9-4">9.4. Cursos de formación</a></li><li class="sub"><a href="#ep-9-5">9.5. Aprendizaje a distancia</a></li>
+</ul>
+</div>
+</details>
+</div>
+
+<main>
+
+<section id="ep-9-1"><h3>9.1. Certificado Internacional de Coaching</h3><div class="bloque-resumen"><span class="etiqueta-resumen">🎯 DE QUÉ VA</span><p>Lambent do Brasil ofrece una formación certificada internacionalmente en coaching, impartida en todo el mundo, que da acceso a la International Coaching Community (ICC).</p></div><div class="bloque-resumen"><span class="etiqueta-resumen">📖 CONTENIDO</span><p>Lambent do Brasil proporciona su formación para el Certificado Internacional de Coaching en todo el mundo. Ha formado ya a centenares de coaches en más de quince países.</p><p>Lambent do Brasil es fundadora de la Brazilian Association of Coaching, de la Mexican Association of Coaching y de la Swedish Association of Coaching. También fue la primera entidad formadora para el National Coaching Register del Reino Unido, en su curso de posgrado en coaching ejecutivo en la Universidad de Derby. Está afiliada a la Scandinavian International University.</p><p>La International Coaching Community (ICC) fue creada por Lambent do Brasil. Es un grupo de coaches que han superado satisfactoriamente la formación requerida para el Certificado Internacional de Coaching. La comunidad se expande mediante la formación y los formadores certificados. Comparte un compromiso con la calidad, la ética y los estándares elevados de coaching.</p></div><div class="bloque-clave"><span class="etiqueta-clave">🔑 LITERAL QUE HAY QUE GRABAR</span><ul><li>Lambent do Brasil como entidad formadora y fundadora.</li><li>Certificado Internacional de Coaching.</li><li>International Coaching Community (ICC).</li><li>Centenares de coaches formados en más de quince países.</li><li>Compromiso con calidad, ética y estándares elevados de coaching.</li></ul></div><div class="bloque-guion"><span class="etiqueta-guion">🧠 CÓMO LO DESARROLLARÍA</span><ol><li>Qué es el Certificado Internacional de Coaching y quién lo imparte: Lambent do Brasil, con formación en más de quince países y centenares de coaches formados.</li><li>Asociaciones fundadas por Lambent do Brasil: Brazilian Association of Coaching, Mexican Association of Coaching y Swedish Association of Coaching.</li><li>Hito en el Reino Unido: primera entidad formadora para el National Coaching Register, en el posgrado en coaching ejecutivo de la Universidad de Derby.</li><li>Afiliación a la Scandinavian International University.</li><li>La International Coaching Community (ICC): creada por Lambent do Brasil, agrupa a quienes superaron la formación del Certificado, se expande mediante formación y formadores certificados, y comparte compromiso con calidad, ética y estándares elevados.</li></ol></div></section><section id="ep-9-2"><h3>9.2. International Coaching Community (ICC)</h3><div class="bloque-resumen"><span class="etiqueta-resumen">🎯 DE QUÉ VA</span><p>La International Coaching Community (ICC) es una comunidad de coaches creada por Lambent do Brasil, integrada por quienes han superado la formación del Certificado Internacional de Coaching, y que comparte un compromiso con la calidad, la ética y los estándares elevados del coaching.</p></div><div class="bloque-resumen"><span class="etiqueta-resumen">📖 CONTENIDO</span><p>La International Coaching Community (ICC) ha sido creada por Lambent do Brasil. Agrupa a un conjunto de coaches que han superado satisfactoriamente la formación requerida para obtener el Certificado Internacional de Coaching.</p><p>La comunidad continúa expandiéndose mediante la formación que imparte y mediante sus formadores certificados. De este modo, la ICC va incorporando nuevos miembros a medida que se certifican nuevos coaches.</p><p>Todos los integrantes de esta comunidad comparten un mismo compromiso. Ese compromiso se concreta en tres elementos: la calidad, la ética y los estándares elevados de coaching.</p><p>Para obtener más información sobre la ICC y sobre el Certificado Internacional de Coaching, el libro remite a la página electrónica de Lambent do Brasil, así como a la dirección de contacto de correo electrónico de la organización.</p></div><div class="bloque-clave"><span class="etiqueta-clave">🔑 LITERAL QUE HAY QUE GRABAR</span><ul><li>International Coaching Community (ICC).</li><li>Lambent do Brasil como fundadora de la ICC.</li><li>Certificado Internacional de Coaching como requisito de pertenencia.</li><li>Expansión mediante formación y formadores certificados.</li><li>Compromiso compartido: calidad, ética y estándares elevados.</li></ul></div><div class="bloque-guion"><span class="etiqueta-guion">🧠 CÓMO LO DESARROLLARÍA</span><ol><li>Identificar quién crea la ICC: Lambent do Brasil.</li><li>Definir qué es: una comunidad de coaches que han superado la formación del Certificado Internacional de Coaching.</li><li>Explicar cómo se expande: mediante la propia formación y los formadores certificados.</li><li>Señalar el compromiso compartido por sus miembros: calidad, ética y estándares elevados de coaching.</li><li>Indicar dónde se obtiene más información: la página electrónica de Lambent do Brasil y su correo de contacto.</li></ol></div></section><section id="ep-9-3"><h3>9.3. International Community of NLP (ICNLP)</h3><div class="bloque-resumen"><span class="etiqueta-resumen">🎯 DE QUÉ VA</span><p>La ICNLP es una asociación internacional abierta a todo el que se interese por la PNL, cuyo fin es construir una comunidad basada en los estándares éticos y profesionales más altos.</p></div><div class="bloque-resumen"><span class="etiqueta-resumen">📖 CONTENIDO</span><p>La International Community of NLP (ICNLP) es una asociación pensada para todas aquellas personas que estén interesadas en construir una comunidad internacional de Programación Neurolingüística.</p><p>El criterio que define a esta comunidad es que esa construcción se base en los estándares éticos y profesionales más altos.</p><p>La asociación está abierta a quienes estén interesados en la PNL, sin más requisitos que ese interés.</p><p>La ICNLP ofrece formación en PNL en tres niveles: practicante, practicante máster y formador.</p></div><div class="bloque-clave"><span class="etiqueta-clave">🔑 LITERAL QUE HAY QUE GRABAR</span><ul><li>ICNLP (International Community of NLP).</li><li>Comunidad internacional de PNL.</li><li>Estándares éticos y profesionales más altos.</li><li>Asociación abierta a los interesados en la PNL.</li><li>Formación en tres niveles: practicante, practicante máster y formador.</li></ul></div><div class="bloque-guion"><span class="etiqueta-guion">🧠 CÓMO LO DESARROLLARÍA</span><ol><li>Definir qué es la ICNLP: asociación internacional de PNL.</li><li>Señalar a quién va dirigida: abierta a todo interesado en la PNL.</li><li>Explicar su finalidad: construir una comunidad internacional de PNL.</li><li>Indicar el fundamento de esa comunidad: los estándares éticos y profesionales más altos.</li><li>Cerrar con la formación que ofrece: practicante, practicante máster y formador.</li></ol></div></section><section id="ep-9-4"><h3>9.4. Cursos de formación</h3><div class="bloque-resumen"><span class="etiqueta-resumen">🎯 DE QUÉ VA</span><p>Lambent do Brasil ofrece formación empresarial en varias áreas, además de formación certificada en coaching y PNL. Cada curso se diseña específicamente porque cada empresa es única.</p></div><div class="bloque-resumen"><span class="etiqueta-resumen">📖 CONTENIDO</span><p>Lambent do Brasil ofrece una variedad de cursos de formación para empresas. Las áreas que cubre son: coaching, ventas, negociación, pensamiento sistémico, PNL y habilidades de comunicación, y liderazgo.</p><p>Cada empresa es única. Por esta razón todos sus cursos están diseñados específicamente para cada empresa. No son cursos estándar aplicables a cualquier organización.</p><p>La empresa está especializada en consultoría sistémica. Esta consultoría se basa en su proceso de auditoría sistémica. Ese proceso analiza la cultura de la empresa y los distintos sistemas de comunicación y gestión que operan en ella.</p><p>Se puede contactar con Lambent do Brasil para necesidades de coaching, formación y asesoría. Entre las necesidades que cubren están: formación certificada en coaching, coaching ejecutivo y de empresa, formación en pensamiento sistémico, análisis sistémico de empresa, y formación en PNL como practicante, practicante máster y formador.</p></div><div class="bloque-clave"><span class="etiqueta-clave">🔑 LITERAL QUE HAY QUE GRABAR</span><ul><li>Áreas de formación: coaching, ventas, negociación, pensamiento sistémico, PNL y habilidades de comunicación, liderazgo.</li><li>Diseño específico de cada curso porque cada empresa es única.</li><li>Consultoría sistémica basada en el proceso de auditoría sistémica.</li><li>La auditoría sistémica analiza la cultura y los sistemas de comunicación y gestión de la empresa.</li><li>Formación en PNL en tres niveles: practicante, practicante máster y formador.</li></ul></div><div class="bloque-guion"><span class="etiqueta-guion">🧠 CÓMO LO DESARROLLARÍA</span><ol><li>Enumerar las áreas de formación para empresas: coaching, ventas, negociación, pensamiento sistémico, PNL y habilidades de comunicación, y liderazgo.</li><li>Explicar el principio de diseño específico: cada empresa es única, por lo que todos los cursos se diseñan a medida.</li><li>Describir la especialización en consultoría sistémica y su base: el proceso de auditoría sistémica, que analiza la cultura y los sistemas de comunicación y gestión de la empresa.</li><li>Cerrar con las necesidades concretas que cubren: formación certificada en coaching, coaching ejecutivo y de empresa, formación en pensamiento sistémico, análisis sistémico de empresa, y formación en PNL (practicante, practicante máster y formador).</li></ol></div></section><section id="ep-9-5"><h3>9.5. Aprendizaje a distancia</h3><div class="bloque-resumen"><span class="etiqueta-resumen">🎯 DE QUÉ VA</span><p>El libro ofrece formación en coaching a distancia mediante DVD, como alternativa a la formación presencial. Se detallan los materiales disponibles y los canales de contacto con Lambent do Brasil y con la International Coaching Community.</p></div><div class="bloque-resumen"><span class="etiqueta-resumen">📖 CONTENIDO</span><p>Lambent do Brasil permite beneficiarse de su formación en coaching mediante DVD. Esta modalidad de aprendizaje a distancia sustituye a la formación presencial para quienes no pueden acceder a ella.</p><p>Se ofrecen DVDs individualizados sobre coaching, objetivos, valores y creencias. Es decir, no solo hay un curso general, sino materiales específicos sobre cada una de esas materias.</p><p>Para obtener más detalles sobre estos materiales, el interesado puede visitar la página electrónica de Lambent do Brasil. También puede contactar directamente a través de la dirección de correo info@lambentdobrasil.com.</p><p>Para saber más acerca de la International Coaching Community (ICC), existe una página electrónica propia. La dirección es www.internationalcoachingcommunity.com. El correo de contacto en este caso es admin@lambentdobrasil.com.</p></div><div class="bloque-clave"><span class="etiqueta-clave">🔑 LITERAL QUE HAY QUE GRABAR</span><ul><li>Formación en coaching mediante DVD como modalidad a distancia.</li><li>DVDs individualizados sobre coaching, objetivos, valores y creencias.</li><li>Página web de Lambent do Brasil y correo info@lambentdobrasil.com.</li><li>Página web de la International Coaching Community y correo admin@lambentdobrasil.com.</li></ul></div><div class="bloque-guion"><span class="etiqueta-guion">🧠 CÓMO LO DESARROLLARÍA</span><ol><li>Modalidad de aprendizaje a distancia: la formación en coaching mediante DVD ofrecida por Lambent do Brasil.</li><li>Contenido de los materiales: DVDs individualizados sobre coaching, objetivos, valores y creencias.</li><li>Vía de contacto para la formación en coaching: página web de Lambent do Brasil y correo info@lambentdobrasil.com.</li><li>Vía de contacto para la ICC: página web www.internationalcoachingcommunity.com y correo admin@lambentdobrasil.com.</li></ol></div></section>
+
+</main>
+
+<script>
+function toggleModo(){document.body.classList.toggle("dark-mode");var b=document.querySelector(".modo-btn");b.textContent=document.body.classList.contains("dark-mode")?"☀️ Modo claro":"🌓 Modo";}
+document.addEventListener("click",function(e){var a=e.target.closest(".indice a");if(!a)return;var h=a.getAttribute("href");if(!h||h.indexOf("#")!==0)return;e.preventDefault();var t=document.getElementById(h.substring(1));if(t){var d=document.querySelector(".indice details");if(d)d.removeAttribute("open");t.scrollIntoView({behavior:"smooth",block:"start"});}});
+</script>
+<script src="/estudio/js/estudio-subrayado.js"></script>
+</body>
+</html>

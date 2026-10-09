@@ -1,0 +1,19 @@
+{
+  "id": "coaching-pnl",
+  "nombre": "Coaching con PNL",
+  "codigo": "PNL-COACH",
+  "creditos": 20,
+  "icon": "🎯",
+  "temas": [
+    { "id": "tema1",  "titulo": "1. Agradecimientos",                              "archivo": "temas/tema1/CP1.html",  "icono": "🙏" },
+    { "id": "tema2",  "titulo": "2. Introducción",                                 "archivo": "temas/tema2/CP2.html",  "icono": "📖" },
+    { "id": "tema3",  "titulo": "3. El sueño",                                     "archivo": "temas/tema3/CP3.html",  "icono": "💭" },
+    { "id": "tema4",  "titulo": "4. Primera Parte: ¿Qué es el coaching?",          "archivo": "temas/tema4/CP4.html",  "icono": "🎯" },
+    { "id": "tema5",  "titulo": "5. Segunda Parte: El arte del coaching",          "archivo": "temas/tema5/CP5.html",  "icono": "🎨" },
+    { "id": "tema6",  "titulo": "6. Tercera Parte: La práctica del coaching",      "archivo": "temas/tema6/CP6.html",  "icono": "⚙️" },
+    { "id": "tema7",  "titulo": "7. Cuarta Parte: Recursos",                       "archivo": "temas/tema7/CP7.html",  "icono": "📚" },
+    { "id": "tema8",  "titulo": "8. Glosario",                                     "archivo": "temas/tema8/CP8.html",  "icono": "📝" },
+    { "id": "tema9",  "titulo": "9. Lambent do Brasil",                            "archivo": "temas/tema9/CP9.html",  "icono": "🇧🇷" },
+    { "id": "tema10", "titulo": "10. Sobre los autores",                           "archivo": "temas/tema10/CP10.html","icono": "✍️" }
+  ]
+}

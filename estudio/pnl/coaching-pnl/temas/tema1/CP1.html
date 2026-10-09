@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1. Agradecimientos</title>
+<style>
+body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; max-width: 950px; margin: 30px auto; padding: 20px; background: #fbf9f5; color: #2a2622; line-height: 1.85; font-size: 17px; }
+h1 { font-size: 30px; color: #2a2622; border-bottom: 4px solid #8b6f47; padding-bottom: 14px; }
+h2 { font-size: 23px; color: #6b4f2f; margin-top: 40px; border-left: 5px solid #8b6f47; padding-left: 16px; }
+h3 { font-size: 21px; color: #4a3520; margin-top: 30px; }
+h4 { font-size: 18px; color: #4a3520; margin-top: 24px; }
+strong { color: #4a3520; }
+ul { padding-left: 24px; }
+li { margin-bottom: 6px; }
+blockquote { background: #f5ede0; padding: 14px 22px; border-left: 5px solid #c9a876; margin: 18px 0; border-radius: 4px; font-style: italic; color: #4a3520; }
+hr { border: none; border-top: 2px dashed #d4c4a8; margin: 34px 0; }
+.indice { background: #f5ede0; border-radius: 10px; margin-bottom: 34px; overflow: hidden; border-left: 5px solid #8b6f47; }
+.indice details { border: none; }
+.indice summary { cursor: pointer; padding: 16px 24px; font-weight: 700; font-size: 18px; color: #6b4f2f; list-style: none; user-select: none; display: flex; align-items: center; justify-content: space-between; }
+.indice summary::-webkit-details-marker { display: none; }
+.indice summary::after { content: "▸"; font-size: 20px; transition: transform 0.2s; margin-left: 10px; color: #8b6f47; }
+.indice details[open] summary::after { transform: rotate(90deg); }
+.indice summary:hover { background: #ede0c8; }
+.indice .indice-content { padding: 0 24px 20px 24px; }
+.indice ul { list-style: none; padding-left: 0; margin: 0; }
+.indice li { padding: 3px 0; }
+.indice li.sub { padding-left: 20px; }
+.indice li.subsub { padding-left: 40px; }
+.indice a { color: #6b4f2f; text-decoration: none; }
+.indice a:hover { text-decoration: underline; color: #8b6f47; }
+.idea-central { background: #f5ede0; padding: 22px 28px; border-radius: 12px; margin: 20px 0 40px 0; border-left: 6px solid #8b6f47; }
+.idea-central h2 { margin-top: 0; border-left: none; padding-left: 0; }
+main { background: #ffffff; padding: 30px 36px; border-radius: 10px; box-shadow: 0 2px 20px rgba(139, 111, 71, 0.08); border: 1px solid #e8dfd0; }
+section[id^="ep-"] { scroll-margin-top: 20px; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px dashed #e0d5c0; }
+section[id^="ep-"]:last-of-type { border-bottom: none; }
+.bloque-resumen { background: #fbfaf7; border-left: 4px solid #8b6f47; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.bloque-resumen p { margin-bottom: 10px; }
+.bloque-resumen p:last-child { margin-bottom: 0; }
+.etiqueta-resumen { display: inline-block; background: #8b6f47; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-clave { background: #fdf6e3; border-left: 5px solid #d4a017; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.etiqueta-clave { display: inline-block; background: #d4a017; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-clave ul { list-style: none; padding-left: 0; }
+.bloque-clave li { padding: 8px 0 8px 30px; position: relative; border-bottom: 1px dashed #ead9a8; }
+.bloque-clave li:last-child { border-bottom: none; }
+.bloque-clave li::before { content: "🔑"; position: absolute; left: 0; font-size: 16px; }
+.bloque-clave li strong { color: #6b4f2f; }
+.bloque-pregunta { background: #eef6fb; border-left: 5px solid #3a7ac0; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.etiqueta-pregunta { display: inline-block; background: #3a7ac0; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-guion { background: #f0f7ee; border-left: 5px solid #4a8c3a; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.etiqueta-guion { display: inline-block; background: #4a8c3a; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-guion ol { padding-left: 22px; }
+.bloque-guion li { margin-bottom: 8px; }
+.modo-btn { position: fixed; top: 16px; right: 16px; padding: 8px 18px; border: none; border-radius: 30px; cursor: pointer; font-weight: 600; background: #8b6f47; color: #fff; font-size: 14px; z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.modo-btn:hover { background: #6b4f2f; }
+.dark-mode { background: #1a1815; color: #e8dfd0; }
+.dark-mode main { background: #252220; border-color: #3a352f; box-shadow: none; }
+.dark-mode h1 { color: #e8dfd0; border-bottom-color: #c9a876; }
+.dark-mode h2 { color: #d4a017; border-left-color: #c9a876; }
+.dark-mode h3 { color: #c9a876; }
+.dark-mode h4 { color: #c9a876; }
+.dark-mode strong { color: #d4a017; }
+.dark-mode blockquote { background: #2f2b26; border-left-color: #c9a876; color: #e8dfd0; }
+.dark-mode hr { border-top-color: #3a352f; }
+.dark-mode .indice { background: #2f2b26; border-left-color: #c9a876; }
+.dark-mode .indice summary { color: #d4a017; }
+.dark-mode .indice summary:hover { background: #3a352f; }
+.dark-mode .indice a { color: #d4a017; }
+.dark-mode .indice summary::after { color: #c9a876; }
+.dark-mode .idea-central { background: #2f2b26; border-left-color: #c9a876; }
+.dark-mode section[id^="ep-"] { border-bottom-color: #3a352f; }
+.dark-mode .bloque-resumen { background: #2a2622; border-left-color: #c9a876; }
+.dark-mode .bloque-clave { background: #2f2b26; border-left-color: #d4a017; }
+.dark-mode .bloque-clave li { border-bottom-color: #3a352f; }
+.dark-mode .bloque-clave li strong { color: #d4a017; }
+.dark-mode .bloque-pregunta { background: #222c36; border-left-color: #5a9ad0; }
+.dark-mode .bloque-guion { background: #222c1e; border-left-color: #6ab858; }
+.dark-mode .modo-btn { background: #c9a876; color: #1a1815; }
+</style>
+</head>
+<body>
+
+<button class="modo-btn" onclick="toggleModo()">🌓 Modo</button>
+
+<h1>1. Agradecimientos</h1>
+
+<div class="indice">
+<details open>
+<summary>📑 Índice del tema</summary>
+<div class="indice-content">
+<ul>
+<li><em>Sin subepígrafes</em></li>
+</ul>
+</div>
+</details>
+</div>
+
+<main>
+
+<section id="ep-1"><h3>1. Agradecimientos</h3><div class="bloque-resumen"><span class="etiqueta-resumen">🎯 DE QUÉ VA</span><p>Los autores reconocen a las personas e instituciones que hicieron posible la escritura del libro, desde los pioneros del coaching hasta colaboradores editoriales y personas cercanas.</p></div><div class="bloque-resumen"><span class="etiqueta-resumen">📖 CONTENIDO</span><p>El agradecimiento se dirige en primer lugar a los pioneros del coaching, con mención especial a Timothy Gallwey, por haber inspirado a muchos a tomar este camino profesional.</p><p>Se reconoce también a John Grinder y Richard Bandler por crear juntos la Programación Neurolingüística, o PNL.</p><p>Los autores expresan gratitud a las numerosas personas que ayudaron a escribir el libro, en particular a su editora Carole Tonkinson y a Elizabeth Hutchins, por mejorar el manuscrito con su habilidad y cuidado habituales.</p><p>Se agradece igualmente a Robin Prior por ayudar desinteresadamente a convertir el libro en una realidad.</p><p>Los autores señalan que han aprendido mucho de las alumnas y alumnos de sus cursos de formación, incluido el curso de posgrado en el que enseñan coaching ejecutivo, y reconocen la paciencia y determinación demostradas por todos en la elaboración del libro.</p><p>Por último, asocian la escritura del libro a alguna música concreta, agradeciendo a Carlos Santana y a Gonzaguinha.</p></div><div class="bloque-clave"><span class="etiqueta-clave">🔑 LITERAL QUE HAY QUE GRABAR</span><ul><li>Timothy Gallwey como pionero del coaching.</li><li>John Grinder y Richard Bandler como creadores de la PNL.</li><li>Carole Tonkinson y Elizabeth Hutchins como editora y colaboradora del manuscrito.</li><li>Robin Prior como facilitador de la publicación.</li><li>Carlos Santana y Gonzaguinha como referencias musicales del libro.</li></ul></div><div class="bloque-guion"><span class="etiqueta-guion">🧠 CÓMO LO DESARROLLARÍA</span><ol><li>Agradecimiento a los pioneros del coaching, con mención especial a Timothy Gallwey como inspirador del camino profesional.</li><li>Reconocimiento a John Grinder y Richard Bandler como creadores de la PNL.</li><li>Gratitud a los colaboradores editoriales: Carole Tonkinson, Elizabeth Hutchins y Robin Prior.</li><li>Agradecimiento al alumnado de los cursos de formación, incluido el posgrado en coaching ejecutivo.</li><li>Mención final a la música asociada a la escritura: Carlos Santana y Gonzaguinha.</li></ol></div></section>
+
+</main>
+
+<script>
+function toggleModo(){document.body.classList.toggle("dark-mode");var b=document.querySelector(".modo-btn");b.textContent=document.body.classList.contains("dark-mode")?"☀️ Modo claro":"🌓 Modo";}
+document.addEventListener("click",function(e){var a=e.target.closest(".indice a");if(!a)return;var h=a.getAttribute("href");if(!h||h.indexOf("#")!==0)return;e.preventDefault();var t=document.getElementById(h.substring(1));if(t){var d=document.querySelector(".indice details");if(d)d.removeAttribute("open");t.scrollIntoView({behavior:"smooth",block:"start"});}});
+</script>
+<script src="/estudio/js/estudio-subrayado.js"></script>
+</body>
+</html>

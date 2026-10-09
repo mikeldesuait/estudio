@@ -23,6 +23,18 @@
       "semestre": "0",
       "matriculada": true,
       "path": "habitos-atomicos/"
+    },
+    {
+      "id": "coaching-pnl",
+      "nombre": "Coaching con PNL",
+      "codigo": "PNL-COACH",
+      "creditos": 20,
+      "caracter": "LECTURA COMPLEMENTARIA",
+      "icon": "🎯",
+      "curso": "0",
+      "semestre": "0",
+      "matriculada": true,
+      "path": "coaching-pnl/"
     }
   ]
 }

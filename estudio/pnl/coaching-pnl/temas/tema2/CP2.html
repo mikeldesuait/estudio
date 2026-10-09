@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2. Introducción</title>
+<style>
+body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; max-width: 950px; margin: 30px auto; padding: 20px; background: #fbf9f5; color: #2a2622; line-height: 1.85; font-size: 17px; }
+h1 { font-size: 30px; color: #2a2622; border-bottom: 4px solid #8b6f47; padding-bottom: 14px; }
+h2 { font-size: 23px; color: #6b4f2f; margin-top: 40px; border-left: 5px solid #8b6f47; padding-left: 16px; }
+h3 { font-size: 21px; color: #4a3520; margin-top: 30px; }
+h4 { font-size: 18px; color: #4a3520; margin-top: 24px; }
+strong { color: #4a3520; }
+ul { padding-left: 24px; }
+li { margin-bottom: 6px; }
+blockquote { background: #f5ede0; padding: 14px 22px; border-left: 5px solid #c9a876; margin: 18px 0; border-radius: 4px; font-style: italic; color: #4a3520; }
+hr { border: none; border-top: 2px dashed #d4c4a8; margin: 34px 0; }
+.indice { background: #f5ede0; border-radius: 10px; margin-bottom: 34px; overflow: hidden; border-left: 5px solid #8b6f47; }
+.indice details { border: none; }
+.indice summary { cursor: pointer; padding: 16px 24px; font-weight: 700; font-size: 18px; color: #6b4f2f; list-style: none; user-select: none; display: flex; align-items: center; justify-content: space-between; }
+.indice summary::-webkit-details-marker { display: none; }
+.indice summary::after { content: "▸"; font-size: 20px; transition: transform 0.2s; margin-left: 10px; color: #8b6f47; }
+.indice details[open] summary::after { transform: rotate(90deg); }
+.indice summary:hover { background: #ede0c8; }
+.indice .indice-content { padding: 0 24px 20px 24px; }
+.indice ul { list-style: none; padding-left: 0; margin: 0; }
+.indice li { padding: 3px 0; }
+.indice li.sub { padding-left: 20px; }
+.indice li.subsub { padding-left: 40px; }
+.indice a { color: #6b4f2f; text-decoration: none; }
+.indice a:hover { text-decoration: underline; color: #8b6f47; }
+.idea-central { background: #f5ede0; padding: 22px 28px; border-radius: 12px; margin: 20px 0 40px 0; border-left: 6px solid #8b6f47; }
+.idea-central h2 { margin-top: 0; border-left: none; padding-left: 0; }
+main { background: #ffffff; padding: 30px 36px; border-radius: 10px; box-shadow: 0 2px 20px rgba(139, 111, 71, 0.08); border: 1px solid #e8dfd0; }
+section[id^="ep-"] { scroll-margin-top: 20px; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px dashed #e0d5c0; }
+section[id^="ep-"]:last-of-type { border-bottom: none; }
+.bloque-resumen { background: #fbfaf7; border-left: 4px solid #8b6f47; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.bloque-resumen p { margin-bottom: 10px; }
+.bloque-resumen p:last-child { margin-bottom: 0; }
+.etiqueta-resumen { display: inline-block; background: #8b6f47; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-clave { background: #fdf6e3; border-left: 5px solid #d4a017; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.etiqueta-clave { display: inline-block; background: #d4a017; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-clave ul { list-style: none; padding-left: 0; }
+.bloque-clave li { padding: 8px 0 8px 30px; position: relative; border-bottom: 1px dashed #ead9a8; }
+.bloque-clave li:last-child { border-bottom: none; }
+.bloque-clave li::before { content: "🔑"; position: absolute; left: 0; font-size: 16px; }
+.bloque-clave li strong { color: #6b4f2f; }
+.bloque-pregunta { background: #eef6fb; border-left: 5px solid #3a7ac0; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.etiqueta-pregunta { display: inline-block; background: #3a7ac0; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-guion { background: #f0f7ee; border-left: 5px solid #4a8c3a; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.etiqueta-guion { display: inline-block; background: #4a8c3a; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-guion ol { padding-left: 22px; }
+.bloque-guion li { margin-bottom: 8px; }
+.modo-btn { position: fixed; top: 16px; right: 16px; padding: 8px 18px; border: none; border-radius: 30px; cursor: pointer; font-weight: 600; background: #8b6f47; color: #fff; font-size: 14px; z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.modo-btn:hover { background: #6b4f2f; }
+.dark-mode { background: #1a1815; color: #e8dfd0; }
+.dark-mode main { background: #252220; border-color: #3a352f; box-shadow: none; }
+.dark-mode h1 { color: #e8dfd0; border-bottom-color: #c9a876; }
+.dark-mode h2 { color: #d4a017; border-left-color: #c9a876; }
+.dark-mode h3 { color: #c9a876; }
+.dark-mode h4 { color: #c9a876; }
+.dark-mode strong { color: #d4a017; }
+.dark-mode blockquote { background: #2f2b26; border-left-color: #c9a876; color: #e8dfd0; }
+.dark-mode hr { border-top-color: #3a352f; }
+.dark-mode .indice { background: #2f2b26; border-left-color: #c9a876; }
+.dark-mode .indice summary { color: #d4a017; }
+.dark-mode .indice summary:hover { background: #3a352f; }
+.dark-mode .indice a { color: #d4a017; }
+.dark-mode .indice summary::after { color: #c9a876; }
+.dark-mode .idea-central { background: #2f2b26; border-left-color: #c9a876; }
+.dark-mode section[id^="ep-"] { border-bottom-color: #3a352f; }
+.dark-mode .bloque-resumen { background: #2a2622; border-left-color: #c9a876; }
+.dark-mode .bloque-clave { background: #2f2b26; border-left-color: #d4a017; }
+.dark-mode .bloque-clave li { border-bottom-color: #3a352f; }
+.dark-mode .bloque-clave li strong { color: #d4a017; }
+.dark-mode .bloque-pregunta { background: #222c36; border-left-color: #5a9ad0; }
+.dark-mode .bloque-guion { background: #222c1e; border-left-color: #6ab858; }
+.dark-mode .modo-btn { background: #c9a876; color: #1a1815; }
+</style>
+</head>
+<body>
+
+<button class="modo-btn" onclick="toggleModo()">🌓 Modo</button>
+
+<h1>2. Introducción</h1>
+
+<div class="indice">
+<details open>
+<summary>📑 Índice del tema</summary>
+<div class="indice-content">
+<ul>
+<li><em>Sin subepígrafes</em></li>
+</ul>
+</div>
+</details>
+</div>
+
+<main>
+
+<section id="ep-2"><h3>2. Introducción</h3><div class="bloque-resumen"><span class="etiqueta-resumen">🎯 DE QUÉ VA</span><p>El coaching es un proceso para explorar las esperanzas y sueños de una persona y convertirla en quien siempre ha deseado ser. El libro explica qué es el coaching, para quién sirve y cómo la PNL lo potencia.</p></div><div class="bloque-resumen"><span class="etiqueta-resumen">📖 CONTENIDO</span><p>El coaching parte de preguntas fundamentales: cuáles son tus esperanzas y sueños, qué es importante para ti, si tienes todo lo que te mereces y qué es posible para ti. Consiste en explorar esas preguntas de la mano de alguien que te ayude a realizar tus mejores sueños y a convertirte en la persona que siempre has deseado ser. Su popularidad se explica porque vivimos tiempos estimulantes, con posibilidades fantásticas, y sentimos que merecemos ser felices. Estamos dispuestos a invertir tiempo, esfuerzo y dinero para ser mejores. El coach es el guía en ese camino hacia ser lo mejor que podemos ser.</p><p>El libro sirve a varios perfiles: quien quiere ser coach, quien ya lo es, quien quiere contratar un coach y saber qué comporta, quien quiere aplicarse el coaching a sí mismo y quien quiere incorporarlo a su trabajo actual. Ayuda a dar los primeros pasos para ser coach, mejora las habilidades de quien ya lo es, enseña qué esperar si se va a contratar uno y sirve para el auto-coaching. También incrementa las habilidades de quienes trabajan ayudando a otros: terapia, consejo, formación, mentoría o consultoría.</p><p>La palabra coach procede del mundo del deporte, pero hoy el coaching es una profesión nueva, distinta del consejo, la formación, la mentoría y la consultoría. Tiene poder y versatilidad notables. Ayuda a realizar una nueva labor, mejorar el rendimiento en la profesión actual, desarrollar una nueva habilidad o resolver un problema. Muchas personas lo usan para encontrar dirección y equilibrio. Los coaches personales ayudan a alcanzar una vida mejor.</p><p>En el mundo de los negocios el coaching cobra importancia por tres razones. Primera: la gente cambia su lealtad profesional de sus empleadores a sí misma e invierte en su propia carrera, con varios empleadores a lo largo de la vida. Las empresas ven que el único modo de mantener a sus mejores colaboradores es invertir en ellos y facilitar su desarrollo, y el coaching es el mejor medio. Segunda: poner el coaching al servicio de los empleados clave es la mejor utilización de los recursos de la empresa, porque los aplica justo donde se necesitan. Tercera: los resultados a largo plazo de la formación empresarial suelen ser descorazonadores. La formación puede parecer un éxito sobre la marcha, pero si los participantes vuelven a la misma oficina, con las mismas personas que les tratan igual, recaen en su antiguo comportamiento porque todo su entorno lo apoya. Gran parte de la formación acaba siendo dinero malgastado porque no conduce a un cambio sostenible. Si un coach guía a los participantes después de la formación y mantiene viva la inspiración, resisten mejor el "negocio como de costumbre" y los cambios arraigan. Las habilidades del coaching enriquecen además el bagaje del buen directivo. El coaching ofrece la satisfacción de ayudar a los demás de forma muy eficaz, y también puede aplicarse a uno mismo. Es a la vez un conjunto de habilidades y una profesión gratificante en expansión.</p><p>La PNL está hecha a la medida del coaching. Estudia tres áreas que le dan su nombre: programación (el modo en que secuenciamos nuestras acciones para alcanzar objetivos), neurología (la mente y el modo en que pensamos) y lingüística (el modo en que usamos el lenguaje y cómo éste nos afecta). El coach PNL comprende la forma de pensar de su cliente y usa el lenguaje con precisión para ayudarle a alcanzar sus objetivos.</p><p>La PNL nació en Estados Unidos a mediados de los años setenta con el profesor de lingüística John Grinder y el psicólogo Richard Bandler. Comenzaron estudiando a comunicadores excelentes y construyeron modelos de habilidades de comunicación. Esos métodos podían enseñarse a otras personas para obtener resultados similares. De forma parecida, los autores han modelado los patrones de coaches excelentes, de modo que pueden decir qué funciona y qué no. No hace falta reinventar la rueda para ser un buen coach.</p><p>La PNL estudia también cómo estructuramos nuestra experiencia subjetiva: cómo pensamos acerca de nuestras creencias y valores, cómo creamos nuestros estados emocionales y cómo construimos nuestro mundo interior y le damos significado. Es el principal campo de la psicología que trata desde dentro el mundo interior subjetivo. Los coaches necesitan PNL porque les ayuda a convertirse en master coach. No obstante, no hace falta estudiar toda la PNL para usarla como coach. Si no se sabe nada de ella, el libro contiene todo lo necesario. Si ya se conoce, aquí se descubre cómo integrarla en la práctica del coaching.</p><p>La PNL aporta al coaching: velocidad (sus técnicas funcionan rápidamente), planteamiento pragmático (si lo que haces no funciona, haz otra cosa), actitud de fascinación (cada cliente es único; cómo hace lo que hace y cómo puede hacerlo mejor), técnicas sencillas hechas a medida del coaching, apreciación de cómo interactúan objetivos, valores y creencias (esencia del proceso), y sintonía y confianza (prerrequisitos de toda buena relación de coaching).</p><p>El libro se divide en cuatro grandes apartados. Los dos primeros capítulos definen el escenario del coaching: qué es y cómo funciona. Los capítulos 3 al 8 conducen a través de la estructura del coaching y de las habilidades necesarias, desde la primera entrevista hasta el final de la relación con el cliente, con ejemplos prácticos de sesiones. El capítulo 9 es coaching en acción: un ejemplo de cómo usar las herramientas en una sesión real. El capítulo 10 está dedicado al coaching para uno mismo. Finalmente hay un apartado de recursos con las herramientas de coaching, cuestiones prácticas como duración de sesiones y contratos, un glosario de terminología y la bibliografía.</p><p>Emprender la acción es sumamente importante en coaching. Al final de cada capítulo hay sugerencias de tareas para uno mismo o para los clientes. Estas tareas de refuerzo ayudan a incrementar las habilidades de coaching, la conciencia de uno mismo y la felicidad. Se usan las que convengan y se prescinde de las que no sean útiles. Cada capítulo incluye también un resumen a modo de recordatorio de los puntos más importantes.</p><p>Los autores han formado a coaches de todo el mundo. Allí donde enseñan hay siempre un tremendo entusiasmo por el coaching, acompañado de deleite y sorpresa ante los notables resultados que proporciona. Se sienten orgullosos de su trabajo como coaches, como formadores de coaches y como desarrolladores del coaching como disciplina. Desean compartir todo eso a lo largo del libro. Joseph O'Connor y Andrea Lages firman la introducción en Mallorca, en 2004.</p></div><div class="bloque-clave"><span class="etiqueta-clave">🔑 LITERAL QUE HAY QUE GRABAR</span><ul><li>El coach como guía hacia ser lo mejor que podemos ser.</li><li>Las tres razones del auge del coaching en los negocios.</li><li>Las tres áreas de la PNL: programación, neurología y lingüística.</li><li>Origen de la PNL: Grinder y Bandler, años setenta, modelado de comunicadores excelentes.</li><li>Las seis aportaciones de la PNL al coaching (velocidad, pragmatismo, fascinación, técnicas sencillas, objetivos-valores-creencias, sintonía y confianza).</li></ul></div><div class="bloque-guion"><span class="etiqueta-guion">🧠 CÓMO LO DESARROLLARÍA</span><ol><li>Definición de coaching: explorar esperanzas y sueños para convertirse en quien uno desea ser, con el coach como guía.</li><li>A quién sirve el libro: futuros coaches, coaches en activo, quien contrata, quien se auto-aplica el coaching y quien lo incorpora a su trabajo.</li><li>El coaching como profesión nueva: origen deportivo, distinción frente a consejo, formación, mentoría y consultoría.</li><li>Importancia del coaching en la empresa: las tres razones (lealtad a uno mismo, empleados clave, fracaso de la formación sin seguimiento).</li><li>La PNL: las tres áreas (programación, neurología, lingüística), su origen con Grinder y Bandler y su ajuste al coaching.</li><li>Aportaciones concretas de la PNL al coaching: velocidad, pragmatismo, fascinación, técnicas sencillas, objetivos-valores-creencias, sintonía y confianza.</li><li>Estructura del libro: cuatro apartados y el papel de las tareas de refuerzo y los resúmenes de cada capítulo.</li></ol></div></section>
+
+</main>
+
+<script>
+function toggleModo(){document.body.classList.toggle("dark-mode");var b=document.querySelector(".modo-btn");b.textContent=document.body.classList.contains("dark-mode")?"☀️ Modo claro":"🌓 Modo";}
+document.addEventListener("click",function(e){var a=e.target.closest(".indice a");if(!a)return;var h=a.getAttribute("href");if(!h||h.indexOf("#")!==0)return;e.preventDefault();var t=document.getElementById(h.substring(1));if(t){var d=document.querySelector(".indice details");if(d)d.removeAttribute("open");t.scrollIntoView({behavior:"smooth",block:"start"});}});
+</script>
+<script src="/estudio/js/estudio-subrayado.js"></script>
+</body>
+</html>

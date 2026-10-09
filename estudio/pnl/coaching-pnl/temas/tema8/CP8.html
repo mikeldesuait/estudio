@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>8. Glosario</title>
+<style>
+body { font-family: "Segoe UI", system-ui, -apple-system, sans-serif; max-width: 950px; margin: 30px auto; padding: 20px; background: #fbf9f5; color: #2a2622; line-height: 1.85; font-size: 17px; }
+h1 { font-size: 30px; color: #2a2622; border-bottom: 4px solid #8b6f47; padding-bottom: 14px; }
+h2 { font-size: 23px; color: #6b4f2f; margin-top: 40px; border-left: 5px solid #8b6f47; padding-left: 16px; }
+h3 { font-size: 21px; color: #4a3520; margin-top: 30px; }
+h4 { font-size: 18px; color: #4a3520; margin-top: 24px; }
+strong { color: #4a3520; }
+ul { padding-left: 24px; }
+li { margin-bottom: 6px; }
+blockquote { background: #f5ede0; padding: 14px 22px; border-left: 5px solid #c9a876; margin: 18px 0; border-radius: 4px; font-style: italic; color: #4a3520; }
+hr { border: none; border-top: 2px dashed #d4c4a8; margin: 34px 0; }
+.indice { background: #f5ede0; border-radius: 10px; margin-bottom: 34px; overflow: hidden; border-left: 5px solid #8b6f47; }
+.indice details { border: none; }
+.indice summary { cursor: pointer; padding: 16px 24px; font-weight: 700; font-size: 18px; color: #6b4f2f; list-style: none; user-select: none; display: flex; align-items: center; justify-content: space-between; }
+.indice summary::-webkit-details-marker { display: none; }
+.indice summary::after { content: "▸"; font-size: 20px; transition: transform 0.2s; margin-left: 10px; color: #8b6f47; }
+.indice details[open] summary::after { transform: rotate(90deg); }
+.indice summary:hover { background: #ede0c8; }
+.indice .indice-content { padding: 0 24px 20px 24px; }
+.indice ul { list-style: none; padding-left: 0; margin: 0; }
+.indice li { padding: 3px 0; }
+.indice li.sub { padding-left: 20px; }
+.indice li.subsub { padding-left: 40px; }
+.indice a { color: #6b4f2f; text-decoration: none; }
+.indice a:hover { text-decoration: underline; color: #8b6f47; }
+.idea-central { background: #f5ede0; padding: 22px 28px; border-radius: 12px; margin: 20px 0 40px 0; border-left: 6px solid #8b6f47; }
+.idea-central h2 { margin-top: 0; border-left: none; padding-left: 0; }
+main { background: #ffffff; padding: 30px 36px; border-radius: 10px; box-shadow: 0 2px 20px rgba(139, 111, 71, 0.08); border: 1px solid #e8dfd0; }
+section[id^="ep-"] { scroll-margin-top: 20px; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 1px dashed #e0d5c0; }
+section[id^="ep-"]:last-of-type { border-bottom: none; }
+.bloque-resumen { background: #fbfaf7; border-left: 4px solid #8b6f47; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.bloque-resumen p { margin-bottom: 10px; }
+.bloque-resumen p:last-child { margin-bottom: 0; }
+.etiqueta-resumen { display: inline-block; background: #8b6f47; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-clave { background: #fdf6e3; border-left: 5px solid #d4a017; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.etiqueta-clave { display: inline-block; background: #d4a017; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-clave ul { list-style: none; padding-left: 0; }
+.bloque-clave li { padding: 8px 0 8px 30px; position: relative; border-bottom: 1px dashed #ead9a8; }
+.bloque-clave li:last-child { border-bottom: none; }
+.bloque-clave li::before { content: "🔑"; position: absolute; left: 0; font-size: 16px; }
+.bloque-clave li strong { color: #6b4f2f; }
+.bloque-pregunta { background: #eef6fb; border-left: 5px solid #3a7ac0; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.etiqueta-pregunta { display: inline-block; background: #3a7ac0; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-guion { background: #f0f7ee; border-left: 5px solid #4a8c3a; padding: 16px 22px; border-radius: 6px; margin: 14px 0; }
+.etiqueta-guion { display: inline-block; background: #4a8c3a; color: #fff; font-weight: 700; font-size: 13px; padding: 4px 14px; border-radius: 20px; margin-bottom: 10px; letter-spacing: 0.5px; }
+.bloque-guion ol { padding-left: 22px; }
+.bloque-guion li { margin-bottom: 8px; }
+.modo-btn { position: fixed; top: 16px; right: 16px; padding: 8px 18px; border: none; border-radius: 30px; cursor: pointer; font-weight: 600; background: #8b6f47; color: #fff; font-size: 14px; z-index: 999; box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+.modo-btn:hover { background: #6b4f2f; }
+.dark-mode { background: #1a1815; color: #e8dfd0; }
+.dark-mode main { background: #252220; border-color: #3a352f; box-shadow: none; }
+.dark-mode h1 { color: #e8dfd0; border-bottom-color: #c9a876; }
+.dark-mode h2 { color: #d4a017; border-left-color: #c9a876; }
+.dark-mode h3 { color: #c9a876; }
+.dark-mode h4 { color: #c9a876; }
+.dark-mode strong { color: #d4a017; }
+.dark-mode blockquote { background: #2f2b26; border-left-color: #c9a876; color: #e8dfd0; }
+.dark-mode hr { border-top-color: #3a352f; }
+.dark-mode .indice { background: #2f2b26; border-left-color: #c9a876; }
+.dark-mode .indice summary { color: #d4a017; }
+.dark-mode .indice summary:hover { background: #3a352f; }
+.dark-mode .indice a { color: #d4a017; }
+.dark-mode .indice summary::after { color: #c9a876; }
+.dark-mode .idea-central { background: #2f2b26; border-left-color: #c9a876; }
+.dark-mode section[id^="ep-"] { border-bottom-color: #3a352f; }
+.dark-mode .bloque-resumen { background: #2a2622; border-left-color: #c9a876; }
+.dark-mode .bloque-clave { background: #2f2b26; border-left-color: #d4a017; }
+.dark-mode .bloque-clave li { border-bottom-color: #3a352f; }
+.dark-mode .bloque-clave li strong { color: #d4a017; }
+.dark-mode .bloque-pregunta { background: #222c36; border-left-color: #5a9ad0; }
+.dark-mode .bloque-guion { background: #222c1e; border-left-color: #6ab858; }
+.dark-mode .modo-btn { background: #c9a876; color: #1a1815; }
+</style>
+</head>
+<body>
+
+<button class="modo-btn" onclick="toggleModo()">🌓 Modo</button>
+
+<h1>8. Glosario</h1>
+
+<div class="indice">
+<details open>
+<summary>📑 Índice del tema</summary>
+<div class="indice-content">
+<ul>
+<li><em>Sin subepígrafes</em></li>
+</ul>
+</div>
+</details>
+</div>
+
+<main>
+
+<section id="ep-8"><h3>8. Glosario</h3><div class="bloque-resumen"><span class="etiqueta-resumen">🎯 DE QUÉ VA</span><p>Recopilación ordenada de los términos técnicos empleados a lo largo del manual, con su definición aplicada al contexto específico del coaching. Funciona como vocabulario operativo que el coach debe dominar para comprender el resto de la obra.</p></div><div class="bloque-resumen"><span class="etiqueta-resumen">📖 CONTENIDO</span><p>El glosario define en primer lugar los elementos básicos de la relación de coaching. El cliente es el socio del coach en la alianza para el cambio, quiere realizar cambios y es responsable de los resultados. El coach es el otro socio de esa alianza y ayuda al cliente a realizar los cambios que este desea. El coaching consiste en ayudar a los clientes a examinar lo que están haciendo a la luz de sus intenciones, moviéndoles a emprender la acción conducente a sus objetivos, a ser más felices y a expresar más de sí mismos. Coach y cliente son corresponsables del proceso.</p><p>Se distingue entre dos modalidades de coaching. El coaching de bucle simple ayuda al cliente sin tratar con sus creencias. El coaching de doble bucle, también llamado coaching generativo, ayuda al cliente a tratar con sus creencias cambiando primero la forma de pensar que dio origen al problema.</p><p>Se definen los conceptos de sintonía, confianza y confidencialidad. La sintonía es una relación de respuesta a sí mismo o a otros. La confianza es el sentimiento que permite estar seguro de que la otra persona cumplirá sus compromisos, y se compone de sinceridad y competencia. La confidencialidad implica que la información que el cliente comparte con su coach no se divulga sin el consentimiento expreso del cliente.</p><p>Se recogen los términos relativos a la congruencia y la ecología. La congruencia o coherencia es la alineación entre creencias, valores, habilidades y acciones, de modo que palabras y hechos se correspondan, y significa también estar en sintonía consigo mismo. La incongruencia o incoherencia es el estado de falta de sintonía consigo mismo por un conflicto interno expresado en el comportamiento, y puede ser secuencial o simultánea. La ecología es el conjunto de consecuencias generales de los pensamientos y acciones dentro de la red de relaciones de la que se forma parte. Existe también una ecología interna, referida al modo en que encajan los pensamientos y sentimientos de una persona.</p><p>Se definen las creencias y los valores. Las creencias son generalizaciones que hacemos acerca de los demás, del mundo y de nosotros mismos, que se convierten en nuestros principios operativos; actuamos como si fuesen ciertas y se convierten en ciertas para nosotros. Los valores son lo que te importa realmente. La visión es una combinación de objetivos y valores, el propósito y el verdadero significado de tu vida. La misión es la dirección y el objetivo principal del cliente.</p><p>Se precisan los tipos de objetivo. El objetivo es el resultado deseado. Los objetivos-proceso forman parte del camino hacia el objetivo-resultado. Los objetivos-resultado forman parte del destino final.</p><p>Se recogen los términos vinculados a la percepción y las perspectivas. La posición perceptiva comprende las posiciones primera, segunda, tercera y cuarta, y es el punto de vista desde el que observamos la relación o situación. La primera posición es percibir el mundo desde tu propio punto de vista y estar en contacto con tu realidad interna. La segunda posición es experimentar el punto de vista de la otra persona. La tercera posición es ver la relación o situación desde el punto de vista de un observador neutral pero dotado de recursos. La cuarta posición es percibir la situación desde el punto de vista del sistema en el que tiene lugar, por ejemplo la familia o el trabajo. La perspectiva es un punto de vista determinado, y existen otras muchas además de las posiciones perceptivas, como trabajo, familia, economía o política.</p><p>Se definen los niveles de escucha. Oír es registrar el sonido de la voz de otra persona. Escuchar a es oír con la pregunta en mente de qué significa esto para mí, escuchando desde dentro de la propia experiencia. Escuchar para es tener una idea preconcebida y filtrar y seleccionar a través de ella lo que el cliente dice, pudiendo haber juicios propios y diálogo interno. La escucha consciente es la escucha a nivel profundo, con el mínimo juicio posible.</p><p>Se recogen los términos de la comunicación y el lenguaje. Recapitular es revisar o resumir utilizando palabras, gestos y el tono de voz clave de otra persona. Articular es resumir brevemente la experiencia del cliente en un lenguaje simple, equivalente a clarificar. La concreción es la expresión de la cuestión del cliente con la mayor claridad y precisión posibles, sin perder nada de su significado. La metáfora es la comunicación indirecta mediante una historia o imagen que implica una comparación. El encuadre previo es disponer por adelantado el significado que deseas que el cliente extraiga de tus acciones. El marco es una forma de mirar las cosas, un determinado punto de vista. El reencuadre es comprender una experiencia de forma distinta, dándole otro significado. El diálogo interno es hablar consigo mismo.</p><p>Se definen los sistemas de representación. Son los distintos canales por los que re-presentamos en nuestro interior la información que proviene de los sentidos: visual, auditivo, cinestésico, olfativo y gustativo. El sistema de representación preferente es el modo en que una persona suele pensar y organizar conscientemente sus experiencias, y se hace evidente sobre todo en situaciones de estrés.</p><p>Se recogen los términos relativos al anclaje y las estructuras. Un ancla es un activador visual, auditivo o cinestésico que desencadena una acción o un estado emocional. El anclaje es el establecimiento de determinada asociación entre un estímulo y una respuesta. Las estructuras son anclas diseñadas para recordar al cliente su visión, sus objetivos, su propósito o sus acciones.</p><p>Se definen los términos del proceso de cambio. La transición es el punto en el que es necesario abandonar los viejos hábitos sin haber consolidado aún el cambio lo suficiente para sentirse seguro con los nuevos, y es el momento más difícil del proceso de coaching. Romper estado es utilizar un movimiento o una distracción para sacar al cliente de un estado emocional. El como si es utilizar la imaginación para explorar las consecuencias de pensamientos o acciones como si ya se hubiesen producido, antes de que hayan ocurrido realmente. La tormenta de ideas es la generación de ideas, alternativas, opciones, perspectivas o acciones sin juzgar de entrada si son correctas o apropiadas, sin apego a las ideas generadas.</p><p>Se recogen los términos de la acción y la responsabilidad. La responsabilidad es parte crucial del coaching: cuando el cliente asume la responsabilidad de sus acciones se le pueden pedir explicaciones, y hay tres preguntas fundamentales: qué vas a hacer, cuándo lo vas a hacer y cómo sabrás que lo has conseguido. Las tareas para casa son tareas, retos o peticiones que debe cumplir el cliente, e informará de su cumplimiento al coach en el momento acordado. El desafío o reto es plantearle al cliente una petición que le obligue a ir más allá de sus límites autoimpuestos. La petición es pedirle al cliente que favorezca sus objetivos mediante determinada acción. El paladinato es cuando actúas como paladín de tu cliente, das la cara por él y le demuestras que crees en él aunque él mismo no lo haga. El reconocimiento es la identificación y aceptación de la identidad o de la capacidad del cliente que le ha permitido realizar una acción importante o comprender algo. El recurso es cualquier cosa que pueda ayudar al logro del objetivo, por ejemplo fisiología, estados, pensamientos, creencias, estrategias, experiencias, personas, sucesos, posesiones, lugares o historias.</p><p>Se definen los términos de la gestión del coach. La autogestión es observar el propio estado emocional como coach para poder ayudar al máximo al cliente. El desbrozar es asegurarte de que no te quedas atrapado en las cuestiones del cliente y mantenerte en un estado de recursos incluso cuando el cliente habla de cuestiones que también a ti te resultan difíciles. El calibrado es reconocer con precisión el estado de otra persona mediante la lectura de sus signos no verbales. La intuición es el conocimiento interno que se hace disponible sin que medie pensamiento consciente o racionalización. El diseño de la alianza es el diseño de la asociación entre coach y cliente, del modo más beneficioso en que el coach puede trabajar con el cliente para favorecer sus objetivos, su visión y el cambio deseado por este. El equilibrio vital es el grado de armonía de la relación del cliente con las distintas áreas de su vida y sus exigencias al respecto, así como el grado de comodidad que experimenta en relación con ello, y también el grado de armonía entre estos compromisos. El compromiso es aceptar una tarea sin discusión, por ser emocional y cognitivamente importante. El feedback o realimentación es, en la situación de coaching, la respuesta del coach a lo que el cliente le dice, y puede ser de refuerzo, cuando conduce a más del mismo comportamiento, o de equilibrio, cuando conduce a menos del mismo comportamiento con el resultado final de un cambio de conducta.</p><p>Se recogen los términos de otras profesiones afines. El consejo es el trabajo con un cliente que se siente incómodo o insatisfecho con su vida y busca guía y consejo, y el consejero trabaja para proporcionar remedios al problema del cliente. La terapia es el trabajo con un cliente que busca alivio para síntomas psíquicos o físicos, quiere sanación emocional y alivio para su dolor mental. La mentoría es cuando alguien con más experiencia, reconocido y aceptado como poseedor de más conocimientos y capaz de dar buenos consejos, nos aconseja y nos proporciona un modelo, e implica discusiones de amplio espectro que pueden no estar limitadas al ámbito estrictamente profesional.</p></div><div class="bloque-clave"><span class="etiqueta-clave">🔑 LITERAL QUE HAY QUE GRABAR</span><ul><li>Cliente, coach y corresponsabilidad del proceso.</li><li>Coaching de bucle simple frente a coaching de doble bucle o generativo.</li><li>Las cuatro posiciones perceptivas (primera, segunda, tercera y cuarta).</li><li>Los cuatro niveles de escucha (oír, escuchar a, escuchar para y escucha consciente).</li><li>Los sistemas de representación y el sistema de representación preferente.</li></ul></div><div class="bloque-guion"><span class="etiqueta-guion">🧠 CÓMO LO DESARROLLARÍA</span><ol><li>Definir los elementos básicos de la relación: cliente, coach, coaching y corresponsabilidad del proceso.</li><li>Distinguir las dos modalidades de coaching: bucle simple y doble bucle o generativo.</li><li>Explicar sintonía, confianza (sinceridad y competencia) y confidencialidad.</li><li>Definir congruencia, incongruencia (secuencial y simultánea), ecología y ecología interna.</li><li>Definir creencias, valores, visión y misión.</li><li>Precisar objetivo, objetivo-proceso y objetivo-resultado.</li><li>Exponer las cuatro posiciones perceptivas y el concepto de perspectiva.</li><li>Enumerar los cuatro niveles de escucha: oír, escuchar a, escuchar para y escucha consciente.</li><li>Recoger los términos de comunicación: recapitular, articular, concreción, metáfora, encuadre previo, marco, reencuadre y diálogo interno.</li><li>Definir los sistemas de representación y el sistema de representación preferente.</li><li>Explicar ancla, anclaje y estructuras.</li><li>Definir transición, romper estado, como si y tormenta de ideas.</li><li>Exponer los términos de acción y responsabilidad: responsabilidad y sus tres preguntas, tareas para casa, desafío, petición, paladinato, reconocimiento y recurso.</li><li>Recoger los términos de gestión del coach: autogestión, desbrozar, calibrado, intuición, diseño de la alianza, equilibrio vital, compromiso y feedback.</li><li>Cerrar con las profesiones afines: consejo, terapia y mentoría.</li></ol></div></section>
+
+</main>
+
+<script>
+function toggleModo(){document.body.classList.toggle("dark-mode");var b=document.querySelector(".modo-btn");b.textContent=document.body.classList.contains("dark-mode")?"☀️ Modo claro":"🌓 Modo";}
+document.addEventListener("click",function(e){var a=e.target.closest(".indice a");if(!a)return;var h=a.getAttribute("href");if(!h||h.indexOf("#")!==0)return;e.preventDefault();var t=document.getElementById(h.substring(1));if(t){var d=document.querySelector(".indice details");if(d)d.removeAttribute("open");t.scrollIntoView({behavior:"smooth",block:"start"});}});
+</script>
+<script src="/estudio/js/estudio-subrayado.js"></script>
+</body>
+</html>
