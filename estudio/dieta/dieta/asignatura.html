@@ -1130,6 +1130,195 @@
             .ws-modal-title { font-size: 1em; }
         }
 
+
+        /* ═══════════════════════════════════════════════════
+           EDITOR DE LISTA DE LA COMPRA
+           ═══════════════════════════════════════════════════ */
+
+        .ws-lista-modal {
+            max-width: 900px;
+            max-height: 92vh;
+        }
+
+        .ws-lista-info {
+            padding: 10px 14px;
+            background: #e8f8f5;
+            border-radius: 8px;
+            font-size: 0.88em;
+            color: #0e6655;
+            margin-bottom: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .ws-lista-rows {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .ws-lista-row {
+            display: grid;
+            grid-template-columns: 40px 1fr 120px 180px 44px;
+            gap: 8px;
+            align-items: center;
+            padding: 8px 12px;
+            background: #fff;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            transition: 0.15s;
+        }
+
+        .ws-lista-row:hover {
+            border-color: #a8e6cf;
+            background: #f8fdfa;
+        }
+
+        .ws-lista-row.marcado {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+            opacity: 0.7;
+        }
+
+        .ws-lista-row.marcado .ws-lista-texto {
+            text-decoration: line-through;
+            color: #94a3b8;
+        }
+
+        .ws-lista-row.nuevo {
+            background: #fffbeb;
+            border-color: #fbbf24;
+        }
+
+        .ws-lista-check {
+            font-size: 1.5em;
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+            color: #16a085;
+            transition: 0.15s;
+        }
+
+        .ws-lista-check:hover {
+            transform: scale(1.15);
+        }
+
+        .ws-lista-row.marcado .ws-lista-check {
+            color: #94a3b8;
+        }
+
+        .ws-lista-texto {
+            font-size: 0.95em;
+            font-weight: 600;
+            color: #1e293b;
+            cursor: text;
+            padding: 4px 6px;
+            border-radius: 6px;
+            transition: 0.15s;
+        }
+
+        .ws-lista-texto:hover {
+            background: #f1f5f9;
+        }
+
+        .ws-lista-veces {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            justify-content: center;
+        }
+
+        .ws-mini-btn {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 1px solid #cbd5e1;
+            background: #fff;
+            color: #334155;
+            font-weight: 700;
+            font-size: 1em;
+            line-height: 1;
+            cursor: pointer;
+            transition: 0.15s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .ws-mini-btn:hover {
+            background: #16a085;
+            color: #fff;
+            border-color: #16a085;
+            transform: scale(1.1);
+        }
+
+        .ws-veces-num {
+            min-width: 24px;
+            text-align: center;
+            font-weight: 700;
+            color: #e74c3c;
+            font-size: 1em;
+        }
+
+        .ws-lista-dias {
+            font-size: 0.75em;
+            color: #64748b;
+            line-height: 1.3;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .ws-lista-del {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid #fecaca;
+            background: #fff;
+            color: #dc2626;
+            cursor: pointer;
+            font-size: 1em;
+            transition: 0.15s;
+        }
+
+        .ws-lista-del:hover {
+            background: #fef2f2;
+            border-color: #f87171;
+            transform: scale(1.05);
+        }
+
+        .ws-lista-empty {
+            padding: 40px 20px;
+            text-align: center;
+            color: #94a3b8;
+            font-style: italic;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+
+        /* Responsive del editor */
+        @media (max-width: 800px) {
+            .ws-lista-row {
+                grid-template-columns: 36px 1fr 100px 40px;
+                gap: 6px;
+                padding: 6px 8px;
+            }
+            .ws-lista-dias {
+                display: none;
+            }
+            .ws-lista-texto { font-size: 0.88em; }
+        }
+
+        @media (max-width: 500px) {
+            .ws-lista-row {
+                grid-template-columns: 32px 1fr 90px 36px;
+            }
+            .ws-mini-btn { width: 22px; height: 22px; font-size: 0.85em; }
+            .ws-lista-del { width: 32px; height: 32px; font-size: 0.9em; }
+        }
+
     </style>
 </head>
 <body>
@@ -3528,8 +3717,281 @@
     }
 
     function imprimirLista() {
-        const html = wsConstruirHtmlLista();
+        // Ahora abre el modal de vista previa
+        wsAbrirEditorLista();
+    }
 
+    // =====================================================
+    // EDITOR DE LISTA DE LA COMPRA
+    // =====================================================
+
+    let wsEditorListaActual = null;
+    let wsListaEditable = [];   // [{ id, texto, veces, dias, categoria, marcado, esNuevo }]
+
+    function wsAbrirEditorLista() {
+        // Cerrar cualquier modal abierto
+        if (wsModalActual) { wsModalActual.remove(); wsModalActual = null; }
+
+        // Cargar datos iniciales
+        wsListaEditable = wsExtraerPlatos().map((p, i) => ({
+            id: 'item_' + i + '_' + Date.now(),
+            texto: p.texto,
+            veces: p.veces,
+            dias: p.dias.slice(),
+            marcado: false,
+            esNuevo: false
+        }));
+
+        // ─── Overlay ───
+        const overlay = document.createElement('div');
+        overlay.className = 'ws-modal-overlay';
+        overlay.id = 'wsEditorListaOverlay';
+
+        // ─── Modal ───
+        const modal = document.createElement('div');
+        modal.className = 'ws-modal ws-lista-modal';
+
+        // Header
+        const header = document.createElement('div');
+        header.className = 'ws-modal-header';
+        header.innerHTML = '<h2 class="ws-modal-title">🛒 Lista de la compra · Editar antes de imprimir</h2>';
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'ws-modal-close';
+        closeBtn.innerHTML = '✕';
+        closeBtn.title = 'Cerrar (Esc)';
+        closeBtn.onclick = () => wsCerrarEditorLista();
+        header.appendChild(closeBtn);
+        modal.appendChild(header);
+
+        // Toolbar: buscador + añadir
+        const toolbar = document.createElement('div');
+        toolbar.className = 'ws-modal-toolbar';
+
+        const searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.className = 'ws-modal-search';
+        searchInput.placeholder = '🔍 Buscar en la lista...';
+        searchInput.id = 'wsListaSearch';
+        toolbar.appendChild(searchInput);
+
+        const addInput = document.createElement('input');
+        addInput.type = 'text';
+        addInput.className = 'ws-modal-search';
+        addInput.placeholder = '➕ Añadir alimento nuevo (ej: Arroz)';
+        addInput.id = 'wsListaAddInput';
+        addInput.style.maxWidth = '280px';
+        addInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                const txt = addInput.value.trim();
+                if (!txt) return;
+                wsAñadirItemLista(txt);
+                addInput.value = '';
+                wsRenderListaEditable();
+            }
+        });
+        toolbar.appendChild(addInput);
+
+        const btnAdd = document.createElement('button');
+        btnAdd.className = 'ws-modal-btn primary';
+        btnAdd.textContent = '➕ Añadir';
+        btnAdd.onclick = () => {
+            const txt = addInput.value.trim();
+            if (!txt) return;
+            wsAñadirItemLista(txt);
+            addInput.value = '';
+            wsRenderListaEditable();
+        };
+        toolbar.appendChild(btnAdd);
+
+        modal.appendChild(toolbar);
+
+        // Body: la lista editable
+        const body = document.createElement('div');
+        body.className = 'ws-modal-body';
+        body.id = 'wsListaBody';
+        modal.appendChild(body);
+
+        // Footer
+        const footer = document.createElement('div');
+        footer.className = 'ws-modal-footer';
+
+        const btnCancelar = document.createElement('button');
+        btnCancelar.className = 'ws-modal-btn';
+        btnCancelar.textContent = '❌ Cancelar';
+        btnCancelar.onclick = () => wsCerrarEditorLista();
+        footer.appendChild(btnCancelar);
+
+        const spacer = document.createElement('div');
+        spacer.style.flex = '1';
+        footer.appendChild(spacer);
+
+        const btnPdf = document.createElement('button');
+        btnPdf.className = 'ws-modal-btn';
+        btnPdf.textContent = '📄 Descargar PDF';
+        btnPdf.title = 'Abre el diálogo de impresión (elige "Guardar como PDF")';
+        btnPdf.onclick = () => wsDescargarListaPDF();
+        footer.appendChild(btnPdf);
+
+        const btnImprimir = document.createElement('button');
+        btnImprimir.className = 'ws-modal-btn primary';
+        btnImprimir.textContent = '🖨️ Imprimir';
+        btnImprimir.onclick = () => wsImprimirListaFinal();
+        footer.appendChild(btnImprimir);
+
+        modal.appendChild(footer);
+
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+        wsEditorListaActual = overlay;
+
+        // Render inicial
+        wsRenderListaEditable();
+
+        // Buscador
+        searchInput.addEventListener('input', () => wsRenderListaEditable());
+
+        // Foco
+        setTimeout(() => addInput.focus(), 80);
+
+        // Escape cierra
+        const onKey = (e) => {
+            if (e.key === 'Escape') wsCerrarEditorLista();
+        };
+        document.addEventListener('keydown', onKey);
+        overlay._onKey = onKey;
+
+        // Clic en overlay cierra
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) wsCerrarEditorLista();
+        });
+    }
+
+    function wsCerrarEditorLista() {
+        if (wsEditorListaActual) {
+            if (wsEditorListaActual._onKey) {
+                document.removeEventListener('keydown', wsEditorListaActual._onKey);
+            }
+            wsEditorListaActual.remove();
+            wsEditorListaActual = null;
+        }
+    }
+
+    function wsAñadirItemLista(texto) {
+        const t = (texto || '').trim();
+        if (!t) return;
+
+        // Evitar duplicado
+        const dup = wsListaEditable.find(x =>
+            wsNormalizarTexto(x.texto) === wsNormalizarTexto(t)
+        );
+        if (dup) {
+            dup.veces += 1;
+            return;
+        }
+
+        wsListaEditable.push({
+            id: 'item_new_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6),
+            texto: t.charAt(0).toUpperCase() + t.slice(1),
+            veces: 1,
+            dias: [],
+            marcado: false,
+            esNuevo: true
+        });
+    }
+
+    function wsRenderListaEditable() {
+        const body = document.getElementById('wsListaBody');
+        if (!body) return;
+
+        const q = (document.getElementById('wsListaSearch')?.value || '').trim().toLowerCase();
+
+        // Ordenar: no marcados primero (por veces desc), luego marcados
+        const items = wsListaEditable.slice().sort((a, b) => {
+            if (a.marcado !== b.marcado) return a.marcado ? 1 : -1;
+            if (b.veces !== a.veces) return b.veces - a.veces;
+            return a.texto.localeCompare(b.texto, 'es');
+        });
+
+        // Filtrar por buscador
+        const visibles = items.filter(it => !q || it.texto.toLowerCase().includes(q));
+
+        let html = '';
+
+        html += '<div class="ws-lista-info">';
+        html +=   '📊 <b>' + wsListaEditable.length + '</b> items · ';
+        html +=   '<b>' + wsListaEditable.filter(x => x.marcado).length + '</b> ya comprados · ';
+        html +=   '<b>' + wsListaEditable.reduce((s, x) => s + x.veces, 0) + '</b> comidas totales';
+        html += '</div>';
+
+        html += '<div class="ws-lista-rows">';
+
+        visibles.forEach((it, idx) => {
+            const diasTxt = it.dias.length > 0
+                ? it.dias.map(d => (WS_EMOJIS_DIA[d] || '') + ' ' + (WS_DIAS_ETIQUETA[d] || d).slice(0, 3)).join(', ')
+                : '<span style="color:#94a3b8;font-style:italic">(manual)</span>';
+
+            html += '<div class="ws-lista-row' + (it.marcado ? ' marcado' : '') + (it.esNuevo ? ' nuevo' : '') + '" data-id="' + it.id + '">';
+            html +=   '<div class="ws-lista-check" onclick="wsToggleMarcado(\'' + it.id + '\')">' + (it.marcado ? '☑' : '☐') + '</div>';
+            html +=   '<div class="ws-lista-texto" ondblclick="wsEditarTextoItem(\'' + it.id + '\')" title="Doble clic para editar">' + escapeHtml(it.texto) + '</div>';
+            html +=   '<div class="ws-lista-veces">';
+            html +=     '<button class="ws-mini-btn" onclick="wsCambiarVeces(\'' + it.id + '\', -1)">−</button>';
+            html +=     '<span class="ws-veces-num">' + it.veces + '</span>';
+            html +=     '<button class="ws-mini-btn" onclick="wsCambiarVeces(\'' + it.id + '\', 1)">+</button>';
+            html +=   '</div>';
+            html +=   '<div class="ws-lista-dias" title="Días que se repite">' + diasTxt + '</div>';
+            html +=   '<button class="ws-lista-del" onclick="wsEliminarItemLista(\'' + it.id + '\')" title="Eliminar">🗑️</button>';
+            html += '</div>';
+        });
+
+        if (visibles.length === 0) {
+            html += '<div class="ws-lista-empty">';
+            html += q ? 'No hay items que coincidan con "' + escapeHtml(q) + '"' : 'La lista está vacía. Añade items con el campo de arriba.';
+            html += '</div>';
+        }
+
+        html += '</div>';
+
+        body.innerHTML = html;
+    }
+
+    function wsToggleMarcado(id) {
+        const it = wsListaEditable.find(x => x.id === id);
+        if (!it) return;
+        it.marcado = !it.marcado;
+        wsRenderListaEditable();
+    }
+
+    function wsCambiarVeces(id, delta) {
+        const it = wsListaEditable.find(x => x.id === id);
+        if (!it) return;
+        it.veces = Math.max(1, it.veces + delta);
+        wsRenderListaEditable();
+    }
+
+    function wsEliminarItemLista(id) {
+        const idx = wsListaEditable.findIndex(x => x.id === id);
+        if (idx === -1) return;
+        wsListaEditable.splice(idx, 1);
+        wsRenderListaEditable();
+    }
+
+    function wsEditarTextoItem(id) {
+        const it = wsListaEditable.find(x => x.id === id);
+        if (!it) return;
+        const nuevo = prompt('Editar item:', it.texto);
+        if (nuevo === null) return;
+        const t = nuevo.trim();
+        if (!t) return;
+        it.texto = t;
+        wsRenderListaEditable();
+    }
+
+    function wsImprimirListaFinal() {
+        // Construir HTML con los items editados (todos, marcados o no)
+        const html = wsConstruirHtmlListaFinal();
+
+        // Reutilizar iframe de impresión
         let iframe = document.getElementById('wsPrintFrameLista');
         if (iframe) iframe.remove();
 
@@ -3554,21 +4016,225 @@
                     iframe.contentWindow.focus();
                     iframe.contentWindow.print();
                 } catch (e) {
-                    console.error('Error al imprimir lista:', e);
+                    console.error('Error al imprimir:', e);
                     alert('❌ Error: ' + e.message);
                 }
             }, 250);
         };
+    }
 
-        setTimeout(function() {
-            if (!iframe.dataset.printed) {
-                iframe.dataset.printed = '1';
-                try {
-                    iframe.contentWindow.focus();
-                    iframe.contentWindow.print();
-                } catch (e) {}
+    function wsDescargarListaPDF() {
+        // Igual que imprimir, pero el navegador ofrece "Guardar como PDF"
+        // Mostramos un aviso la primera vez
+        const key = 'ws_pdf_hint_shown';
+        if (!localStorage.getItem(key)) {
+            alert('📄 Se abrirá el diálogo de impresión.\n\nElige "Guardar como PDF" en el destino para descargar la lista como archivo PDF.');
+            localStorage.setItem(key, '1');
+        }
+        wsImprimirListaFinal();
+    }
+
+    function wsConstruirHtmlListaFinal() {
+        const numSemana = (typeof semanaDelAño === 'function') ? semanaDelAño() : '';
+        const items = wsListaEditable.slice().sort((a, b) => {
+            if (a.marcado !== b.marcado) return a.marcado ? 1 : -1;
+            if (b.veces !== a.veces) return b.veces - a.veces;
+            return a.texto.localeCompare(b.texto, 'es');
+        });
+
+        let html = '';
+        html += '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">';
+        html += '<title>Lista de la compra</title>';
+        html += '<style>' + wsCssListaFinal() + '</style>';
+        html += '</head><body>';
+
+        html += '<div class="header-lista">';
+        html +=   '<div class="decor-lista">🛒🥕🍎🧺🍇</div>';
+        html +=   '<h1>🛒 LISTA DE LA COMPRA</h1>';
+        if (wsMenu.nombre) {
+            html += '<div class="subtitulo-lista">' + wsEscaparHtml(wsMenu.nombre) + '</div>';
+        }
+        if (numSemana) {
+            html += '<div class="semana-lista">Semana ' + numSemana + '</div>';
+        }
+        html += '</div>';
+
+        html += '<div class="instrucciones">✏️ Marca con una <b>✓</b> lo que vayas comprando.</div>';
+
+        if (items.length === 0) {
+            html += '<div class="vacio">La lista está vacía.</div>';
+        } else {
+            html += '<table class="lista">';
+            html += '<thead><tr><th class="check-col">✓</th><th class="plato-col">Plato</th><th class="veces-col">Veces</th><th class="dias-col">Días</th></tr></thead>';
+            html += '<tbody>';
+
+            items.forEach(p => {
+                const diasEtiqueta = p.dias.length > 0
+                    ? p.dias.map(d => (WS_EMOJIS_DIA[d] || '') + ' ' + (WS_DIAS_ETIQUETA[d] || d).slice(0, 3)).join(', ')
+                    : '—';
+                html += '<tr' + (p.marcado ? ' class="marcado"' : '') + '>';
+                html +=   '<td class="check-col">☐</td>';
+                html +=   '<td class="plato-col">' + wsEscaparHtml(p.texto) + '</td>';
+                html +=   '<td class="veces-col"><b>' + p.veces + '</b></td>';
+                html +=   '<td class="dias-col">' + diasEtiqueta + '</td>';
+                html += '</tr>';
+            });
+
+            html += '</tbody></table>';
+        }
+
+        const totalComidas = items.reduce((s, x) => s + x.veces, 0);
+        html += '<div class="resumen-lista">';
+        html +=   '📊 <b>' + items.length + '</b> platos distintos · <b>' + totalComidas + '</b> comidas en total';
+        html += '</div>';
+
+        html += '<div class="notas-lista">📝 Notas: ______________________________________________</div>';
+
+        html += '</body></html>';
+        return html;
+    }
+
+    function wsCssListaFinal() {
+        // Reutiliza casi todo el CSS de la lista original
+        // Solo añade un pequeño matiz para los marcados
+        return `
+            @page { size: A4 portrait; margin: 12mm; }
+            * { box-sizing: border-box; }
+            body {
+                font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', cursive, sans-serif;
+                margin: 0;
+                padding: 5mm;
+                color: #2c3e50;
+                background: #fff;
             }
-        }, 600);
+            .header-lista {
+                text-align: center;
+                margin-bottom: 6mm;
+                position: relative;
+                padding-bottom: 3mm;
+                border-bottom: 3pt dashed #7bc9a4;
+            }
+            .decor-lista {
+                font-size: 18pt;
+                letter-spacing: 3pt;
+                margin-bottom: 2mm;
+            }
+            h1 {
+                font-size: 24pt;
+                margin: 0;
+                color: #16a085;
+                text-shadow: 2px 2px 0 #d1f2eb;
+                letter-spacing: 1pt;
+            }
+            .subtitulo-lista {
+                font-size: 12pt;
+                color: #e67e22;
+                font-weight: bold;
+                margin-top: 2mm;
+            }
+            .semana-lista {
+                position: absolute;
+                top: 0;
+                right: 0;
+                font-size: 10pt;
+                color: #7f8c8d;
+                background: #ecf0f1;
+                padding: 1.5mm 3mm;
+                border-radius: 3mm;
+            }
+            .instrucciones {
+                background: #e8f8f5;
+                border-left: 4pt solid #16a085;
+                padding: 3mm 4mm;
+                border-radius: 3mm;
+                font-size: 10pt;
+                color: #0e6655;
+                margin-bottom: 5mm;
+            }
+            table.lista {
+                width: 100%;
+                border-collapse: collapse;
+                margin-bottom: 5mm;
+            }
+            table.lista th, table.lista td {
+                padding: 3mm 3mm;
+                text-align: left;
+                font-size: 11pt;
+                border-bottom: 1pt solid #ecf0f1;
+                vertical-align: middle;
+            }
+            table.lista thead th {
+                background: #a8e6cf;
+                color: #1e5631;
+                font-weight: bold;
+                font-size: 11pt;
+                border-bottom: 2pt solid #7bc9a4;
+                border-radius: 3mm 3mm 0 0;
+            }
+            table.lista tbody tr:nth-child(even) td {
+                background: #fef9e7;
+            }
+            tr.marcado td {
+                text-decoration: line-through;
+                color: #95a5a6;
+                background: #ecf0f1 !important;
+            }
+            .check-col {
+                width: 12mm;
+                text-align: center;
+                font-size: 16pt;
+                color: #e67e22;
+            }
+            .plato-col {
+                font-weight: 600;
+                color: #2c3e50;
+            }
+            .veces-col {
+                width: 20mm;
+                text-align: center;
+                color: #e74c3c;
+                font-size: 12pt;
+            }
+            .dias-col {
+                width: 60mm;
+                font-size: 9pt;
+                color: #7f8c8d;
+            }
+            .resumen-lista {
+                background: #fef5e7;
+                border-radius: 3mm;
+                padding: 3mm 5mm;
+                font-size: 10pt;
+                color: #7d5a00;
+                text-align: center;
+                margin-bottom: 5mm;
+            }
+            .notas-lista {
+                font-size: 10pt;
+                color: #7f8c8d;
+                padding: 3mm 4mm;
+                border-top: 1pt dashed #bdc3c7;
+                font-style: italic;
+                margin-top: 8mm;
+            }
+            .vacio {
+                text-align: center;
+                padding: 15mm;
+                color: #95a5a6;
+                font-style: italic;
+                font-size: 12pt;
+            }
+            @media print {
+                body { padding: 0; }
+                table.lista thead th,
+                table.lista tbody tr:nth-child(even) td,
+                .instrucciones,
+                .resumen-lista {
+                    -webkit-print-color-adjust: exact;
+                    print-color-adjust: exact;
+                }
+            }
+        `;
     }
 
     // =====================================================
