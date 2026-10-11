@@ -3826,6 +3826,13 @@
         spacer.style.flex = '1';
         footer.appendChild(spacer);
 
+        const btnCompartir = document.createElement('button');
+        btnCompartir.className = 'ws-modal-btn';
+        btnCompartir.textContent = '📤 Compartir';
+        btnCompartir.title = 'Enviar la lista por WhatsApp, email, guardar en Archivos...';
+        btnCompartir.onclick = () => wsCompartirLista();
+        footer.appendChild(btnCompartir);
+
         const btnPdf = document.createElement('button');
         btnPdf.className = 'ws-modal-btn';
         btnPdf.textContent = '📄 Descargar PDF';
@@ -3988,6 +3995,12 @@
     }
 
     function wsImprimirListaFinal() {
+        // Detectar PWA en iPad y avisar
+        if (wsEsPWA()) {
+            wsMostrarAvisoSafari('imprimir');
+            return;
+        }
+
         // Construir HTML con los items editados (todos, marcados o no)
         const html = wsConstruirHtmlListaFinal();
 
@@ -4023,9 +4036,106 @@
         };
     }
 
+    // =====================================================
+    // DETECCIÓN DE PWA (iPad "Añadir a pantalla de inicio")
+    // =====================================================
+    function wsEsPWA() {
+        return (window.navigator.standalone === true) ||
+               (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches);
+    }
+
+    function wsAbrirEnSafari(url) {
+        // En iOS, abrir en Safari desde PWA
+        window.open(url, '_blank');
+    }
+
+    function wsMostrarAvisoSafari(accion) {
+        // accion: 'imprimir' o 'descargar'
+        const mensaje = accion === 'imprimir'
+            ? '🖨️ Para imprimir necesitas abrir la app desde Safari.\n\n¿Quieres abrirla ahora en Safari?'
+            : '📄 Para descargar el PDF necesitas abrir la app desde Safari.\n\n¿Quieres abrirla ahora en Safari?';
+
+        if (confirm(mensaje)) {
+            // Abrir la misma URL en Safari
+            wsAbrirEnSafari(window.location.href);
+        }
+    }
+
+    function wsCompartirLista() {
+        // Generar HTML para compartir/imprimir
+        const html = wsConstruirHtmlListaFinal();
+
+        // 1. Intentar navigator.share con archivo (iPad, móviles modernos)
+        if (navigator.canShare && navigator.share) {
+            try {
+                // Convertir a Blob como archivo .html
+                const blob = new Blob([html], { type: 'text/html' });
+                const file = new File([blob], 'lista-compra.html', { type: 'text/html' });
+
+                if (navigator.canShare({ files: [file] })) {
+                    navigator.share({
+                        files: [file],
+                        title: '🛒 Lista de la compra',
+                        text: 'Lista de la compra de la semana'
+                    }).then(() => {
+                        console.log('✅ Compartido');
+                    }).catch((err) => {
+                        if (err.name !== 'AbortError') {
+                            console.error('Error compartiendo:', err);
+                            wsFallbackImprimir();
+                        }
+                    });
+                    return;
+                }
+            } catch (e) {
+                console.warn('Error preparando share:', e);
+            }
+        }
+
+        // 2. Fallback: imprimir (Safari) o aviso (PWA)
+        if (wsEsPWA()) {
+            wsMostrarAvisoSafari('descargar');
+        } else {
+            wsFallbackImprimir();
+        }
+    }
+
+    function wsFallbackImprimir() {
+        // Intenta imprimir directamente
+        const html = wsConstruirHtmlListaFinal();
+        let iframe = document.getElementById('wsPrintFrameLista');
+        if (iframe) iframe.remove();
+
+        iframe = document.createElement('iframe');
+        iframe.id = 'wsPrintFrameLista';
+        iframe.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0;';
+        document.body.appendChild(iframe);
+
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        doc.open();
+        doc.write(html);
+        doc.close();
+
+        iframe.onload = function() {
+            setTimeout(function() {
+                try {
+                    iframe.contentWindow.focus();
+                    iframe.contentWindow.print();
+                } catch (e) {
+                    console.error('Error al imprimir:', e);
+                }
+            }, 250);
+        };
+    }
+
     function wsDescargarListaPDF() {
-        // Igual que imprimir, pero el navegador ofrece "Guardar como PDF"
-        // Mostramos un aviso la primera vez
+        // Detectar PWA en iPad y avisar
+        if (wsEsPWA()) {
+            wsMostrarAvisoSafari('descargar');
+            return;
+        }
+
+        // Aviso la primera vez
         const key = 'ws_pdf_hint_shown';
         if (!localStorage.getItem(key)) {
             alert('📄 Se abrirá el diálogo de impresión.\n\nElige "Guardar como PDF" en el destino para descargar la lista como archivo PDF.');
