@@ -16,33 +16,83 @@
 
   function registrosFiltrados() {
     const desde = $('#filtroDesde').value; const hasta = $('#filtroHasta').value; const med = $('#filtroMedicamento').value;
-    return registros.filter((r) => (!desde || r.fecha >= desde)).filter((r) => (!hasta || r.fecha <= hasta)).filter((r) => (!med || r.medicamento === med)).sort((a, b) => (b.fecha + b.hora).localeCompare(a.fecha + a.hora));
+    return registros.filter((r) => (!desde || r.fecha >= desde)).filter((r) => (!hasta || r.fecha <= hasta)).filter((r) => (!med || (r.tomas && r.tomas.some(t => t.medicamento === med)))).sort((a, b) => (b.fecha + b.hora).localeCompare(a.fecha + a.hora));
   }
 
   function renderTabla() {
     const tbody = $('#tbodyRegistros'); const lista = registrosFiltrados();
-    if (lista.length === 0) { tbody.innerHTML = '<tr><td colspan="10" class="vacio">Sin registros todavía. Pulsa «+ Nuevo registro».</td></tr>'; return; }
-    tbody.innerHTML = lista.map((r) => '<tr><td>' + esc(fmtFecha(r.fecha)) + '</td><td>' + esc(r.hora) + '</td><td>' + esc(r.tipoDolor) + '</td><td><span class="intensidad-badge">' + esc(r.intensidad) + '/10</span></td><td>' + esc(r.medicamento || '—') + '</td><td>' + esc(r.cantidad || 0) + '</td><td>' + esc(r.horaToma || '—') + '</td><td>' + esc(r.sensacion || '—') + '</td><td>' + esc(r.notas || '—') + '</td><td class="no-print"><div class="acciones"><button data-accion="editar" data-id="' + r.id + '">Editar</button><button data-accion="borrar" data-id="' + r.id + '">Borrar</button></div></td></tr>').join('');
+    if (lista.length === 0) { tbody.innerHTML = '<tr><td colspan="8" class="vacio">Sin registros todavía. Pulsa «+ Nuevo registro».</td></tr>'; return; }
+    tbody.innerHTML = lista.map((r) => {
+      const tomasHtml = (r.tomas || []).map(t => `<div><strong>${esc(t.medicamento)}</strong> (${esc(t.cantidad)} pastilla/s) a las ${esc(t.horaToma || '—')}</div>`).join('');
+      return '<tr><td>' + esc(fmtFecha(r.fecha)) + '</td><td>' + esc(r.hora) + '</td><td>' + esc(r.tipoDolor) + '</td><td><span class="intensidad-badge">' + esc(r.intensidad) + '/10</span></td><td>' + tomasHtml + '</td><td>' + esc(r.sensacion || '—') + '</td><td>' + esc(r.notas || '—') + '</td><td class="no-print"><div class="acciones"><button data-accion="editar" data-id="' + r.id + '">Editar</button><button data-accion="borrar" data-id="' + r.id + '">Borrar</button></div></td></tr>';
+    }).join('');
   }
 
   function renderResumen() {
     const lista = registrosFiltrados();
-    const totalHemicraneal = lista.filter(r => r.medicamento === 'Hemicraneal').reduce((s, r) => s + (Number(r.cantidad) || 0), 0);
-    const totalDiazepam = lista.filter(r => r.medicamento === 'Diazepam').reduce((s, r) => s + (Number(r.cantidad) || 0), 0);
+    let totalHemicraneal = 0; let totalDiazepam = 0;
+    lista.forEach(r => {
+      (r.tomas || []).forEach(t => {
+        if (t.medicamento === 'Hemicraneal') totalHemicraneal += Number(t.cantidad) || 0;
+        if (t.medicamento === 'Diazepam') totalDiazepam += Number(t.cantidad) || 0;
+      });
+    });
     const diasConDolor = new Set(lista.map(r => r.fecha)).size;
     const intensidadMedia = lista.length ? (lista.reduce((s, r) => s + (Number(r.intensidad) || 0), 0) / lista.length).toFixed(1) : '—';
-    $('#resumen').innerHTML = '<strong>Resumen:</strong> ' + lista.length + ' registro(s) · ' + diasConDolor + ' día(s) con dolor · Intensidad media: <strong>' + intensidadMedia + '/10</strong> · Hemicraneal: <strong>' + totalHemicraneal + '</strong> comprimidos · Diazepam: <strong>' + totalDiazepam + '</strong> comprimidos';
+    $('#resumen').innerHTML = '<strong>Resumen:</strong> ' + lista.length + ' día(s) registrado(s) · ' + diasConDolor + ' día(s) con dolor · Intensidad media: <strong>' + intensidadMedia + '/10</strong> · Hemicraneal: <strong>' + totalHemicraneal + '</strong> comprimidos · Diazepam: <strong>' + totalDiazepam + '</strong> comprimidos';
   }
 
   function renderTodo() { renderTabla(); renderResumen(); $('#headerDate').textContent = 'Hoy: ' + fmtFecha(hoyISO()); }
+
+  function crearFilaToma(toma = {}) {
+    const div = document.createElement('div');
+    div.className = 'toma-row';
+    div.innerHTML = `
+      <select class="toma-medicamento">
+        <option value="">— Ninguno —</option>
+        <option value="Paracetamol">Paracetamol</option>
+        <option value="Ibuprofeno">Ibuprofeno</option>
+        <option value="Aspirina">Aspirina</option>
+        <option value="Enantyum">Enantyum</option>
+        <option value="Nolotil">Nolotil</option>
+        <option value="Hemicraneal">Hemicraneal</option>
+        <option value="Diazepam">Diazepam</option>
+        <option value="Omeprazol">Omeprazol</option>
+        <option value="Amoxicilina">Amoxicilina</option>
+        <option value="Antigripal">Antigripal</option>
+        <option value="Frenadol">Frenadol</option>
+        <option value="Ilsapeptilo">Ilsapeptilo</option>
+        <option value="Primperan">Primperan</option>
+        <option value="Ventolin">Ventolin</option>
+        <option value="Orfidal">Orfidal</option>
+        <option value="Lorazepam">Lorazepam</option>
+        <option value="Diclofenaco">Diclofenaco</option>
+        <option value="Naproxeno">Naproxeno</option>
+        <option value="Tranxilium">Tranxilium</option>
+        <option value="Otro">Otro</option>
+      </select>
+      <input type="number" class="toma-cantidad" min="0" step="0.5" value="${toma.cantidad || 1}" placeholder="Cant.">
+      <input type="time" class="toma-hora" value="${toma.horaToma || ahoraHHMM()}">
+      <button type="button" class="btn-remove-toma" onclick="this.parentElement.remove()">✕</button>
+    `;
+    if (toma.medicamento) div.querySelector('.toma-medicamento').value = toma.medicamento;
+    return div;
+  }
 
   function abrirModal(reg) {
     $('#modalTitulo').textContent = reg ? 'Editar registro' : 'Nuevo registro';
     $('#regId').value = reg ? reg.id : ''; $('#regFecha').value = reg ? reg.fecha : hoyISO(); $('#regHora').value = reg ? reg.hora : ahoraHHMM();
     $('#regTipoDolor').value = reg ? reg.tipoDolor : ''; $('#regIntensidad').value = reg ? reg.intensidad : 5;
-    $('#regMedicamento').value = reg ? (reg.medicamento || '') : ''; $('#regCantidad').value = reg ? (reg.cantidad || 0) : 0;
-    $('#regHoraToma').value = reg ? (reg.horaToma || '') : ''; $('#regSensacion').value = reg ? (reg.sensacion || '') : '';
-    $('#regNotas').value = reg ? (reg.notas || '') : ''; $('#modalOverlay').style.display = 'flex';
+    $('#regSensacion').value = reg ? (reg.sensacion || '') : ''; $('#regNotas').value = reg ? (reg.notas || '') : '';
+    
+    const cont = $('#tomasContainer');
+    cont.innerHTML = '';
+    if (reg && reg.tomas && reg.tomas.length > 0) {
+      reg.tomas.forEach(t => cont.appendChild(crearFilaToma(t)));
+    } else {
+      cont.appendChild(crearFilaToma());
+    }
+    $('#modalOverlay').style.display = 'flex';
   }
 
   function cerrarModal() { $('#modalOverlay').style.display = 'none'; $('#formRegistro').reset(); }
@@ -50,7 +100,31 @@
   function guardarRegistro(ev) {
     ev.preventDefault();
     const id = $('#regId').value;
-    const datos = { id: id || uid(), fecha: $('#regFecha').value, hora: $('#regHora').value, tipoDolor: $('#regTipoDolor').value, intensidad: Number($('#regIntensidad').value), medicamento: $('#regMedicamento').value, cantidad: Number($('#regCantidad').value) || 0, horaToma: $('#regHoraToma').value, sensacion: $('#regSensacion').value.trim(), notas: $('#regNotas').value.trim(), creado: new Date().toISOString() };
+    
+    const tomas = [];
+    document.querySelectorAll('#tomasContainer .toma-row').forEach(row => {
+      const med = row.querySelector('.toma-medicamento').value;
+      if (med) {
+        tomas.push({
+          medicamento: med,
+          cantidad: Number(row.querySelector('.toma-cantidad').value) || 0,
+          horaToma: row.querySelector('.toma-hora').value
+        });
+      }
+    });
+
+    const datos = { 
+      id: id || uid(), 
+      fecha: $('#regFecha').value, 
+      hora: $('#regHora').value, 
+      tipoDolor: $('#regTipoDolor').value, 
+      intensidad: Number($('#regIntensidad').value), 
+      tomas: tomas,
+      sensacion: $('#regSensacion').value.trim(), 
+      notas: $('#regNotas').value.trim(), 
+      creado: new Date().toISOString() 
+    };
+
     if (id) { const i = registros.findIndex(r => r.id === id); if (i >= 0) registros[i] = datos; } else { registros.push(datos); }
     guardar(); cerrarModal(); renderTodo();
   }
@@ -72,6 +146,7 @@
     $('#btnRegistrar').addEventListener('click', () => abrirModal(null)); $('#btnCancelar').addEventListener('click', cerrarModal);
     $('#formRegistro').addEventListener('submit', guardarRegistro); $('#btnImprimir').addEventListener('click', () => window.print());
     $('#btnExport').addEventListener('click', exportar); $('#btnImport').addEventListener('click', importar);
+    $('#btnAddToma').addEventListener('click', () => { $('#tomasContainer').appendChild(crearFilaToma()); });
     $('#btnLimpiarFiltros').addEventListener('click', () => { $('#filtroDesde').value = ''; $('#filtroHasta').value = ''; $('#filtroMedicamento').value = ''; renderTodo(); });
     ['#filtroDesde', '#filtroHasta', '#filtroMedicamento'].forEach(sel => { $(sel).addEventListener('change', renderTodo); });
     $('#tbodyRegistros').addEventListener('click', (e) => {
