@@ -29,7 +29,7 @@
     <section class="tabla-wrap">
       <h2 class="no-print">Histórico de registros</h2>
       <h2 class="solo-print">Registro de salud — histórico</h2>
-      <table class="tabla-registros"><thead><tr><th>Fecha</th><th>Hora</th><th>Enfermedad</th><th>Intensidad</th><th>Medicamentos (Tomas)</th><th>Sensación</th><th>Notas</th><th class="no-print">Acciones</th></tr></thead>
+      <table class="tabla-registros"><thead><tr><th>Fecha</th><th>Hora</th><th>Motivo</th><th>Intensidad</th><th>Medicamentos (Tomas)</th><th>Sensación</th><th>Notas</th><th class="no-print">Acciones</th></tr></thead>
       <tbody id="tbodyRegistros"><tr><td colspan="8" class="vacio">Sin registros todavía. Pulsa «+ Nuevo registro».</td></tr></tbody></table>
     </section>
     <section class="resumen no-print" id="resumen"></section>
@@ -41,9 +41,10 @@
         <div class="form-grid">
           <label>Fecha <input type="date" id="regFecha" required></label>
           <label>Hora <input type="time" id="regHora" required></label>
-          <label>Enfermedad / Dolor 
+          <label>Motivo 
             <select id="regTipoDolor" required>
               <option value="">— Selecciona —</option>
+              <option value="Tratamiento médico">Tratamiento médico (Sin enfermedad)</option>
               <option value="Dolor de cabeza">Dolor de cabeza</option>
               <option value="Migraña">Migraña</option>
               <option value="Gripe">Gripe</option>

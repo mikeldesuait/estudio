@@ -39,7 +39,7 @@
     });
     const diasConDolor = new Set(lista.map(r => r.fecha)).size;
     const intensidadMedia = lista.length ? (lista.reduce((s, r) => s + (Number(r.intensidad) || 0), 0) / lista.length).toFixed(1) : '—';
-    $('#resumen').innerHTML = '<strong>Resumen:</strong> ' + lista.length + ' día(s) registrado(s) · ' + diasConDolor + ' día(s) con dolor · Intensidad media: <strong>' + intensidadMedia + '/10</strong> · Hemicraneal: <strong>' + totalHemicraneal + '</strong> comprimidos · Diazepam: <strong>' + totalDiazepam + '</strong> comprimidos';
+    $('#resumen').innerHTML = '<strong>Resumen:</strong> ' + lista.length + ' día(s) registrado(s) · ' + diasConDolor + ' día(s) · Intensidad media: <strong>' + intensidadMedia + '/10</strong> · Hemicraneal: <strong>' + totalHemicraneal + '</strong> comprimidos · Diazepam: <strong>' + totalDiazepam + '</strong> comprimidos';
   }
 
   function renderTodo() { renderTabla(); renderResumen(); $('#headerDate').textContent = 'Hoy: ' + fmtFecha(hoyISO()); }
