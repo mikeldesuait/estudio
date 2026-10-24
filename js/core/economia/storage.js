@@ -7,6 +7,8 @@ window.EconomiaStorage = (function() {
 
   var ESQUEMA_V1 = {
     version: 1,
+    saldoCuentas: 0,
+    saldoCuentas: 0,
     personas: [
       { id: 'miguel',     nombre: 'Miguel',     color: '#3b82f6' },
       { id: 'pareja',     nombre: 'Pareja',     color: '#ec4899' },
@@ -21,7 +23,8 @@ window.EconomiaStorage = (function() {
       necesidades: 50,
       estilo: 30,
       ahorro: 20,
-      objetivoAhorroMensual: 0
+      objetivoAhorroMensual: 0,
+      diaCobro: 20
     }
   };
 

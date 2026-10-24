@@ -84,7 +84,34 @@ window.EconomiaUtils = (function() {
     URL.revokeObjectURL(url);
   }
 
+  function getRangoCiclo(ym, diaCobro) {
+    diaCobro = parseInt(diaCobro) || 1;
+    var partes = ym.split('-');
+    var anio = parseInt(partes[0]);
+    var mes = parseInt(partes[1]) - 1;
+    if (diaCobro === 1) {
+      var ini = new Date(anio, mes, 1);
+      var fin = new Date(anio, mes + 1, 0);
+      return { inicio: formatearISO(ini), fin: formatearISO(fin) };
+    }
+    var ini = new Date(anio, mes, diaCobro);
+    var fin = new Date(anio, mes + 1, diaCobro - 1);
+    return { inicio: formatearISO(ini), fin: formatearISO(fin) };
+  }
+
+  function formatearISO(d) {
+    return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  }
+
+  function fechaEnCiclo(fechaISO, ym, diaCobro) {
+    var rango = getRangoCiclo(ym, diaCobro);
+    return fechaISO >= rango.inicio && fechaISO <= rango.fin;
+  }
+
   return {
+    getRangoCiclo: getRangoCiclo,
+    fechaEnCiclo: fechaEnCiclo,
+    formatearISO: formatearISO,
     eur: eur,
     eurCorto: eurCorto,
     hoy: hoy,

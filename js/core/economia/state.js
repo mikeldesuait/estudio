@@ -77,7 +77,7 @@ window.EconomiaState = (function() {
   function ingresosExtraMes(ym) {
     ym = ym || U.mesActual();
     return estado.ingresosExtra.filter(function(i) {
-      return i.fecha && i.fecha.slice(0, 7) === ym;
+      var diaCobro = estado.presupuesto.diaCobro || 1; return i.fecha && U.fechaEnCiclo(i.fecha, ym, diaCobro);
     });
   }
 
@@ -100,7 +100,7 @@ window.EconomiaState = (function() {
   function gastosPuntualesMes(ym) {
     ym = ym || U.mesActual();
     return estado.gastos.filter(function(g) {
-      return g.periodicidad === 'puntual' && g.fecha && g.fecha.slice(0, 7) === ym;
+      var diaCobro = estado.presupuesto.diaCobro || 1; return g.periodicidad === 'puntual' && g.fecha && U.fechaEnCiclo(g.fecha, ym, diaCobro);
     });
   }
 
@@ -119,7 +119,7 @@ window.EconomiaState = (function() {
       var cat = g.categoria || 'otros';
       var imp = 0;
       if (g.periodicidad === 'puntual') {
-        if (g.fecha && g.fecha.slice(0, 7) === ym) imp = parseFloat(g.importe) || 0;
+        var diaCobro = estado.presupuesto.diaCobro || 1; if (g.fecha && U.fechaEnCiclo(g.fecha, ym, diaCobro)) imp = parseFloat(g.importe) || 0;
       } else {
         imp = U.aMensual(g.importe, g.periodicidad);
       }
@@ -135,7 +135,7 @@ window.EconomiaState = (function() {
     estado.gastos.forEach(function(g) {
       var imp = 0;
       if (g.periodicidad === 'puntual') {
-        if (g.fecha && g.fecha.slice(0, 7) === ym) imp = parseFloat(g.importe) || 0;
+        var diaCobro = estado.presupuesto.diaCobro || 1; if (g.fecha && U.fechaEnCiclo(g.fecha, ym, diaCobro)) imp = parseFloat(g.importe) || 0;
       } else {
         imp = U.aMensual(g.importe, g.periodicidad);
       }
@@ -238,6 +238,8 @@ window.EconomiaState = (function() {
     removeItem: removeItem,
     suscribir: suscribir,
     notificar: notificar,
+    setSaldo: function(saldo) { estado.saldoCuentas = saldo; notificar(); },
+    setSaldo: function(saldo) { estado.saldoCuentas = saldo; notificar(); },
     storage: storage,
 
     ingresoBaseMensual: ingresoBaseMensual,
