@@ -23,13 +23,13 @@
     <section class="filtros no-print">
       <label>Desde <input type="date" id="filtroDesde"></label>
       <label>Hasta <input type="date" id="filtroHasta"></label>
-      <label>Medicamento <select id="filtroMedicamento"><option value="">Todos</option><option value="Hemicraneal">Hemicraneal</option><option value="Diazepam">Diazepam</option><option value="Otro">Otro</option></select></label>
+      <label>Medicamento <select id="filtroMedicamento"><option value="">Todos</option></select></label>
       <button class="btn-secondary" id="btnLimpiarFiltros">Limpiar</button>
     </section>
     <section class="tabla-wrap">
       <h2 class="no-print">Histórico de registros</h2>
       <h2 class="solo-print">Registro de salud — histórico</h2>
-      <table class="tabla-registros"><thead><tr><th>Fecha</th><th>Hora</th><th>Dolor</th><th>Intensidad</th><th>Medicamento</th><th>Cantidad</th><th>Hora toma</th><th>Sensación</th><th>Notas</th><th class="no-print">Acciones</th></tr></thead>
+      <table class="tabla-registros"><thead><tr><th>Fecha</th><th>Hora</th><th>Enfermedad</th><th>Intensidad</th><th>Medicamento</th><th>Cantidad</th><th>Hora toma</th><th>Sensación</th><th>Notas</th><th class="no-print">Acciones</th></tr></thead>
       <tbody id="tbodyRegistros"><tr><td colspan="10" class="vacio">Sin registros todavía. Pulsa «+ Nuevo registro».</td></tr></tbody></table>
     </section>
     <section class="resumen no-print" id="resumen"></section>
@@ -41,9 +41,58 @@
         <div class="form-grid">
           <label>Fecha <input type="date" id="regFecha" required></label>
           <label>Hora <input type="time" id="regHora" required></label>
-          <label>Tipo de dolor <select id="regTipoDolor" required><option value="Cabeza">Dolor de cabeza</option><option value="Migraña">Migraña</option><option value="Otro">Otro</option></select></label>
+          <label>Enfermedad / Dolor 
+            <select id="regTipoDolor" required>
+              <option value="">— Selecciona —</option>
+              <option value="Dolor de cabeza">Dolor de cabeza</option>
+              <option value="Migraña">Migraña</option>
+              <option value="Gripe">Gripe</option>
+              <option value="Resfriado">Resfriado</option>
+              <option value="Fiebre">Fiebre</option>
+              <option value="Dolor de garganta">Dolor de garganta</option>
+              <option value="Tos">Tos</option>
+              <option value="Dolor muscular">Dolor muscular</option>
+              <option value="Dolor de espalda">Dolor de espalda</option>
+              <option value="Dolor de estómago">Dolor de estómago</option>
+              <option value="Diarrea">Diarrea</option>
+              <option value="Estreñimiento">Estreñimiento</option>
+              <option value="Alergia">Alergia</option>
+              <option value="Ansiedad">Ansiedad</option>
+              <option value="Insomnio">Insomnio</option>
+              <option value="Inflamación">Inflamación</option>
+              <option value="Infección">Infección</option>
+              <option value="Presión alta">Presión alta</option>
+              <option value="Presión baja">Presión baja</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </label>
           <label>Intensidad (0–10) <input type="number" id="regIntensidad" min="0" max="10" value="5" required></label>
-          <label>Medicamento <select id="regMedicamento"><option value="">— Ninguno —</option><option value="Hemicraneal">Hemicraneal</option><option value="Diazepam">Diazepam</option><option value="Otro">Otro</option></select></label>
+          <label>Medicamento 
+            <select id="regMedicamento">
+              <option value="">— Ninguno —</option>
+              <option value="Paracetamol">Paracetamol</option>
+              <option value="Ibuprofeno">Ibuprofeno</option>
+              <option value="Aspirina">Aspirina</option>
+              <option value="Enantyum">Enantyum</option>
+              <option value="Nolotil">Nolotil</option>
+              <option value="Hemicraneal">Hemicraneal</option>
+              <option value="Diazepam">Diazepam</option>
+              <option value="Omeprazol">Omeprazol</option>
+              <option value="Amoxicilina">Amoxicilina</option>
+              <option value="Ibuprofeno">Ibuprofeno</option>
+              <option value="Antigripal">Antigripal</option>
+              <option value="Frenadol">Frenadol</option>
+              <option value="Ilsapeptilo">Ilsapeptilo</option>
+              <option value="Primperan">Primperan</option>
+              <option value="Ventolin">Ventolin</option>
+              <option value="Orfidal">Orfidal</option>
+              <option value="Lorazepam">Lorazepam</option>
+              <option value="Diclofenaco">Diclofenaco</option>
+              <option value="Naproxeno">Naproxeno</option>
+              <option value="Tranxilium">Tranxilium</option>
+              <option value="Otro">Otro</option>
+            </select>
+          </label>
           <label>Cantidad (comprimidos) <input type="number" id="regCantidad" min="0" step="0.5" value="0"></label>
           <label>Hora de la toma <input type="time" id="regHoraToma"></label>
           <label class="full">Sensación <input type="text" id="regSensacion" placeholder="Ej. mareado, mejor..."></label>

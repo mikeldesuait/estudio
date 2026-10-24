@@ -39,7 +39,7 @@
   function abrirModal(reg) {
     $('#modalTitulo').textContent = reg ? 'Editar registro' : 'Nuevo registro';
     $('#regId').value = reg ? reg.id : ''; $('#regFecha').value = reg ? reg.fecha : hoyISO(); $('#regHora').value = reg ? reg.hora : ahoraHHMM();
-    $('#regTipoDolor').value = reg ? reg.tipoDolor : 'Cabeza'; $('#regIntensidad').value = reg ? reg.intensidad : 5;
+    $('#regTipoDolor').value = reg ? reg.tipoDolor : ''; $('#regIntensidad').value = reg ? reg.intensidad : 5;
     $('#regMedicamento').value = reg ? (reg.medicamento || '') : ''; $('#regCantidad').value = reg ? (reg.cantidad || 0) : 0;
     $('#regHoraToma').value = reg ? (reg.horaToma || '') : ''; $('#regSensacion').value = reg ? (reg.sensacion || '') : '';
     $('#regNotas').value = reg ? (reg.notas || '') : ''; $('#modalOverlay').style.display = 'flex';
