@@ -1,0 +1,32 @@
+:root { --bg: #faf7f2; --bg-card: #ffffff; --bg-soft: #f5f0e8; --text-primary: #2d3748; --text-secondary: #718096; --border: #e2ddd3; --accent: #e53e3e; --accent-soft: rgba(229, 62, 62, 0.1); }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text-primary); line-height: 1.5; padding: 24px 16px; }
+.app-header { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); }
+.header-left { display: flex; align-items: center; gap: 12px; } .logo { font-size: 32px; } h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; } .subtitle { font-size: 13px; color: var(--text-secondary); } .header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.btn-primary, .btn-secondary, .btn-icon { font-family: inherit; cursor: pointer; border-radius: 8px; font-size: 13px; font-weight: 700; transition: all .15s; }
+.btn-primary { background: var(--accent); color: #fff; border: 1px solid var(--accent); padding: 8px 14px; } .btn-primary:hover { filter: brightness(0.93); }
+.btn-secondary { background: var(--bg-card); color: var(--text-primary); border: 1px solid var(--border); padding: 8px 14px; } .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+.btn-icon { background: var(--bg-card); border: 1px solid var(--border); padding: 8px 10px; font-size: 14px; } .btn-icon:hover { border-color: var(--accent); }
+.filtros { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; background: var(--bg-card); border: 1px solid var(--border); padding: 14px; border-radius: 12px; margin-bottom: 20px; }
+.filtros label { display: flex; flex-direction: column; font-size: 12px; font-weight: 600; color: var(--text-secondary); gap: 4px; }
+.filtros input, .filtros select { font-family: inherit; font-size: 13px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text-primary); }
+.tabla-wrap { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; overflow-x: auto; }
+.tabla-wrap h2 { font-size: 16px; font-weight: 800; margin-bottom: 12px; }
+.tabla-registros { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tabla-registros th, .tabla-registros td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--border); }
+.tabla-registros th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-secondary); font-weight: 700; }
+.tabla-registros td.vacio { text-align: center; color: var(--text-secondary); padding: 32px; }
+.tabla-registros tr:hover td { background: var(--bg-soft); }
+.tabla-registros .acciones { display: flex; gap: 6px; } .tabla-registros .acciones button { background: transparent; border: 1px solid var(--border); border-radius: 6px; padding: 2px 8px; font-size: 12px; cursor: pointer; font-family: inherit; } .tabla-registros .acciones button:hover { border-color: var(--accent); color: var(--accent); }
+.intensidad-badge { display: inline-block; padding: 2px 8px; border-radius: 12px; font-weight: 700; font-size: 12px; background: var(--accent-soft); color: var(--accent); }
+.resumen { margin-top: 20px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px; font-size: 13px; color: var(--text-secondary); } .resumen strong { color: var(--text-primary); }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
+.modal { background: var(--bg-card); border-radius: 14px; padding: 24px; width: 100%; max-width: 640px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.25); }
+.modal h2 { font-size: 18px; margin-bottom: 16px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-grid label { display: flex; flex-direction: column; font-size: 12px; font-weight: 600; color: var(--text-secondary); gap: 4px; }
+.form-grid label.full { grid-column: 1 / -1; }
+.form-grid input, .form-grid select, .form-grid textarea { font-family: inherit; font-size: 14px; padding: 8px 10px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); color: var(--text-primary); }
+.modal-actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px; }
+.solo-print { display: none; }
+@media print { body { background: #fff; padding: 0; } .no-print { display: none !important; } .solo-print { display: block !important; } .tabla-wrap { border: none; padding: 0; } .tabla-registros th, .tabla-registros td { border-bottom: 1px solid #ccc; } .tabla-registros th { background: #eee; color: #000; } .intensidad-badge { background: #eee; color: #000; } }

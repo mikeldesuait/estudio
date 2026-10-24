@@ -16,9 +16,10 @@ const Shell = {
     { id: 'herramientas',  nombre: 'Herramientas',  icono: '🔧', tipo: 'area' },
     { id: 'networking',    nombre: 'Networking',    icono: '🌐', tipo: 'area' },
     { id: 'dieta',         nombre: 'Dieta',         icono: '🥗', tipo: 'area' },
-    { id: 'peso',          nombre: 'Peso',          icono: '⚖️', tipo: 'area' }
+    { id: 'salud',         nombre: 'Salud',         icono: '🩺', tipo: 'area' },
+    { id: 'peso',          nombre: 'Peso',          icono: '⚖️', tipo: 'area' },
+    { id: 'registro-salud', nombre: 'Registro Salud', icono: '🩺', tipo: 'area' },
   ],
-
   // ═══════════════════════════════════════════════════════
   // GRUPOS — Agrupación de pestañas por categoría
   // Sirve para que en iPad/móvil no se vean todas juntas
@@ -40,7 +41,7 @@ const Shell = {
       id: 'salud',
       nombre: 'Salud',
       icono: '💪',
-      pestanas: ['dieta', 'peso']
+      pestanas: ['dieta', 'peso', 'registro-salud']
     },
     {
       id: 'herramientas-grupo',

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Salud</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header no-print">
+    <div class="header-left">
+      <span class="logo">📋</span>
+      <div><h1>Registro de Salud</h1><p class="subtitle" id="headerDate">—</p></div>
+    </div>
+    <div class="header-actions">
+      <button class="btn-icon" id="btnExport">📤</button>
+      <button class="btn-icon" id="btnImport">📥</button>
+      <button class="btn-secondary" id="btnImprimir">🖨️ Imprimir</button>
+      <button class="btn-primary" id="btnRegistrar">+ Nuevo registro</button>
+    </div>
+  </header>
+  <main class="app-main">
+    <section class="filtros no-print">
+      <label>Desde <input type="date" id="filtroDesde"></label>
+      <label>Hasta <input type="date" id="filtroHasta"></label>
+      <label>Medicamento <select id="filtroMedicamento"><option value="">Todos</option><option value="Hemicraneal">Hemicraneal</option><option value="Diazepam">Diazepam</option><option value="Otro">Otro</option></select></label>
+      <button class="btn-secondary" id="btnLimpiarFiltros">Limpiar</button>
+    </section>
+    <section class="tabla-wrap">
+      <h2 class="no-print">Histórico de registros</h2>
+      <h2 class="solo-print">Registro de salud — histórico</h2>
+      <table class="tabla-registros"><thead><tr><th>Fecha</th><th>Hora</th><th>Dolor</th><th>Intensidad</th><th>Medicamento</th><th>Cantidad</th><th>Hora toma</th><th>Sensación</th><th>Notas</th><th class="no-print">Acciones</th></tr></thead>
+      <tbody id="tbodyRegistros"><tr><td colspan="10" class="vacio">Sin registros todavía. Pulsa «+ Nuevo registro».</td></tr></tbody></table>
+    </section>
+    <section class="resumen no-print" id="resumen"></section>
+  </main>
+  <div class="modal-overlay" id="modalOverlay" style="display:none;">
+    <div class="modal"><h2 id="modalTitulo">Nuevo registro</h2>
+      <form id="formRegistro">
+        <input type="hidden" id="regId">
+        <div class="form-grid">
+          <label>Fecha <input type="date" id="regFecha" required></label>
+          <label>Hora <input type="time" id="regHora" required></label>
+          <label>Tipo de dolor <select id="regTipoDolor" required><option value="Cabeza">Dolor de cabeza</option><option value="Migraña">Migraña</option><option value="Otro">Otro</option></select></label>
+          <label>Intensidad (0–10) <input type="number" id="regIntensidad" min="0" max="10" value="5" required></label>
+          <label>Medicamento <select id="regMedicamento"><option value="">— Ninguno —</option><option value="Hemicraneal">Hemicraneal</option><option value="Diazepam">Diazepam</option><option value="Otro">Otro</option></select></label>
+          <label>Cantidad (comprimidos) <input type="number" id="regCantidad" min="0" step="0.5" value="0"></label>
+          <label>Hora de la toma <input type="time" id="regHoraToma"></label>
+          <label class="full">Sensación <input type="text" id="regSensacion" placeholder="Ej. mareado, mejor..."></label>
+          <label class="full">Notas <textarea id="regNotas" rows="3"></textarea></label>
+        </div>
+        <div class="modal-actions"><button type="button" class="btn-secondary" id="btnCancelar">Cancelar</button><button type="submit" class="btn-primary">Guardar</button></div>
+      </form>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>
