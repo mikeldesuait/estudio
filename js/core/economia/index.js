@@ -1,5 +1,5 @@
 /* ============================================================
-   ECONOMIA — Lógica Definitiva (Vista de Mando)
+   ECONOMIA — Lógica Definitiva (Caja Real y Previsión)
    ============================================================ */
 
 window.Economia = (function() {
@@ -11,8 +11,7 @@ window.Economia = (function() {
   var mesActualYM = U.mesActual();
   var modalConfig = null;
 
-  var CATS = { vivienda: { icono: '🏠', color: '#3b82f6', nombre: 'Vivienda' }, suministros: { icono: '💡', color: '#f59e0b', nombre: 'Suministros' }, telecom: { icono: '📱', color: '#06b6d4', nombre: 'Telecom' }, seguros: { icono: '🛡️', color: '#64748b', nombre: 'Seguros' }, suscripciones: { icono: '📺', color: '#8b5cf6', nombre: 'Suscripciones' }, deudas: { icono: '💳', color: '#ef4444', nombre: 'Deudas' }, educacion: { icono: '🎓', color: '#14b8a6', nombre: 'Educación' }, salud: { icono: '🏥', color: '#ec4899', nombre: 'Salud' }, transporte: { icono: '🚗', color: '#f97316', nombre: 'Transporte' }, comida: { icono: '🍔', color: '#fb923c', nombre: 'Comida' }, ocio: { icono: '🎉', color: '#f472b6', nombre: 'Ocio' }, restaurantes: { icono: '🍽️', color: '#e11d48', nombre: 'Restaurantes' }, ropa: { icono: '👕', color: '#a78bfa', nombre: 'Ropa' }, hogar: { icono: '🛋️', color: '#78716c', nombre: 'Hogar' }, regalos: { icono: '🎁', color: '#eab308', nombre: 'Regalos' }, otros: { icono: '📦', color: '#94a3b8', nombre: 'Otros' } };
-  var TIPOS_INGRESO = { nomina: 'Nómina', autonomo: 'Autónomo', esporadico: 'Trabajo esporádico', ayuda: 'Ayuda / subvención', alquiler: 'Alquiler cobrado', devolucion: 'Devolución', otros: 'Otros' };
+  var CATS = { vivienda: { icono: '🏠' }, suministros: { icono: '💡' }, telecom: { icono: '📱' }, seguros: { icono: '🛡️' }, suscripciones: { icono: '📺' }, deudas: { icono: '💳' }, educacion: { icono: '🎓' }, salud: { icono: '🏥' }, transporte: { icono: '🚗' }, comida: { icono: '🍔' }, ocio: { icono: '🎉' }, restaurantes: { icono: '🍽️' }, ropa: { icono: '👕' }, hogar: { icono: '🛋️' }, regalos: { icono: '🎁' }, otros: { icono: '📦' } };
   var PERSONAS_DEF = [{ id: 'miguel', nombre: 'Miguel' }, { id: 'pareja', nombre: 'Pareja' }, { id: 'compartido', nombre: 'Compartido' }];
 
   function montar(cont) {
@@ -100,34 +99,12 @@ window.Economia = (function() {
   function renderTodo() {
     var ultimoCiclo = localStorage.getItem('eco_ultimo_ciclo_pagado');
     if (ultimoCiclo !== mesActualYM) {
-      var gastosFijos = State.get().gastos.filter(function(g){ return g.periodicidad !== 'puntual'; });
-      gastosFijos.forEach(function(g){ if (g.pagado) State.updateItem('gastos', g.id, { pagado: false }); });
-      var ingresosFijos = State.get().ingresosFijos || [];
-      ingresosFijos.forEach(function(i){ if (i.pagado) State.updateItem('ingresosFijos', i.id, { pagado: false }); });
+      State.get().gastos.filter(function(g){ return g.periodicidad !== 'puntual'; }).forEach(function(g){ if(g.pagado) State.updateItem('gastos', g.id, { pagado: false }); });
+      (State.get().ingresosFijos || []).forEach(function(i){ if(i.pagado) State.updateItem('ingresosFijos', i.id, { pagado: false }); });
       localStorage.setItem('eco_ultimo_ciclo_pagado', mesActualYM);
     }
 
     contenedor.querySelector('#ecoMesActual').textContent = U.nombreMes(mesActualYM);
-    
-    var headerAcciones = contenedor.querySelector('.eco-header-acciones');
-    if (headerAcciones && !contenedor.querySelector('#ecoResetPagos')) {
-      var btnReset = document.createElement('button');
-      btnReset.className = 'eco-btn eco-btn-ghost';
-      btnReset.id = 'ecoResetPagos';
-      btnReset.innerHTML = '<i class="fas fa-sync-alt" title="Reiniciar pagos del ciclo"></i>';
-      btnReset.title = 'Volver a marcar todos los gastos e ingresos como pendientes';
-      btnReset.addEventListener('click', function() {
-        if (!confirm('¿Volver a marcar TODOS los pagos e ingresos como pendientes?')) return;
-        var gastos = State.get().gastos.filter(function(g){ return g.periodicidad !== 'puntual'; });
-        gastos.forEach(function(g){ if(g.pagado) State.updateItem('gastos', g.id, { pagado: false }); });
-        var ingresos = State.get().ingresosFijos || [];
-        ingresos.forEach(function(i){ if(i.pagado) State.updateItem('ingresosFijos', i.id, { pagado: false }); });
-        localStorage.removeItem('eco_ultimo_ciclo_pagado');
-        location.reload();
-      });
-      headerAcciones.insertBefore(btnReset, headerAcciones.firstChild);
-    }
-
     renderReal(); 
     renderPrevision();
   }
@@ -136,121 +113,110 @@ window.Economia = (function() {
   function renderReal() {
     var base = State.get().saldoCuentas || 0;
     
+    // 1. Movimientos puntuales (validados) del ciclo actual
     var movsCiclo = State.get().gastos.filter(function(g) {
       var diaCobro = State.get().presupuesto.diaCobro || 1;
-      // Si la fecha es anterior al 20/10/2026, se ignora
       if (g.fecha && g.fecha < '2026-10-20') return false;
       return g.periodicidad === 'puntual' && g.fecha && U.fechaEnCiclo(g.fecha, mesActualYM, diaCobro);
     });
 
+    // Calculamos el saldo real
     var ingresosReales = movsCiclo.filter(function(g) { return !g.necesario; }).reduce(function(acc, g) { return acc + (parseFloat(g.importe) || 0); }, 0);
     var gastosReales = movsCiclo.filter(function(g) { return g.necesario; }).reduce(function(acc, g) { return acc + (parseFloat(g.importe) || 0); }, 0);
     var saldoVivo = base + ingresosReales - gastosReales;
     
+    // Actualizar display
     var display = contenedor.querySelector('#ecoSaldoDisplay');
     if (display) { display.textContent = U.eur(saldoVivo); display.style.color = saldoVivo >= 0 ? '#10b981' : '#ef4444'; }
-    
     var inputBase = contenedor.querySelector('#ecoSaldoBase');
     if (inputBase && document.activeElement !== inputBase) inputBase.value = base;
 
+    // 2. Fijos pendientes del ciclo (Bucle 20 al 19)
     var fijosGastos = State.get().gastos.filter(function(g) { return g.periodicidad !== 'puntual' && !g.pagado; });
     var fijosIngresos = (State.get().ingresosFijos || []).filter(function(i) { return !i.pagado; });
     
-    var todosPendientes = [];
     var diaHoy = new Date(); diaHoy.setHours(0,0,0,0);
+    var diaCobroCiclo = State.get().presupuesto.diaCobro || 1;
+    var mesInicio = diaHoy.getDate() >= diaCobroCiclo ? diaHoy.getMonth() : diaHoy.getMonth() - 1;
+    var anioInicio = diaHoy.getFullYear();
+    if (mesInicio < 0) { mesInicio = 11; anioInicio--; }
+    var inicioCiclo = new Date(anioInicio, mesInicio, diaCobroCiclo);
+    var finCiclo = new Date(anioInicio, mesInicio + 1, diaCobroCiclo - 1);
 
     function calcularFecha(diaVencimiento) {
-      // Calculamos el inicio del ciclo actual de forma matemática
-      var diaCobroCiclo = State.get().presupuesto.diaCobro || 1;
-      
-      // Si estamos antes del día 20 (ej: día 5), el ciclo empezó el mes pasado.
-      // Si estamos después del día 20 (ej: día 25), el ciclo empezó este mes.
-      var mesInicio = diaHoy.getDate() >= diaCobroCiclo ? diaHoy.getMonth() : diaHoy.getMonth() - 1;
-      var anioInicio = diaHoy.getFullYear();
-      if (mesInicio < 0) { mesInicio = 11; anioInicio--; } // Corregir si nos vamos a enero del año anterior
-      
-      var inicioCiclo = new Date(anioInicio, mesInicio, diaCobroCiclo);
-
-      // Si el vencimiento es mayor o igual al día de inicio, cae en el mismo mes que el inicio.
-      // Si es menor, cae en el mes siguiente.
-      var f;
       if (diaVencimiento >= diaCobroCiclo) {
-          f = new Date(anioInicio, mesInicio, diaVencimiento);
+          return new Date(anioInicio, mesInicio, diaVencimiento);
       } else {
-          f = new Date(anioInicio, mesInicio + 1, diaVencimiento);
+          return new Date(anioInicio, mesInicio + 1, diaVencimiento);
       }
-      return f;
     }
 
+    var todosPendientes = [];
+    
+    // Gastos fijos
     fijosGastos.forEach(function(g) {
       var f = calcularFecha(g.diaCobro || 1);
-      todosPendientes.push({ tipo: 'gasto', item: g, fecha: f, importe: U.aMensual(g.importe, g.periodicidad), nombre: g.nombre, cat: CATS[g.categoria] || {icono:'📦'} });
+      // Solo si cae en el ciclo actual
+      if (f >= inicioCiclo && f <= finCiclo) {
+        todosPendientes.push({ tipo: 'gasto', item: g, fecha: f, importe: U.aMensual(g.importe, g.periodicidad), nombre: g.nombre, cat: CATS[g.categoria] || {icono:'📦'} });
+      }
     });
+    // Ingresos fijos
     fijosIngresos.forEach(function(i) {
       var f = calcularFecha(i.diaCobro || 1);
-      todosPendientes.push({ tipo: 'ingreso', item: i, fecha: f, importe: U.aMensual(i.importe, i.periodicidad), nombre: i.nombre, cat: {icono:'💼'} });
+      if (f >= inicioCiclo && f <= finCiclo) {
+        todosPendientes.push({ tipo: 'ingreso', item: i, fecha: f, importe: U.aMensual(i.importe, i.periodicidad), nombre: i.nombre, cat: {icono:'💼'} });
+      }
     });
 
-    todosPendientes.sort(function(a, b) { return a.fecha - b.fecha; });
+    // 3. Calcular totales de pendientes
+    var totalGastosPend = 0;
+    var totalIngresosPend = 0;
+    var total5dias = 0;
+    var avisos5Dias = [];
 
-    var totalGastos = 0, totalIngresos = 0, total5diasGastos = 0, total5diasIngresos = 0;
-    
     todosPendientes.forEach(function(p) {
-      if (p.tipo === 'gasto') totalGastos += p.importe;
-      else totalIngresos += p.importe;
+      if (p.tipo === 'gasto') totalGastosPend += p.importe;
+      else totalIngresosPend += p.importe;
 
       var diff = Math.ceil((p.fecha.getTime() - diaHoy.getTime()) / (1000 * 3600 * 24));
       if (diff <= 5) {
-        if (p.tipo === 'gasto') total5diasGastos += p.importe;
-        else total5diasIngresos += p.importe;
+        avisos5Dias.push(p);
+        total5dias += p.importe;
       }
     });
 
-    var total5dias = total5diasGastos + total5diasIngresos;
-    var previsionFinal = saldoVivo + totalIngresos - totalGastos;
+    var previsionFinal = saldoVivo + totalIngresosPend - totalGastosPend;
 
-    contenedor.querySelector('#ecoAvisoTotal').textContent = U.eur(total5dias);
-    contenedor.querySelector('#ecoAvisoLista').innerHTML = todosPendientes.filter(function(p){
-      return Math.ceil((p.fecha.getTime() - diaHoy.getTime()) / (1000 * 3600 * 24)) <= 5;
-    }).length + ' movimientos próximos';
-    
-    contenedor.querySelector('#ecoRealPendienteTotal').textContent = U.eur(totalGastos);
-    contenedor.querySelector('#ecoRealIngresoTotal').textContent = U.eur(totalIngresos);
-    var elTeQueda = contenedor.querySelector('#ecoRealTeQueda');
-    elTeQueda.textContent = U.eur(previsionFinal);
-    elTeQueda.style.color = previsionFinal >= 0 ? '#3b82f6' : '#ef4444';
+    // Actualizar Tarjetas
+    contenedor.querySelector('#ecoRealGastosPend').textContent = U.eur(totalGastosPend);
+    contenedor.querySelector('#ecoRealIngresosPend').textContent = U.eur(totalIngresosPend);
+    contenedor.querySelector('#ecoRealPrevision').textContent = U.eur(previsionFinal);
+    contenedor.querySelector('#ecoRealPrevision').style.color = previsionFinal >= 0 ? '#3b82f6' : '#ef4444';
 
-    var lista = contenedor.querySelector('#ecoListaUnificada');
-    if (todosPendientes.length === 0) {
-      lista.innerHTML = '<div class="eco-vacio">No hay pagos ni ingresos pendientes. ¡Todo al día!</div>';
-    } else {
-      lista.innerHTML = '<div class="eco-lista">' + todosPendientes.map(function(p) {
-        var diff = Math.ceil((p.fecha.getTime() - diaHoy.getTime()) / (1000 * 3600 * 24));
-        var fechaStr = p.fecha.getDate() + '/' + (p.fecha.getMonth()+1);
-        var alerta = diff < 0 ? '<span style="color:#ef4444;font-weight:700;">Vencida</span>' : (diff === 0 ? 'Hoy' : 'En ' + diff + ' días');
+    // Avisos de 5 días
+    var cajaAvisos = contenedor.querySelector('#ecoCardAvisos');
+    if (avisos5Dias.length > 0) {
+      cajaAvisos.style.display = 'block';
+      cajaAvisos.querySelector('#ecoAvisoLista').innerHTML = avisos5Dias.map(function(p) {
+        var cuando = Math.ceil((p.fecha.getTime() - diaHoy.getTime()) / (1000 * 3600 * 24));
+        var cuandoStr = cuando < 0 ? '<span style="color:#ef4444;">Vencida</span>' : (cuando === 0 ? 'Hoy' : 'En ' + cuando + ' días');
         var color = p.tipo === 'ingreso' ? '#10b981' : '#ef4444';
-        var btnAccion = p.tipo === 'ingreso' 
-          ? '<button class="eco-btn eco-btn-primario" data-cobrar="' + p.item.id + '" style="padding:4px 8px; font-size:12px; background:#10b981;"><i class="fas fa-check"></i> Confirmar</button>'
-          : '<button class="eco-btn eco-btn-primario" data-pagar="' + p.item.id + '" style="padding:4px 8px; font-size:12px;"><i class="fas fa-check"></i> Validar</button>';
-
-        return '<div class="eco-item">'
-          + '<div class="eco-item-cat">' + p.cat.icono + '</div>'
-          + '<div class="eco-item-info"><div class="eco-item-nombre">' + p.nombre + '</div><div class="eco-item-meta">' + fechaStr + ' · ' + alerta + '</div></div>'
-          + '<div class="eco-item-importe" style="color:'+color+';">' + (p.tipo==='ingreso'?'+':'-') + ' ' + U.eur(p.importe) + '</div>'
-          + '<div class="eco-item-acciones">' + btnAccion + '</div>'
-          + '</div>';
-      }).join('') + '</div>';
+        return '<div style="background:#fff; padding:4px 8px; border-radius:4px; border:1px solid #fde68a; font-size:12px;">' + p.cat.icono + ' <strong>' + p.nombre + '</strong> (' + cuandoStr + ') <span style="color:'+color+'; font-weight:700;">' + (p.tipo==='ingreso'?'+':'-') + U.eur(p.importe) + '</span></div>';
+      }).join('');
+    } else {
+      cajaAvisos.style.display = 'none';
     }
 
+    // 4. Historial de movimientos validados
     var listaReal = contenedor.querySelector('#ecoRealLista');
-    var movs = movsCiclo.sort(function(a,b) { return b.fecha.localeCompare(a.fecha); });
-    
-    if (movs.length === 0) {
-      listaReal.innerHTML = '<div class="eco-vacio">Aún no has apuntado ningún movimiento este ciclo. Usa el botón ⚡.</div>';
+    var movsOrdenados = movsCiclo.sort(function(a,b) { return b.fecha.localeCompare(a.fecha); });
+    if (movsOrdenados.length === 0) {
+      listaReal.innerHTML = '<div class="eco-vacio">Aún no has validado movimientos este ciclo.</div>';
     } else {
-      listaReal.innerHTML = '<div class="eco-lista">' + movs.map(function(item) {
+      listaReal.innerHTML = '<div class="eco-lista">' + movsOrdenados.map(function(item) {
         var esIngreso = !item.necesario; 
-        var cat = CATS[item.categoria] || { icono: '📦', nombre: 'Otros' };
+        var cat = CATS[item.categoria] || { icono: '📦' };
         var signo = esIngreso ? '+' : '-';
         var color = esIngreso ? '#10b981' : '#ef4444';
         var notaHTML = item.notas ? ' · <em style="color:#f59e0b;">' + item.notas + '</em>' : '';
@@ -267,13 +233,10 @@ window.Economia = (function() {
     var balancePrevisto = base + extra - gastoFijo;
 
     contenedor.querySelector('#ecoKpiIngreso').textContent = U.eur(base);
-    contenedor.querySelector('#ecoKpiIngresoSub').textContent = 'Suma de ingresos fijos';
     contenedor.querySelector('#ecoKpiGasto').textContent = U.eur(gastoFijo);
-    contenedor.querySelector('#ecoKpiGastoSub').textContent = 'Suma de gastos recurrentes';
     
     var elBal = contenedor.querySelector('#ecoKpiBalance');
     elBal.textContent = U.eur(balancePrevisto);
-    contenedor.querySelector('#ecoKpiBalanceSub').textContent = balancePrevisto >= 0 ? 'Previsión positiva' : 'Previsión negativa (déficit)';
     var elBalBox = elBal.closest('.eco-kpi-balance');
     if (elBalBox) { elBalBox.classList.toggle('eco-pos', balancePrevisto >= 0); elBalBox.classList.toggle('eco-neg', balancePrevisto < 0); }
 
@@ -288,14 +251,14 @@ window.Economia = (function() {
     if (!el) return;
     var lista = State.get()[coleccion] || [];
     if (filtro) lista = lista.filter(filtro);
-    if (lista.length === 0) { el.innerHTML = '<div class="eco-vacio">Sin elementos. Pulsa "Añadir" para empezar.</div>'; return; }
+    if (lista.length === 0) { el.innerHTML = '<div class="eco-vacio">Sin elementos.</div>'; return; }
     
     el.innerHTML = '<div class="eco-lista">' + lista.map(function(item) {
-      var cat = (CATS[item.categoria] || { icono: '📦', color: '#94a3b8', nombre: 'Otros' });
+      var cat = (CATS[item.categoria] || { icono: '📦', nombre: 'Otros' });
       var per = PERSONAS_DEF.find(function(p) { return p.id === item.persona; });
       var meta = [];
-      if (tipo === 'ingreso-fijo') { meta.push(per ? per.nombre : item.persona); meta.push(TIPOS_INGRESO[item.tipo] || item.tipo); meta.push(item.periodicidad); } 
-      else { meta.push(cat.nombre); meta.push(item.periodicidad); if (item.necesario) meta.push('necesario'); else meta.push('innecesario'); }
+      if (tipo === 'ingreso-fijo') { meta.push(per ? per.nombre : item.persona); meta.push(item.periodicidad); } 
+      else { meta.push(cat.nombre); meta.push(item.periodicidad); }
 
       return '<div class="eco-item"><div class="eco-item-cat">' + cat.icono + '</div><div class="eco-item-info"><div class="eco-item-nombre">' + item.nombre + '</div><div class="eco-item-meta">' + meta.join(' · ') + '</div></div><div class="eco-item-importe">' + U.eur(item.importe) + (item.periodicidad!=='mensual'?'<small>'+U.eur(U.aMensual(item.importe,item.periodicidad))+'/mes</small>':'') + '</div><div class="eco-item-acciones"><button class="eco-item-btn" data-editar="' + item.id + '" data-tipo="' + tipo + '" title="Editar"><i class="fas fa-pen"></i></button><button class="eco-item-btn eco-item-btn-peligro" data-borrar="' + item.id + '" data-coleccion="' + coleccion + '" title="Borrar"><i class="fas fa-trash"></i></button></div></div>';
     }).join('') + '</div>';
@@ -304,10 +267,10 @@ window.Economia = (function() {
   function renderObjetivos() {
     var el = contenedor.querySelector('#ecoObjetivos');
     var lista = State.get().objetivos || [];
-    if (lista.length === 0) { el.innerHTML = '<div class="eco-vacio">Sin objetivos. Crea uno para empezar a ahorrar.</div>'; return; }
+    if (lista.length === 0) { el.innerHTML = '<div class="eco-vacio">Sin objetivos.</div>'; return; }
     el.innerHTML = lista.map(function(obj) {
       var est = State.estadoObjetivo(obj);
-      return '<div class="eco-objetivo"><div class="eco-objetivo-head"><div class="eco-objetivo-titulo">' + (obj.icono || '🎯') + ' ' + obj.nombre + (est.completado ? ' <span class="eco-objetivo-completado">¡Conseguido!</span>' : '') + '</div><div class="eco-objetivo-pct">' + est.porcentaje.toFixed(0) + '%</div></div><div class="eco-barra"><div class="eco-barra-fill" style="width:' + est.porcentaje + '%;background:' + (obj.color || '#3b82f6') + '"></div></div><div class="eco-objetivo-meta"><div>Ahorrado<strong>' + U.eur(obj.importeActual || 0) + '</strong></div><div>Objetivo<strong>' + U.eur(obj.importeObjetivo || 0) + '</strong></div><div>Falta<strong>' + U.eur(est.falta) + '</strong></div></div>' + (est.mesesRestantes !== null && !est.completado ? '<div class="eco-objetivo-meta" style="margin-top:8px;grid-template-columns:1fr"><div>Faltan <strong>' + est.mesesRestantes + ' meses</strong> · Ahorrar <strong>' + U.eur(est.mensualNecesaria) + '/mes</strong></div></div>' : '') + '<div style="display:flex;gap:8px;margin-top:12px"><button class="eco-btn eco-btn-primario" data-aportar="' + obj.id + '"><i class="fas fa-plus"></i> Aportar</button><button class="eco-btn eco-btn-ghost" data-editar="' + obj.id + '" data-tipo="objetivo"><i class="fas fa-pen"></i></button><button class="eco-btn eco-btn-ghost" data-borrar="' + obj.id + '" data-coleccion="objetivos"><i class="fas fa-trash"></i></button></div></div>';
+      return '<div class="eco-objetivo"><div class="eco-objetivo-head"><div class="eco-objetivo-titulo">' + (obj.icono || '🎯') + ' ' + obj.nombre + (est.completado ? ' <span class="eco-objetivo-completado">¡Conseguido!</span>' : '') + '</div><div class="eco-objetivo-pct">' + est.porcentaje.toFixed(0) + '%</div></div><div class="eco-barra"><div class="eco-barra-fill" style="width:' + est.porcentaje + '%;background:' + (obj.color || '#3b82f6') + '"></div></div><div class="eco-objetivo-meta"><div>Ahorrado<strong>' + U.eur(obj.importeActual || 0) + '</strong></div><div>Objetivo<strong>' + U.eur(obj.importeObjetivo || 0) + '</strong></div><div>Falta<strong>' + U.eur(est.falta) + '</strong></div></div><div style="display:flex;gap:8px;margin-top:12px"><button class="eco-btn eco-btn-primario" data-aportar="' + obj.id + '"><i class="fas fa-plus"></i> Aportar</button><button class="eco-btn eco-btn-ghost" data-editar="' + obj.id + '" data-tipo="objetivo"><i class="fas fa-pen"></i></button><button class="eco-btn eco-btn-ghost" data-borrar="' + obj.id + '" data-coleccion="objetivos"><i class="fas fa-trash"></i></button></div></div>';
     }).join('');
   }
 
@@ -316,31 +279,26 @@ window.Economia = (function() {
     var obj = State.presupuestoObjetivo();
     var comp = State.comparativaPresupuesto(mesActualYM);
     var diaCobro = State.get().presupuesto.diaCobro || 1;
-    var rango = U.getRangoCiclo(mesActualYM, diaCobro);
-    var textoCiclo = diaCobro === 1 ? 'Basado en tu <strong>ingreso base familiar</strong> de ' + U.eur(obj.base) + '/mes.' : 'Ciclo actual: <strong>' + U.fechaCorta(rango.inicio) + ' al ' + U.fechaCorta(rango.fin) + '</strong>. Basado en un ingreso base de ' + U.eur(obj.base) + '/mes.';
 
     function barra(titulo, real, objetivo, color) {
       var pct = objetivo > 0 ? (real / objetivo) * 100 : 0;
-      var pctMostrar = Math.min(150, pct);
-      var estado, estadoTexto, colorFinal = color;
-      if (pct <= 100) { estado = 'eco-presu-ok'; estadoTexto = '✓ Dentro del presupuesto (' + pct.toFixed(0) + '%)'; } 
-      else if (pct <= 115) { estado = 'eco-presu-alerta'; estadoTexto = '⚠️ Algo por encima (' + pct.toFixed(0) + '%)'; colorFinal = '#f59e0b'; } 
-      else { estado = 'eco-presu-exceso'; estadoTexto = '✗ Excedido (' + pct.toFixed(0) + '%)'; colorFinal = '#ef4444'; }
-      return '<div class="eco-presu-item"><div class="eco-presu-head"><span class="eco-presu-titulo">' + titulo + '</span><span class="eco-presu-valores"><strong>' + U.eur(real) + '</strong> / ' + U.eur(objetivo) + '</span></div><div class="eco-presu-barra"><div class="eco-presu-barra-fill" style="width:' + pctMostrar + '%;background:' + colorFinal + '"></div><div class="eco-presu-barra-marca" style="left:100%"></div></div><div class="eco-presu-estado ' + estado + '">' + estadoTexto + '</div></div>';
+      var colorFinal = pct <= 100 ? color : (pct <= 115 ? '#f59e0b' : '#ef4444');
+      return '<div class="eco-presu-item"><div class="eco-presu-head"><span class="eco-presu-titulo">' + titulo + '</span><span class="eco-presu-valores"><strong>' + U.eur(real) + '</strong> / ' + U.eur(objetivo) + '</span></div><div class="eco-presu-barra"><div class="eco-presu-barra-fill" style="width:' + Math.min(150, pct) + '%;background:' + colorFinal + '"></div></div></div>';
     }
 
-    var html = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:10px"><p style="font-size:13px;color:var(--text-2);margin:0;">' + textoCiclo + '</p><div style="display:flex;align-items:center;gap:8px;font-size:13px"><label for="ecoDiaCobro" style="font-weight:600;color:var(--text-2)">Ciclo inicia el día:</label><input type="number" id="ecoDiaCobro" min="1" max="28" value="'+diaCobro+'" style="width:60px;padding:4px 8px;border:1px solid var(--border);border-radius:6px;font-family:inherit;font-size:13px"></div></div>';
-    html += barra('🏠 Necesidades (50%)', comp.necesidades.real, comp.necesidades.objetivo, '#3b82f6') + barra('🎉 Estilo de vida (30%)', comp.estilo.real, comp.estilo.objetivo, '#8b5cf6') + barra('💰 Ahorro (20%)', Math.max(0, comp.ahorro.real), comp.ahorro.objetivo, '#10b981');
+    var html = '<div style="margin-bottom:12px;font-size:13px;color:var(--text-2)"><label>Ciclo inicia el día: </label><input type="number" id="ecoDiaCobro" value="'+diaCobro+'" style="width:50px;padding:2px;border:1px solid var(--border);border-radius:4px;"></div>';
+    html += barra('🏠 Necesidades (50%)', comp.necesidades.real, comp.necesidades.objetivo, '#3b82f6');
+    html += barra('🎉 Estilo de vida (30%)', comp.estilo.real, comp.estilo.objetivo, '#8b5cf6');
+    html += barra('💰 Ahorro (20%)', Math.max(0, comp.ahorro.real), comp.ahorro.objetivo, '#10b981');
     el.innerHTML = html;
 
-    var inDia = el.querySelector('#ecoDiaCobro');
-    if (inDia) inDia.addEventListener('change', function(e) { var p = State.get().presupuesto; p.diaCobro = parseInt(e.target.value)||1; State.set('presupuesto', p); });
+    el.querySelector('#ecoDiaCobro').addEventListener('change', function(e) { var p = State.get().presupuesto; p.diaCobro = parseInt(e.target.value)||1; State.set('presupuesto', p); });
   }
 
   // ---------------- MODAL ----------------
   function abrirModalNuevo(tipo) {
     modalConfig = { tipo: tipo, coleccion: coleccionDeTipo(tipo), item: null };
-    contenedor.querySelector('#ecoModalTitulo').textContent = 'Añadir ' + (tipo==='rapido'?'movimiento real':tipo.replace('-',' '));
+    contenedor.querySelector('#ecoModalTitulo').textContent = tipo === 'movimiento' ? 'Registro Rápido' : 'Añadir ' + tipo.replace('-',' ');
     contenedor.querySelector('#ecoModalBody').innerHTML = formHTML(tipo, {});
     contenedor.querySelector('#ecoModal').hidden = false;
   }
@@ -354,8 +312,7 @@ window.Economia = (function() {
     var html = ''
       + '<div class="eco-campo"><label>Importe real cobrado (€)</label><input type="number" step="0.01" id="inputCobroReal" value="' + i.importe + '" style="font-size:20px;font-weight:700;"></div>'
       + '<div class="eco-campo"><label>Fecha de abono</label><input type="date" id="inputCobroFecha" value="' + U.hoy() + '"></div>'
-      + '<div class="eco-campo"><label>Notas (opcional)</label><input type="text" id="inputCobroNota" placeholder="ej: Horas extra, plus..."></div>'
-      + '<p style="font-size:12px;color:var(--text-2);margin-top:10px;">Al confirmar, se sumará a tu saldo real.</p>';
+      + '<div class="eco-campo"><label>Notas (opcional)</label><input type="text" id="inputCobroNota" placeholder="ej: Horas extra..."></div>';
     
     contenedor.querySelector('#ecoModalBody').innerHTML = html;
     contenedor.querySelector('#ecoModal').hidden = false;
@@ -370,8 +327,7 @@ window.Economia = (function() {
     var html = ''
       + '<div class="eco-campo"><label>Importe real cobrado (€)</label><input type="number" step="0.01" id="inputPagoReal" value="' + g.importe + '" style="font-size:20px;font-weight:700;"></div>'
       + '<div class="eco-campo"><label>Fecha de cargo</label><input type="date" id="inputPagoFecha" value="' + U.hoy() + '"></div>'
-      + '<div class="eco-campo"><label>Notas (opcional)</label><input type="text" id="inputPagoNota" placeholder="ej: Subida de precio, mes de frío..."></div>'
-      + '<p style="font-size:12px;color:var(--text-2);margin-top:10px;">Al validar, se descontará de tu saldo real y desaparecerá de pendientes.</p>';
+      + '<div class="eco-campo"><label>Notas (opcional)</label><input type="text" id="inputPagoNota" placeholder="ej: Subida de precio..."></div>';
     
     contenedor.querySelector('#ecoModalBody').innerHTML = html;
     contenedor.querySelector('#ecoModal').hidden = false;
@@ -392,48 +348,69 @@ window.Economia = (function() {
   function guardarModal() {
     if (!modalConfig) return;
     
-    if (modalConfig.tipo === 'cobrar') {
-      var impReal = parseFloat(contenedor.querySelector('#inputCobroReal').value) || 0;
-      var fechaCobro = contenedor.querySelector('#inputCobroFecha').value;
-      var notaCobro = contenedor.querySelector('#inputCobroNota').value.trim();
+    // Lógica de validación
+    if (modalConfig.tipo === 'cobrar' || modalConfig.tipo === 'pagar') {
+      var impReal = parseFloat(contenedor.querySelector('#input' + (modalConfig.tipo==='cobrar'?'Cobro':'Pago') + 'Real').value) || 0;
+      var fecha = contenedor.querySelector('#input' + (modalConfig.tipo==='cobrar'?'Cobro':'Pago') + 'Fecha').value;
+      var nota = contenedor.querySelector('#input' + (modalConfig.tipo==='cobrar'?'Cobro':'Pago') + 'Nota').value.trim();
+      var esIngreso = modalConfig.tipo === 'cobrar';
       
-      State.updateItem('ingresosFijos', modalConfig.item.id, { pagado: true });
+      var col = esIngreso ? 'ingresosFijos' : 'gastos';
+      State.updateItem(col, modalConfig.item.id, { pagado: true });
       
       State.addItem('gastos', {
-        nombre: modalConfig.item.nombre + ' (Cobrado)',
+        nombre: modalConfig.item.nombre + (esIngreso ? ' (Cobrado)' : ' (Pagado)'),
         importe: impReal,
         periodicidad: 'puntual',
-        fecha: fechaCobro,
-        categoria: 'otros',
-        necesario: false, // false significa que es ingreso
-        notas: notaCobro
+        fecha: fecha,
+        categoria: esIngreso ? 'otros' : modalConfig.item.categoria,
+        necesario: !esIngreso,
+        notas: nota
       });
       
       cerrarModal();
       return;
     }
 
-    if (modalConfig.tipo === 'pagar') {
-      var impReal = parseFloat(contenedor.querySelector('#inputPagoReal').value) || 0;
-      var fechaPago = contenedor.querySelector('#inputPagoFecha').value;
-      var notaPago = contenedor.querySelector('#inputPagoNota').value.trim();
+    // Lógica de registro rápido
+    if (modalConfig.tipo === 'movimiento') {
+      var tipoMov = contenedor.querySelector('#movTipo').value; // 'gasto_nuevo', 'ingreso_nuevo', 'validar_gasto', 'validar_ingreso'
+      var imp = parseFloat(contenedor.querySelector('#movImporte').value) || 0;
+      var fechaMov = contenedor.querySelector('#movFecha').value;
+      var notaMov = contenedor.querySelector('#movNota').value.trim();
       
-      State.updateItem('gastos', modalConfig.item.id, { pagado: true });
-      
-      State.addItem('gastos', {
-        nombre: modalConfig.item.nombre + ' (Real)',
-        importe: impReal,
-        periodicidad: 'puntual',
-        fecha: fechaPago,
-        categoria: modalConfig.item.categoria,
-        necesario: modalConfig.item.necesario,
-        notas: notaPago
-      });
-      
+      if (tipoMov.startsWith('validar')) {
+        var col = tipoMov === 'validar_ingreso' ? 'ingresosFijos' : 'gastos';
+        var idFijo = contenedor.querySelector('#movFijoId').value;
+        if (!idFijo) { alert('Selecciona un movimiento fijo'); return; }
+        State.updateItem(col, idFijo, { pagado: true });
+        State.addItem('gastos', {
+          nombre: contenedor.querySelector('#movFijoId option:checked').text + (tipoMov==='validar_ingreso'?' (Cobrado)':' (Pagado)'),
+          importe: imp,
+          periodicidad: 'puntual',
+          fecha: fechaMov,
+          categoria: 'otros',
+          necesario: tipoMov === 'validar_gasto',
+          notas: notaMov
+        });
+      } else {
+        var nom = contenedor.querySelector('#movNombre').value.trim();
+        if (!nom || imp <= 0) { alert('Nombre e importe obligatorios'); return; }
+        State.addItem('gastos', {
+          nombre: nom,
+          importe: imp,
+          periodicidad: 'puntual',
+          fecha: fechaMov,
+          categoria: contenedor.querySelector('#movCategoria').value,
+          necesario: tipoMov === 'gasto_nuevo',
+          notas: notaMov
+        });
+      }
       cerrarModal();
       return;
     }
 
+    // Guardar normal
     var datos = leerFormulario(modalConfig.tipo);
     if (!datos) return;
     if (modalConfig.item) { State.updateItem(modalConfig.coleccion, modalConfig.item.id, datos); } 
@@ -442,7 +419,6 @@ window.Economia = (function() {
   }
 
   function coleccionDeTipo(tipo) {
-    if (tipo === 'rapido') return 'gastos';
     if (tipo === 'ingreso-fijo') return 'ingresosFijos';
     if (tipo === 'gasto-fijo') return 'gastos';
     if (tipo === 'objetivo') return 'objetivos';
@@ -452,43 +428,42 @@ window.Economia = (function() {
   function formHTML(tipo, d) {
     d = d || {};
     var campos = [];
-    if (tipo === 'rapido') {
-      campos.push(campoTexto('nombre', '¿En qué?', d.nombre || '', 'ej: Compra Mercadillo, Cena...'));
-      campos.push(campoNumero('importe', 'Cantidad (€)', d.importe || '', '0.00'));
-      campos.push(campoSelect('flujo', 'Movimiento', [{v:'gasto',t:'🔴 Gasto'}, {v:'ingreso',t:'🟢 Ingreso'}], 'gasto'));
-      campos.push(campoSelect('categoria', 'Categoría', Object.keys(CATS).map(function(k) { return { v: k, t: CATS[k].icono + ' ' + CATS[k].nombre }; }), 'otros'));
-      campos.push(campoTexto('fecha', 'Fecha', d.fecha || U.hoy(), '', 'date'));
+    
+    if (tipo === 'movimiento') {
+      campos.push('<div class="eco-campo"><label>Tipo de movimiento</label><select id="movTipo" onchange="document.getElementById(\'divFijo\').style.display=this.value.startsWith(\'validar\')?\'block\':\'none\'; document.getElementById(\'divNombre\').style.display=this.value.startsWith(\'validar\')?\'none\':\'block\';"><option value="gasto_nuevo">🔴 Gasto no previsto</option><option value="ingreso_nuevo">🟢 Ingreso no previsto</option><option value="validar_gasto">Validar Gasto Fijo</option><option value="validar_ingreso">Validar Ingreso Fijo</option></select></div>');
+      
+      campos.push('<div class="eco-campo" id="divNombre"><label>Nombre / Concepto</label><input type="text" id="movNombre" placeholder="ej: Compra Mercadillo"></div>');
+      
+      var optsGastos = State.get().gastos.filter(function(g){return g.periodicidad !== 'puntual' && !g.pagado;}).map(function(g){return '<option value="'+g.id+'">'+g.nombre+' ('+U.eur(g.importe)+')</option>';}).join('');
+      var optsIngresos = (State.get().ingresosFijos||[]).filter(function(i){return !i.pagado;}).map(function(i){return '<option value="'+i.id+'">'+i.nombre+' ('+U.eur(i.importe)+')</option>';}).join('');
+      campos.push('<div class="eco-campo" id="divFijo" style="display:none;"><label>Selecciona el movimiento</label><select id="movFijoId"><optgroup label="Gastos fijos">'+optsGastos+'</optgroup><optgroup label="Ingresos fijos">'+optsIngresos+'</optgroup></select></div>');
+
+      campos.push('<div class="eco-campo"><label>Importe (€)</label><input type="number" step="0.01" id="movImporte" placeholder="0.00"></div>');
+      campos.push('<div class="eco-campo"><label>Fecha</label><input type="date" id="movFecha" value="'+U.hoy()+'"></div>');
+      campos.push('<div class="eco-campo"><label>Categoría</label><select id="movCategoria">'+Object.keys(CATS).map(function(k){return '<option value="'+k+'">'+CATS[k].icono+' '+k+'</option>';}).join('')+'</select></div>');
+      campos.push('<div class="eco-campo"><label>Notas (opcional)</label><input type="text" id="movNota" placeholder="..."></div>');
     }
+
     if (tipo === 'ingreso-fijo') {
-      campos.push(campoSelect('persona', 'Persona', PERSONAS_DEF.map(function(p) { return { v: p.id, t: p.nombre }; }), d.persona || 'miguel'));
       campos.push(campoTexto('nombre', 'Nombre', d.nombre || '', 'ej: Salario...'));
       campos.push(campoNumero('importe', 'Importe (€)', d.importe || '', '0.00'));
-      campos.push(campoSelect('periodicidad', 'Periodicidad', [{ v: 'mensual', t: 'Mensual' }, { v: 'trimestral', t: 'Trimestral' }, { v: 'semestral', t: 'Semestral' }, { v: 'anual', t: 'Anual' }], d.periodicidad || 'mensual'));
       campos.push(campoNumero('diaCobro', 'Día de cobro (1-31)', d.diaCobro || '', 'ej: 20'));
-      campos.push(campoSelect('tipo', 'Tipo', Object.keys(TIPOS_INGRESO).map(function(k) { return { v: k, t: TIPOS_INGRESO[k] }; }), d.tipo || 'nomina'));
     }
     if (tipo === 'gasto-fijo') {
-      campos.push(campoTexto('nombre', 'Nombre', d.nombre || '', 'ej: Alquiler, Luz...'));
+      campos.push(campoTexto('nombre', 'Nombre', d.nombre || '', 'ej: Alquiler...'));
       campos.push(campoNumero('importe', 'Importe (€)', d.importe || '', '0.00'));
-      campos.push(campoSelect('periodicidad', 'Periodicidad', [{ v: 'mensual', t: 'Mensual' }, { v: 'trimestral', t: 'Trimestral' }, { v: 'semestral', t: 'Semestral' }, { v: 'anual', t: 'Anual' }], d.periodicidad || 'mensual'));
       campos.push(campoNumero('diaCobro', 'Día de cobro (1-31)', d.diaCobro || '', 'ej: 25'));
       campos.push(campoSelect('categoria', 'Categoría', Object.keys(CATS).map(function(k) { return { v: k, t: CATS[k].icono + ' ' + CATS[k].nombre }; }), d.categoria || 'otros'));
-      campos.push(campoCheck('necesario', 'Es un gasto necesario', d.necesario !== false));
     }
     if (tipo === 'gasto-puntual') {
       campos.push(campoTexto('nombre', 'Nombre', d.nombre || '', 'ej: Compra...'));
       campos.push(campoNumero('importe', 'Importe (€)', d.importe || '', '0.00'));
       campos.push(campoTexto('fecha', 'Fecha', d.fecha || U.hoy(), '', 'date'));
-      campos.push(campoSelect('categoria', 'Categoría', Object.keys(CATS).map(function(k) { return { v: k, t: CATS[k].icono + ' ' + CATS[k].nombre }; }), d.categoria || 'otros'));
-      campos.push(campoCheck('necesario', 'Es un gasto necesario', d.necesario !== false));
     }
     if (tipo === 'objetivo') {
-      campos.push(campoTexto('nombre', 'Nombre', d.nombre || '', 'ej: Fondo de emergencia'));
-      campos.push(campoTexto('icono', 'Icono (emoji)', d.icono || '🎯', '🚨'));
+      campos.push(campoTexto('nombre', 'Nombre', d.nombre || '', 'ej: Viaje'));
       campos.push(campoNumero('importeObjetivo', 'Objetivo (€)', d.importeObjetivo || '', '0.00'));
-      campos.push(campoNumero('importeActual', 'Ahorrado actualmente (€)', d.importeActual || 0, '0.00'));
-      campos.push(campoTexto('fechaLimite', 'Fecha límite (opcional)', d.fechaLimite || '', '', 'date'));
-      campos.push(campoColor('color', 'Color', d.color || '#3b82f6'));
+      campos.push(campoNumero('importeActual', 'Ahorrado (€)', d.importeActual || 0, '0.00'));
     }
     return campos.join('');
   }
@@ -496,24 +471,16 @@ window.Economia = (function() {
   function campoTexto(name, label, valor, placeholder, type) { return '<div class="eco-campo"><label>' + label + '</label><input type="' + (type || 'text') + '" name="' + name + '" value="' + escapar(valor) + '" placeholder="' + escapar(placeholder || '') + '"></div>'; }
   function campoNumero(name, label, valor, placeholder) { return '<div class="eco-campo"><label>' + label + '</label><input type="number" step="0.01" min="0" name="' + name + '" value="' + escapar(valor) + '" placeholder="' + escapar(placeholder || '') + '"></div>'; }
   function campoSelect(name, label, opciones, valor) { var opts = opciones.map(function(o) { var sel = String(o.v) === String(valor) ? ' selected' : ''; return '<option value="' + escapar(o.v) + '"' + sel + '>' + escapar(o.t) + '</option>'; }).join(''); return '<div class="eco-campo"><label>' + label + '</label><select name="' + name + '">' + opts + '</select></div>'; }
-  function campoCheck(name, label, checked) { return '<label class="eco-check"><input type="checkbox" name="' + name + '"' + (checked ? ' checked' : '') + '><span class="eco-check-label">' + label + '</span></label>'; }
-  function campoColor(name, label, valor) { return '<div class="eco-campo"><label>' + label + '</label><input type="color" name="' + name + '" value="' + escapar(valor || '#3b82f6') + '"></div>'; }
 
   function leerFormulario(tipo) {
     var body = contenedor.querySelector('.eco-modal-body');
     function val(n) { var el = body.querySelector('[name="' + n + '"]'); return el ? el.value : ''; }
-    function chk(n) { var el = body.querySelector('[name="' + n + '"]'); return el ? el.checked : false; }
     function num(n) { var v = parseFloat(val(n)); return isNaN(v) ? 0 : v; }
     var obj = {};
-    if (tipo === 'rapido') {
-      obj = { nombre: val('nombre').trim(), importe: num('importe'), periodicidad: 'puntual', fecha: val('fecha'), categoria: val('categoria'), necesario: val('flujo') === 'gasto' };
-      if (!obj.nombre || obj.importe <= 0) { alert('Nombre e importe son obligatorios'); return null; }
-      return obj;
-    }
-    if (tipo === 'ingreso-fijo') { obj = { persona: val('persona'), nombre: val('nombre').trim(), importe: num('importe'), periodicidad: val('periodicidad'), diaCobro: num('diaCobro'), tipo: val('tipo'), activo: true, pagado: false }; if (!obj.nombre || obj.importe <= 0) { alert('Nombre e importe son obligatorios'); return null; } } 
-    if (tipo === 'gasto-fijo') { obj = { nombre: val('nombre').trim(), importe: num('importe'), periodicidad: val('periodicidad'), diaCobro: num('diaCobro'), categoria: val('categoria'), necesario: chk('necesario'), pagado: false }; if (!obj.nombre || obj.importe <= 0) { alert('Nombre e importe son obligatorios'); return null; } } 
-    if (tipo === 'gasto-puntual') { obj = { nombre: val('nombre').trim(), importe: num('importe'), periodicidad: 'puntual', fecha: val('fecha'), categoria: val('categoria'), necesario: chk('necesario') }; if (!obj.nombre || obj.importe <= 0) { alert('Nombre e importe son obligatorios'); return null; } return obj; }
-    if (tipo === 'objetivo') { obj = { nombre: val('nombre').trim(), icono: val('icono') || '🎯', importeObjetivo: num('importeObjetivo'), importeActual: num('importeActual'), fechaLimite: val('fechaLimite') || null, color: val('color') || '#3b82f6', prioridad: 'media' }; if (!obj.nombre || obj.importeObjetivo <= 0) { alert('Nombre y objetivo son obligatorios'); return null; } }
+    if (tipo === 'ingreso-fijo') { obj = { nombre: val('nombre').trim(), importe: num('importe'), diaCobro: num('diaCobro'), periodicidad: 'mensual', pagado: false }; if (!obj.nombre || obj.importe <= 0) { alert('Nombre e importe obligatorios'); return null; } } 
+    if (tipo === 'gasto-fijo') { obj = { nombre: val('nombre').trim(), importe: num('importe'), diaCobro: num('diaCobro'), periodicidad: 'mensual', categoria: val('categoria'), necesario: true, pagado: false }; if (!obj.nombre || obj.importe <= 0) { alert('Nombre e importe obligatorios'); return null; } } 
+    if (tipo === 'gasto-puntual') { obj = { nombre: val('nombre').trim(), importe: num('importe'), periodicidad: 'puntual', fecha: val('fecha'), necesario: true }; if (!obj.nombre || obj.importe <= 0) { alert('Nombre e importe obligatorios'); return null; } return obj; }
+    if (tipo === 'objetivo') { obj = { nombre: val('nombre').trim(), importeObjetivo: num('importeObjetivo'), importeActual: num('importeActual') }; }
     return obj;
   }
 
@@ -523,16 +490,15 @@ window.Economia = (function() {
     var cant = prompt('¿Cuánto quieres aportar a "' + obj.nombre + '"?', '100');
     if (cant === null) return;
     var v = parseFloat(cant.replace(',', '.'));
-    if (isNaN(v) || v <= 0) { alert('Cantidad inválida'); return; }
+    if (isNaN(v) || v <= 0) return;
     State.updateItem('objetivos', id, { importeActual: (obj.importeActual || 0) + v });
   }
 
-  function exportar() { var json = State.storage.exportar(); U.descargarJSON('economia-' + U.hoy() + '.json', json); }
-  function importar() { var inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.json,application/json'; inp.onchange = function() { var f = inp.files[0]; if (!f) return; var r = new FileReader(); r.onload = function() { try { State.storage.importar(r.result); State.set('personas', State.get().personas); alert('✅ Importado correctamente'); } catch (e) { alert('❌ Error: ' + e.message); } }; r.readAsText(f); }; inp.click(); }
-  function resetear() { if (!confirm('⚠️ Esto borrará TODOS los datos de economía. ¿Continuar?')) return; State.storage.borrar(); location.reload(); }
+  function exportar() { var json = State.storage.exportar(); U.descargarJSON('economia.json', json); }
+  function importar() { var inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.json'; inp.onchange = function() { var f = inp.files[0]; if (!f) return; var r = new FileReader(); r.onload = function() { try { State.storage.importar(r.result); State.set('personas', State.get().personas); alert('✅ Importado'); } catch (e) { alert('❌ Error'); } }; r.readAsText(f); }; inp.click(); }
+  function resetear() { if (!confirm('⚠️ Borrar TODO?')) return; State.storage.borrar(); location.reload(); }
   function escapar(s) { if (s === null || s === undefined) return ''; return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 
   return { montar: montar, CATS: CATS };
 })();
-
 console.log('✅ Economia cargado');
