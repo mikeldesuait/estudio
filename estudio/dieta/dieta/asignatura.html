@@ -3638,50 +3638,14 @@
     }
 
     function imprimirMenu() {
+        // Detectar PWA en iPad → avisar
+        if (wsEsPWA()) {
+            wsMostrarAvisoSafari('imprimir');
+            return;
+        }
+
         const html = wsConstruirHtmlImpresion();
-
-        // Crear iframe oculto (más limpio que window.open)
-        let iframe = document.getElementById('wsPrintFrame');
-        if (iframe) iframe.remove();
-
-        iframe = document.createElement('iframe');
-        iframe.id = 'wsPrintFrame';
-        iframe.style.position = 'fixed';
-        iframe.style.right = '0';
-        iframe.style.bottom = '0';
-        iframe.style.width = '0';
-        iframe.style.height = '0';
-        iframe.style.border = '0';
-        document.body.appendChild(iframe);
-
-        const doc = iframe.contentDocument || iframe.contentWindow.document;
-        doc.open();
-        doc.write(html);
-        doc.close();
-
-        // Esperar a que cargue y lanzar print
-        iframe.onload = function() {
-            setTimeout(function() {
-                try {
-                    iframe.contentWindow.focus();
-                    iframe.contentWindow.print();
-                } catch (e) {
-                    console.error('Error al imprimir:', e);
-                    alert('❌ Error al abrir el diálogo de impresión: ' + e.message);
-                }
-            }, 250);
-        };
-
-        // Fallback por si onload ya pasó
-        setTimeout(function() {
-            if (!iframe.dataset.printed) {
-                iframe.dataset.printed = '1';
-                try {
-                    iframe.contentWindow.focus();
-                    iframe.contentWindow.print();
-                } catch (e) {}
-            }
-        }, 600);
+        wsAbrirVentanaImpresion(html);
     }
 
     // =====================================================
@@ -4232,45 +4196,49 @@
     }
 
     function wsImprimirListaFinal() {
-        // Detectar PWA en iPad y avisar
+        // Detectar PWA en iPad → avisar que abra en Safari
         if (wsEsPWA()) {
             wsMostrarAvisoSafari('imprimir');
             return;
         }
 
-        // Construir HTML con los items editados (todos, marcados o no)
         const html = wsConstruirHtmlListaFinal();
+        wsAbrirVentanaImpresion(html);
+    }
 
-        // Reutilizar iframe de impresión
-        let iframe = document.getElementById('wsPrintFrameLista');
-        if (iframe) iframe.remove();
+    // Abre ventana nueva con el HTML de impresión (más fiable en iPad)
+    function wsAbrirVentanaImpresion(html) {
+        const ventana = window.open('', '_blank', 'width=900,height=700');
 
-        iframe = document.createElement('iframe');
-        iframe.id = 'wsPrintFrameLista';
-        iframe.style.position = 'fixed';
-        iframe.style.right = '0';
-        iframe.style.bottom = '0';
-        iframe.style.width = '0';
-        iframe.style.height = '0';
-        iframe.style.border = '0';
-        document.body.appendChild(iframe);
+        if (!ventana) {
+            alert('❌ No se pudo abrir la ventana de impresión.\n\nRevisa si tienes bloqueador de ventanas emergentes activado.');
+            return;
+        }
 
-        const doc = iframe.contentDocument || iframe.contentWindow.document;
-        doc.open();
-        doc.write(html);
-        doc.close();
+        ventana.document.open();
+        ventana.document.write(html);
+        ventana.document.close();
 
-        iframe.onload = function() {
+        // Esperar a que cargue y lanzar print
+        ventana.onload = function() {
             setTimeout(function() {
                 try {
-                    iframe.contentWindow.focus();
-                    iframe.contentWindow.print();
+                    ventana.focus();
+                    ventana.print();
                 } catch (e) {
                     console.error('Error al imprimir:', e);
                     alert('❌ Error: ' + e.message);
                 }
-            }, 250);
+            }, 400);
         };
+
+        // Fallback por si onload no se dispara
+        setTimeout(function() {
+            try {
+                ventana.focus();
+                ventana.print();
+            } catch (e) {}
+        }, 800);
     }
 
     // =====================================================
