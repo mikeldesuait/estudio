@@ -1319,6 +1319,71 @@
             .ws-lista-del { width: 32px; height: 32px; font-size: 0.9em; }
         }
 
+
+        /* Botones dentro de la cita */
+        .weekly-cita-btn {
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid #f59e0b;
+            border-radius: 8px;
+            width: 30px;
+            height: 30px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: 0.15s;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .weekly-cita-btn:hover {
+            background: #fff;
+            transform: scale(1.1);
+        }
+
+        /* Modal selector de cita */
+        .ws-cita-modal { max-width: 700px; max-height: 88vh; }
+        .ws-cita-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            background: #fff;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.15s;
+            margin-bottom: 6px;
+        }
+        .ws-cita-item:hover {
+            border-color: #f59e0b;
+            background: #fffbf0;
+            transform: translateX(2px);
+        }
+        .ws-cita-item.selected {
+            background: #fef3c7;
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+        }
+        .ws-cita-item-emoji {
+            font-size: 1.5em;
+            flex-shrink: 0;
+        }
+        .ws-cita-item-texto {
+            flex: 1;
+            font-size: 0.92em;
+            color: #334155;
+            line-height: 1.35;
+        }
+        .ws-cita-item-check {
+            color: #16a085;
+            font-weight: 700;
+            font-size: 1.2em;
+        }
+
+        @media print {
+            .weekly-cita-btn { display: none !important; }
+        }
+
     </style>
 </head>
 <body>
@@ -3029,12 +3094,124 @@
 
     function wsRenderWeeklyCita() {
         const cont = document.getElementById('weeklyCita');
+        if (!cont || !wsMenu) return;
         const cita = wsMenu.cita || citaAleatoria();
         wsMenu.cita = cita;
         cont.innerHTML = '<div class="weekly-cita-inner">'
             + '<span class="weekly-cita-emoji">' + cita.emoji + '</span>'
             + '<span class="weekly-cita-texto">' + escapeHtml(cita.texto) + '</span>'
+            + '<button class="weekly-cita-btn" onclick="wsCambiarCitaAleatoria()" title="Cambiar cita (aleatoria)">🎲</button>'
+            + '<button class="weekly-cita-btn" onclick="wsAbrirSelectorCita()" title="Elegir cita de la lista">✏️</button>'
             + '</div>';
+    }
+
+    // Cambiar cita por una aleatoria (sin repetir la actual)
+    function wsCambiarCitaAleatoria() {
+        if (typeof citaAleatoria !== 'function') return;
+        let nueva = citaAleatoria();
+        let intentos = 0;
+        while (wsMenu.cita && nueva.texto === wsMenu.cita.texto && intentos < 10) {
+            nueva = citaAleatoria();
+            intentos++;
+        }
+        wsMenu.cita = nueva;
+        wsRenderWeeklyCita();
+    }
+
+    // Modal selector de las 50 citas
+    function wsAbrirSelectorCita() {
+        if (typeof CITAS === 'undefined' || !CITAS || CITAS.length === 0) {
+            alert('No hay citas disponibles');
+            return;
+        }
+
+        if (wsModalActual) { wsModalActual.remove(); wsModalActual = null; }
+
+        const overlay = document.createElement('div');
+        overlay.className = 'ws-modal-overlay';
+
+        const modal = document.createElement('div');
+        modal.className = 'ws-modal ws-cita-modal';
+
+        // Header
+        const header = document.createElement('div');
+        header.className = 'ws-modal-header';
+        header.innerHTML = '<h2 class="ws-modal-title">💬 Elige una cita motivacional</h2>';
+        const closeBtn = document.createElement('button');
+        closeBtn.className = 'ws-modal-close';
+        closeBtn.innerHTML = '✕';
+        closeBtn.onclick = () => wsCerrarModal();
+        header.appendChild(closeBtn);
+        modal.appendChild(header);
+
+        // Toolbar
+        const toolbar = document.createElement('div');
+        toolbar.className = 'ws-modal-toolbar';
+        const searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.className = 'ws-modal-search';
+        searchInput.placeholder = '🔍 Buscar cita...';
+        toolbar.appendChild(searchInput);
+
+        const btnRandom = document.createElement('button');
+        btnRandom.className = 'ws-modal-btn primary';
+        btnRandom.textContent = '🎲 Aleatoria';
+        btnRandom.onclick = () => {
+            wsCambiarCitaAleatoria();
+            wsCerrarModal();
+        };
+        toolbar.appendChild(btnRandom);
+        modal.appendChild(toolbar);
+
+        // Body
+        const body = document.createElement('div');
+        body.className = 'ws-modal-body';
+
+        const renderCitas = (filtro) => {
+            const q = (filtro || '').toLowerCase().trim();
+            let html = '';
+            CITAS.forEach((cita, idx) => {
+                if (q && !cita.texto.toLowerCase().includes(q)) return;
+                const esActual = wsMenu.cita && wsMenu.cita.texto === cita.texto;
+                html += '<div class="ws-cita-item' + (esActual ? ' selected' : '') + '" '
+                    +   'onclick="wsElegirCitaPorIndice(' + idx + ')">'
+                    +   '<span class="ws-cita-item-emoji">' + cita.emoji + '</span>'
+                    +   '<span class="ws-cita-item-texto">' + escapeHtml(cita.texto) + '</span>'
+                    +   (esActual ? '<span class="ws-cita-item-check">✓</span>' : '')
+                    + '</div>';
+            });
+            if (html === '') {
+                html = '<div class="ws-lista-empty">No hay citas que coincidan.</div>';
+            }
+            return html;
+        };
+
+        body.innerHTML = renderCitas('');
+        searchInput.addEventListener('input', () => {
+            body.innerHTML = renderCitas(searchInput.value);
+        });
+        modal.appendChild(body);
+
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+        wsModalActual = overlay;
+
+        setTimeout(() => searchInput.focus(), 80);
+
+        const onKey = (e) => { if (e.key === 'Escape') wsCerrarModal(); };
+        document.addEventListener('keydown', onKey);
+        overlay._onKey = onKey;
+
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) wsCerrarModal();
+        });
+    }
+
+    function wsElegirCitaPorIndice(idx) {
+        if (typeof CITAS === 'undefined' || !CITAS[idx]) return;
+        wsMenu.cita = { ...CITAS[idx] };
+        wsCerrarModal();
+        wsRenderWeeklyCita();
     }
 
     // =====================================================
