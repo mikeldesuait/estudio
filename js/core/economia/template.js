@@ -127,6 +127,7 @@ window.EconomiaTemplate = (function() {
       +       '</footer>'
       +     '</div>'
       +   '</div>'
+      +   '<div style="text-align:right; font-size:11px; color:var(--text-2); opacity:0.5; margin-top:20px; padding-right:10px;">v.1.0</div>'
       + '</div>';
   }
   return { html: html };

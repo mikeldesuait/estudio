@@ -390,11 +390,12 @@ window.Economia = (function() {
       
       if (tipoMov.startsWith('validar')) {
         var col = tipoMov === 'validar_ingreso' ? 'ingresosFijos' : 'gastos';
-        var idFijo = contenedor.querySelector('#movFijoId').value;
+        var selectId = tipoMov === 'validar_ingreso' ? '#movFijoIngresoId' : '#movFijoGastoId';
+        var idFijo = contenedor.querySelector(selectId).value;
         if (!idFijo) { alert('Selecciona un movimiento fijo'); return; }
         State.updateItem(col, idFijo, { pagado: true });
         State.addItem('gastos', {
-          nombre: contenedor.querySelector('#movFijoId option:checked').text + (tipoMov==='validar_ingreso'?' (Cobrado)':' (Pagado)'),
+          nombre: contenedor.querySelector(selectId + ' option:checked').text + (tipoMov==='validar_ingreso'?' (Cobrado)':' (Pagado)'),
           importe: imp,
           periodicidad: 'puntual',
           fecha: fechaMov,
@@ -439,13 +440,15 @@ window.Economia = (function() {
     var campos = [];
     
     if (tipo === 'movimiento') {
-      campos.push('<div class="eco-campo"><label>Tipo de movimiento</label><select id="movTipo" onchange="document.getElementById(\'divFijo\').style.display=this.value.startsWith(\'validar\')?\'block\':\'none\'; document.getElementById(\'divNombre\').style.display=this.value.startsWith(\'validar\')?\'none\':\'block\';"><option value="gasto_nuevo">🔴 Gasto no previsto</option><option value="ingreso_nuevo">🟢 Ingreso no previsto</option><option value="validar_gasto">Validar Gasto Fijo</option><option value="validar_ingreso">Validar Ingreso Fijo</option></select></div>');
+      campos.push('<div class="eco-campo"><label>Tipo de movimiento</label><select id="movTipo" onchange="var v=this.value; document.getElementById(\'divFijoGasto\').style.display=v===\'validar_gasto\'?\'block\':\'none\'; document.getElementById(\'divFijoIngreso\').style.display=v===\'validar_ingreso\'?\'block\':\'none\'; document.getElementById(\'divNombre\').style.display=v.startsWith(\'validar\')?\'none\':\'block\';"><option value="gasto_nuevo">🔴 Gasto no previsto</option><option value="ingreso_nuevo">🟢 Ingreso no previsto</option><option value="validar_gasto">Validar Gasto Fijo</option><option value="validar_ingreso">Validar Ingreso Fijo</option></select></div>');
       
       campos.push('<div class="eco-campo" id="divNombre"><label>Nombre / Concepto</label><input type="text" id="movNombre" placeholder="ej: Compra Mercadillo"></div>');
       
       var optsGastos = State.get().gastos.filter(function(g){return g.periodicidad !== 'puntual' && !g.pagado;}).map(function(g){return '<option value="'+g.id+'">'+g.nombre+' ('+U.eur(g.importe)+')</option>';}).join('');
       var optsIngresos = (State.get().ingresosFijos||[]).filter(function(i){return !i.pagado;}).map(function(i){return '<option value="'+i.id+'">'+i.nombre+' ('+U.eur(i.importe)+')</option>';}).join('');
-      campos.push('<div class="eco-campo" id="divFijo" style="display:none;"><label>Selecciona el movimiento</label><select id="movFijoId"><optgroup label="Gastos fijos">'+optsGastos+'</optgroup><optgroup label="Ingresos fijos">'+optsIngresos+'</optgroup></select></div>');
+      
+      campos.push('<div class="eco-campo" id="divFijoGasto" style="display:none;"><label>Selecciona el Gasto Fijo</label><select id="movFijoGastoId">'+optsGastos+'</select></div>');
+      campos.push('<div class="eco-campo" id="divFijoIngreso" style="display:none;"><label>Selecciona el Ingreso Fijo</label><select id="movFijoIngresoId">'+optsIngresos+'</select></div>');
 
       campos.push('<div class="eco-campo"><label>Importe (€)</label><input type="number" step="0.01" id="movImporte" placeholder="0.00"></div>');
       campos.push('<div class="eco-campo"><label>Fecha</label><input type="date" id="movFecha" value="'+U.hoy()+'"></div>');
