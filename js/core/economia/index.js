@@ -200,6 +200,19 @@ window.Economia = (function() {
     // Actualizar Tarjetas
     contenedor.querySelector('#ecoRealGastosPend').textContent = U.eur(totalGastosPend);
     contenedor.querySelector('#ecoRealIngresosPend').textContent = U.eur(totalIngresosPend);
+
+    // Cálculo del total del ciclo (Pagados + Pendientes)
+    var fijosPagados = State.get().gastos.filter(g => g.periodicidad !== 'puntual' && g.pagado);
+    var ingresosPagados = (State.get().ingresosFijos || []).filter(i => i.pagado);
+    
+    var totalGastosPagados = fijosPagados.reduce((acc, g) => acc + U.aMensual(g.importe, g.periodicidad), 0);
+    var totalIngresosPagados = ingresosPagados.reduce((acc, i) => acc + U.aMensual(i.importe, i.periodicidad), 0);
+
+    var totalGastosCiclo = totalGastosPend + totalGastosPagados;
+    var totalIngresosCiclo = totalIngresosPend + totalIngresosPagados;
+
+    contenedor.querySelector('#ecoRealGastosTotalCiclo').textContent = '(Ciclo total: ' + U.eur(totalGastosCiclo) + ')';
+    contenedor.querySelector('#ecoRealIngresosTotalCiclo').textContent = '(Ciclo total: ' + U.eur(totalIngresosCiclo) + ')';
     contenedor.querySelector('#ecoRealPrevision').textContent = U.eur(previsionFinal);
     contenedor.querySelector('#ecoRealPrevision').style.color = previsionFinal >= 0 ? '#3b82f6' : '#ef4444';
 
