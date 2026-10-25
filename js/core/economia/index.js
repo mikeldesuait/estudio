@@ -322,20 +322,9 @@ window.Economia = (function() {
     var resumen = {};
     var totalGeneral = 0;
     var anioActual = mesActualYM.split('-')[0]; 
-
-    State.get().gastos.filter(function(g) { return g.periodicidad !== 'puntual' && g.necesario && !g.pagado; }).forEach(function(g) {
-      var cat = g.categoria || 'otros';
-      var imp = U.aMensual(g.importe, g.periodicidad);
-      if (vista === 'anio') {
-        if (g.periodicidad === 'anual') imp = parseFloat(g.importe) || 0;
-        else imp = imp * 12;
-      }
-      if (!resumen[cat]) resumen[cat] = 0;
-      resumen[cat] += imp;
-      totalGeneral += imp;
-    });
-
     var diaCobro = State.get().presupuesto.diaCobro || 1;
+
+    // SOLO GASTOS REALES (puntuales y validados)
     State.get().gastos.filter(function(g) {
       if (g.periodicidad !== 'puntual' || !g.necesario || !g.fecha) return false;
       if (vista === 'anio') {
@@ -380,20 +369,7 @@ window.Economia = (function() {
       var resumenIng = {};
       var totalIngGeneral = 0;
 
-      // Ingresos fijos (solo los NO cobrados)
-      (State.get().ingresosFijos || []).filter(function(i) { return !i.pagado; }).forEach(function(i) {
-        var cat = i.categoria || 'nomina';
-        var imp = U.aMensual(i.importe, i.periodicidad);
-        if (vista === 'anio') {
-          if (i.periodicidad === 'anual') imp = parseFloat(i.importe) || 0;
-          else imp = imp * 12;
-        }
-        if (!resumenIng[cat]) resumenIng[cat] = 0;
-        resumenIng[cat] += imp;
-        totalIngGeneral += imp;
-      });
-
-      // Ingresos puntuales (validados)
+      // SOLO INGRESOS REALES (puntuales y validados)
       State.get().gastos.filter(function(g) {
         if (g.periodicidad !== 'puntual' || g.necesario || !g.fecha) return false;
         if (vista === 'anio') {
@@ -515,7 +491,7 @@ window.Economia = (function() {
     var campos = [];
     
     if (tipo === 'movimiento') {
-      campos.push('<div class="eco-campo"><label>Tipo de movimiento</label><select id="movTipo" onchange="var v=this.value; document.getElementById(\'divFijoGasto\').style.display=v===\'validar_gasto\'?\'block\':\'none\'; document.getElementById(\'divFijoIngreso\').style.display=v===\'validar_ingreso\'?\'block\':\'none\'; document.getElementById(\'divNombre\').style.display=v.startsWith(\'validar\')?\'none\':\'block\';"><option value="gasto_nuevo">🔴 Gasto no previsto</option><option value="ingreso_nuevo">🟢 Ingreso no previsto</option><option value="validar_gasto">Validar Gasto Fijo</option><option value="validar_ingreso">Validar Ingreso Fijo</option></select></div>');
+      campos.push('<div class="eco-campo"><label>Tipo de movimiento</label><select id="movTipo" onchange="var v=this.value; document.getElementById(\'divFijoGasto\').style.display=v===\'validar_gasto\'?\'block\':\'none\'; document.getElementById(\'divFijoIngreso\').style.display=v===\'validar_ingreso\'?\'block\':\'none\'; document.getElementById(\'divNombre\').style.display=v.startsWith(\'validar\')?\'none\':\'block\';"><option value="gasto_nuevo">Gasto no previsto</option><option value="ingreso_nuevo">Ingreso no previsto</option><option value="validar_gasto">Validar Gasto Fijo (Previsión)</option><option value="validar_ingreso">Validar Ingreso Fijo (Previsión)</option></select></div>');
       campos.push('<div class="eco-campo" id="divNombre"><label>Nombre / Concepto</label><input type="text" id="movNombre" placeholder="ej: Compra Mercadillo"></div>');
       
       var optsGastos = State.get().gastos.filter(function(g){return g.periodicidad !== 'puntual' && !g.pagado;}).map(function(g){return '<option value="'+g.id+'">'+g.nombre+' ('+U.eur(g.importe)+')</option>';}).join('');
