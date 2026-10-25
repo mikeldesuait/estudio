@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plan Dietético y Menú Escolar</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --primary: #2c3e50;
@@ -3637,15 +3638,59 @@
         `;
     }
 
-    function imprimirMenu() {
-        // Detectar PWA en iPad → avisar
-        if (wsEsPWA()) {
-            wsMostrarAvisoSafari('imprimir');
-            return;
-        }
 
+    // =====================================================
+    // IMPRESIÓN NATIVA (SIN POPUPS NI IFRAMES)
+    // =====================================================
+    function wsImprimirNativo(htmlContent, esLista) {
+        // 1. Crear un div oculto donde inyectaremos el HTML
+        const printDiv = document.createElement('div');
+        printDiv.id = 'ws-print-container';
+        
+        // 2. Extraer solo el <style> y el <body> del HTML generado
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(htmlContent, 'text/html');
+        const styles = doc.head.innerHTML;
+        const bodyContent = doc.body.innerHTML;
+
+        // 3. Inyectar estilos y contenido
+        printDiv.innerHTML = styles + '<div class="ws-print-content ' + (esLista ? 'lista-print' : 'menu-print') + '">' + bodyContent + '</div>';
+        
+        // 4. Añadir al body (oculto en pantalla, visible al imprimir)
+        document.body.appendChild(printDiv);
+
+        // 5. Forzar orientación adecuada
+        const styleOrientacion = document.createElement('style');
+        styleOrientacion.id = 'ws-print-orientation';
+        styleOrientacion.innerHTML = `
+            @media print {
+                @page { size: ${esLista ? 'A4 portrait' : 'A4 landscape'}; margin: 8mm; }
+                body > *:not(#ws-print-container) { display: none !important; }
+                #ws-print-container { display: block !important; position: static; width: 100%; }
+                #ws-print-container .ws-print-content { display: block !important; }
+            }
+        `;
+        document.head.appendChild(styleOrientacion);
+
+        // 6. Lanzar la impresión nativa
+        setTimeout(() => {
+            window.print();
+            
+            // 7. Limpiar después de imprimir (con un pequeño delay para que el diálogo de Safari procese)
+            setTimeout(() => {
+                if (document.getElementById('ws-print-container')) {
+                    document.body.removeChild(printDiv);
+                }
+                if (document.getElementById('ws-print-orientation')) {
+                    document.head.removeChild(styleOrientacion);
+                }
+            }, 1000);
+        }, 100);
+    }
+
+    function imprimirMenu() {
         const html = wsConstruirHtmlImpresion();
-        wsAbrirVentanaImpresion(html);
+        wsImprimirNativo(html, false);
     }
 
     // =====================================================
@@ -4196,14 +4241,8 @@
     }
 
     function wsImprimirListaFinal() {
-        // Detectar PWA en iPad → avisar que abra en Safari
-        if (wsEsPWA()) {
-            wsMostrarAvisoSafari('imprimir');
-            return;
-        }
-
         const html = wsConstruirHtmlListaFinal();
-        wsAbrirVentanaImpresion(html);
+        wsImprimirNativo(html, true);
     }
 
     // Abre ventana nueva con el HTML de impresión (más fiable en iPad)
@@ -4334,19 +4373,33 @@
     }
 
     function wsDescargarListaPDF() {
-        // Detectar PWA en iPad y avisar
-        if (wsEsPWA()) {
-            wsMostrarAvisoSafari('descargar');
-            return;
-        }
+        const html = wsConstruirHtmlListaFinal();
+        wsImprimirNativo(html, true);
+    }
 
-        // Aviso la primera vez
-        const key = 'ws_pdf_hint_shown';
-        if (!localStorage.getItem(key)) {
-            alert('📄 Se abrirá el diálogo de impresión.\n\nElige "Guardar como PDF" en el destino para descargar la lista como archivo PDF.');
-            localStorage.setItem(key, '1');
-        }
-        wsImprimirListaFinal();
+    // =====================================================
+    // DESCARGA DIRECTA DE PDF (Blob)
+    // =====================================================
+    function wsForzarDescargaPDF(htmlContent, nombreArchivo) {
+        // Crear el blob con tipo 'application/pdf' o 'text/html' (iOS abrirá el visor o guardará como html)
+        // Usamos 'text/html' para que Safari lo renderice, pero con extensión .pdf no funciona bien,
+        // así que usamos Blob de tipo 'application/octet-stream' para forzar la descarga del archivo como PDF.
+        const blob = new Blob([htmlContent], { type: 'application/octet-stream' });
+        const url = URL.createObjectURL(blob);
+
+        // Enlace invisible para forzar descarga
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = nombreArchivo;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+
+        // Limpieza
+        setTimeout(() => {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }, 1000);
     }
 
     function wsConstruirHtmlListaFinal() {
