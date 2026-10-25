@@ -3642,6 +3642,46 @@
     // =====================================================
     // IMPRESIÓN NATIVA (SIN POPUPS NI IFRAMES)
     // =====================================================
+
+    // =====================================================
+    // COMPARTIR NATIVO (iOS / Android)
+    // =====================================================
+    function wsCompartirNativo(htmlContent, nombreArchivo, titulo) {
+        // Intentar crear un archivo real
+        try {
+            const blob = new Blob([htmlContent], { type: 'text/html' });
+            const file = new File([blob], nombreArchivo, { type: 'text/html' });
+
+            // Comprobar si el dispositivo soporta compartir archivos
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                navigator.share({
+                    files: [file],
+                    title: titulo,
+                    text: 'Aquí tienes tu ' + titulo
+                }).then(() => {
+                    console.log('✅ Compartido con éxito');
+                }).catch((error) => {
+                    console.log('⚠️ Compartir cancelado o fallido:', error);
+                });
+                return;
+            }
+        } catch (e) {
+            console.warn('Fallo al preparar el archivo para compartir:', e);
+        }
+
+        // Si no se puede compartir archivo, intentar compartir solo texto/URL
+        if (navigator.share) {
+            navigator.share({
+                title: titulo,
+                text: 'Aquí tienes tu ' + titulo + ' (puedes imprimirlo o guardarlo)'
+            }).catch(() => {});
+            return;
+        }
+
+        // Fallback final: aviso al usuario
+        alert('Tu navegador no soporta compartir directamente.\n\nPrueba a hacer una captura de pantalla o usa el botón de imprimir del navegador.');
+    }
+
     function wsImprimirNativo(htmlContent, esLista) {
         // 1. Crear un div oculto donde inyectaremos el HTML
         const printDiv = document.createElement('div');
@@ -3690,7 +3730,7 @@
 
     function imprimirMenu() {
         const html = wsConstruirHtmlImpresion();
-        wsImprimirNativo(html, false);
+        wsCompartirNativo(html, 'menu-semanal.html', 'Menú Semanal');
     }
 
     // =====================================================
@@ -4374,7 +4414,7 @@
 
     function wsDescargarListaPDF() {
         const html = wsConstruirHtmlListaFinal();
-        wsImprimirNativo(html, true);
+        wsCompartirNativo(html, 'lista-compra.html', 'Lista de la Compra');
     }
 
     // =====================================================
