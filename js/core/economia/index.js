@@ -195,7 +195,7 @@ window.Economia = (function() {
       }
     });
 
-    var previsionFinal = saldoVivo + totalIngresosPend - totalGastosPend;
+    var previsionFinal = saldoVivo + totalIngresosPend - totalGastosPend; // Saldo + Por cobrar - Por pagar
 
     // Actualizar Tarjetas
     contenedor.querySelector('#ecoRealGastosPend').textContent = U.eur(totalGastosPend);
