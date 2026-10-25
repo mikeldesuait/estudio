@@ -218,6 +218,38 @@ window.Economia = (function() {
     }
 
     // 4. Historial de movimientos validados
+    // --- 5. LISTA DE VALIDADOS (Fijos pagados en este ciclo) ---
+    var listaValidados = contenedor.querySelector('#ecoRealValidadosLista');
+    if (listaValidados) {
+      var fijosPagados = State.get().gastos.filter(function(g) { return g.periodicidad !== 'puntual' && g.pagado; });
+      var ingresosPagados = (State.get().ingresosFijos || []).filter(function(i) { return i.pagado; });
+      
+      var htmlValidados = '';
+      
+      // Gastos validados
+      fijosPagados.forEach(function(g) {
+        var cat = CATS[g.categoria] || { icono: '📦' };
+        htmlValidados += '<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border); font-size:13px;">'
+          + '<div><span style="color:#10b981; font-weight:bold; margin-right:8px;">✓</span>' + cat.icono + ' ' + g.nombre + '</div>'
+          + '<div style="color:#ef4444; font-weight:600;">-' + U.eur(g.importe) + '</div>'
+          + '</div>';
+      });
+      
+      // Ingresos validados
+      ingresosPagados.forEach(function(i) {
+        htmlValidados += '<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border); font-size:13px;">'
+          + '<div><span style="color:#10b981; font-weight:bold; margin-right:8px;">✓</span> 💼 ' + i.nombre + '</div>'
+          + '<div style="color:#10b981; font-weight:600;">+' + U.eur(i.importe) + '</div>'
+          + '</div>';
+      });
+      
+      if (htmlValidados === '') {
+        listaValidados.innerHTML = '<div class="eco-vacio" style="padding:10px;">No hay fijos validados en este ciclo todavía.</div>';
+      } else {
+        listaValidados.innerHTML = htmlValidados;
+      }
+    }
+
     var listaReal = contenedor.querySelector('#ecoRealLista');
     var movsOrdenados = movsCiclo.sort(function(a,b) { return b.fecha.localeCompare(a.fecha); });
     if (movsOrdenados.length === 0) {

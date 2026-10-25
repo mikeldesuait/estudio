@@ -79,6 +79,12 @@ window.EconomiaTemplate = (function() {
       +         '</div>'
       +         '<div id="ecoRealLista"></div>'
       +       '</div>'
+      +       '<div class="eco-card" style="margin-top:16px;">'
+      +         '<details>'
+      +           '<summary style="cursor:pointer; font-weight:600; color:var(--text-1); padding:4px 0;">✅ Ver validados en este ciclo (Ingresos y Gastos)</summary>'
+      +           '<div id="ecoRealValidadosLista" style="margin-top:12px;"></div>'
+      +         '</details>'
+      +       '</div>'
       +     '</div>'
 
       // ================= PREVISIÓN =================
@@ -127,7 +133,7 @@ window.EconomiaTemplate = (function() {
       +       '</footer>'
       +     '</div>'
       +   '</div>'
-      +   '<div style="text-align:right; font-size:11px; color:var(--text-2); opacity:0.5; margin-top:20px; padding-right:10px;">v.1.0</div>'
+      +   '<div style="text-align:right; font-size:11px; color:var(--text-2); opacity:0.5; margin-top:20px; padding-right:10px;">v.1.1</div>'
       + '</div>';
   }
   return { html: html };
