@@ -160,12 +160,24 @@ window.Economia = (function() {
     var diaHoy = new Date(); diaHoy.setHours(0,0,0,0);
 
     function calcularFecha(diaVencimiento) {
+      // Calculamos el inicio del ciclo actual de forma matemática
       var diaCobroCiclo = State.get().presupuesto.diaCobro || 1;
-      var f = new Date(diaHoy.getFullYear(), diaHoy.getMonth(), diaVencimiento);
-      if (diaVencimiento < diaCobroCiclo) {
-          f = new Date(diaHoy.getFullYear(), diaHoy.getMonth() + 1, diaVencimiento);
-      } else if (diaVencimiento >= diaCobroCiclo && diaHoy.getDate() < diaCobroCiclo) {
-          f = new Date(diaHoy.getFullYear(), diaHoy.getMonth() - 1, diaVencimiento);
+      
+      // Si estamos antes del día 20 (ej: día 5), el ciclo empezó el mes pasado.
+      // Si estamos después del día 20 (ej: día 25), el ciclo empezó este mes.
+      var mesInicio = diaHoy.getDate() >= diaCobroCiclo ? diaHoy.getMonth() : diaHoy.getMonth() - 1;
+      var anioInicio = diaHoy.getFullYear();
+      if (mesInicio < 0) { mesInicio = 11; anioInicio--; } // Corregir si nos vamos a enero del año anterior
+      
+      var inicioCiclo = new Date(anioInicio, mesInicio, diaCobroCiclo);
+
+      // Si el vencimiento es mayor o igual al día de inicio, cae en el mismo mes que el inicio.
+      // Si es menor, cae en el mes siguiente.
+      var f;
+      if (diaVencimiento >= diaCobroCiclo) {
+          f = new Date(anioInicio, mesInicio, diaVencimiento);
+      } else {
+          f = new Date(anioInicio, mesInicio + 1, diaVencimiento);
       }
       return f;
     }
