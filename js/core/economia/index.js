@@ -138,6 +138,8 @@ window.Economia = (function() {
     
     var movsCiclo = State.get().gastos.filter(function(g) {
       var diaCobro = State.get().presupuesto.diaCobro || 1;
+      // Si la fecha es anterior al 20/10/2026, se ignora
+      if (g.fecha && g.fecha < '2026-10-20') return false;
       return g.periodicidad === 'puntual' && g.fecha && U.fechaEnCiclo(g.fecha, mesActualYM, diaCobro);
     });
 
