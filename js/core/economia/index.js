@@ -80,10 +80,6 @@ window.Economia = (function() {
       if (btnBorrar) { e.preventDefault(); if (confirm('¿Borrar este elemento?')) State.removeItem(btnBorrar.dataset.coleccion, btnBorrar.dataset.borrar); return; }
       var btnAportar = e.target.closest('[data-aportar]');
       if (btnAportar) { e.preventDefault(); aportarAObjetivo(btnAportar.dataset.aportar); return; }
-      var btnCobrar = e.target.closest('[data-cobrar]');
-      if (btnCobrar) { e.preventDefault(); abrirModalCobrar(btnCobrar.dataset.cobrar); return; }
-      var btnPagar = e.target.closest('[data-pagar]');
-      if (btnPagar) { e.preventDefault(); abrirModalPagar(btnPagar.dataset.pagar); return; }
     });
 
     contenedor.querySelector('#ecoModalGuardar').addEventListener('click', guardarModal);
@@ -105,6 +101,24 @@ window.Economia = (function() {
     }
 
     contenedor.querySelector('#ecoMesActual').textContent = U.nombreMes(mesActualYM);
+    
+    var headerAcciones = contenedor.querySelector('.eco-header-acciones');
+    if (headerAcciones && !contenedor.querySelector('#ecoResetPagos')) {
+      var btnReset = document.createElement('button');
+      btnReset.className = 'eco-btn eco-btn-ghost';
+      btnReset.id = 'ecoResetPagos';
+      btnReset.innerHTML = '<i class="fas fa-sync-alt" title="Reiniciar pagos del ciclo"></i>';
+      btnReset.title = 'Volver a marcar todos los gastos e ingresos como pendientes';
+      btnReset.addEventListener('click', function() {
+        if (!confirm('¿Volver a marcar TODOS los pagos e ingresos como pendientes?')) return;
+        State.get().gastos.filter(function(g){ return g.periodicidad !== 'puntual'; }).forEach(function(g){ if(g.pagado) State.updateItem('gastos', g.id, { pagado: false }); });
+        (State.get().ingresosFijos || []).forEach(function(i){ if(i.pagado) State.updateItem('ingresosFijos', i.id, { pagado: false }); });
+        localStorage.removeItem('eco_ultimo_ciclo_pagado');
+        location.reload();
+      });
+      headerAcciones.insertBefore(btnReset, headerAcciones.firstChild);
+    }
+
     renderReal(); 
     renderPrevision();
   }
@@ -113,169 +127,93 @@ window.Economia = (function() {
   function renderReal() {
     var base = State.get().saldoCuentas || 0;
     
-    // 1. Movimientos puntuales (validados) del ciclo actual
     var movsCiclo = State.get().gastos.filter(function(g) {
       var diaCobro = State.get().presupuesto.diaCobro || 1;
       if (g.fecha && g.fecha < '2026-10-20') return false;
       return g.periodicidad === 'puntual' && g.fecha && U.fechaEnCiclo(g.fecha, mesActualYM, diaCobro);
     });
 
-    // Calculamos el saldo real
     var ingresosReales = movsCiclo.filter(function(g) { return !g.necesario; }).reduce(function(acc, g) { return acc + (parseFloat(g.importe) || 0); }, 0);
     var gastosReales = movsCiclo.filter(function(g) { return g.necesario; }).reduce(function(acc, g) { return acc + (parseFloat(g.importe) || 0); }, 0);
     var saldoVivo = base + ingresosReales - gastosReales;
     
-    // Actualizar display
     var display = contenedor.querySelector('#ecoSaldoDisplay');
     if (display) { display.textContent = U.eur(saldoVivo); display.style.color = saldoVivo >= 0 ? '#10b981' : '#ef4444'; }
     var inputBase = contenedor.querySelector('#ecoSaldoBase');
     if (inputBase && document.activeElement !== inputBase) inputBase.value = base;
 
-    // 2. Fijos pendientes del ciclo (Bucle 20 al 19)
-    var diaHoy = new Date(); diaHoy.setHours(0,0,0,0);
+    // Fijos pendientes y totales
+    var fijosGastos = State.get().gastos.filter(function(g) { return g.periodicidad !== 'puntual'; });
+    var fijosIngresos = State.get().ingresosFijos || [];
     
-    // FILTRO: Ignorar los que su día de cobro ya pasó en este ciclo
-    var fijosGastos = State.get().gastos.filter(function(g) { 
-      if (g.periodicidad === 'puntual' || g.pagado) return false;
-      // Si el día de cobro es menor al día de hoy, ya pasó, no lo mostramos
-      return (g.diaCobro || 1) >= diaHoy.getDate();
-    });
-    
-    var fijosIngresos = (State.get().ingresosFijos || []).filter(function(i) { 
-      if (i.pagado) return false;
-      return (i.diaCobro || 1) >= diaHoy.getDate();
-    });
-    var diaCobroCiclo = State.get().presupuesto.diaCobro || 1;
-    var mesInicio = diaHoy.getDate() >= diaCobroCiclo ? diaHoy.getMonth() : diaHoy.getMonth() - 1;
-    var anioInicio = diaHoy.getFullYear();
-    if (mesInicio < 0) { mesInicio = 11; anioInicio--; }
-    var inicioCiclo = new Date(anioInicio, mesInicio, diaCobroCiclo);
-    var finCiclo = new Date(anioInicio, mesInicio + 1, diaCobroCiclo - 1);
+    var totalGastosPend = 0, totalIngresosPend = 0;
+    var totalGastosPagados = 0, totalIngresosPagados = 0;
 
-    function calcularFecha(diaVencimiento) {
-      if (diaVencimiento >= diaCobroCiclo) {
-          return new Date(anioInicio, mesInicio, diaVencimiento);
-      } else {
-          return new Date(anioInicio, mesInicio + 1, diaVencimiento);
-      }
-    }
-
-    var todosPendientes = [];
-    
-    // Gastos fijos
     fijosGastos.forEach(function(g) {
-      var f = calcularFecha(g.diaCobro || 1);
-      // Solo si cae en el ciclo actual
-      if (f >= inicioCiclo && f <= finCiclo) {
-        todosPendientes.push({ tipo: 'gasto', item: g, fecha: f, importe: U.aMensual(g.importe, g.periodicidad), nombre: g.nombre, cat: CATS[g.categoria] || {icono:'📦'} });
-      }
+      if (g.pagado) totalGastosPagados += U.aMensual(g.importe, g.periodicidad);
+      else totalGastosPend += U.aMensual(g.importe, g.periodicidad);
     });
-    // Ingresos fijos
     fijosIngresos.forEach(function(i) {
-      var f = calcularFecha(i.diaCobro || 1);
-      if (f >= inicioCiclo && f <= finCiclo) {
-        todosPendientes.push({ tipo: 'ingreso', item: i, fecha: f, importe: U.aMensual(i.importe, i.periodicidad), nombre: i.nombre, cat: {icono:'💼'} });
-      }
+      if (i.pagado) totalIngresosPagados += U.aMensual(i.importe, i.periodicidad);
+      else totalIngresosPend += U.aMensual(i.importe, i.periodicidad);
     });
-
-    // 3. Calcular totales de pendientes
-    var totalGastosPend = 0;
-    var totalIngresosPend = 0;
-    var total5dias = 0;
-    var avisos5Dias = [];
-
-    todosPendientes.forEach(function(p) {
-      if (p.tipo === 'gasto') totalGastosPend += p.importe;
-      else totalIngresosPend += p.importe;
-
-      var diff = Math.ceil((p.fecha.getTime() - diaHoy.getTime()) / (1000 * 3600 * 24));
-      if (diff <= 5) {
-        avisos5Dias.push(p);
-        total5dias += p.importe;
-      }
-    });
-
-    var previsionFinal = saldoVivo + totalIngresosPend - totalGastosPend; // Saldo + Por cobrar - Por pagar
-
-    // Actualizar Tarjetas
-    contenedor.querySelector('#ecoRealGastosPend').textContent = U.eur(totalGastosPend);
-    contenedor.querySelector('#ecoRealIngresosPend').textContent = U.eur(totalIngresosPend);
-
-    // Cálculo del total del ciclo (Pagados + Pendientes)
-    var fijosPagados = State.get().gastos.filter(g => g.periodicidad !== 'puntual' && g.pagado);
-    var ingresosPagados = (State.get().ingresosFijos || []).filter(i => i.pagado);
-    
-    var totalGastosPagados = fijosPagados.reduce((acc, g) => acc + U.aMensual(g.importe, g.periodicidad), 0);
-    var totalIngresosPagados = ingresosPagados.reduce((acc, i) => acc + U.aMensual(i.importe, i.periodicidad), 0);
 
     var totalGastosCiclo = totalGastosPend + totalGastosPagados;
     var totalIngresosCiclo = totalIngresosPend + totalIngresosPagados;
+    var previsionFinal = saldoVivo + totalIngresosPend - totalGastosPend;
 
-    contenedor.querySelector('#ecoRealGastosTotalCiclo').textContent = '(Ciclo total: ' + U.eur(totalGastosCiclo) + ')';
-    contenedor.querySelector('#ecoRealIngresosTotalCiclo').textContent = '(Ciclo total: ' + U.eur(totalIngresosCiclo) + ')';
-    contenedor.querySelector('#ecoRealPrevision').textContent = U.eur(previsionFinal);
-    contenedor.querySelector('#ecoRealPrevision').style.color = previsionFinal >= 0 ? '#3b82f6' : '#ef4444';
+    // Actualizar Tarjetas
+    var elG = contenedor.querySelector('#ecoRealGastosPend');
+    if (elG) elG.innerHTML = U.eur(totalGastosPend) + ' <span style="font-size:12px;font-weight:400;color:var(--text-2);">pendientes</span>';
+    var elGT = contenedor.querySelector('#ecoRealGastosTotalCiclo');
+    if (elGT) elGT.textContent = 'Total ciclo: ' + U.eur(totalGastosCiclo);
 
-    // Avisos de 5 días
-    var cajaAvisos = contenedor.querySelector('#ecoCardAvisos');
-    if (avisos5Dias.length > 0) {
-      cajaAvisos.style.display = 'block';
-      cajaAvisos.querySelector('#ecoAvisoLista').innerHTML = avisos5Dias.map(function(p) {
-        var cuando = Math.ceil((p.fecha.getTime() - diaHoy.getTime()) / (1000 * 3600 * 24));
-        var cuandoStr = cuando < 0 ? '<span style="color:#ef4444;">Vencida</span>' : (cuando === 0 ? 'Hoy' : 'En ' + cuando + ' días');
-        var color = p.tipo === 'ingreso' ? '#10b981' : '#ef4444';
-        return '<div style="background:#fff; padding:4px 8px; border-radius:4px; border:1px solid #fde68a; font-size:12px;">' + p.cat.icono + ' <strong>' + p.nombre + '</strong> (' + cuandoStr + ') <span style="color:'+color+'; font-weight:700;">' + (p.tipo==='ingreso'?'+':'-') + U.eur(p.importe) + '</span></div>';
+    var elI = contenedor.querySelector('#ecoRealIngresosPend');
+    if (elI) elI.innerHTML = U.eur(totalIngresosPend) + ' <span style="font-size:12px;font-weight:400;color:var(--text-2);">pendientes</span>';
+    var elIT = contenedor.querySelector('#ecoRealIngresosTotalCiclo');
+    if (elIT) elIT.textContent = 'Total ciclo: ' + U.eur(totalIngresosCiclo);
+
+    var elP = contenedor.querySelector('#ecoRealPrevision');
+    if (elP) { elP.textContent = U.eur(previsionFinal); elP.style.color = previsionFinal >= 0 ? '#3b82f6' : '#ef4444'; }
+
+    // Rellenar listas de los desplegables
+    var listaGastos = contenedor.querySelector('#ecoRealGastosLista');
+    if (listaGastos) {
+      if (fijosGastos.length === 0) listaGastos.innerHTML = '<div style="font-size:12px;color:var(--text-2);">Sin gastos fijos definidos.</div>';
+      else listaGastos.innerHTML = fijosGastos.map(function(g) {
+        var cat = CATS[g.categoria] || { icono: '📦' };
+        var check = g.pagado ? '<span style="color:#10b981; font-weight:bold; margin-right:8px; font-size:16px;">✓</span>' : '<span style="color:var(--text-2); margin-right:8px; font-size:16px;">○</span>';
+        var estilo = g.pagado ? 'text-decoration:line-through; opacity:0.6;' : '';
+        var fecha = g.pagado ? '' : '<span style="color:#ef4444; font-size:11px; margin-left:6px;">(Día ' + (g.diaCobro||1) + ')</span>';
+        return '<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border); font-size:13px;"><div style="'+estilo+'">'+check+cat.icono+' '+g.nombre+fecha+'</div><div style="'+estilo+'color:#ef4444; font-weight:600;">-'+U.eur(g.importe)+'</div></div>';
       }).join('');
-    } else {
-      cajaAvisos.style.display = 'none';
     }
 
-    // 4. Historial de movimientos validados
-    // --- 5. LISTA DE VALIDADOS (Fijos pagados en este ciclo) ---
-    var listaValidados = contenedor.querySelector('#ecoRealValidadosLista');
-    if (listaValidados) {
-      var fijosPagados = State.get().gastos.filter(function(g) { return g.periodicidad !== 'puntual' && g.pagado; });
-      var ingresosPagados = (State.get().ingresosFijos || []).filter(function(i) { return i.pagado; });
-      
-      var htmlValidados = '';
-      
-      // Gastos validados
-      fijosPagados.forEach(function(g) {
-        var cat = CATS[g.categoria] || { icono: '📦' };
-        htmlValidados += '<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border); font-size:13px;">'
-          + '<div><span style="color:#10b981; font-weight:bold; margin-right:8px;">✓</span>' + cat.icono + ' ' + g.nombre + '</div>'
-          + '<div style="color:#ef4444; font-weight:600;">-' + U.eur(g.importe) + '</div>'
-          + '</div>';
-      });
-      
-      // Ingresos validados
-      ingresosPagados.forEach(function(i) {
-        htmlValidados += '<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border); font-size:13px;">'
-          + '<div><span style="color:#10b981; font-weight:bold; margin-right:8px;">✓</span> 💼 ' + i.nombre + '</div>'
-          + '<div style="color:#10b981; font-weight:600;">+' + U.eur(i.importe) + '</div>'
-          + '</div>';
-      });
-      
-      if (htmlValidados === '') {
-        listaValidados.innerHTML = '<div class="eco-vacio" style="padding:10px;">No hay fijos validados en este ciclo todavía.</div>';
-      } else {
-        listaValidados.innerHTML = htmlValidados;
-      }
+    var listaIngresos = contenedor.querySelector('#ecoRealIngresosLista');
+    if (listaIngresos) {
+      if (fijosIngresos.length === 0) listaIngresos.innerHTML = '<div style="font-size:12px;color:var(--text-2);">Sin ingresos fijos definidos.</div>';
+      else listaIngresos.innerHTML = fijosIngresos.map(function(i) {
+        var check = i.pagado ? '<span style="color:#10b981; font-weight:bold; margin-right:8px; font-size:16px;">✓</span>' : '<span style="color:var(--text-2); margin-right:8px; font-size:16px;">○</span>';
+        var estilo = i.pagado ? 'text-decoration:line-through; opacity:0.6;' : '';
+        var fecha = i.pagado ? '' : '<span style="color:#10b981; font-size:11px; margin-left:6px;">(Día ' + (i.diaCobro||1) + ')</span>';
+        return '<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border); font-size:13px;"><div style="'+estilo+'">'+check+'💼 '+i.nombre+fecha+'</div><div style="'+estilo+'color:#10b981; font-weight:600;">+'+U.eur(i.importe)+'</div></div>';
+      }).join('');
     }
 
     var listaReal = contenedor.querySelector('#ecoRealLista');
-    var movsOrdenados = movsCiclo.sort(function(a,b) { return b.fecha.localeCompare(a.fecha); });
-    if (movsOrdenados.length === 0) {
-      listaReal.innerHTML = '<div class="eco-vacio">Aún no has validado movimientos este ciclo.</div>';
-    } else {
-      listaReal.innerHTML = '<div class="eco-lista">' + movsOrdenados.map(function(item) {
-        var esIngreso = !item.necesario; 
-        var cat = CATS[item.categoria] || { icono: '📦' };
-        var signo = esIngreso ? '+' : '-';
-        var color = esIngreso ? '#10b981' : '#ef4444';
-        var notaHTML = item.notas ? ' · <em style="color:#f59e0b;">' + item.notas + '</em>' : '';
-        return '<div class="eco-item"><div class="eco-item-cat" style="background:'+(esIngreso?'rgba(16,185,129,.1)':'rgba(239,68,68,.1)')+';">'+cat.icono+'</div><div class="eco-item-info"><div class="eco-item-nombre">'+item.nombre+'</div><div class="eco-item-meta">'+U.fechaCorta(item.fecha)+' · '+cat.nombre+notaHTML+'</div></div><div class="eco-item-importe" style="color:'+color+';font-weight:700;">'+signo+' '+U.eur(item.importe)+'</div><div class="eco-item-acciones"><button class="eco-item-btn" data-editar="'+item.id+'" data-tipo="gasto-puntual" title="Editar"><i class="fas fa-pen"></i></button><button class="eco-item-btn eco-item-btn-peligro" data-borrar="'+item.id+'" data-coleccion="gastos" title="Borrar"><i class="fas fa-trash"></i></button></div></div>';
-      }).join('') + '</div>';
+    if (listaReal) {
+      var movsOrdenados = movsCiclo.sort(function(a,b) { return b.fecha.localeCompare(a.fecha); });
+      if (movsOrdenados.length === 0) listaReal.innerHTML = '<div class="eco-vacio">Aún no has validado movimientos este ciclo.</div>';
+      else {
+        listaReal.innerHTML = '<div class="eco-lista">' + movsOrdenados.map(function(item) {
+          var esIngreso = !item.necesario; 
+          var cat = CATS[item.categoria] || { icono: '📦' };
+          var signo = esIngreso ? '+' : '-';
+          var color = esIngreso ? '#10b981' : '#ef4444';
+          var notaHTML = item.notas ? ' · <em style="color:#f59e0b;">' + item.notas + '</em>' : '';
+          return '<div class="eco-item"><div class="eco-item-cat" style="background:'+(esIngreso?'rgba(16,185,129,.1)':'rgba(239,68,68,.1)')+';">'+cat.icono+'</div><div class="eco-item-info"><div class="eco-item-nombre">'+item.nombre+'</div><div class="eco-item-meta">'+U.fechaCorta(item.fecha)+notaHTML+'</div></div><div class="eco-item-importe" style="color:'+color+';font-weight:700;">'+signo+' '+U.eur(item.importe)+'</div><div class="eco-item-acciones"><button class="eco-item-btn" data-editar="'+item.id+'" data-tipo="gasto-puntual" title="Editar"><i class="fas fa-pen"></i></button><button class="eco-item-btn eco-item-btn-peligro" data-borrar="'+item.id+'" data-coleccion="gastos" title="Borrar"><i class="fas fa-trash"></i></button></div></div>';
+        }).join('') + '</div>';
+      }
     }
   }
 
@@ -346,7 +284,8 @@ window.Economia = (function() {
     html += barra('💰 Ahorro (20%)', Math.max(0, comp.ahorro.real), comp.ahorro.objetivo, '#10b981');
     el.innerHTML = html;
 
-    el.querySelector('#ecoDiaCobro').addEventListener('change', function(e) { var p = State.get().presupuesto; p.diaCobro = parseInt(e.target.value)||1; State.set('presupuesto', p); });
+    var inDia = el.querySelector('#ecoDiaCobro');
+    if (inDia) inDia.addEventListener('change', function(e) { var p = State.get().presupuesto; p.diaCobro = parseInt(e.target.value)||1; State.set('presupuesto', p); });
   }
 
   // ---------------- MODAL ----------------
@@ -402,7 +341,6 @@ window.Economia = (function() {
   function guardarModal() {
     if (!modalConfig) return;
     
-    // Lógica de validación
     if (modalConfig.tipo === 'cobrar' || modalConfig.tipo === 'pagar') {
       var impReal = parseFloat(contenedor.querySelector('#input' + (modalConfig.tipo==='cobrar'?'Cobro':'Pago') + 'Real').value) || 0;
       var fecha = contenedor.querySelector('#input' + (modalConfig.tipo==='cobrar'?'Cobro':'Pago') + 'Fecha').value;
@@ -426,9 +364,8 @@ window.Economia = (function() {
       return;
     }
 
-    // Lógica de registro rápido
     if (modalConfig.tipo === 'movimiento') {
-      var tipoMov = contenedor.querySelector('#movTipo').value; // 'gasto_nuevo', 'ingreso_nuevo', 'validar_gasto', 'validar_ingreso'
+      var tipoMov = contenedor.querySelector('#movTipo').value; 
       var imp = parseFloat(contenedor.querySelector('#movImporte').value) || 0;
       var fechaMov = contenedor.querySelector('#movFecha').value;
       var notaMov = contenedor.querySelector('#movNota').value.trim();
@@ -465,7 +402,6 @@ window.Economia = (function() {
       return;
     }
 
-    // Guardar normal
     var datos = leerFormulario(modalConfig.tipo);
     if (!datos) return;
     if (modalConfig.item) { State.updateItem(modalConfig.coleccion, modalConfig.item.id, datos); } 

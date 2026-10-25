@@ -1,5 +1,5 @@
 /* ============================================================
-   ECONOMIA — Template HTML (Caja Real y Previsión)
+   ECONOMIA — Template HTML (Vista de Mando)
    ============================================================ */
 
 window.EconomiaTemplate = (function() {
@@ -36,31 +36,38 @@ window.EconomiaTemplate = (function() {
       +       '<div class="eco-card" style="margin-bottom:16px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;border-left:4px solid #10b981;">'
       +         '<div>'
       +           '<h2 style="margin:0 0 4px 0;font-size:16px;color:var(--text-2);">🏦 Saldo Real en Cuentas</h2>'
-      +           '<div style="font-size:12px;color:var(--text-2);">El dinero exacto que tienes ahora mismo. Los movimientos reales lo actualizan.</div>'
+      +           '<div style="font-size:12px;color:var(--text-2);">Tu dinero real en el banco + ingresos cobrados - gastos pagados.</div>'
       +         '</div>'
       +         '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">'
       +           '<div style="display:flex;align-items:center;gap:16px;">'
       +             '<div id="ecoSaldoDisplay" style="font-size:32px;font-weight:800;color:var(--text-1);">0,00 €</div>'
       +             '<button class="eco-btn eco-btn-primario" data-nuevo="movimiento" style="padding:8px 12px;font-size:14px;border-radius:8px;"><i class="fas fa-bolt"></i> Añadir Registro</button>'
       +           '</div>'
-      +           '<div style="font-size:12px;color:var(--text-2); display:flex; align-items:center; gap:4px;">Base inicial: <input type="number" step="0.01" id="ecoSaldoBase" style="width:80px;padding:2px 4px;border:1px solid var(--border);border-radius:4px;font-family:inherit;font-size:12px;text-align:right;"> €</div>'
+      +           '<div style="font-size:12px;color:var(--text-2); display:flex; align-items:center; gap:4px;" title="Introduce el dinero que tenías en la cuenta al comenzar este ciclo (día 20).">Saldo al inicio: <input type="number" step="0.01" id="ecoSaldoBase" style="width:80px;padding:2px 4px;border:1px solid var(--border);border-radius:4px;font-family:inherit;font-size:12px;text-align:right;"> €</div>'
       +         '</div>'
       +       '</div>'
       
-      // 2. TARJETAS DE PREVISIÓN
-      +       '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 16px;">'
-      +         '<div class="eco-card" style="border-left:4px solid #ef4444; margin:0; padding:14px; display:flex; flex-direction:column; justify-content:center;">'
-      +           '<h2 style="margin:0 0 4px 0; font-size:13px; color:#ef4444;">📌 Gastos por pagar</h2>'
-      +           '<div id="ecoRealGastosPend" style="font-size:22px; font-weight:800; color:#ef4444;">0,00 €</div>'
-      +           '<div style="font-size:11px; color:var(--text-2); margin-top:4px;">Fijos por validar este ciclo</div>'
-      +           '<div id="ecoRealGastosTotalCiclo" style="font-size:11px; color:var(--text-2); opacity:0.7; margin-top:2px;"></div>'
-      +         '</div>'
-      +         '<div class="eco-card" style="border-left:4px solid #10b981; margin:0; padding:14px; display:flex; flex-direction:column; justify-content:center;">'
-      +           '<h2 style="margin:0 0 4px 0; font-size:13px; color:#10b981;">📥 Ingresos por cobrar</h2>'
-      +           '<div id="ecoRealIngresosPend" style="font-size:22px; font-weight:800; color:#10b981;">0,00 €</div>'
-      +           '<div style="font-size:11px; color:var(--text-2); margin-top:4px;">Fijos por confirmar este ciclo</div>'
-      +           '<div id="ecoRealIngresosTotalCiclo" style="font-size:11px; color:var(--text-2); opacity:0.7; margin-top:2px;"></div>'
-      +         '</div>'
+      // 2. TARJETAS DE PREVISIÓN DESPLEGABLES
+      +       '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; margin-bottom: 16px;">'
+      
+      +         '<details class="eco-card" style="border-left:4px solid #ef4444; margin:0; padding:14px;">'
+      +           '<summary style="cursor:pointer; list-style:none; outline:none;">'
+      +             '<h2 style="margin:0 0 4px 0; font-size:13px; color:#ef4444;">📌 Gastos del ciclo</h2>'
+      +             '<div id="ecoRealGastosPend" style="font-size:22px; font-weight:800; color:#ef4444;">0,00 € <span style="font-size:12px;font-weight:400;color:var(--text-2);">pendientes</span></div>'
+      +             '<div id="ecoRealGastosTotalCiclo" style="font-size:11px; color:var(--text-2); opacity:0.7; margin-top:2px;"></div>'
+      +           '</summary>'
+      +           '<div id="ecoRealGastosLista" style="margin-top:12px; border-top:1px solid var(--border); padding-top:8px;"></div>'
+      +         '</details>'
+
+      +         '<details class="eco-card" style="border-left:4px solid #10b981; margin:0; padding:14px;">'
+      +           '<summary style="cursor:pointer; list-style:none; outline:none;">'
+      +             '<h2 style="margin:0 0 4px 0; font-size:13px; color:#10b981;">📥 Ingresos del ciclo</h2>'
+      +             '<div id="ecoRealIngresosPend" style="font-size:22px; font-weight:800; color:#10b981;">0,00 € <span style="font-size:12px;font-weight:400;color:var(--text-2);">pendientes</span></div>'
+      +             '<div id="ecoRealIngresosTotalCiclo" style="font-size:11px; color:var(--text-2); opacity:0.7; margin-top:2px;"></div>'
+      +           '</summary>'
+      +           '<div id="ecoRealIngresosLista" style="margin-top:12px; border-top:1px solid var(--border); padding-top:8px;"></div>'
+      +         '</details>'
+
       +         '<div class="eco-card" style="border-left:4px solid #3b82f6; margin:0; padding:14px; display:flex; flex-direction:column; justify-content:center;">'
       +           '<h2 style="margin:0 0 4px 0; font-size:13px; color:#3b82f6;">🧾 Previsión Final</h2>'
       +           '<div id="ecoRealPrevision" style="font-size:22px; font-weight:800; color:#3b82f6;">0,00 €</div>'
@@ -68,24 +75,12 @@ window.EconomiaTemplate = (function() {
       +         '</div>'
       +       '</div>'
 
-      // 3. AVISOS 5 DÍAS
-      +       '<div class="eco-card" id="ecoCardAvisos" style="display:none; margin-bottom:16px; padding:14px; border-left:4px solid #f59e0b; background:#fffbeb;">'
-      +         '<h2 style="margin:0 0 8px 0; font-size:14px; color:#92400e;">⚠️ Vence en los próximos 5 días</h2>'
-      +         '<div id="ecoAvisoLista" style="display:flex; flex-wrap:wrap; gap:8px;"></div>'
-      +       '</div>'
-
-      // 4. HISTORIAL DE MOVIMIENTOS VALIDADOS (Solo los que ya han pasado)
+      // 3. HISTORIAL DE MOVIMIENTOS REALES
       +       '<div class="eco-card">'
       +         '<div class="eco-card-head">'
       +           '<h2>🧾 Movimientos validados (Historial)</h2>'
       +         '</div>'
       +         '<div id="ecoRealLista"></div>'
-      +       '</div>'
-      +       '<div class="eco-card" style="margin-top:16px;">'
-      +         '<details>'
-      +           '<summary style="cursor:pointer; font-weight:600; color:var(--text-1); padding:4px 0;">✅ Ver validados en este ciclo (Ingresos y Gastos)</summary>'
-      +           '<div id="ecoRealValidadosLista" style="margin-top:12px;"></div>'
-      +         '</details>'
       +       '</div>'
       +     '</div>'
 
@@ -135,7 +130,7 @@ window.EconomiaTemplate = (function() {
       +       '</footer>'
       +     '</div>'
       +   '</div>'
-      +   '<div style="text-align:right; font-size:11px; color:var(--text-2); opacity:0.5; margin-top:20px; padding-right:10px;">v.1.1</div>'
+      +   '<div style="text-align:right; font-size:11px; color:var(--text-2); opacity:0.5; margin-top:20px; padding-right:10px;">v.1.2</div>'
       + '</div>';
   }
   return { html: html };
