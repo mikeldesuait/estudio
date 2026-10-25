@@ -3256,15 +3256,16 @@
             }
         });
 
-        // Sincronizar nombre
+        // Sincronizar nombre desde el input
         const inputNombre = document.querySelector('.weekly-nombre');
         if (inputNombre) wsMenu.nombre = inputNombre.value.trim();
 
-        // Pedir nombre si no lo tiene
+        // Si no tiene nombre, pedirlo
         let nombre = wsMenu.nombre;
         if (!nombre) {
             nombre = prompt('Nombre del menú:', 'Semana del ' + new Date().toLocaleDateString('es-ES'));
             if (!nombre) return;
+            nombre = nombre.trim();
             wsMenu.nombre = nombre;
         }
 
@@ -3277,9 +3278,54 @@
         }
 
         const menus = wsLeerMenusGuardados();
-        const idx = menus.findIndex(m => m.id === wsMenu.id);
 
-        // Copia limpia con fecha
+        // Buscar si ya existe con el MISMO ID
+        const porId = menus.findIndex(m => m.id === wsMenu.id);
+        // Buscar si existe con el MISMO NOMBRE (pero otro id)
+        const porNombre = menus.findIndex(m =>
+            (m.nombre || '').toLowerCase().trim() === nombre.toLowerCase().trim()
+        );
+
+        let accion = 'nuevo';  // 'sobrescribir' | 'renombrar_existente' | 'nuevo'
+
+        if (porId >= 0 && (menus[porId].nombre || '').toLowerCase().trim() === nombre.toLowerCase().trim()) {
+            // Mismo id y mismo nombre → sobrescribir silencioso (es el mismo menú editado)
+            accion = 'sobrescribir';
+        } else if (porNombre >= 0 && menus[porNombre].id !== wsMenu.id) {
+            // Hay otro menú con ese nombre pero distinto id
+            const resp = confirm(
+                '⚠️ Ya existe un menú guardado con el nombre "' + nombre + '".\n\n' +
+                '¿Quieres SOBRESCRIBIRLO?\n\n' +
+                '• Aceptar = sobrescribir el existente\n' +
+                '• Cancelar = guardar el actual con otro nombre'
+            );
+            if (resp) {
+                // Sobrescribir el que tiene ese nombre
+                accion = 'renombrar_existente';
+                wsMenu.id = menus[porNombre].id;   // Adoptamos su id
+            } else {
+                // Pedir nombre nuevo
+                const nuevoNombre = prompt('Escribe un nombre distinto:', nombre + ' (copia)');
+                if (!nuevoNombre) return;
+                nombre = nuevoNombre.trim();
+                wsMenu.nombre = nombre;
+                wsMenu.id = 'wm_' + Date.now();    // ID nuevo
+                accion = 'nuevo';
+            }
+        } else if (porId >= 0) {
+            // Mismo id pero nombre cambiado → tratamos como "guardar como nuevo"
+            // (El original con el nombre viejo sigue existiendo)
+            wsMenu.id = 'wm_' + Date.now();
+            accion = 'nuevo';
+        } else {
+            // No existe ni por id ni por nombre → nuevo
+            if (!wsMenu.id || wsMenu.id.startsWith('wm_') === false) {
+                wsMenu.id = 'wm_' + Date.now();
+            }
+            accion = 'nuevo';
+        }
+
+        // Copia limpia
         const copia = {
             id: wsMenu.id,
             nombre: nombre,
@@ -3288,18 +3334,32 @@
             fechaGuardado: new Date().toISOString()
         };
 
-        if (idx >= 0) {
-            if (!confirm('Ya existe un menú con este nombre. ¿Sobrescribir?')) return;
-            menus[idx] = copia;
+        if (accion === 'sobrescribir' || accion === 'renombrar_existente') {
+            const idx = menus.findIndex(m => m.id === copia.id);
+            if (idx >= 0) {
+                menus[idx] = copia;
+            } else {
+                menus.push(copia);
+            }
         } else {
+            // Nuevo → añadir al array
             menus.push(copia);
         }
 
         if (wsEscribirMenusGuardados(menus)) {
-            alert('✅ Menú guardado: "' + nombre + '"\n\nTotal guardados: ' + menus.length);
+            let msg = '';
+            if (accion === 'sobrescribir') {
+                msg = '✅ Menú actualizado: "' + nombre + '"';
+            } else if (accion === 'renombrar_existente') {
+                msg = '✅ Menú sobrescrito: "' + nombre + '"';
+            } else {
+                msg = '✅ Menú guardado como NUEVO: "' + nombre + '"';
+            }
+            alert(msg + '\n\nTotal menús guardados: ' + menus.length);
             wsRenderWeekly();
         }
     }
+
 
     function cargarWeeklyMenu() {
         const menus = wsLeerMenusGuardados();
