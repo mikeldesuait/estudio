@@ -415,8 +415,8 @@ window.Economia = (function() {
           importe: imp,
           periodicidad: 'puntual',
           fecha: fechaMov,
-          categoria: 'otros',
-          necesario: tipoMov === 'validar_gasto',
+          categoria: tipoMov === 'validar_ingreso' ? 'nomina' : 'otros',
+          necesario: tipoMov === 'validar_gasto', // <-- Si es ingreso, esto será FALSE (no es gasto)
           notas: notaMov
         });
       } else {
