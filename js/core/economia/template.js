@@ -1,5 +1,5 @@
 /* ============================================================
-   ECONOMIA — Template HTML (Real vs Previsión)
+   ECONOMIA — Template HTML (Vista de Mando)
    ============================================================ */
 
 window.EconomiaTemplate = (function() {
@@ -22,7 +22,6 @@ window.EconomiaTemplate = (function() {
       +     '</div>'
       +   '</header>'
 
-      // ---- TABS PRINCIPALES ----
       +   '<nav class="eco-tabs" style="border-bottom: 2px solid var(--border); margin-bottom: 20px;">'
       +     '<button class="eco-tab eco-tab-activa" data-tab="real" style="font-size:16px;padding:12px 24px;">💶 Economía Real (Día a día)</button>'
       +     '<button class="eco-tab" data-tab="prevision" style="font-size:16px;padding:12px 24px;">📊 Previsión y Presupuesto</button>'
@@ -45,68 +44,63 @@ window.EconomiaTemplate = (function() {
       +           '<div style="font-size:12px;color:var(--text-2);">Base inicial: <input type="number" step="0.01" id="ecoSaldoBase" style="width:80px;padding:2px 4px;border:1px solid var(--border);border-radius:4px;font-family:inherit;font-size:12px;text-align:right;"> €</div>'
       +         '</div>'
       +       '</div>'
-      +       '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 16px;">'
-      +         '<div class="eco-card" id="ecoCardAvisos" style="display:none; border-left:4px solid #ef4444; margin:0; padding:16px;">'
-      +           '<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">'
-      +             '<h2 style="margin:0; font-size:14px; color:#ef4444;">⚠️ Vence en 5 días</h2>'
-      +             '<div id="ecoAvisoTotal" style="font-size:16px; font-weight:700; color:#ef4444;">0,00 €</div>'
-      +           '</div>'
-      +           '<div id="ecoAvisoLista" style="font-size:12px; color:var(--text-1); display:flex; flex-direction:column; gap:4px;"></div>'
+      
+      // Tarjetas de resumen
+      +       '<div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 16px;">'
+      +         '<div class="eco-card" id="ecoCardAvisos" style="border-left:4px solid #ef4444; margin:0; padding:14px; display:flex; flex-direction:column; justify-content:center;">'
+      +           '<h2 style="margin:0 0 4px 0; font-size:13px; color:#ef4444;">⚠️ Vence en 5 días</h2>'
+      +           '<div id="ecoAvisoTotal" style="font-size:22px; font-weight:800; color:#ef4444;">0,00 €</div>'
+      +           '<div id="ecoAvisoLista" style="font-size:11px; color:var(--text-2); margin-top:4px;"></div>'
       +         '</div>'
-      +         '<div class="eco-card" style="border-left:4px solid #8b5cf6; margin:0; padding:16px; display:flex; flex-direction:column; justify-content:center;">'
-      +           '<h2 style="margin:0 0 4px 0; font-size:14px; color:#8b5cf6;">📅 Pendiente este ciclo</h2>'
-      +           '<div id="ecoRealPendienteTotal" style="font-size:24px; font-weight:800; color:#8b5cf6;">0,00 €</div>'
-      +           '<div style="font-size:11px; color:var(--text-2); margin-top:4px;" id="ecoRealPendienteDetalle">Facturas restantes</div>'
+      +         '<div class="eco-card" style="border-left:4px solid #8b5cf6; margin:0; padding:14px; display:flex; flex-direction:column; justify-content:center;">'
+      +           '<h2 style="margin:0 0 4px 0; font-size:13px; color:#8b5cf6;">📌 Pendiente ciclo</h2>'
+      +           '<div id="ecoRealPendienteTotal" style="font-size:22px; font-weight:800; color:#8b5cf6;">0,00 €</div>'
+      +           '<div style="font-size:11px; color:var(--text-2); margin-top:4px;">Gastos fijos</div>'
       +         '</div>'
-      +         '<div class="eco-card" style="border-left:4px solid #10b981; margin:0; padding:16px; display:flex; flex-direction:column; justify-content:center;">'
-      +           '<h2 style="margin:0 0 4px 0; font-size:14px; color:var(--text-2);">✨ Te quedará tras pagar</h2>'
-      +           '<div id="ecoRealTeQueda" style="font-size:24px; font-weight:800; color:#10b981;">0,00 €</div>'
-      +           '<div style="font-size:11px; color:var(--text-2); margin-top:4px;">Dinero libre real</div>'
+      +         '<div class="eco-card" style="border-left:4px solid #10b981; margin:0; padding:14px; display:flex; flex-direction:column; justify-content:center;">'
+      +           '<h2 style="margin:0 0 4px 0; font-size:13px; color:#10b981;">📥 Por ingresar</h2>'
+      +           '<div id="ecoRealIngresoTotal" style="font-size:22px; font-weight:800; color:#10b981;">0,00 €</div>'
+      +           '<div style="font-size:11px; color:var(--text-2); margin-top:4px;">Ingresos fijos</div>'
+      +         '</div>'
+      +         '<div class="eco-card" style="border-left:4px solid #3b82f6; margin:0; padding:14px; display:flex; flex-direction:column; justify-content:center;">'
+      +           '<h2 style="margin:0 0 4px 0; font-size:13px; color:#3b82f6;">🧾 Previsión final</h2>'
+      +           '<div id="ecoRealTeQueda" style="font-size:22px; font-weight:800; color:#3b82f6;">0,00 €</div>'
+      +           '<div style="font-size:11px; color:var(--text-2); margin-top:4px;">Saldo + Ing. - Gast.</div>'
       +         '</div>'
       +       '</div>'
+
       +       '<div class="eco-col" style="gap:16px;">'
       +         '<div class="eco-card" style="border-left:4px solid #3b82f6;">'
       +           '<div class="eco-card-head">'
-      +             '<h2>📌 Pagos Fijos Pendientes de Validar</h2>'
+      +             '<h2>⏳ Por confirmar / validar (ordenado por fecha)</h2>'
       +           '</div>'
-      +           '<div id="ecoPagosPendientes"></div>'
+      +           '<div id="ecoListaUnificada"></div>'
       +         '</div>'
       +         '<div class="eco-card">'
       +           '<div class="eco-card-head">'
-      +             '<h2>Movimientos reales del ciclo</h2>'
+      +             '<h2>🧾 Movimientos reales del ciclo</h2>'
       +           '</div>'
       +           '<div id="ecoRealLista"></div>'
       +         '</div>'
       +       '</div>'
       +     '</div>'
+
+      // ================= PREVISIÓN =================
       +     '<div class="eco-panel" data-panel="prevision">'
       +       '<section class="eco-kpis" style="margin-bottom:20px;">'
-      +         '<div class="eco-kpi eco-kpi-ingreso">'
-      +           '<span class="eco-kpi-label">Ingreso base</span>'
-      +           '<span class="eco-kpi-valor" id="ecoKpiIngreso">—</span>'
-      +           '<span class="eco-kpi-sub" id="ecoKpiIngresoSub">—</span>'
-      +         '</div>'
-      +         '<div class="eco-kpi eco-kpi-gasto">'
-      +           '<span class="eco-kpi-label">Gastos fijos (Previsión)</span>'
-      +           '<span class="eco-kpi-valor" id="ecoKpiGasto">—</span>'
-      +           '<span class="eco-kpi-sub" id="ecoKpiGastoSub">—</span>'
-      +         '</div>'
-      +         '<div class="eco-kpi eco-kpi-balance">'
-      +           '<span class="eco-kpi-label">Balance previsto</span>'
-      +           '<span class="eco-kpi-valor" id="ecoKpiBalance">—</span>'
-      +           '<span class="eco-kpi-sub" id="ecoKpiBalanceSub">—</span>'
-      +         '</div>'
+      +         '<div class="eco-kpi eco-kpi-ingreso"><span class="eco-kpi-label">Ingreso base</span><span class="eco-kpi-valor" id="ecoKpiIngreso">—</span><span class="eco-kpi-sub" id="ecoKpiIngresoSub">—</span></div>'
+      +         '<div class="eco-kpi eco-kpi-gasto"><span class="eco-kpi-label">Gastos fijos</span><span class="eco-kpi-valor" id="ecoKpiGasto">—</span><span class="eco-kpi-sub" id="ecoKpiGastoSub">—</span></div>'
+      +         '<div class="eco-kpi eco-kpi-balance"><span class="eco-kpi-label">Balance previsto</span><span class="eco-kpi-valor" id="ecoKpiBalance">—</span><span class="eco-kpi-sub" id="ecoKpiBalanceSub">—</span></div>'
       +       '</section>'
-      +     '</div>'
-
-      // ================= PANELES DE PREVISIÓN (Hermanos, no anidados) =================
-      +     '<div class="eco-tabs" style="margin-bottom:16px; display:none;" id="ecoSubTabsPrev">'
+      +       '<div class="eco-tabs" style="margin-bottom:16px;" id="ecoSubTabsPrev">'
       +         '<button class="eco-tab eco-tab-activa" data-tab="prev-ingresos">Ingresos Fijos</button>'
       +         '<button class="eco-tab" data-tab="prev-gastos">Gastos Fijos</button>'
       +         '<button class="eco-tab" data-tab="prev-objetivos">Objetivos</button>'
       +         '<button class="eco-tab" data-tab="prev-presupuesto">Presupuesto 50/30/20</button>'
+      +       '</div>'
       +     '</div>'
 
+      // ================= PANELES DE PREVISIÓN =================
       +     '<div class="eco-panel" data-panel="prev-ingresos">'
       +       '<div class="eco-card"><div class="eco-card-head"><h2>Ingresos fijos</h2><button class="eco-btn eco-btn-primario" data-nuevo="ingreso-fijo"><i class="fas fa-plus"></i> Añadir</button></div><div id="ecoIngresosFijos"></div></div>'
       +     '</div>'
@@ -139,8 +133,6 @@ window.EconomiaTemplate = (function() {
       +   '</div>'
       + '</div>';
   }
-
   return { html: html };
 })();
-
 console.log('✅ EconomiaTemplate cargado');

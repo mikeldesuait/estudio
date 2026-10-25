@@ -1,5 +1,5 @@
 /* ============================================================
-   ECONOMIA — Lógica Real vs Previsión (Completo)
+   ECONOMIA — Lógica Definitiva (Vista de Mando)
    ============================================================ */
 
 window.Economia = (function() {
@@ -81,6 +81,8 @@ window.Economia = (function() {
       if (btnBorrar) { e.preventDefault(); if (confirm('¿Borrar este elemento?')) State.removeItem(btnBorrar.dataset.coleccion, btnBorrar.dataset.borrar); return; }
       var btnAportar = e.target.closest('[data-aportar]');
       if (btnAportar) { e.preventDefault(); aportarAObjetivo(btnAportar.dataset.aportar); return; }
+      var btnCobrar = e.target.closest('[data-cobrar]');
+      if (btnCobrar) { e.preventDefault(); abrirModalCobrar(btnCobrar.dataset.cobrar); return; }
       var btnPagar = e.target.closest('[data-pagar]');
       if (btnPagar) { e.preventDefault(); abrirModalPagar(btnPagar.dataset.pagar); return; }
     });
@@ -96,17 +98,36 @@ window.Economia = (function() {
   }
 
   function renderTodo() {
-    // Limpiar pagados si cambiamos de ciclo
     var ultimoCiclo = localStorage.getItem('eco_ultimo_ciclo_pagado');
     if (ultimoCiclo !== mesActualYM) {
       var gastosFijos = State.get().gastos.filter(function(g){ return g.periodicidad !== 'puntual'; });
-      gastosFijos.forEach(function(g){
-        if (g.pagado) State.updateItem('gastos', g.id, { pagado: false });
-      });
+      gastosFijos.forEach(function(g){ if (g.pagado) State.updateItem('gastos', g.id, { pagado: false }); });
+      var ingresosFijos = State.get().ingresosFijos || [];
+      ingresosFijos.forEach(function(i){ if (i.pagado) State.updateItem('ingresosFijos', i.id, { pagado: false }); });
       localStorage.setItem('eco_ultimo_ciclo_pagado', mesActualYM);
     }
 
     contenedor.querySelector('#ecoMesActual').textContent = U.nombreMes(mesActualYM);
+    
+    var headerAcciones = contenedor.querySelector('.eco-header-acciones');
+    if (headerAcciones && !contenedor.querySelector('#ecoResetPagos')) {
+      var btnReset = document.createElement('button');
+      btnReset.className = 'eco-btn eco-btn-ghost';
+      btnReset.id = 'ecoResetPagos';
+      btnReset.innerHTML = '<i class="fas fa-sync-alt" title="Reiniciar pagos del ciclo"></i>';
+      btnReset.title = 'Volver a marcar todos los gastos e ingresos como pendientes';
+      btnReset.addEventListener('click', function() {
+        if (!confirm('¿Volver a marcar TODOS los pagos e ingresos como pendientes?')) return;
+        var gastos = State.get().gastos.filter(function(g){ return g.periodicidad !== 'puntual'; });
+        gastos.forEach(function(g){ if(g.pagado) State.updateItem('gastos', g.id, { pagado: false }); });
+        var ingresos = State.get().ingresosFijos || [];
+        ingresos.forEach(function(i){ if(i.pagado) State.updateItem('ingresosFijos', i.id, { pagado: false }); });
+        localStorage.removeItem('eco_ultimo_ciclo_pagado');
+        location.reload();
+      });
+      headerAcciones.insertBefore(btnReset, headerAcciones.firstChild);
+    }
+
     renderReal(); 
     renderPrevision();
   }
@@ -114,9 +135,15 @@ window.Economia = (function() {
   // ---------------- LÓGICA REAL ----------------
   function renderReal() {
     var base = State.get().saldoCuentas || 0;
-    var gastos = State.totalGastosPuntualesMes(mesActualYM);
-    var extras = State.totalIngresosExtraMes(mesActualYM);
-    var saldoVivo = base - gastos + extras;
+    
+    var movsCiclo = State.get().gastos.filter(function(g) {
+      var diaCobro = State.get().presupuesto.diaCobro || 1;
+      return g.periodicidad === 'puntual' && g.fecha && U.fechaEnCiclo(g.fecha, mesActualYM, diaCobro);
+    });
+
+    var ingresosReales = movsCiclo.filter(function(g) { return !g.necesario; }).reduce(function(acc, g) { return acc + (parseFloat(g.importe) || 0); }, 0);
+    var gastosReales = movsCiclo.filter(function(g) { return g.necesario; }).reduce(function(acc, g) { return acc + (parseFloat(g.importe) || 0); }, 0);
+    var saldoVivo = base + ingresosReales - gastosReales;
     
     var display = contenedor.querySelector('#ecoSaldoDisplay');
     if (display) { display.textContent = U.eur(saldoVivo); display.style.color = saldoVivo >= 0 ? '#10b981' : '#ef4444'; }
@@ -124,76 +151,90 @@ window.Economia = (function() {
     var inputBase = contenedor.querySelector('#ecoSaldoBase');
     if (inputBase && document.activeElement !== inputBase) inputBase.value = base;
 
-    var fijos = State.get().gastos.filter(function(g) { return g.periodicidad !== 'puntual'; });
-    var diaHoy = new Date();
-    diaHoy.setHours(0,0,0,0);
-    var fechaFinMes = new Date(diaHoy.getFullYear(), diaHoy.getMonth() + 1, 0);
+    var fijosGastos = State.get().gastos.filter(function(g) { return g.periodicidad !== 'puntual' && !g.pagado; });
+    var fijosIngresos = (State.get().ingresosFijos || []).filter(function(i) { return !i.pagado; });
     
-    var proximos5 = [];
-    var pendientes = [];
+    var todosPendientes = [];
+    var diaHoy = new Date(); diaHoy.setHours(0,0,0,0);
 
-    fijos.forEach(function(g) {
-      var fechaGasto = new Date(diaHoy.getFullYear(), diaHoy.getMonth(), g.diaCobro || 1);
-      if (fechaGasto < diaHoy) fechaGasto = new Date(diaHoy.getFullYear(), diaHoy.getMonth() + 1, g.diaCobro || 1);
-      
-      var diffDias = Math.ceil((fechaGasto.getTime() - diaHoy.getTime()) / (1000 * 3600 * 24));
-      if (diffDias >= 0 && diffDias <= 5 && !g.pagado) proximos5.push({ gasto: g, dias: diffDias, fecha: fechaGasto });
-      if (fechaGasto >= diaHoy && fechaGasto <= fechaFinMes && !g.pagado) pendientes.push({ gasto: g, fecha: fechaGasto });
+    function calcularFecha(diaVencimiento) {
+      var diaCobroCiclo = State.get().presupuesto.diaCobro || 1;
+      var f = new Date(diaHoy.getFullYear(), diaHoy.getMonth(), diaVencimiento);
+      if (diaVencimiento < diaCobroCiclo) {
+          f = new Date(diaHoy.getFullYear(), diaHoy.getMonth() + 1, diaVencimiento);
+      } else if (diaVencimiento >= diaCobroCiclo && diaHoy.getDate() < diaCobroCiclo) {
+          f = new Date(diaHoy.getFullYear(), diaHoy.getMonth() - 1, diaVencimiento);
+      }
+      return f;
+    }
+
+    fijosGastos.forEach(function(g) {
+      var f = calcularFecha(g.diaCobro || 1);
+      todosPendientes.push({ tipo: 'gasto', item: g, fecha: f, importe: U.aMensual(g.importe, g.periodicidad), nombre: g.nombre, cat: CATS[g.categoria] || {icono:'📦'} });
+    });
+    fijosIngresos.forEach(function(i) {
+      var f = calcularFecha(i.diaCobro || 1);
+      todosPendientes.push({ tipo: 'ingreso', item: i, fecha: f, importe: U.aMensual(i.importe, i.periodicidad), nombre: i.nombre, cat: {icono:'💼'} });
     });
 
-    // Avisos 5 días
-    var cajaAvisos = contenedor.querySelector('#ecoCardAvisos');
-    if (cajaAvisos) {
-      if (proximos5.length > 0) {
-        cajaAvisos.style.display = 'block';
-        var totalAviso = proximos5.reduce(function(acc, item) { return acc + U.aMensual(item.gasto.importe, item.gasto.periodicidad); }, 0);
-        contenedor.querySelector('#ecoAvisoTotal').textContent = U.eur(totalAviso);
-        contenedor.querySelector('#ecoAvisoLista').innerHTML = proximos5.map(function(item) {
-          var cuando = item.dias === 0 ? 'Hoy' : (item.dias === 1 ? 'Mañana' : 'En ' + item.dias + ' días');
-          return '<div style="display:flex; justify-content:space-between; border-bottom:1px dashed var(--border); padding-bottom:4px;"><div><strong>' + item.gasto.nombre + '</strong><br><span style="color:var(--text-2); font-size:11px;">' + cuando + '</span></div><div style="font-weight:600;">-' + U.eur(item.gasto.importe) + '</div></div>';
-        }).join('');
-      } else {
-        cajaAvisos.style.display = 'none';
-      }
-    }
+    todosPendientes.sort(function(a, b) { return a.fecha - b.fecha; });
 
-    // Pendientes ciclo
-    var totalPendiente = pendientes.reduce(function(acc, item) { return acc + U.aMensual(item.gasto.importe, item.gasto.periodicidad); }, 0);
-    var teQueda = saldoVivo - totalPendiente;
+    var totalGastos = 0, totalIngresos = 0, total5diasGastos = 0, total5diasIngresos = 0;
     
-    var elTotalPend = contenedor.querySelector('#ecoRealPendienteTotal');
-    var elTeQueda = contenedor.querySelector('#ecoRealTeQueda');
-    if (elTotalPend && elTeQueda) {
-      elTotalPend.textContent = U.eur(totalPendiente);
-      elTeQueda.textContent = U.eur(teQueda);
-      elTeQueda.style.color = teQueda >= 0 ? '#10b981' : '#ef4444';
-    }
+    todosPendientes.forEach(function(p) {
+      if (p.tipo === 'gasto') totalGastos += p.importe;
+      else totalIngresos += p.importe;
 
-    // Lista pagos pendientes (Checklist)
-    var listaPendientes = contenedor.querySelector('#ecoPagosPendientes');
-    var fijosPendientes = fijos.filter(function(g) { return !g.pagado; });
-    if (listaPendientes) {
-      if (fijosPendientes.length === 0) {
-        listaPendientes.innerHTML = '<div class="eco-vacio">No hay pagos fijos pendientes. ¡Todo al día!</div>';
-      } else {
-        listaPendientes.innerHTML = '<div class="eco-lista">' + fijosPendientes.map(function(g) {
-          var cat = CATS[g.categoria] || { icono: '📦', nombre: 'Otros' };
-          return '<div class="eco-item"><div class="eco-item-cat">' + cat.icono + '</div><div class="eco-item-info"><div class="eco-item-nombre">' + g.nombre + '</div><div class="eco-item-meta">' + cat.nombre + ' · Vence día ' + (g.diaCobro || 1) + '</div></div><div class="eco-item-importe">' + U.eur(g.importe) + '</div><div class="eco-item-acciones"><button class="eco-btn eco-btn-primario" data-pagar="' + g.id + '" style="padding:4px 8px; font-size:12px;"><i class="fas fa-check"></i> Validar pago</button></div></div>';
-        }).join('') + '</div>';
+      var diff = Math.ceil((p.fecha.getTime() - diaHoy.getTime()) / (1000 * 3600 * 24));
+      if (diff <= 5) {
+        if (p.tipo === 'gasto') total5diasGastos += p.importe;
+        else total5diasIngresos += p.importe;
       }
+    });
+
+    var total5dias = total5diasGastos + total5diasIngresos;
+    var previsionFinal = saldoVivo + totalIngresos - totalGastos;
+
+    contenedor.querySelector('#ecoAvisoTotal').textContent = U.eur(total5dias);
+    contenedor.querySelector('#ecoAvisoLista').innerHTML = todosPendientes.filter(function(p){
+      return Math.ceil((p.fecha.getTime() - diaHoy.getTime()) / (1000 * 3600 * 24)) <= 5;
+    }).length + ' movimientos próximos';
+    
+    contenedor.querySelector('#ecoRealPendienteTotal').textContent = U.eur(totalGastos);
+    contenedor.querySelector('#ecoRealIngresoTotal').textContent = U.eur(totalIngresos);
+    var elTeQueda = contenedor.querySelector('#ecoRealTeQueda');
+    elTeQueda.textContent = U.eur(previsionFinal);
+    elTeQueda.style.color = previsionFinal >= 0 ? '#3b82f6' : '#ef4444';
+
+    var lista = contenedor.querySelector('#ecoListaUnificada');
+    if (todosPendientes.length === 0) {
+      lista.innerHTML = '<div class="eco-vacio">No hay pagos ni ingresos pendientes. ¡Todo al día!</div>';
+    } else {
+      lista.innerHTML = '<div class="eco-lista">' + todosPendientes.map(function(p) {
+        var diff = Math.ceil((p.fecha.getTime() - diaHoy.getTime()) / (1000 * 3600 * 24));
+        var fechaStr = p.fecha.getDate() + '/' + (p.fecha.getMonth()+1);
+        var alerta = diff < 0 ? '<span style="color:#ef4444;font-weight:700;">Vencida</span>' : (diff === 0 ? 'Hoy' : 'En ' + diff + ' días');
+        var color = p.tipo === 'ingreso' ? '#10b981' : '#ef4444';
+        var btnAccion = p.tipo === 'ingreso' 
+          ? '<button class="eco-btn eco-btn-primario" data-cobrar="' + p.item.id + '" style="padding:4px 8px; font-size:12px; background:#10b981;"><i class="fas fa-check"></i> Confirmar</button>'
+          : '<button class="eco-btn eco-btn-primario" data-pagar="' + p.item.id + '" style="padding:4px 8px; font-size:12px;"><i class="fas fa-check"></i> Validar</button>';
+
+        return '<div class="eco-item">'
+          + '<div class="eco-item-cat">' + p.cat.icono + '</div>'
+          + '<div class="eco-item-info"><div class="eco-item-nombre">' + p.nombre + '</div><div class="eco-item-meta">' + fechaStr + ' · ' + alerta + '</div></div>'
+          + '<div class="eco-item-importe" style="color:'+color+';">' + (p.tipo==='ingreso'?'+':'-') + ' ' + U.eur(p.importe) + '</div>'
+          + '<div class="eco-item-acciones">' + btnAccion + '</div>'
+          + '</div>';
+      }).join('') + '</div>';
     }
 
-    // Lista movimientos reales
-    var lista = contenedor.querySelector('#ecoRealLista');
-    var movs = State.get().gastos.filter(function(g) {
-      var diaCobro = State.get().presupuesto.diaCobro || 1;
-      return g.periodicidad === 'puntual' && g.fecha && U.fechaEnCiclo(g.fecha, mesActualYM, diaCobro);
-    }).sort(function(a,b) { return b.fecha.localeCompare(a.fecha); });
+    var listaReal = contenedor.querySelector('#ecoRealLista');
+    var movs = movsCiclo.sort(function(a,b) { return b.fecha.localeCompare(a.fecha); });
     
     if (movs.length === 0) {
-      lista.innerHTML = '<div class="eco-vacio">Aún no has apuntado ningún movimiento este ciclo. Usa el botón ⚡.</div>';
+      listaReal.innerHTML = '<div class="eco-vacio">Aún no has apuntado ningún movimiento este ciclo. Usa el botón ⚡.</div>';
     } else {
-      lista.innerHTML = '<div class="eco-lista">' + movs.map(function(item) {
+      listaReal.innerHTML = '<div class="eco-lista">' + movs.map(function(item) {
         var esIngreso = !item.necesario; 
         var cat = CATS[item.categoria] || { icono: '📦', nombre: 'Otros' };
         var signo = esIngreso ? '+' : '-';
@@ -290,6 +331,22 @@ window.Economia = (function() {
     contenedor.querySelector('#ecoModal').hidden = false;
   }
 
+  function abrirModalCobrar(id) {
+    var i = State.get().ingresosFijos.find(function(x) { return x.id === id; });
+    if (!i) return;
+    modalConfig = { tipo: 'cobrar', coleccion: 'ingresosFijos', item: i };
+    contenedor.querySelector('#ecoModalTitulo').textContent = 'Confirmar cobro: ' + i.nombre;
+    
+    var html = ''
+      + '<div class="eco-campo"><label>Importe real cobrado (€)</label><input type="number" step="0.01" id="inputCobroReal" value="' + i.importe + '" style="font-size:20px;font-weight:700;"></div>'
+      + '<div class="eco-campo"><label>Fecha de abono</label><input type="date" id="inputCobroFecha" value="' + U.hoy() + '"></div>'
+      + '<div class="eco-campo"><label>Notas (opcional)</label><input type="text" id="inputCobroNota" placeholder="ej: Horas extra, plus..."></div>'
+      + '<p style="font-size:12px;color:var(--text-2);margin-top:10px;">Al confirmar, se sumará a tu saldo real.</p>';
+    
+    contenedor.querySelector('#ecoModalBody').innerHTML = html;
+    contenedor.querySelector('#ecoModal').hidden = false;
+  }
+
   function abrirModalPagar(id) {
     var g = State.get().gastos.find(function(x) { return x.id === id; });
     if (!g) return;
@@ -321,6 +378,27 @@ window.Economia = (function() {
   function guardarModal() {
     if (!modalConfig) return;
     
+    if (modalConfig.tipo === 'cobrar') {
+      var impReal = parseFloat(contenedor.querySelector('#inputCobroReal').value) || 0;
+      var fechaCobro = contenedor.querySelector('#inputCobroFecha').value;
+      var notaCobro = contenedor.querySelector('#inputCobroNota').value.trim();
+      
+      State.updateItem('ingresosFijos', modalConfig.item.id, { pagado: true });
+      
+      State.addItem('gastos', {
+        nombre: modalConfig.item.nombre + ' (Cobrado)',
+        importe: impReal,
+        periodicidad: 'puntual',
+        fecha: fechaCobro,
+        categoria: 'otros',
+        necesario: false, // false significa que es ingreso
+        notas: notaCobro
+      });
+      
+      cerrarModal();
+      return;
+    }
+
     if (modalConfig.tipo === 'pagar') {
       var impReal = parseFloat(contenedor.querySelector('#inputPagoReal').value) || 0;
       var fechaPago = contenedor.querySelector('#inputPagoFecha').value;
@@ -418,9 +496,9 @@ window.Economia = (function() {
       if (!obj.nombre || obj.importe <= 0) { alert('Nombre e importe son obligatorios'); return null; }
       return obj;
     }
-    if (tipo === 'ingreso-fijo') { obj = { persona: val('persona'), nombre: val('nombre').trim(), importe: num('importe'), periodicidad: val('periodicidad'), diaCobro: num('diaCobro'), tipo: val('tipo'), activo: true }; if (!obj.nombre || obj.importe <= 0) { alert('Nombre e importe son obligatorios'); return null; } } 
-    if (tipo === 'gasto-puntual') { obj = { nombre: val('nombre').trim(), importe: num('importe'), periodicidad: 'puntual', fecha: val('fecha'), categoria: val('categoria'), necesario: chk('necesario') }; if (!obj.nombre || obj.importe <= 0) { alert('Nombre e importe son obligatorios'); return null; } return obj; }
+    if (tipo === 'ingreso-fijo') { obj = { persona: val('persona'), nombre: val('nombre').trim(), importe: num('importe'), periodicidad: val('periodicidad'), diaCobro: num('diaCobro'), tipo: val('tipo'), activo: true, pagado: false }; if (!obj.nombre || obj.importe <= 0) { alert('Nombre e importe son obligatorios'); return null; } } 
     if (tipo === 'gasto-fijo') { obj = { nombre: val('nombre').trim(), importe: num('importe'), periodicidad: val('periodicidad'), diaCobro: num('diaCobro'), categoria: val('categoria'), necesario: chk('necesario'), pagado: false }; if (!obj.nombre || obj.importe <= 0) { alert('Nombre e importe son obligatorios'); return null; } } 
+    if (tipo === 'gasto-puntual') { obj = { nombre: val('nombre').trim(), importe: num('importe'), periodicidad: 'puntual', fecha: val('fecha'), categoria: val('categoria'), necesario: chk('necesario') }; if (!obj.nombre || obj.importe <= 0) { alert('Nombre e importe son obligatorios'); return null; } return obj; }
     if (tipo === 'objetivo') { obj = { nombre: val('nombre').trim(), icono: val('icono') || '🎯', importeObjetivo: num('importeObjetivo'), importeActual: num('importeActual'), fechaLimite: val('fechaLimite') || null, color: val('color') || '#3b82f6', prioridad: 'media' }; if (!obj.nombre || obj.importeObjetivo <= 0) { alert('Nombre y objetivo son obligatorios'); return null; } }
     return obj;
   }
