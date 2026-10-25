@@ -21,7 +21,9 @@ window.Economia = (function() {
     ropa: { icono: '👕', nombre: 'Ropa' }, hogar: { icono: '🛋️', nombre: 'Hogar' }, 
     regalos: { icono: '🎁', nombre: 'Regalos' }, otros: { icono: '📦', nombre: 'Otros' },
     nomina: { icono: '💼', nombre: 'Nómina' }, extra: { icono: '💰', nombre: 'Extra' },
-    inversion: { icono: '📈', nombre: 'Inversión' }, prestamo: { icono: '🏦', nombre: 'Préstamo' }
+    inversion: { icono: '📈', nombre: 'Inversión' }, prestamo: { icono: '🏦', nombre: 'Préstamo' },
+    ayudas: { icono: '🏛️', nombre: 'Ayudas' }, devolucion: { icono: '🧾', nombre: 'Devolución' },
+    paga_hijos: { icono: '👶', nombre: 'Paga hijos' }
   };
 
   function montar(cont) {
@@ -321,7 +323,7 @@ window.Economia = (function() {
     var totalGeneral = 0;
     var anioActual = mesActualYM.split('-')[0]; 
 
-    State.get().gastos.filter(function(g) { return g.periodicidad !== 'puntual'; }).forEach(function(g) {
+    State.get().gastos.filter(function(g) { return g.periodicidad !== 'puntual' && g.necesario; }).forEach(function(g) {
       var cat = g.categoria || 'otros';
       var imp = U.aMensual(g.importe, g.periodicidad);
       if (vista === 'anio') {
@@ -371,6 +373,64 @@ window.Economia = (function() {
         + '</div>'
         + '</div>';
     }).join('') + '<div style="margin-top:16px; text-align:right; font-size:16px; font-weight:800; color:var(--text-1); border-top:1px solid var(--border); padding-top:12px;">Total Gastos: ' + U.eur(totalGeneral) + '</div>';
+
+    // --- CÁLCULO DE INGRESOS ---
+    var elIngresos = contenedor.querySelector('#ecoIngresosCategoriasLista');
+    if (elIngresos) {
+      var resumenIng = {};
+      var totalIngGeneral = 0;
+
+      // Ingresos fijos
+      (State.get().ingresosFijos || []).forEach(function(i) {
+        var cat = i.categoria || 'nomina';
+        var imp = U.aMensual(i.importe, i.periodicidad);
+        if (vista === 'anio') {
+          if (i.periodicidad === 'anual') imp = parseFloat(i.importe) || 0;
+          else imp = imp * 12;
+        }
+        if (!resumenIng[cat]) resumenIng[cat] = 0;
+        resumenIng[cat] += imp;
+        totalIngGeneral += imp;
+      });
+
+      // Ingresos puntuales (validados)
+      State.get().gastos.filter(function(g) {
+        if (g.periodicidad !== 'puntual' || g.necesario || !g.fecha) return false;
+        if (vista === 'anio') {
+          return g.fecha.startsWith(anioActual);
+        } else {
+          return U.fechaEnCiclo(g.fecha, mesActualYM, diaCobro);
+        }
+      }).forEach(function(g) {
+        var cat = g.categoria || 'nomina';
+        var imp = parseFloat(g.importe) || 0;
+        if (!resumenIng[cat]) resumenIng[cat] = 0;
+        resumenIng[cat] += imp;
+        totalIngGeneral += imp;
+      });
+
+      var catsIngOrdenadas = Object.keys(resumenIng).sort(function(a, b) { return resumenIng[b] - resumenIng[a]; });
+
+      if (catsIngOrdenadas.length === 0) {
+        elIngresos.innerHTML = '<div class="eco-vacio">No hay ingresos registrados.</div>';
+      } else {
+        elIngresos.innerHTML = catsIngOrdenadas.map(function(cat) {
+          var info = CATS[cat] || { icono: '💼', nombre: cat };
+          var importe = resumenIng[cat];
+          var pct = totalIngGeneral > 0 ? (importe / totalIngGeneral) * 100 : 0;
+          
+          return '<div>'
+            + '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; font-size:14px;">'
+            +   '<div style="font-weight:600; color:var(--text-1);">' + info.icono + ' ' + (info.nombre || cat) + '</div>'
+            +   '<div style="font-weight:600; color:var(--text-1);">' + U.eur(importe) + ' <span style="font-weight:400; font-size:12px; color:var(--text-2);">(' + pct.toFixed(0) + '%)</span></div>'
+            + '</div>'
+            + '<div style="height:8px; background:var(--border); border-radius:4px; overflow:hidden;">'
+            +   '<div style="height:100%; width:' + pct + '%; background:#10b981; border-radius:4px;"></div>'
+            + '</div>'
+            + '</div>';
+        }).join('') + '<div style="margin-top:16px; text-align:right; font-size:16px; font-weight:800; color:var(--text-1); border-top:1px solid var(--border); padding-top:12px;">Total Ingresos: ' + U.eur(totalIngGeneral) + '</div>';
+      }
+    }
   }
 
   // ---------------- MODAL ----------------
