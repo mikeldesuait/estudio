@@ -26,6 +26,7 @@ window.EconomiaTemplate = (function() {
       +   '<nav class="eco-tabs" style="border-bottom: 2px solid var(--border); margin-bottom: 20px;">'
       +     '<button class="eco-tab eco-tab-activa" data-tab="real" style="font-size:16px;padding:12px 24px;">💶 Economía Real (Día a día)</button>'
       +     '<button class="eco-tab" data-tab="prevision" style="font-size:16px;padding:12px 24px;">📊 Previsión y Presupuesto</button>'
+      +     '<button class="eco-tab" data-tab="categorias" style="font-size:16px;padding:12px 24px;">📈 Gastos por Categoría</button>'
       +   '</nav>'
 
       +   '<section class="eco-paneles">'
@@ -114,6 +115,23 @@ window.EconomiaTemplate = (function() {
       +       '<div class="eco-card"><div id="ecoPresupuesto"></div></div>'
       +     '</div>'
 
+      // ================= PANEL DE CATEGORÍAS =================
+      +     '<div class="eco-panel" data-panel="categorias">'
+      +       '<div class="eco-card">'
+      +         '<div class="eco-card-head">'
+      +           '<div>'
+      +             '<h2>📊 Resumen de Gastos por Categoría</h2>'
+      +             '<div style="font-size:12px; color:var(--text-2);">Incluye gastos validados + previsiones pendientes</div>'
+      +           '</div>'
+      +           '<select id="ecoSelectorCategorias" style="padding:6px 10px; border:1px solid var(--border); border-radius:6px; font-family:inherit; font-size:13px; background:var(--bg); color:var(--text-1); cursor:pointer;">'
+      +             '<option value="ciclo">Ver este Ciclo</option>'
+      +             '<option value="anio">Ver Año Completo</option>'
+      +           '</select>'
+      +         '</div>'
+      +         '<div id="ecoCategoriasLista" style="display:flex; flex-direction:column; gap:12px; margin-top:16px;"></div>'
+      +       '</div>'
+      +     '</div>'
+
       +   '</section>'
 
       // ---- MODAL ----
@@ -131,7 +149,7 @@ window.EconomiaTemplate = (function() {
       +       '</footer>'
       +     '</div>'
       +   '</div>'
-      +   '<div style="text-align:right; font-size:11px; color:var(--text-2); opacity:0.5; margin-top:20px; padding-right:10px;">v.1.2</div>'
+      +   '<div style="text-align:right; font-size:11px; color:var(--text-2); opacity:0.5; margin-top:20px; padding-right:10px;">v.1.3</div>'
       + '</div>';
   }
   return { html: html };

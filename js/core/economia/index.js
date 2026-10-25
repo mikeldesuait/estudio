@@ -63,6 +63,10 @@ window.Economia = (function() {
       url.searchParams.set('v', Date.now()); // Añade un parámetro de tiempo para saltar caché
       window.location.href = url.toString();
     });
+    var selectorCat = contenedor.querySelector('#ecoSelectorCategorias');
+    if (selectorCat) {
+      selectorCat.addEventListener('change', function() { renderCategorias(); });
+    }
     contenedor.querySelector('#ecoExportar').addEventListener('click', exportar);
     contenedor.querySelector('#ecoImportar').addEventListener('click', importar);
     contenedor.querySelector('#ecoReset').addEventListener('click', resetear);
@@ -127,6 +131,77 @@ window.Economia = (function() {
 
     renderReal(); 
     renderPrevision();
+    renderCategorias();
+  }
+
+  function renderCategorias() {
+    var el = contenedor.querySelector('#ecoCategoriasLista');
+    if (!el) return;
+
+    var vista = 'ciclo';
+    var sel = contenedor.querySelector('#ecoSelectorCategorias');
+    if (sel) vista = sel.value;
+
+    var resumen = {};
+    var totalGeneral = 0;
+    var anioActual = mesActualYM.split('-')[0]; // Ej: 2026
+
+    // 1. Gastos fijos
+    State.get().gastos.filter(function(g) { return g.periodicidad !== 'puntual'; }).forEach(function(g) {
+      var cat = g.categoria || 'otros';
+      var imp = U.aMensual(g.importe, g.periodicidad);
+      
+      if (vista === 'anio') {
+        if (g.periodicidad === 'anual') imp = parseFloat(g.importe) || 0; // Suma la factura entera
+        else imp = imp * 12; // Si es mensual o trimestral, lo pasamos a anual
+      }
+      
+      if (!resumen[cat]) resumen[cat] = 0;
+      resumen[cat] += imp;
+      totalGeneral += imp;
+    });
+
+    // 2. Gastos puntuales
+    var diaCobro = State.get().presupuesto.diaCobro || 1;
+    State.get().gastos.filter(function(g) {
+      if (g.periodicidad !== 'puntual' || !g.necesario || !g.fecha) return false;
+      if (vista === 'anio') {
+        return g.fecha.startsWith(anioActual); // Todos los del año
+      } else {
+        return U.fechaEnCiclo(g.fecha, mesActualYM, diaCobro); // Solo el ciclo
+      }
+    }).forEach(function(g) {
+      var cat = g.categoria || 'otros';
+      var imp = parseFloat(g.importe) || 0;
+      if (!resumen[cat]) resumen[cat] = 0;
+      resumen[cat] += imp;
+      totalGeneral += imp;
+    });
+
+    // 2. Ordenar de mayor a menor gasto
+    var categoriasOrdenadas = Object.keys(resumen).sort(function(a, b) { return resumen[b] - resumen[a]; });
+
+    if (categoriasOrdenadas.length === 0) {
+      el.innerHTML = '<div class="eco-vacio">No hay gastos registrados este ciclo.</div>';
+      return;
+    }
+
+    // 3. Pintar las barras de progreso
+    el.innerHTML = categoriasOrdenadas.map(function(cat) {
+      var info = CATS[cat] || { icono: '📦', nombre: cat };
+      var importe = resumen[cat];
+      var pct = totalGeneral > 0 ? (importe / totalGeneral) * 100 : 0;
+      
+      return '<div>'
+        + '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; font-size:14px;">'
+        +   '<div style="font-weight:600; color:var(--text-1);">' + info.icono + ' ' + (info.nombre || cat) + '</div>'
+        +   '<div style="font-weight:600; color:var(--text-1);">' + U.eur(importe) + ' <span style="font-weight:400; font-size:12px; color:var(--text-2);">(' + pct.toFixed(0) + '%)</span></div>'
+        + '</div>'
+        + '<div style="height:8px; background:var(--border); border-radius:4px; overflow:hidden;">'
+        +   '<div style="height:100%; width:' + pct + '%; background:#3b82f6; border-radius:4px;"></div>'
+        + '</div>'
+        + '</div>';
+    }).join('') + '<div style="margin-top:16px; text-align:right; font-size:16px; font-weight:800; color:var(--text-1); border-top:1px solid var(--border); padding-top:12px;">Total Gastos: ' + U.eur(totalGeneral) + '</div>';
   }
 
   // ---------------- LÓGICA REAL ----------------
