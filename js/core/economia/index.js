@@ -1,5 +1,5 @@
 /* ============================================================
-   ECONOMIA — Lógica Definitiva (Caja Real y Previsión)
+   ECONOMIA — Lógica Definitiva (Caja Real y Previsión v1.4)
    ============================================================ */
 
 window.Economia = (function() {
@@ -11,8 +11,18 @@ window.Economia = (function() {
   var mesActualYM = U.mesActual();
   var modalConfig = null;
 
-  var CATS = { vivienda: { icono: '🏠' }, suministros: { icono: '💡' }, telecom: { icono: '📱' }, seguros: { icono: '🛡️' }, suscripciones: { icono: '📺' }, deudas: { icono: '💳' }, educacion: { icono: '🎓' }, salud: { icono: '🏥' }, transporte: { icono: '🚗' }, comida: { icono: '🍔' }, ocio: { icono: '🎉' }, restaurantes: { icono: '🍽️' }, ropa: { icono: '👕' }, hogar: { icono: '🛋️' }, regalos: { icono: '🎁' }, otros: { icono: '📦' } };
-  var PERSONAS_DEF = [{ id: 'miguel', nombre: 'Miguel' }, { id: 'pareja', nombre: 'Pareja' }, { id: 'compartido', nombre: 'Compartido' }];
+  var CATS = { 
+    vivienda: { icono: '🏠', nombre: 'Vivienda' }, suministros: { icono: '💡', nombre: 'Suministros' }, 
+    telecom: { icono: '📱', nombre: 'Telecom' }, seguros: { icono: '🛡️', nombre: 'Seguros' }, 
+    suscripciones: { icono: '📺', nombre: 'Suscripciones' }, deudas: { icono: '💳', nombre: 'Deudas' }, 
+    educacion: { icono: '🎓', nombre: 'Educación' }, salud: { icono: '🏥', nombre: 'Salud' }, 
+    transporte: { icono: '🚗', nombre: 'Transporte' }, comida: { icono: '🍔', nombre: 'Comida' }, 
+    ocio: { icono: '🎉', nombre: 'Ocio' }, restaurantes: { icono: '🍽️', nombre: 'Restaurantes' }, 
+    ropa: { icono: '👕', nombre: 'Ropa' }, hogar: { icono: '🛋️', nombre: 'Hogar' }, 
+    regalos: { icono: '🎁', nombre: 'Regalos' }, otros: { icono: '📦', nombre: 'Otros' },
+    nomina: { icono: '💼', nombre: 'Nómina' }, extra: { icono: '💰', nombre: 'Extra' },
+    inversion: { icono: '📈', nombre: 'Inversión' }, prestamo: { icono: '🏦', nombre: 'Préstamo' }
+  };
 
   function montar(cont) {
     contenedor = cont;
@@ -57,16 +67,13 @@ window.Economia = (function() {
 
     contenedor.querySelector('#ecoMesPrev').addEventListener('click', function() { cambiarMes(-1); });
     contenedor.querySelector('#ecoMesNext').addEventListener('click', function() { cambiarMes(1); });
+    
     contenedor.querySelector('#ecoActualizar').addEventListener('click', function() {
-      // Recarga forzada ignorando la caché pero manteniendo el localStorage intacto
       var url = new URL(window.location.href);
-      url.searchParams.set('v', Date.now()); // Añade un parámetro de tiempo para saltar caché
+      url.searchParams.set('v', Date.now());
       window.location.href = url.toString();
     });
-    var selectorCat = contenedor.querySelector('#ecoSelectorCategorias');
-    if (selectorCat) {
-      selectorCat.addEventListener('change', function() { renderCategorias(); });
-    }
+    
     contenedor.querySelector('#ecoExportar').addEventListener('click', exportar);
     contenedor.querySelector('#ecoImportar').addEventListener('click', importar);
     contenedor.querySelector('#ecoReset').addEventListener('click', resetear);
@@ -77,6 +84,11 @@ window.Economia = (function() {
         var val = parseFloat(e.target.value) || 0;
         State.setSaldo(val);
       });
+    }
+
+    var selectorCat = contenedor.querySelector('#ecoSelectorCategorias');
+    if (selectorCat) {
+      selectorCat.addEventListener('change', function() { renderCategorias(); });
     }
 
     contenedor.addEventListener('click', function(e) {
@@ -134,76 +146,6 @@ window.Economia = (function() {
     renderCategorias();
   }
 
-  function renderCategorias() {
-    var el = contenedor.querySelector('#ecoCategoriasLista');
-    if (!el) return;
-
-    var vista = 'ciclo';
-    var sel = contenedor.querySelector('#ecoSelectorCategorias');
-    if (sel) vista = sel.value;
-
-    var resumen = {};
-    var totalGeneral = 0;
-    var anioActual = mesActualYM.split('-')[0]; // Ej: 2026
-
-    // 1. Gastos fijos
-    State.get().gastos.filter(function(g) { return g.periodicidad !== 'puntual'; }).forEach(function(g) {
-      var cat = g.categoria || 'otros';
-      var imp = U.aMensual(g.importe, g.periodicidad);
-      
-      if (vista === 'anio') {
-        if (g.periodicidad === 'anual') imp = parseFloat(g.importe) || 0; // Suma la factura entera
-        else imp = imp * 12; // Si es mensual o trimestral, lo pasamos a anual
-      }
-      
-      if (!resumen[cat]) resumen[cat] = 0;
-      resumen[cat] += imp;
-      totalGeneral += imp;
-    });
-
-    // 2. Gastos puntuales
-    var diaCobro = State.get().presupuesto.diaCobro || 1;
-    State.get().gastos.filter(function(g) {
-      if (g.periodicidad !== 'puntual' || !g.necesario || !g.fecha) return false;
-      if (vista === 'anio') {
-        return g.fecha.startsWith(anioActual); // Todos los del año
-      } else {
-        return U.fechaEnCiclo(g.fecha, mesActualYM, diaCobro); // Solo el ciclo
-      }
-    }).forEach(function(g) {
-      var cat = g.categoria || 'otros';
-      var imp = parseFloat(g.importe) || 0;
-      if (!resumen[cat]) resumen[cat] = 0;
-      resumen[cat] += imp;
-      totalGeneral += imp;
-    });
-
-    // 2. Ordenar de mayor a menor gasto
-    var categoriasOrdenadas = Object.keys(resumen).sort(function(a, b) { return resumen[b] - resumen[a]; });
-
-    if (categoriasOrdenadas.length === 0) {
-      el.innerHTML = '<div class="eco-vacio">No hay gastos registrados este ciclo.</div>';
-      return;
-    }
-
-    // 3. Pintar las barras de progreso
-    el.innerHTML = categoriasOrdenadas.map(function(cat) {
-      var info = CATS[cat] || { icono: '📦', nombre: cat };
-      var importe = resumen[cat];
-      var pct = totalGeneral > 0 ? (importe / totalGeneral) * 100 : 0;
-      
-      return '<div>'
-        + '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; font-size:14px;">'
-        +   '<div style="font-weight:600; color:var(--text-1);">' + info.icono + ' ' + (info.nombre || cat) + '</div>'
-        +   '<div style="font-weight:600; color:var(--text-1);">' + U.eur(importe) + ' <span style="font-weight:400; font-size:12px; color:var(--text-2);">(' + pct.toFixed(0) + '%)</span></div>'
-        + '</div>'
-        + '<div style="height:8px; background:var(--border); border-radius:4px; overflow:hidden;">'
-        +   '<div style="height:100%; width:' + pct + '%; background:#3b82f6; border-radius:4px;"></div>'
-        + '</div>'
-        + '</div>';
-    }).join('') + '<div style="margin-top:16px; text-align:right; font-size:16px; font-weight:800; color:var(--text-1); border-top:1px solid var(--border); padding-top:12px;">Total Gastos: ' + U.eur(totalGeneral) + '</div>';
-  }
-
   // ---------------- LÓGICA REAL ----------------
   function renderReal() {
     var base = State.get().saldoCuentas || 0;
@@ -223,7 +165,6 @@ window.Economia = (function() {
     var inputBase = contenedor.querySelector('#ecoSaldoBase');
     if (inputBase && document.activeElement !== inputBase) inputBase.value = base;
 
-    // Fijos pendientes y totales
     var fijosGastos = State.get().gastos.filter(function(g) { return g.periodicidad !== 'puntual'; });
     var fijosIngresos = State.get().ingresosFijos || [];
     
@@ -243,7 +184,6 @@ window.Economia = (function() {
     var totalIngresosCiclo = totalIngresosPend + totalIngresosPagados;
     var previsionFinal = saldoVivo + totalIngresosPend - totalGastosPend;
 
-    // Actualizar Tarjetas
     var elG = contenedor.querySelector('#ecoRealGastosPend');
     if (elG) elG.innerHTML = U.eur(totalGastosPend) + ' <span style="font-size:12px;font-weight:400;color:var(--text-2);">pendientes</span>';
     var elGT = contenedor.querySelector('#ecoRealGastosTotalCiclo');
@@ -257,7 +197,6 @@ window.Economia = (function() {
     var elP = contenedor.querySelector('#ecoRealPrevision');
     if (elP) { elP.textContent = U.eur(previsionFinal); elP.style.color = previsionFinal >= 0 ? '#3b82f6' : '#ef4444'; }
 
-    // Rellenar listas de los desplegables
     var listaGastos = contenedor.querySelector('#ecoRealGastosLista');
     if (listaGastos) {
       if (fijosGastos.length === 0) listaGastos.innerHTML = '<div style="font-size:12px;color:var(--text-2);">Sin gastos fijos definidos.</div>';
@@ -274,10 +213,11 @@ window.Economia = (function() {
     if (listaIngresos) {
       if (fijosIngresos.length === 0) listaIngresos.innerHTML = '<div style="font-size:12px;color:var(--text-2);">Sin ingresos fijos definidos.</div>';
       else listaIngresos.innerHTML = fijosIngresos.map(function(i) {
+        var cat = CATS[i.categoria] || { icono: '💼' };
         var check = i.pagado ? '<span style="color:#10b981; font-weight:bold; margin-right:8px; font-size:16px;">✓</span>' : '<span style="color:var(--text-2); margin-right:8px; font-size:16px;">○</span>';
         var estilo = i.pagado ? 'text-decoration:line-through; opacity:0.6;' : '';
         var fecha = i.pagado ? '' : '<span style="color:#10b981; font-size:11px; margin-left:6px;">(Día ' + (i.diaCobro||1) + ')</span>';
-        return '<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border); font-size:13px;"><div style="'+estilo+'">'+check+'💼 '+i.nombre+fecha+'</div><div style="'+estilo+'color:#10b981; font-weight:600;">+'+U.eur(i.importe)+'</div></div>';
+        return '<div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px solid var(--border); font-size:13px;"><div style="'+estilo+'">'+check+cat.icono+' '+i.nombre+fecha+'</div><div style="'+estilo+'color:#10b981; font-weight:600;">+'+U.eur(i.importe)+'</div></div>';
       }).join('');
     }
 
@@ -328,10 +268,9 @@ window.Economia = (function() {
     
     el.innerHTML = '<div class="eco-lista">' + lista.map(function(item) {
       var cat = (CATS[item.categoria] || { icono: '📦', nombre: 'Otros' });
-      var per = PERSONAS_DEF.find(function(p) { return p.id === item.persona; });
       var meta = [];
-      if (tipo === 'ingreso-fijo') { meta.push(per ? per.nombre : item.persona); meta.push(item.periodicidad); } 
-      else { meta.push(cat.nombre); meta.push(item.periodicidad); }
+      meta.push(cat.nombre || cat.icono);
+      meta.push(item.periodicidad);
 
       return '<div class="eco-item"><div class="eco-item-cat">' + cat.icono + '</div><div class="eco-item-info"><div class="eco-item-nombre">' + item.nombre + '</div><div class="eco-item-meta">' + meta.join(' · ') + '</div></div><div class="eco-item-importe">' + U.eur(item.importe) + (item.periodicidad!=='mensual'?'<small>'+U.eur(U.aMensual(item.importe,item.periodicidad))+'/mes</small>':'') + '</div><div class="eco-item-acciones"><button class="eco-item-btn" data-editar="' + item.id + '" data-tipo="' + tipo + '" title="Editar"><i class="fas fa-pen"></i></button><button class="eco-item-btn eco-item-btn-peligro" data-borrar="' + item.id + '" data-coleccion="' + coleccion + '" title="Borrar"><i class="fas fa-trash"></i></button></div></div>';
     }).join('') + '</div>';
@@ -369,41 +308,76 @@ window.Economia = (function() {
     if (inDia) inDia.addEventListener('change', function(e) { var p = State.get().presupuesto; p.diaCobro = parseInt(e.target.value)||1; State.set('presupuesto', p); });
   }
 
+  // ---------------- CATEGORÍAS ----------------
+  function renderCategorias() {
+    var el = contenedor.querySelector('#ecoCategoriasLista');
+    if (!el) return;
+
+    var vista = 'ciclo';
+    var sel = contenedor.querySelector('#ecoSelectorCategorias');
+    if (sel) vista = sel.value;
+
+    var resumen = {};
+    var totalGeneral = 0;
+    var anioActual = mesActualYM.split('-')[0]; 
+
+    State.get().gastos.filter(function(g) { return g.periodicidad !== 'puntual'; }).forEach(function(g) {
+      var cat = g.categoria || 'otros';
+      var imp = U.aMensual(g.importe, g.periodicidad);
+      if (vista === 'anio') {
+        if (g.periodicidad === 'anual') imp = parseFloat(g.importe) || 0;
+        else imp = imp * 12;
+      }
+      if (!resumen[cat]) resumen[cat] = 0;
+      resumen[cat] += imp;
+      totalGeneral += imp;
+    });
+
+    var diaCobro = State.get().presupuesto.diaCobro || 1;
+    State.get().gastos.filter(function(g) {
+      if (g.periodicidad !== 'puntual' || !g.necesario || !g.fecha) return false;
+      if (vista === 'anio') {
+        return g.fecha.startsWith(anioActual);
+      } else {
+        return U.fechaEnCiclo(g.fecha, mesActualYM, diaCobro);
+      }
+    }).forEach(function(g) {
+      var cat = g.categoria || 'otros';
+      var imp = parseFloat(g.importe) || 0;
+      if (!resumen[cat]) resumen[cat] = 0;
+      resumen[cat] += imp;
+      totalGeneral += imp;
+    });
+
+    var categoriasOrdenadas = Object.keys(resumen).sort(function(a, b) { return resumen[b] - resumen[a]; });
+
+    if (categoriasOrdenadas.length === 0) {
+      el.innerHTML = '<div class="eco-vacio">No hay gastos registrados este ciclo.</div>';
+      return;
+    }
+
+    el.innerHTML = categoriasOrdenadas.map(function(cat) {
+      var info = CATS[cat] || { icono: '📦', nombre: cat };
+      var importe = resumen[cat];
+      var pct = totalGeneral > 0 ? (importe / totalGeneral) * 100 : 0;
+      
+      return '<div>'
+        + '<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; font-size:14px;">'
+        +   '<div style="font-weight:600; color:var(--text-1);">' + info.icono + ' ' + (info.nombre || cat) + '</div>'
+        +   '<div style="font-weight:600; color:var(--text-1);">' + U.eur(importe) + ' <span style="font-weight:400; font-size:12px; color:var(--text-2);">(' + pct.toFixed(0) + '%)</span></div>'
+        + '</div>'
+        + '<div style="height:8px; background:var(--border); border-radius:4px; overflow:hidden;">'
+        +   '<div style="height:100%; width:' + pct + '%; background:#3b82f6; border-radius:4px;"></div>'
+        + '</div>'
+        + '</div>';
+    }).join('') + '<div style="margin-top:16px; text-align:right; font-size:16px; font-weight:800; color:var(--text-1); border-top:1px solid var(--border); padding-top:12px;">Total Gastos: ' + U.eur(totalGeneral) + '</div>';
+  }
+
   // ---------------- MODAL ----------------
   function abrirModalNuevo(tipo) {
     modalConfig = { tipo: tipo, coleccion: coleccionDeTipo(tipo), item: null };
     contenedor.querySelector('#ecoModalTitulo').textContent = tipo === 'movimiento' ? 'Registro Rápido' : 'Añadir ' + tipo.replace('-',' ');
     contenedor.querySelector('#ecoModalBody').innerHTML = formHTML(tipo, {});
-    contenedor.querySelector('#ecoModal').hidden = false;
-  }
-
-  function abrirModalCobrar(id) {
-    var i = State.get().ingresosFijos.find(function(x) { return x.id === id; });
-    if (!i) return;
-    modalConfig = { tipo: 'cobrar', coleccion: 'ingresosFijos', item: i };
-    contenedor.querySelector('#ecoModalTitulo').textContent = 'Confirmar cobro: ' + i.nombre;
-    
-    var html = ''
-      + '<div class="eco-campo"><label>Importe real cobrado (€)</label><input type="number" step="0.01" id="inputCobroReal" value="' + i.importe + '" style="font-size:20px;font-weight:700;"></div>'
-      + '<div class="eco-campo"><label>Fecha de abono</label><input type="date" id="inputCobroFecha" value="' + U.hoy() + '"></div>'
-      + '<div class="eco-campo"><label>Notas (opcional)</label><input type="text" id="inputCobroNota" placeholder="ej: Horas extra..."></div>';
-    
-    contenedor.querySelector('#ecoModalBody').innerHTML = html;
-    contenedor.querySelector('#ecoModal').hidden = false;
-  }
-
-  function abrirModalPagar(id) {
-    var g = State.get().gastos.find(function(x) { return x.id === id; });
-    if (!g) return;
-    modalConfig = { tipo: 'pagar', coleccion: 'gastos', item: g };
-    contenedor.querySelector('#ecoModalTitulo').textContent = 'Validar pago: ' + g.nombre;
-    
-    var html = ''
-      + '<div class="eco-campo"><label>Importe real cobrado (€)</label><input type="number" step="0.01" id="inputPagoReal" value="' + g.importe + '" style="font-size:20px;font-weight:700;"></div>'
-      + '<div class="eco-campo"><label>Fecha de cargo</label><input type="date" id="inputPagoFecha" value="' + U.hoy() + '"></div>'
-      + '<div class="eco-campo"><label>Notas (opcional)</label><input type="text" id="inputPagoNota" placeholder="ej: Subida de precio..."></div>';
-    
-    contenedor.querySelector('#ecoModalBody').innerHTML = html;
     contenedor.querySelector('#ecoModal').hidden = false;
   }
 
@@ -422,29 +396,6 @@ window.Economia = (function() {
   function guardarModal() {
     if (!modalConfig) return;
     
-    if (modalConfig.tipo === 'cobrar' || modalConfig.tipo === 'pagar') {
-      var impReal = parseFloat(contenedor.querySelector('#input' + (modalConfig.tipo==='cobrar'?'Cobro':'Pago') + 'Real').value) || 0;
-      var fecha = contenedor.querySelector('#input' + (modalConfig.tipo==='cobrar'?'Cobro':'Pago') + 'Fecha').value;
-      var nota = contenedor.querySelector('#input' + (modalConfig.tipo==='cobrar'?'Cobro':'Pago') + 'Nota').value.trim();
-      var esIngreso = modalConfig.tipo === 'cobrar';
-      
-      var col = esIngreso ? 'ingresosFijos' : 'gastos';
-      State.updateItem(col, modalConfig.item.id, { pagado: true });
-      
-      State.addItem('gastos', {
-        nombre: modalConfig.item.nombre + (esIngreso ? ' (Cobrado)' : ' (Pagado)'),
-        importe: impReal,
-        periodicidad: 'puntual',
-        fecha: fecha,
-        categoria: esIngreso ? 'otros' : modalConfig.item.categoria,
-        necesario: !esIngreso,
-        notas: nota
-      });
-      
-      cerrarModal();
-      return;
-    }
-
     if (modalConfig.tipo === 'movimiento') {
       var tipoMov = contenedor.querySelector('#movTipo').value; 
       var imp = parseFloat(contenedor.querySelector('#movImporte').value) || 0;
@@ -456,7 +407,9 @@ window.Economia = (function() {
         var selectId = tipoMov === 'validar_ingreso' ? '#movFijoIngresoId' : '#movFijoGastoId';
         var idFijo = contenedor.querySelector(selectId).value;
         if (!idFijo) { alert('Selecciona un movimiento fijo'); return; }
+        
         State.updateItem(col, idFijo, { pagado: true });
+        
         State.addItem('gastos', {
           nombre: contenedor.querySelector(selectId + ' option:checked').text + (tipoMov==='validar_ingreso'?' (Cobrado)':' (Pagado)'),
           importe: imp,
@@ -503,7 +456,6 @@ window.Economia = (function() {
     
     if (tipo === 'movimiento') {
       campos.push('<div class="eco-campo"><label>Tipo de movimiento</label><select id="movTipo" onchange="var v=this.value; document.getElementById(\'divFijoGasto\').style.display=v===\'validar_gasto\'?\'block\':\'none\'; document.getElementById(\'divFijoIngreso\').style.display=v===\'validar_ingreso\'?\'block\':\'none\'; document.getElementById(\'divNombre\').style.display=v.startsWith(\'validar\')?\'none\':\'block\';"><option value="gasto_nuevo">🔴 Gasto no previsto</option><option value="ingreso_nuevo">🟢 Ingreso no previsto</option><option value="validar_gasto">Validar Gasto Fijo</option><option value="validar_ingreso">Validar Ingreso Fijo</option></select></div>');
-      
       campos.push('<div class="eco-campo" id="divNombre"><label>Nombre / Concepto</label><input type="text" id="movNombre" placeholder="ej: Compra Mercadillo"></div>');
       
       var optsGastos = State.get().gastos.filter(function(g){return g.periodicidad !== 'puntual' && !g.pagado;}).map(function(g){return '<option value="'+g.id+'">'+g.nombre+' ('+U.eur(g.importe)+')</option>';}).join('');
@@ -514,7 +466,7 @@ window.Economia = (function() {
 
       campos.push('<div class="eco-campo"><label>Importe (€)</label><input type="number" step="0.01" id="movImporte" placeholder="0.00"></div>');
       campos.push('<div class="eco-campo"><label>Fecha</label><input type="date" id="movFecha" value="'+U.hoy()+'"></div>');
-      campos.push('<div class="eco-campo"><label>Categoría</label><select id="movCategoria">'+Object.keys(CATS).map(function(k){return '<option value="'+k+'">'+CATS[k].icono+' '+k+'</option>';}).join('')+'</select></div>');
+      campos.push('<div class="eco-campo"><label>Categoría</label><select id="movCategoria">'+Object.keys(CATS).map(function(k){return '<option value="'+k+'">'+CATS[k].icono+' '+CATS[k].nombre+'</option>';}).join('')+'</select></div>');
       campos.push('<div class="eco-campo"><label>Notas (opcional)</label><input type="text" id="movNota" placeholder="..."></div>');
     }
 
@@ -522,6 +474,7 @@ window.Economia = (function() {
       campos.push(campoTexto('nombre', 'Nombre', d.nombre || '', 'ej: Salario...'));
       campos.push(campoNumero('importe', 'Importe (€)', d.importe || '', '0.00'));
       campos.push(campoNumero('diaCobro', 'Día de cobro (1-31)', d.diaCobro || '', 'ej: 20'));
+      campos.push(campoSelect('categoria', 'Categoría / Icono', Object.keys(CATS).map(function(k) { return { v: k, t: CATS[k].icono + ' ' + CATS[k].nombre }; }), d.categoria || 'nomina'));
     }
     if (tipo === 'gasto-fijo') {
       campos.push(campoTexto('nombre', 'Nombre', d.nombre || '', 'ej: Alquiler...'));
@@ -533,6 +486,7 @@ window.Economia = (function() {
       campos.push(campoTexto('nombre', 'Nombre', d.nombre || '', 'ej: Compra...'));
       campos.push(campoNumero('importe', 'Importe (€)', d.importe || '', '0.00'));
       campos.push(campoTexto('fecha', 'Fecha', d.fecha || U.hoy(), '', 'date'));
+      campos.push(campoSelect('categoria', 'Categoría', Object.keys(CATS).map(function(k) { return { v: k, t: CATS[k].icono + ' ' + CATS[k].nombre }; }), d.categoria || 'otros'));
     }
     if (tipo === 'objetivo') {
       campos.push(campoTexto('nombre', 'Nombre', d.nombre || '', 'ej: Viaje'));
@@ -551,9 +505,9 @@ window.Economia = (function() {
     function val(n) { var el = body.querySelector('[name="' + n + '"]'); return el ? el.value : ''; }
     function num(n) { var v = parseFloat(val(n)); return isNaN(v) ? 0 : v; }
     var obj = {};
-    if (tipo === 'ingreso-fijo') { obj = { nombre: val('nombre').trim(), importe: num('importe'), diaCobro: num('diaCobro'), periodicidad: 'mensual', pagado: false }; if (!obj.nombre || obj.importe <= 0) { alert('Nombre e importe obligatorios'); return null; } } 
+    if (tipo === 'ingreso-fijo') { obj = { nombre: val('nombre').trim(), importe: num('importe'), diaCobro: num('diaCobro'), periodicidad: 'mensual', categoria: val('categoria'), pagado: false }; if (!obj.nombre || obj.importe <= 0) { alert('Nombre e importe obligatorios'); return null; } } 
     if (tipo === 'gasto-fijo') { obj = { nombre: val('nombre').trim(), importe: num('importe'), diaCobro: num('diaCobro'), periodicidad: 'mensual', categoria: val('categoria'), necesario: true, pagado: false }; if (!obj.nombre || obj.importe <= 0) { alert('Nombre e importe obligatorios'); return null; } } 
-    if (tipo === 'gasto-puntual') { obj = { nombre: val('nombre').trim(), importe: num('importe'), periodicidad: 'puntual', fecha: val('fecha'), necesario: true }; if (!obj.nombre || obj.importe <= 0) { alert('Nombre e importe obligatorios'); return null; } return obj; }
+    if (tipo === 'gasto-puntual') { obj = { nombre: val('nombre').trim(), importe: num('importe'), periodicidad: 'puntual', fecha: val('fecha'), categoria: val('categoria'), necesario: true }; if (!obj.nombre || obj.importe <= 0) { alert('Nombre e importe obligatorios'); return null; } return obj; }
     if (tipo === 'objetivo') { obj = { nombre: val('nombre').trim(), importeObjetivo: num('importeObjetivo'), importeActual: num('importeActual') }; }
     return obj;
   }
