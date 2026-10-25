@@ -323,7 +323,7 @@ window.Economia = (function() {
     var totalGeneral = 0;
     var anioActual = mesActualYM.split('-')[0]; 
 
-    State.get().gastos.filter(function(g) { return g.periodicidad !== 'puntual' && g.necesario; }).forEach(function(g) {
+    State.get().gastos.filter(function(g) { return g.periodicidad !== 'puntual' && g.necesario && !g.pagado; }).forEach(function(g) {
       var cat = g.categoria || 'otros';
       var imp = U.aMensual(g.importe, g.periodicidad);
       if (vista === 'anio') {
@@ -380,8 +380,8 @@ window.Economia = (function() {
       var resumenIng = {};
       var totalIngGeneral = 0;
 
-      // Ingresos fijos
-      (State.get().ingresosFijos || []).forEach(function(i) {
+      // Ingresos fijos (solo los NO cobrados)
+      (State.get().ingresosFijos || []).filter(function(i) { return !i.pagado; }).forEach(function(i) {
         var cat = i.categoria || 'nomina';
         var imp = U.aMensual(i.importe, i.periodicidad);
         if (vista === 'anio') {
