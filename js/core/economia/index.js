@@ -132,10 +132,19 @@ window.Economia = (function() {
     if (inputBase && document.activeElement !== inputBase) inputBase.value = base;
 
     // 2. Fijos pendientes del ciclo (Bucle 20 al 19)
-    var fijosGastos = State.get().gastos.filter(function(g) { return g.periodicidad !== 'puntual' && !g.pagado; });
-    var fijosIngresos = (State.get().ingresosFijos || []).filter(function(i) { return !i.pagado; });
-    
     var diaHoy = new Date(); diaHoy.setHours(0,0,0,0);
+    
+    // FILTRO: Ignorar los que su día de cobro ya pasó en este ciclo
+    var fijosGastos = State.get().gastos.filter(function(g) { 
+      if (g.periodicidad === 'puntual' || g.pagado) return false;
+      // Si el día de cobro es menor al día de hoy, ya pasó, no lo mostramos
+      return (g.diaCobro || 1) >= diaHoy.getDate();
+    });
+    
+    var fijosIngresos = (State.get().ingresosFijos || []).filter(function(i) { 
+      if (i.pagado) return false;
+      return (i.diaCobro || 1) >= diaHoy.getDate();
+    });
     var diaCobroCiclo = State.get().presupuesto.diaCobro || 1;
     var mesInicio = diaHoy.getDate() >= diaCobroCiclo ? diaHoy.getMonth() : diaHoy.getMonth() - 1;
     var anioInicio = diaHoy.getFullYear();
