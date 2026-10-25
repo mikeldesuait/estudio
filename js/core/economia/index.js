@@ -57,6 +57,12 @@ window.Economia = (function() {
 
     contenedor.querySelector('#ecoMesPrev').addEventListener('click', function() { cambiarMes(-1); });
     contenedor.querySelector('#ecoMesNext').addEventListener('click', function() { cambiarMes(1); });
+    contenedor.querySelector('#ecoActualizar').addEventListener('click', function() {
+      // Recarga forzada ignorando la caché pero manteniendo el localStorage intacto
+      var url = new URL(window.location.href);
+      url.searchParams.set('v', Date.now()); // Añade un parámetro de tiempo para saltar caché
+      window.location.href = url.toString();
+    });
     contenedor.querySelector('#ecoExportar').addEventListener('click', exportar);
     contenedor.querySelector('#ecoImportar').addEventListener('click', importar);
     contenedor.querySelector('#ecoReset').addEventListener('click', resetear);

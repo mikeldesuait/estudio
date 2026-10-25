@@ -18,6 +18,7 @@ window.EconomiaTemplate = (function() {
       +     '<div class="eco-header-acciones">'
       +       '<button class="eco-btn eco-btn-ghost" id="ecoExportar" title="Exportar JSON"><i class="fas fa-download"></i></button>'
       +       '<button class="eco-btn eco-btn-ghost" id="ecoImportar" title="Importar JSON"><i class="fas fa-upload"></i></button>'
+      +       '<button class="eco-btn eco-btn-ghost" id="ecoActualizar" title="Buscar actualizaciones (mantiene tus datos)"><i class="fas fa-cloud-download-alt"></i></button>'
       +       '<button class="eco-btn eco-btn-ghost" id="ecoReset" title="Borrar todo"><i class="fas fa-trash"></i></button>'
       +     '</div>'
       +   '</header>'
